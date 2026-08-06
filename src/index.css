@@ -1,0 +1,86 @@
+@import "./styles/onest.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-brand-cream p-0 font-sans text-brand-ink antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-heading font-semibold text-brand-primary;
+    font-family: "Onest", sans-serif;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex cursor-pointer items-center justify-center rounded-lg bg-brand-primary px-5 py-2.5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-brand-primary-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-primary;
+  }
+
+  .btn-accent {
+    @apply inline-flex cursor-pointer items-center justify-center rounded-lg bg-brand-accent px-5 py-2.5 text-sm font-semibold text-brand-primary transition-colors duration-200 hover:bg-brand-accent-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-accent;
+  }
+
+  .badge-accent {
+    @apply inline-flex items-center rounded-full bg-brand-accent px-3 py-1 text-xs font-bold uppercase tracking-wide text-brand-primary;
+  }
+
+  .surface-accent {
+    @apply bg-brand-accent text-brand-primary;
+  }
+
+  .btn-secondary {
+    @apply inline-flex cursor-pointer items-center justify-center rounded-lg border border-brand-primary/20 bg-white px-5 py-2.5 text-sm font-semibold text-brand-primary transition-colors duration-200 hover:border-brand-primary/35 hover:bg-brand-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-primary;
+  }
+
+  .section-alt {
+    @apply bg-white;
+  }
+
+  .section-container {
+    @apply mx-auto w-full max-w-8xl px-4 sm:px-6;
+  }
+
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .afriquest-phone-input {
+    @apply rounded-xl border-2 border-brand-border bg-white transition-all duration-200 focus-within:border-brand-green focus-within:ring-2 focus-within:ring-brand-green/15;
+  }
+
+  .afriquest-phone-input--error {
+    @apply border-red-400 focus-within:border-red-400 focus-within:ring-red-100;
+  }
+
+  .afriquest-phone-input .PhoneInput {
+    @apply flex items-center gap-2;
+  }
+
+  .afriquest-phone-input .PhoneInputCountry {
+    @apply ml-3 shrink-0 self-stretch;
+  }
+
+  .afriquest-phone-input .PhoneInputCountrySelect {
+    @apply cursor-pointer;
+  }
+
+  .afriquest-phone-input .PhoneInputCountryIcon {
+    @apply h-4 w-6 overflow-hidden rounded-sm shadow-sm;
+  }
+
+  .afriquest-phone-input .PhoneInputInput {
+    @apply min-w-0 flex-1 border-0 bg-transparent py-3 pr-4 text-sm font-medium text-brand-ink outline-none placeholder:text-brand-muted/50;
+  }
+}
