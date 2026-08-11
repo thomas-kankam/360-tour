@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { Link } from "react-router";
 import Container from "./Container";
+import SocialLinks from "./SocialLinks";
 import env, { getContactPhoneTelHref, getWhatsAppUrl } from "../../config/env";
 import { images } from "../../config/images";
 import { ROUTES } from "../../constants/routes";
@@ -50,9 +51,11 @@ export default function Footer() {
               />
             </Link>
             <p className="mt-4 max-w-md text-sm leading-relaxed text-brand-muted">
-              Your trusted travel partner for unforgettable experiences across Ghana — tours, stays,
+              Your trusted travel partner for unforgettable experiences across Ghana: tours, stays,
               and transport with 360 Tours and Investment Limited.
             </p>
+
+            <SocialLinks className="mt-5" variant="footer" />
 
             {isAuthenticated ? (
               <p className="mt-3 text-xs font-semibold text-brand-primary">
@@ -140,7 +143,9 @@ export default function Footer() {
                   </a>
                 </li>
               </ul>
-              <p className="mt-4 text-xs leading-relaxed text-brand-muted/80">Accra, Ghana</p>
+              <p className="mt-4 text-xs leading-relaxed text-brand-muted/80">
+                Accra, Ghana · Amsterdam, Netherlands
+              </p>
             </div>
           </div>
         </div>

@@ -8,16 +8,14 @@ function normalizePhoneForTel(value) {
 }
 
 const env = {
-  appName: process.env.REACT_APP_APP_NAME || "AfriQuest Global",
-  // apiUrl:"https://afriquestgh.omnicarsgh.com/api",
-
-  apiUrl: "https://api.afriquestglobaltours.com/api",
-  contactEmail: process.env.REACT_APP_CONTACT_EMAIL || "info@afriquestglobaltours.com",
-  contactPhone: process.env.REACT_APP_CONTACT_PHONE_US || "+1 (346) 433-1792",
+  appName: process.env.REACT_APP_APP_NAME || "360 Tours and Investment Limited",
+  apiUrl: process.env.REACT_APP_API_URL || "https://api.afriquestglobaltours.com/api",
+  contactEmail: (process.env.REACT_APP_CONTACT_EMAIL || "360tours.gh@gmail.com").replace(/^\./, ""),
+  contactPhone: process.env.REACT_APP_CONTACT_PHONE_US || "+(31) 0684724905",
   whatsappNumber: normalizeWhatsAppNumber(
-    process.env.REACT_APP_WHATSAPP_NUMBER || "13464331792",
+    process.env.REACT_APP_WHATSAPP_NUMBER || "233500404151",
   ),
-  websiteUrl: process.env.REACT_APP_WEBSITE_URL || "https://afriquestglobaltours.com",
+  websiteUrl: process.env.REACT_APP_WEBSITE_URL || "https://360toursghana.com",
   isDev: process.env.NODE_ENV === "development",
   isProd: process.env.NODE_ENV === "production",
 };

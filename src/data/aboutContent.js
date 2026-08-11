@@ -5,7 +5,7 @@ export const company = {
   tagline: "Discover Africa. Travel Without Limits.",
   subtitle: "Your trusted travel partner for tours, accommodation & transportation",
   location: "Accra, Ghana",
-  email: "info@360toursinvestment.com",
+  email: "360tours.gh@gmail.com",
   motto: "Explore. Experience. Remember.",
 };
 
@@ -209,6 +209,11 @@ export const aboutPage = {
       question: "Do you organize corporate trips?",
       answer:
         "Yes. We organize conferences, retreats, team-building activities, educational tours, and corporate travel services.",
+    },
+    {
+      question: "Do you offer visa on arrival assistance?",
+      answer:
+        "Yes. We guide eligible travelers through Ghana's visa on arrival process, including required documents, fees, and airport procedures so your entry is smooth and stress-free.",
     },
   ],
   cta: {

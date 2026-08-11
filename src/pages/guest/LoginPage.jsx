@@ -3,20 +3,16 @@ import { Link, useLocation, useNavigate } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
 import { toast } from "react-toastify";
 import { ROUTES } from "../../constants/routes";
-import { getGuestLandingRoute, resolvePostAuthRedirect, ROLE_META, USER_ROLES } from "../../constants/roles";
+import { resolvePostAuthRedirect, ROLE_META, USER_ROLES } from "../../constants/roles";
 import { useAuth } from "../../hooks/useAuth";
 import { images } from "../../config/images";
 import OtpInput from "../../components/misc/OtpInput";
-import AccountTypePicker from "../../components/auth/AccountTypePicker";
 import LoginContactTabs, { getLoginContactValue, validateLoginContact } from "../../components/auth/LoginContactTabs";
 import consumerAuthServiceApi from "../../apis/ConsumerAuthServiceApi";
-import operatorAuthServiceApi from "../../apis/OperatorAuthServiceApi";
 import { normalizeEmailOrPhoneForApi } from "../../utils/phoneUtils";
 
 const EASE = [0.16, 1, 0.3, 1];
 const RESEND_COOLDOWN = 60;
-const OPERATOR_LOGIN_VERIFY_TYPE = "login";
-const OPERATOR_LOGIN_RESEND_TYPE = "login";
 
 const slideIn = {
   initial: { opacity: 0, x: 24 },
@@ -26,7 +22,7 @@ const slideIn = {
 };
 
 export default function LoginPage() {
-  const { login } = useAuth();
+  const { login, isAuthenticated, isAdmin, user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -35,8 +31,8 @@ export default function LoginPage() {
   const returnPath = returnTo?.pathname;
   const isBookingReturn = Boolean(returnPath?.includes("/book"));
 
-  const [step, setStep] = useState(isBookingReturn ? "contact" : "role");
-  const [role, setRole] = useState(presetRole || USER_ROLES.TOURIST);
+  const [step, setStep] = useState("contact");
+  const [role] = useState(USER_ROLES.TOURIST);
   const [contactMode, setContactMode] = useState("email");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -52,8 +48,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (!isBookingReturn) return;
-    setRole(USER_ROLES.TOURIST);
-    setStep((current) => (current === "role" ? "contact" : current));
+    setStep("contact");
   }, [isBookingReturn]);
 
   useEffect(() => {
@@ -94,41 +89,7 @@ export default function LoginPage() {
     setOtpSent(false);
 
     const contactForApi = normalizeEmailOrPhoneForApi(getContactValue());
-
-    if (role === USER_ROLES.TOURIST) {
-      const result = await consumerAuthServiceApi.loginConsumer({ emailOrPhone: contactForApi });
-      setLoading(false);
-
-      if (!result.ok) {
-        toast.error(result.reason || result.message);
-        setContactError(result.reason || result.message);
-        return;
-      }
-
-      const unverified = result.user && result.user.isVerified === false;
-      setNeedsVerification(unverified);
-      setOtpHint(result.reason || "Check your inbox or messages for the code.");
-      setOtpSent(true);
-      setResendCooldown(RESEND_COOLDOWN);
-      toast.success(result.reason || "OTP sent successfully.");
-
-      if (unverified) {
-        navigate(ROUTES.verify, {
-          replace: true,
-          state: {
-            emailOrPhone: contactForApi,
-            verifyType: "login",
-            from: location.state?.from,
-          },
-        });
-        return;
-      }
-
-      setStep("otp");
-      return;
-    }
-
-    const result = await operatorAuthServiceApi.loginOperator({ emailOrPhone: contactForApi });
+    const result = await consumerAuthServiceApi.loginConsumer({ emailOrPhone: contactForApi });
     setLoading(false);
 
     if (!result.ok) {
@@ -139,10 +100,23 @@ export default function LoginPage() {
 
     const unverified = result.user && result.user.isVerified === false;
     setNeedsVerification(unverified);
-    setOtpHint(result.reason || "Check your inbox for the verification code.");
+    setOtpHint(result.reason || "Check your inbox or messages for the code.");
     setOtpSent(true);
     setResendCooldown(RESEND_COOLDOWN);
     toast.success(result.reason || "OTP sent successfully.");
+
+    if (unverified) {
+      navigate(ROUTES.verify, {
+        replace: true,
+        state: {
+          emailOrPhone: contactForApi,
+          verifyType: "login",
+          from: location.state?.from,
+        },
+      });
+      return;
+    }
+
     setStep("otp");
   }
 
@@ -162,43 +136,10 @@ export default function LoginPage() {
     setOtpError("");
 
     const contactForApi = normalizeEmailOrPhoneForApi(getContactValue());
-
-    if (role === USER_ROLES.TOURIST) {
-      const result = await consumerAuthServiceApi.verifyOtp({
-        emailOrPhone: contactForApi,
-        otp,
-        type: "login",
-      });
-
-      setLoading(false);
-
-      if (!result.ok || !result.token) {
-        setOtpError(result.reason || result.message || "Invalid or expired code.");
-        return;
-      }
-
-      if (result.user?.isVerified === false) {
-        navigate(ROUTES.verify, {
-          replace: true,
-          state: {
-            emailOrPhone: contactForApi,
-            verifyType: "login",
-            from: location.state?.from,
-          },
-        });
-        return;
-      }
-
-      login(result.token, result.user);
-      toast.success(result.reason || "Welcome back!");
-      navigate(resolvePostAuthRedirect(returnTo, USER_ROLES.TOURIST), { replace: true });
-      return;
-    }
-
-    const result = await operatorAuthServiceApi.verifyOtp({
+    const result = await consumerAuthServiceApi.verifyOtp({
       emailOrPhone: contactForApi,
       otp,
-      type: OPERATOR_LOGIN_VERIFY_TYPE,
+      type: "login",
     });
 
     setLoading(false);
@@ -208,9 +149,21 @@ export default function LoginPage() {
       return;
     }
 
+    if (result.user?.isVerified === false) {
+      navigate(ROUTES.verify, {
+        replace: true,
+        state: {
+          emailOrPhone: contactForApi,
+          verifyType: "login",
+          from: location.state?.from,
+        },
+      });
+      return;
+    }
+
     login(result.token, result.user);
     toast.success(result.reason || "Welcome back!");
-    navigate(getGuestLandingRoute(USER_ROLES.SITE_OPERATOR), { replace: true });
+    navigate(resolvePostAuthRedirect(returnTo, USER_ROLES.TOURIST), { replace: true });
   }
 
   async function handleResend() {
@@ -221,27 +174,7 @@ export default function LoginPage() {
     setLoading(true);
 
     const contactForApi = normalizeEmailOrPhoneForApi(getContactValue());
-
-    if (role === USER_ROLES.TOURIST) {
-      const result = await consumerAuthServiceApi.resendOtp({ emailOrPhone: contactForApi });
-      setLoading(false);
-
-      if (!result.ok) {
-        toast.error(result.reason || result.message);
-        setOtpError(result.reason || result.message);
-        return;
-      }
-
-      setOtpHint(result.reason || "A new code has been sent.");
-      setResendCooldown(RESEND_COOLDOWN);
-      toast.success(result.reason || "OTP resent.");
-      return;
-    }
-
-    const result = await operatorAuthServiceApi.resendOtp({
-      emailOrPhone: contactForApi,
-      type: OPERATOR_LOGIN_RESEND_TYPE,
-    });
+    const result = await consumerAuthServiceApi.resendOtp({ emailOrPhone: contactForApi });
     setLoading(false);
 
     if (!result.ok) {
@@ -250,14 +183,13 @@ export default function LoginPage() {
       return;
     }
 
-    setOtpHint(result.reason || "A new code has been sent to your email.");
+    setOtpHint(result.reason || "A new code has been sent.");
     setResendCooldown(RESEND_COOLDOWN);
     toast.success(result.reason || "OTP resent.");
   }
 
   const roleMeta = ROLE_META[role];
   const loginSteps = [
-    { id: "role", label: "Account type" },
     { id: "contact", label: "Contact" },
     { id: "otp", label: "Verify" },
   ];
@@ -268,7 +200,7 @@ export default function LoginPage() {
   return (
     <div className="flex h-full min-h-0">
       <div className="relative hidden h-full overflow-hidden lg:flex lg:w-[44%] xl:w-[46%]">
-        <img src={images.home.ghana} alt="AfriQuest travel" className="absolute inset-0 h-full w-full object-cover" />
+        <img src={images.home.ghana} alt="360 Tours travel" className="absolute inset-0 h-full w-full object-cover" />
         <div className="absolute inset-0 bg-[#1C2B26]/45" />
         <div className="absolute inset-0 bg-gradient-to-br from-[#1C2B26]/50 via-[#2D5A47]/35 to-[#1C2B26]/50" />
 
@@ -290,7 +222,7 @@ export default function LoginPage() {
               </svg>
               Back to home
             </Link>
-            <img src={images.general_logo} alt="AfriQuest Global" className="h-12 w-auto drop-shadow-[0_4px_16px_rgba(227,160,32,0.4)]" />
+            <img src={images.general_logo} alt="360 Tours and Investment Limited" className="h-12 w-auto drop-shadow-[0_4px_16px_rgba(227,160,32,0.4)]" />
           </div>
 
           <div>
@@ -350,64 +282,24 @@ export default function LoginPage() {
             </div>
 
             <AnimatePresence mode="wait">
-              {step === "role" && (
-                <motion.div key="role" {...slideIn}>
+              {step === "contact" && (
+                <motion.div key="contact" {...slideIn}>
                   <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-orange">Welcome back</p>
-                  <h1 className="mt-2 text-2xl font-bold tracking-tight text-brand-ink sm:text-3xl">Sign in to AfriQuest</h1>
+                  <h1 className="mt-2 text-2xl font-bold tracking-tight text-brand-ink sm:text-3xl">Sign in to 360 Tours</h1>
                   {isBookingReturn ? (
                     <p className="mt-3 rounded-xl border border-brand-green/25 bg-brand-green/5 px-4 py-3 text-sm text-brand-muted">
                       Sign in to continue your tour booking. You&apos;ll return to checkout right after verification.
                     </p>
                   ) : null}
                   <p className="mt-2 text-sm leading-relaxed text-brand-muted">
-                    Choose how you use AfriQuest — travelers and site operators sign in separately.
+                    Choose email or phone. We&apos;ll send a one-time code to verify your traveler account.
                   </p>
 
-                  <div className="mt-8">
-                    <p className="mb-3 text-xs font-semibold uppercase tracking-[0.12em] text-brand-muted">I am signing in as</p>
-                    <AccountTypePicker value={role} onChange={setRole} />
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() => setStep("contact")}
-                    className="group mt-8 flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green py-3.5 text-sm font-semibold text-white shadow-[0_8px_24px_-8px_rgba(45,90,71,0.6)] transition-all hover:bg-brand-green-dark"
-                  >
-                    Continue as {roleMeta.shortLabel}
-                    <svg className="h-4 w-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                      <path d="M5 12h14M13 6l6 6-6 6" />
-                    </svg>
-                  </button>
-
-                  <p className="mt-6 text-center text-sm text-brand-muted">
-                    New here?{" "}
-                    <Link to={ROUTES.signup} state={{ role, from: location.state?.from }} className="font-semibold text-brand-green hover:text-brand-green-dark">
-                      Create an account
-                    </Link>
-                  </p>
-                </motion.div>
-              )}
-
-              {step === "contact" && (
-                <motion.div key="contact" {...slideIn}>
-                  {!isBookingReturn ? (
-                    <button
-                      type="button"
-                      onClick={() => setStep("role")}
-                      className="mb-6 inline-flex items-center gap-1.5 text-sm font-medium text-brand-muted transition-colors hover:text-brand-ink"
-                    >
-                      <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                        <path d="M19 12H5M12 19l-7-7 7-7" />
-                      </svg>
-                      Back
-                    </button>
+                  {isAuthenticated && isAdmin ? (
+                    <div className="mt-5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">
+                      You&apos;re signed in as <span className="font-semibold">{user?.firstName || "admin"}</span>. Completing traveler sign-in here will switch you to your client account.
+                    </div>
                   ) : null}
-
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-orange">{roleMeta.shortLabel} sign-in</p>
-                  <h1 className="mt-2 text-2xl font-bold tracking-tight text-brand-ink sm:text-3xl">Sign in</h1>
-                  <p className="mt-2 text-sm leading-relaxed text-brand-muted">
-                    Choose email or phone — we&apos;ll send a one-time code to verify your {roleMeta.shortLabel.toLowerCase()} account.
-                  </p>
 
                   <form onSubmit={handleSendOtp} className="mt-8 space-y-5">
                     <LoginContactTabs
@@ -430,7 +322,7 @@ export default function LoginPage() {
                       phoneId="login-phone"
                     />
                     <p className="text-[11px] text-brand-muted">
-                      Use the {contactIsEmail ? "email" : "phone number"} linked to your AfriQuest account.
+                      Use the {contactIsEmail ? "email" : "phone number"} linked to your 360 Tours account.
                     </p>
 
                     <button

@@ -194,7 +194,8 @@ function StorySpotlight({ item, activeIndex, onPrev, onNext, onTouchStart, onTou
   );
 }
 
-export default function HomeTestimonial() {
+export default function HomeTestimonial({ cmsOverride }) {
+  const sectionMeta = { ...testimonialsSection, ...cmsOverride };
   const [activeIndex, setActiveIndex] = useState(0);
   const listRef = useRef(null);
   const touchStartX = useRef(null);
@@ -241,10 +242,10 @@ export default function HomeTestimonial() {
         >
           <span className="inline-flex items-center gap-2 rounded-full bg-brand-accent/25 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.14em] text-brand-primary">
             <MessageCircle className="h-3.5 w-3.5" aria-hidden />
-            {testimonialsSection.eyebrow}
+            {sectionMeta.eyebrow}
           </span>
-          <h2 className="mt-4 text-3xl font-bold text-brand-primary sm:text-4xl">{testimonialsSection.title}</h2>
-          <p className="mt-3 text-base leading-relaxed text-brand-muted">{testimonialsSection.subtitle}</p>
+          <h2 className="mt-4 text-3xl font-bold text-brand-primary sm:text-4xl">{sectionMeta.title}</h2>
+          <p className="mt-3 text-base leading-relaxed text-brand-muted">{sectionMeta.subtitle}</p>
         </motion.div>
 
         {/* Unified explorer panel — sibling to Popular Destinations */}
@@ -265,10 +266,10 @@ export default function HomeTestimonial() {
                 <p className="mt-1 text-sm text-brand-muted">{TOTAL} stories from real travelers</p>
 
                 <div className="mt-4 flex items-center gap-3 rounded-2xl border border-brand-border/50 bg-white px-4 py-3">
-                  <StarRating rating={testimonialsSection.rating} size="lg" />
+                  <StarRating rating={sectionMeta.rating} size="lg" />
                   <div>
-                    <p className="text-sm font-bold text-brand-primary">{testimonialsSection.rating} average</p>
-                    <p className="text-[11px] text-brand-muted">{testimonialsSection.reviews}</p>
+                    <p className="text-sm font-bold text-brand-primary">{sectionMeta.rating} average</p>
+                    <p className="text-[11px] text-brand-muted">{sectionMeta.reviews}</p>
                   </div>
                 </div>
               </div>

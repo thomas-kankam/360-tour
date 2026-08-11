@@ -2,18 +2,13 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
 import { toast } from "react-toastify";
-import { Camera, Mail, Building2, MapPin, ShieldCheck } from "lucide-react";
+import { Camera } from "lucide-react";
 import { ROUTES } from "../../constants/routes";
-import { resolvePostAuthRedirect, ROLE_META, USER_ROLES } from "../../constants/roles";
-import { useAuth } from "../../hooks/useAuth";
+import { ROLE_META, USER_ROLES } from "../../constants/roles";
 import { images } from "../../config/images";
-import OtpInput from "../../components/misc/OtpInput";
 import InternationalPhoneInput from "../../components/forms/InternationalPhoneInput";
-import AccountTypePicker from "../../components/auth/AccountTypePicker";
 import AppIcon from "../../components/icons/AppIcon";
 import consumerAuthServiceApi from "../../apis/ConsumerAuthServiceApi";
-import operatorAuthServiceApi from "../../apis/OperatorAuthServiceApi";
-import { useResendCooldown } from "../../hooks/useResendCooldown";
 import { normalizePhoneForApi, phoneNumberHasCountryCode } from "../../utils/phoneUtils";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import { getImagePreviewSrc, readImageFile } from "../../utils/tourImageUtils";
@@ -34,27 +29,15 @@ const perks = [
   { icon: "globe", text: "Exclusive group travel offers" },
 ];
 
-const operatorPerks = [
-  { icon: "landmark", text: "Publish and manage your site listings" },
-  { icon: "calendar", text: "Control departures and availability" },
-  { icon: "clipboard-list", text: "Track bookings from travelers worldwide" },
-  { icon: "shield", text: "Verified operator profile on AfriQuest" },
-];
-
-const OPERATOR_OTP_RESEND_COOLDOWN = 15;
-const OPERATOR_VERIFY_TYPE = "registration";
-const OPERATOR_RESEND_TYPE = "registeration";
-
 export default function SignupPage() {
-  const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const presetRole = location.state?.role;
   const returnPath = location.state?.from?.pathname;
   const isBookingReturn = Boolean(returnPath?.includes("/book"));
 
-  const [step, setStep] = useState(isBookingReturn ? "details" : "role"); // "role" | "details" | "otp"
-  const [role, setRole] = useState(presetRole || USER_ROLES.TOURIST);
+  const [step, setStep] = useState(isBookingReturn ? "details" : "details");
+  const [role] = useState(USER_ROLES.TOURIST);
   const [fields, setFields] = useState({
     firstName: "",
     lastName: "",
@@ -69,7 +52,6 @@ export default function SignupPage() {
   const [touched, setTouched] = useState({});
   const [otpError, setOtpError] = useState("");
   const [otpHint, setOtpHint] = useState("");
-  const { cooldown: resendCooldown, isCoolingDown, startCooldown } = useResendCooldown();
   const [profilePreview, setProfilePreview] = useState("");
   const [profileImage, setProfileImage] = useState("");
   const [profileError, setProfileError] = useState("");
@@ -78,8 +60,7 @@ export default function SignupPage() {
 
   useEffect(() => {
     if (!isBookingReturn) return;
-    setRole(USER_ROLES.TOURIST);
-    setStep((current) => (current === "role" ? "details" : current));
+    setStep("details");
   }, [isBookingReturn]);
 
   useEffect(() => {
@@ -168,51 +149,19 @@ export default function SignupPage() {
 
     setLoading(true);
 
-    if (role === USER_ROLES.TOURIST) {
-      const payload = {
-        first_name: fields.firstName.trim(),
-        last_name: fields.lastName.trim(),
-        email: fields.email.trim(),
-        phone_number: normalizePhoneForApi(fields.phone),
-        location: fields.location.trim(),
-      };
-
-      if (profileImage) {
-        payload.profile_image = profileImage;
-      }
-
-      const result = await consumerAuthServiceApi.registerConsumer(payload);
-      setLoading(false);
-
-      if (!result.ok) {
-        toast.error(result.reason || result.message);
-        return;
-      }
-
-      toast.success(result.reason || "Check your email for the verification code.");
-      navigate(ROUTES.verify, {
-        replace: true,
-        state: {
-          emailOrPhone: fields.email.trim(),
-          verifyType: "registration",
-          reason: result.reason || "OTP sent to your email successfully.",
-          from: location.state?.from,
-        },
-      });
-      return;
-    }
-
-    // Operator registration
     const payload = {
       first_name: fields.firstName.trim(),
       last_name: fields.lastName.trim(),
-      phone_number: normalizePhoneForApi(fields.phone),
       email: fields.email.trim(),
-      organization: fields.organization.trim(),
+      phone_number: normalizePhoneForApi(fields.phone),
       location: fields.location.trim(),
     };
 
-    const result = await operatorAuthServiceApi.registerOperator(payload);
+    if (profileImage) {
+      payload.profile_image = profileImage;
+    }
+
+    const result = await consumerAuthServiceApi.registerConsumer(payload);
     setLoading(false);
 
     if (!result.ok) {
@@ -220,12 +169,16 @@ export default function SignupPage() {
       return;
     }
 
-    setOtp("");
-    setOtpError("");
-    setOtpHint(result.reason || "OTP sent to your email successfully.");
-    startCooldown(OPERATOR_OTP_RESEND_COOLDOWN);
     toast.success(result.reason || "Check your email for the verification code.");
-    setStep("otp");
+    navigate(ROUTES.verify, {
+      replace: true,
+      state: {
+        emailOrPhone: fields.email.trim(),
+        verifyType: "registration",
+        reason: result.reason || "OTP sent to your email successfully.",
+        from: location.state?.from,
+      },
+    });
   }
 
   function handleOtpChange(val) {
@@ -233,74 +186,14 @@ export default function SignupPage() {
     if (otpError) setOtpError("");
   }
 
-  async function handleVerify(e) {
-    e.preventDefault();
-    if (otp.length < 6) {
-      setOtpError("Please enter all 6 digits.");
-      return;
-    }
-
-    setLoading(true);
-    setOtpError("");
-
-    const result = await operatorAuthServiceApi.verifyOtp({
-      emailOrPhone: fields.email.trim(),
-      otp,
-      type: OPERATOR_VERIFY_TYPE,
-    });
-
-    setLoading(false);
-
-    if (!result.ok || !result.token) {
-      setOtpError(result.reason || result.message || "Invalid or expired code.");
-      return;
-    }
-
-    login(result.token, result.user);
-    toast.success(result.reason || "Welcome to AfriQuest — your operator account is live.");
-    navigate(resolvePostAuthRedirect(null, USER_ROLES.SITE_OPERATOR), { replace: true });
-  }
-
-  async function handleResendOtp() {
-    if (isCoolingDown || loading) return;
-
-    setLoading(true);
-    setOtpError("");
-    setOtp("");
-
-    const result = await operatorAuthServiceApi.resendOtp({
-      emailOrPhone: fields.email.trim(),
-      type: OPERATOR_RESEND_TYPE,
-    });
-
-    setLoading(false);
-
-    if (!result.ok) {
-      toast.error(result.reason || result.message);
-      setOtpError(result.reason || result.message);
-      return;
-    }
-
-    setOtpHint(result.reason || "A new code has been sent to your email.");
-    startCooldown(OPERATOR_OTP_RESEND_COOLDOWN);
-    toast.success(result.reason || "OTP sent to your email.");
-  }
 
   const roleMeta = ROLE_META[role];
-  const activePerks = role === USER_ROLES.SITE_OPERATOR ? operatorPerks : perks;
-  const signupSteps =
-    isBookingReturn
-      ? [{ id: "details", label: "Traveler details" }]
-      : role === USER_ROLES.TOURIST
-      ? [
-          { id: "role", label: "Account type" },
-          { id: "details", label: "Your details" },
-        ]
-      : [
-          { id: "role", label: "Account type" },
-          { id: "details", label: "Your details" },
-          { id: "otp", label: "Verify OTP" },
-        ];
+  const activePerks = perks;
+  const signupSteps = isBookingReturn
+    ? [{ id: "details", label: "Traveler details" }]
+    : [
+        { id: "details", label: "Your details" },
+      ];
   const stepIndex = signupSteps.findIndex((s) => s.id === step);
 
   // Shared input class builder
@@ -333,7 +226,7 @@ export default function SignupPage() {
       <div className="relative hidden h-full overflow-hidden lg:flex lg:w-[44%] xl:w-[46%]">
         <img
           src={images.home.kenya}
-          alt="AfriQuest travel"
+          alt="360 Tours travel"
           className="absolute inset-0 h-full w-full object-cover"
         />
         <div className="absolute inset-0 bg-[#1C2B26]/45" />
@@ -380,7 +273,7 @@ export default function SignupPage() {
               </svg>
               Back to home
             </Link>
-            <img src={images.general_logo} alt="AfriQuest Global" className="h-12 w-auto drop-shadow-[0_4px_16px_rgba(227,160,32,0.4)]" />
+            <img src={images.general_logo} alt="360 Tours and Investment Limited" className="h-12 w-auto drop-shadow-[0_4px_16px_rgba(227,160,32,0.4)]" />
           </div>
 
           <div>
@@ -389,7 +282,7 @@ export default function SignupPage() {
               Africa is waiting.<br />Your account is free.
             </h2>
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-white/65">
-              Create your AfriQuest account in under 60 seconds — no passwords, just a quick OTP.
+              Create your 360 Tours account in under 60 seconds. No passwords, just a quick OTP.
             </p>
 
             {/* Perks list */}
@@ -431,7 +324,7 @@ export default function SignupPage() {
             Back to home
           </Link>
           <div className="mt-5 flex justify-center">
-            <img src={images.general_logo} alt="AfriQuest Global" className="h-10 w-auto" />
+            <img src={images.general_logo} alt="360 Tours and Investment Limited" className="h-10 w-auto" />
           </div>
         </div>
 
@@ -464,12 +357,12 @@ export default function SignupPage() {
 
           <AnimatePresence mode="wait">
 
-            {/* ── Step 1: Account type ── */}
-            {step === "role" && (
-              <motion.div key="role" {...slideIn}>
+            {/* ── Details ── */}
+            {step === "details" && (
+              <motion.div key="details" {...slideIn}>
                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-orange">Get started</p>
                 <h1 className="mt-2 text-2xl font-bold tracking-tight text-brand-ink sm:text-3xl">
-                  Join AfriQuest
+                  Join 360 Tours
                 </h1>
                 {isBookingReturn ? (
                   <p className="mt-3 rounded-xl border border-brand-green/25 bg-brand-green/5 px-4 py-3 text-sm text-brand-muted">
@@ -477,59 +370,11 @@ export default function SignupPage() {
                   </p>
                 ) : null}
                 <p className="mt-2 text-sm leading-relaxed text-brand-muted">
-                  Travelers book unforgettable trips. Site operators manage listings and departures.
-                </p>
-
-                <div className="mt-8">
-                  <p className="mb-3 text-xs font-semibold uppercase tracking-[0.12em] text-brand-muted">I am joining as</p>
-                  <AccountTypePicker value={role} onChange={setRole} />
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => setStep("details")}
-                  className="group mt-8 flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green py-3.5 text-sm font-semibold text-white shadow-[0_8px_24px_-8px_rgba(45,90,71,0.6)] transition-all hover:bg-brand-green-dark"
-                >
-                  Continue as {roleMeta.shortLabel}
-                  <svg className="h-4 w-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M5 12h14M13 6l6 6-6 6" /></svg>
-                </button>
-
-                <p className="mt-6 text-center text-sm text-brand-muted">
-                  Already have an account?{" "}
-                  <Link to={ROUTES.login} state={{ role, from: location.state?.from }} className="font-semibold text-brand-green hover:text-brand-green-dark">
-                    Sign in
-                  </Link>
-                </p>
-              </motion.div>
-            )}
-
-            {/* ── Step 2: Details ── */}
-            {step === "details" && (
-              <motion.div key="details" {...slideIn}>
-                {!isBookingReturn ? (
-                  <button
-                    type="button"
-                    onClick={() => setStep("role")}
-                    className="mb-6 inline-flex items-center gap-1.5 text-sm font-medium text-brand-muted transition-colors hover:text-brand-ink"
-                  >
-                    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
-                    Back
-                  </button>
-                ) : null}
-
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-orange">{roleMeta.shortLabel} registration</p>
-                <h1 className="mt-2 text-2xl font-bold tracking-tight text-brand-ink sm:text-3xl">
-                  Create your account
-                </h1>
-                <p className="mt-2 text-sm leading-relaxed text-brand-muted">
-                  {role === USER_ROLES.SITE_OPERATOR
-                    ? "Tell us about you and your tourist site. We'll verify your phone with a one-time code."
-                    : "Register with your details. We'll email you a one-time code to verify your account."}
+                  Register with your details. We&apos;ll email you a one-time code to verify your account.
                 </p>
 
                 <form onSubmit={handleSendOtp} className="mt-8 space-y-4">
-                  {role === USER_ROLES.TOURIST && (
-                    <div className="flex flex-col items-center gap-3 pb-2">
+                  <div className="flex flex-col items-center gap-3 pb-2">
                       <button
                         type="button"
                         onClick={() => profileInputRef.current?.click()}
@@ -564,7 +409,6 @@ export default function SignupPage() {
                         {profileError ? <p className="mt-1 text-[11px] text-red-500">{profileError}</p> : null}
                       </div>
                     </div>
-                  )}
 
                   {/* First + Last name row */}
                   <div className="grid grid-cols-2 gap-3">
@@ -670,32 +514,6 @@ export default function SignupPage() {
                     <FieldError field="location" />
                   </div>
 
-                  {/* Organization — operators only */}
-                  {role === USER_ROLES.SITE_OPERATOR && (
-                    <div>
-                      <label htmlFor="organization" className="block text-xs font-semibold uppercase tracking-[0.12em] text-brand-muted">
-                        Tourist site / Organization
-                      </label>
-                      <div className="relative mt-2">
-                        <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
-                          <svg className="h-4 w-4 text-brand-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                            <path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6" />
-                          </svg>
-                        </span>
-                        <input
-                          id="organization"
-                          type="text"
-                          value={fields.organization}
-                          onChange={(e) => handleFieldChange("organization", e.target.value)}
-                          onBlur={() => handleBlur("organization")}
-                          placeholder="e.g. Elmina Castle Heritage Site"
-                          className={inputClass("organization")}
-                        />
-                      </div>
-                      <FieldError field="organization" />
-                    </div>
-                  )}
-
                   {/* Phone */}
                   <div>
                     <label htmlFor="phone" className="block text-xs font-semibold uppercase tracking-[0.12em] text-brand-muted">
@@ -727,16 +545,11 @@ export default function SignupPage() {
                           <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeOpacity="0.25" />
                           <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
                         </svg>
-                        {role === USER_ROLES.TOURIST ? "Creating account…" : "Sending code…"}
-                      </>
-                    ) : role === USER_ROLES.TOURIST ? (
-                      <>
-                        Create account
-                        <svg className="h-4 w-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+                        Creating account…
                       </>
                     ) : (
                       <>
-                        Send OTP
+                        Create account
                         <svg className="h-4 w-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M5 12h14M13 6l6 6-6 6" /></svg>
                       </>
                     )}
@@ -760,138 +573,6 @@ export default function SignupPage() {
                     Sign in as traveler
                   </Link>
                 </p>
-              </motion.div>
-            )}
-
-            {/* ── Step 3: OTP (operators only) ── */}
-            {step === "otp" && role === USER_ROLES.SITE_OPERATOR && (
-              <motion.div key="otp" {...slideIn}>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setStep("details");
-                    setOtp("");
-                    setOtpError("");
-                  }}
-                  className="mb-6 inline-flex items-center gap-1.5 text-sm font-medium text-brand-muted transition-colors hover:text-brand-ink"
-                >
-                  <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
-                  Back to details
-                </button>
-
-                <div className="overflow-hidden rounded-2xl bg-brand-ink p-5 text-white shadow-[0_16px_40px_-16px_rgba(28,43,38,0.55)]">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-brand-gold">Operator registration</p>
-                  <div className="mt-3 flex items-start gap-3">
-                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-gold/15 text-brand-gold">
-                      <Building2 className="h-5 w-5" strokeWidth={1.75} aria-hidden />
-                    </span>
-                    <div className="min-w-0">
-                      <p className="truncate font-bold">{fields.organization || "Your organization"}</p>
-                      <p className="mt-0.5 truncate text-sm text-white/70">
-                        {[fields.firstName, fields.lastName].filter(Boolean).join(" ") || "Operator"}
-                      </p>
-                      <p className="mt-1 flex items-center gap-1 truncate text-xs text-white/55">
-                        <MapPin className="h-3 w-3 shrink-0" strokeWidth={2} aria-hidden />
-                        {fields.location || "Location pending"}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-6 rounded-[1.75rem] border border-brand-border/60 bg-white p-7 shadow-sm sm:p-8">
-                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-green/10 text-brand-green">
-                    <Mail className="h-7 w-7" strokeWidth={1.75} aria-hidden />
-                  </div>
-
-                  <p className="mt-5 text-xs font-semibold uppercase tracking-[0.16em] text-brand-orange">Email verification</p>
-                  <h1 className="mt-2 text-2xl font-bold tracking-tight text-brand-ink sm:text-3xl">
-                    Confirm your operator account
-                  </h1>
-                  <p className="mt-2 text-sm leading-relaxed text-brand-muted">
-                    We sent a 6-digit code to{" "}
-                    <span className="font-semibold text-brand-ink">{fields.email}</span>. Enter it below to
-                    activate your listing dashboard.
-                  </p>
-
-                  <AnimatePresence>
-                    {otpHint ? (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="mt-4 overflow-hidden"
-                      >
-                        <p className="flex items-start gap-2 rounded-xl bg-brand-green/10 px-4 py-3 text-xs font-medium text-brand-green">
-                          <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0" strokeWidth={2} aria-hidden />
-                          {otpHint}
-                        </p>
-                      </motion.div>
-                    ) : null}
-                  </AnimatePresence>
-
-                  <form onSubmit={handleVerify} className="mt-8 space-y-6">
-                    <div className="space-y-2">
-                      <OtpInput value={otp} onChange={handleOtpChange} disabled={loading} error={!!otpError} />
-                      <AnimatePresence>
-                        {otpError ? (
-                          <motion.p
-                            initial={{ opacity: 0, y: -6 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -6 }}
-                            transition={{ duration: 0.2 }}
-                            className="flex items-center justify-center gap-1.5 text-xs font-medium text-red-500"
-                          >
-                            <svg className="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden><circle cx="12" cy="12" r="10" /><path d="M12 8v4M12 16h.01" /></svg>
-                            {otpError}
-                          </motion.p>
-                        ) : null}
-                      </AnimatePresence>
-                    </div>
-
-                    <button
-                      type="submit"
-                      disabled={otp.length < 6 || loading}
-                      className="group flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green py-3.5 text-sm font-semibold text-white shadow-[0_8px_24px_-8px_rgba(45,90,71,0.6)] transition-all hover:bg-brand-green-dark disabled:cursor-not-allowed disabled:opacity-50"
-                    >
-                      {loading ? (
-                        <>
-                          <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden>
-                            <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeOpacity="0.25" />
-                            <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
-                          </svg>
-                          Verifying account…
-                        </>
-                      ) : (
-                        <>
-                          Verify &amp; launch dashboard
-                          <svg className="h-4 w-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M5 12h14M13 6l6 6-6 6" /></svg>
-                        </>
-                      )}
-                    </button>
-                  </form>
-
-                  <p className="mt-6 text-center text-sm text-brand-muted">
-                    Didn&apos;t receive a code?{" "}
-                    <button
-                      type="button"
-                      onClick={handleResendOtp}
-                      disabled={isCoolingDown || loading}
-                      className="font-semibold text-brand-green transition-colors hover:text-brand-green-dark disabled:cursor-not-allowed disabled:opacity-50"
-                    >
-                      {isCoolingDown ? `Resend in ${resendCooldown}s` : "Resend OTP"}
-                    </button>
-                  </p>
-
-                  <div className="mt-6 flex items-start gap-2.5 rounded-xl border border-brand-border/60 bg-brand-cream/50 px-4 py-3">
-                    <svg className="mt-0.5 h-4 w-4 shrink-0 text-brand-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                    </svg>
-                    <p className="text-[11px] leading-relaxed text-brand-muted">
-                      Codes expire in <span className="font-semibold text-brand-ink">10 minutes</span> and are sent by
-                      email only. Check spam if you don&apos;t see it.
-                    </p>
-                  </div>
-                </div>
               </motion.div>
             )}
 

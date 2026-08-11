@@ -7,6 +7,9 @@ export const ADMIN_PERMISSIONS = {
   CLIENT_MANAGEMENT: "client_management",
   CONTACT_MANAGEMENT: "contact_management",
   ROLE_MANAGEMENT: "role_management",
+  RATING_MANAGEMENT: "rating_management",
+  INVOICE_MANAGEMENT: "invoice_management",
+  CMS_MANAGEMENT: "cms_management",
 };
 
 export function getAdminPermissionNames(user) {
@@ -42,7 +45,11 @@ export function getRequiredPermissionForAdminPath(pathname) {
   if (pathname.startsWith("/admin/payments")) return ADMIN_PERMISSIONS.BOOKING_MANAGEMENT;
   if (pathname.startsWith("/admin/contacts")) return ADMIN_PERMISSIONS.CONTACT_MANAGEMENT;
   if (pathname.startsWith("/admin/listings")) return ADMIN_PERMISSIONS.LISTING_MANAGEMENT;
+  if (pathname.startsWith("/admin/tours")) return ADMIN_PERMISSIONS.LISTING_MANAGEMENT;
   if (pathname.startsWith("/admin/operators")) return ADMIN_PERMISSIONS.LISTING_MANAGEMENT;
+  if (pathname.startsWith("/admin/ratings")) return ADMIN_PERMISSIONS.RATING_MANAGEMENT;
+  if (pathname.startsWith("/admin/invoices")) return ADMIN_PERMISSIONS.INVOICE_MANAGEMENT;
+  if (pathname.startsWith("/admin/landing-cms")) return ADMIN_PERMISSIONS.CMS_MANAGEMENT;
   if (pathname.startsWith("/admin/roles")) return ADMIN_PERMISSIONS.ROLE_MANAGEMENT;
 
   return null;
@@ -75,11 +82,15 @@ export const ADMIN_PERMISSION_NAV_MAP = {
   },
   [ADMIN_PERMISSIONS.CONTACT_MANAGEMENT]: {
     to: ROUTES.admin.contacts,
-    label: "Contacts",
+    label: "Enquiries",
   },
   [ADMIN_PERMISSIONS.LISTING_MANAGEMENT]: {
-    to: ROUTES.admin.listings,
-    label: "Listings",
+    to: ROUTES.admin.tours,
+    label: "Tours",
+  },
+  [ADMIN_PERMISSIONS.RATING_MANAGEMENT]: {
+    to: ROUTES.admin.ratings,
+    label: "Ratings",
   },
   [ADMIN_PERMISSIONS.ROLE_MANAGEMENT]: {
     to: ROUTES.admin.roles,

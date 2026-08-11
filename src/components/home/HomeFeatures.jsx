@@ -5,7 +5,7 @@ import {
   Check,
   Layers,
   Map,
-  Sparkles,
+  Route,
 } from "lucide-react";
 import Container from "../layout/Container";
 import { images } from "../../config/images";
@@ -17,7 +17,8 @@ const EASE = [0.16, 1, 0.3, 1];
 const pillarIcons = {
   map: Map,
   layers: Layers,
-  sparkles: Sparkles,
+  route: Route,
+  sparkles: Route,
 };
 
 function PillarCard({ pillar, index }) {
@@ -41,7 +42,9 @@ function PillarCard({ pillar, index }) {
   );
 }
 
-export default function HomeFeatures() {
+export default function HomeFeatures({ cmsOverride }) {
+  const section = { ...whyUsSection, ...cmsOverride };
+  const sideImage = section.sideImage || images.home.hero_two;
   return (
     <section className="relative overflow-hidden bg-white py-16 sm:py-20 lg:py-24">
       <div aria-hidden className="pointer-events-none absolute -left-24 bottom-0 h-72 w-72 rounded-full bg-brand-accent/10 blur-3xl" />
@@ -56,13 +59,13 @@ export default function HomeFeatures() {
           className="mx-auto max-w-2xl text-center"
         >
           <span className="inline-flex rounded-full bg-brand-accent/25 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.14em] text-brand-primary">
-            {whyUsSection.eyebrow}
+            {section.eyebrow}
           </span>
           <h2 className="mt-4 text-3xl font-bold text-brand-primary sm:text-4xl">
-            {whyUsSection.title}{" "}
-            <span className="text-brand-accent-dark">with {whyUsSection.titleHighlight}</span>
+            {section.title}{" "}
+            <span className="text-brand-accent-dark">with {section.titleHighlight}</span>
           </h2>
-          <p className="mt-4 text-base leading-relaxed text-brand-muted">{whyUsSection.subtitle}</p>
+          <p className="mt-4 text-base leading-relaxed text-brand-muted">{section.subtitle}</p>
         </motion.div>
 
         {/* Bento layout */}
@@ -76,7 +79,7 @@ export default function HomeFeatures() {
             className="relative overflow-hidden rounded-3xl lg:col-span-5 lg:row-span-2"
           >
             <img
-              src={images.home.hero_two}
+              src={sideImage}
               alt="Travel experience with 360 Tours"
               className="h-full min-h-[280px] w-full object-cover lg:min-h-full"
             />
@@ -99,7 +102,7 @@ export default function HomeFeatures() {
 
           {/* Three pillars */}
           <div className="grid gap-5 sm:grid-cols-2 lg:col-span-7 lg:grid-cols-1">
-            {whyUsSection.pillars.map((pillar, index) => (
+            {section.pillars.map((pillar, index) => (
               <PillarCard key={pillar.title} pillar={pillar} index={index} />
             ))}
           </div>
@@ -136,10 +139,10 @@ export default function HomeFeatures() {
           className="mt-8 text-center"
         >
           <Link
-            to={whyUsSection.cta.to}
+            to={section.cta.to}
             className="group inline-flex cursor-pointer items-center gap-2 rounded-lg bg-brand-primary px-7 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-brand-primary-dark"
           >
-            {whyUsSection.cta.label}
+            {section.cta.label}
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
           </Link>
         </motion.div>

@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { ChevronLeft, ChevronRight, Info, X } from "lucide-react";
 import { ROUTES } from "../../constants/routes";
 import TourImageField from "./TourImageField";
+import ItineraryDayImageField from "./ItineraryDayImageField";
 import TourFeatureImagesField from "./TourFeatureImagesField";
 import TourLocationRoutePicker from "./TourLocationRoutePicker";
 import CountrySearchSelect from "../forms/CountrySearchSelect";
@@ -765,6 +766,17 @@ export default function TourListingForm({ initial, onSubmit, submitLabel = "Save
                   />
                 </Field>
               </div>
+              <div className="mt-4">
+                <ItineraryDayImageField
+                  dayNumber={day.day || i + 1}
+                  value={day.image}
+                  onChange={(image) => {
+                    const next = [...form.itinerary];
+                    next[i] = { ...day, image };
+                    patch({ itinerary: next });
+                  }}
+                />
+              </div>
             </div>
           ))}
           <button
@@ -773,7 +785,12 @@ export default function TourListingForm({ initial, onSubmit, submitLabel = "Save
               patch({
                 itinerary: [
                   ...form.itinerary,
-                  { day: form.itinerary.length + 1, title: "", description: "" },
+                  {
+                    day: form.itinerary.length + 1,
+                    title: "",
+                    description: "",
+                    image: { uri: "", data: "", mimeType: "image/jpeg" },
+                  },
                 ],
               })
             }

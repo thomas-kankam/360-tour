@@ -16,10 +16,18 @@ import AdminOperatorsPage from "../pages/admin/AdminOperatorsPage";
 import AdminPaymentDetailPage from "../pages/admin/AdminPaymentDetailPage";
 import AdminPaymentsPage from "../pages/admin/AdminPaymentsPage";
 import AdminProfilePage from "../pages/admin/AdminProfilePage";
+import AdminRatingsPage from "../pages/admin/AdminRatingsPage";
 import AdminRolesPage from "../pages/admin/AdminRolesPage";
+import AdminInvoicesPage from "../pages/admin/AdminInvoicesPage";
+import AdminInvoiceFormPage from "../pages/admin/AdminInvoiceFormPage";
+import AdminInvoiceDetailPage from "../pages/admin/AdminInvoiceDetailPage";
+import AdminLandingCmsPage from "../pages/admin/AdminLandingCmsPage";
 import AdminUserDetailPage from "../pages/admin/AdminUserDetailPage";
 import AdminUserFormPage from "../pages/admin/AdminUserFormPage";
 import AdminUsersPage from "../pages/admin/AdminUsersPage";
+import OperatorTourDetailPage from "../pages/operator/OperatorTourDetailPage";
+import OperatorTourFormPage from "../pages/operator/OperatorTourFormPage";
+import OperatorToursPage from "../pages/operator/OperatorToursPage";
 import { ROUTES } from "../constants/routes";
 import { USER_ROLES } from "../constants/roles";
 import AdminPermissionRoute from "./AdminPermissionRoute";
@@ -59,17 +67,31 @@ const adminRoutes = (
         </Route>
 
         <Route element={<AdminPermissionRoute permission={ADMIN_PERMISSIONS.LISTING_MANAGEMENT} />}>
+          <Route path="tours" element={<OperatorToursPage />} />
+          <Route path="tours/new" element={<OperatorTourFormPage />} />
+          <Route path="tours/:slug/edit" element={<OperatorTourFormPage />} />
+          <Route path="tours/:slug" element={<OperatorTourDetailPage />} />
           <Route path="listings" element={<AdminListingsPage />} />
           <Route path="listings/:slug" element={<AdminListingDetailPage />} />
           <Route path="operators" element={<AdminOperatorsPage />} />
           <Route path="operators/:operatorSlug" element={<AdminOperatorDetailPage />} />
         </Route>
 
+        <Route path="ratings" element={<AdminRatingsPage />} />
+        <Route path="invoices" element={<AdminInvoicesPage />} />
+        <Route path="invoices/new" element={<AdminInvoiceFormPage />} />
+        <Route path="invoices/:id/edit" element={<AdminInvoiceFormPage />} />
+        <Route path="invoices/:id" element={<AdminInvoiceDetailPage />} />
+        <Route path="landing-cms" element={<AdminLandingCmsPage />} />
+
         <Route element={<AdminPermissionRoute permission={ADMIN_PERMISSIONS.ROLE_MANAGEMENT} />}>
           <Route path="roles" element={<AdminRolesPage />} />
         </Route>
       </Route>
     </Route>
+
+    {/* Legacy operator URLs redirect into the unified admin console */}
+    <Route path="operator/*" element={<Navigate to={ROUTES.admin.dashboard} replace />} />
   </>
 );
 

@@ -36,16 +36,6 @@ const GUEST_ACCOUNT_LINKS = [
 export function getFooterAccountLinks({ isAuthenticated, role, hasAdminPermission }) {
   if (!isAuthenticated) return GUEST_ACCOUNT_LINKS;
 
-  if (role === USER_ROLES.SITE_OPERATOR) {
-    return [
-      { label: "Dashboard", to: ROUTES.operator.dashboard },
-      { label: "My listings", to: ROUTES.operator.tours },
-      { label: "Bookings", to: ROUTES.operator.bookings },
-      { label: "Payments", to: ROUTES.operator.payments },
-      { label: "Profile", to: ROUTES.operator.profile },
-    ];
-  }
-
   if (role === USER_ROLES.ADMINISTRATOR) {
     const links = [{ label: "Dashboard", to: ROUTES.admin.dashboard }];
 
@@ -61,6 +51,7 @@ export function getFooterAccountLinks({ isAuthenticated, role, hasAdminPermissio
     { label: "Dashboard", to: ROUTES.dashboard },
     { label: "My bookings", to: ROUTES.myBookings },
     { label: "My payments", to: ROUTES.myPayments },
+    { label: "My reviews", to: ROUTES.myReviews },
     { label: "Profile", to: ROUTES.profile },
   ];
 }

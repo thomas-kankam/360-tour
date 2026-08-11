@@ -14,6 +14,7 @@ import MyBookingsPage from "../pages/guest/MyBookingsPage";
 import MyBookingDetailPage from "../pages/guest/MyBookingDetailPage";
 import MyBookingEditPage from "../pages/guest/MyBookingEditPage";
 import MyPaymentsPage from "../pages/guest/MyPaymentsPage";
+import MyReviewsPage from "../pages/guest/MyReviewsPage";
 import BookingSuccessPage from "../pages/guest/BookingSuccessPage";
 import PaymentSuccessPage from "../pages/guest/PaymentSuccessPage";
 import PaymentFailurePage from "../pages/guest/PaymentFailurePage";
@@ -55,6 +56,7 @@ const guestRoutes = (
           <Route path="my-bookings/:bookingCode/edit" element={<MyBookingEditPage />} />
           <Route path="my-bookings/:bookingCode" element={<MyBookingDetailPage />} />
           <Route path="my-payments" element={<MyPaymentsPage />} />
+          <Route path="my-reviews" element={<MyReviewsPage />} />
         </Route>
       </Route>
     </Route>

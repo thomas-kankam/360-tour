@@ -3,6 +3,7 @@ import { motion } from "motion/react";
 import { toast } from "react-toastify";
 import contactsServiceApi from "../../apis/ContactsServiceApi";
 import Container from "../../components/layout/Container";
+import SocialLinks from "../../components/layout/SocialLinks";
 import env, { getContactPhoneTelHref, getWhatsAppUrl } from "../../config/env";
 import { useAuth } from "../../hooks/useAuth";
 import { normalizePhoneForApi } from "../../utils/phoneUtils";
@@ -83,24 +84,25 @@ const CONTACT_ITEMS = [
     ),
     label: "WhatsApp",
     value: "Chat with us now",
-    href: getWhatsAppUrl("Hello AfriQuest, I'd like to enquire about a tour."),
+    href: getWhatsAppUrl("Hello 360 Tours, I would like to plan a trip to Ghana."),
     external: true,
     accent: true,
   },
 ];
 
 const HUBS = [
-  { flag: "🇬🇭", name: "Accra, Ghana", desc: "West Africa operations" },
-  { flag: "🇰🇪", name: "Nairobi, Kenya", desc: "East Africa operations" },
-  { flag: "🇿🇦", name: "Cape Town, South Africa", desc: "Southern Africa operations" },
-  { flag: "🇺🇸", name: "Houston, Texas", desc: "Global HQ" },
+  { code: "GH", name: "Accra, Ghana", desc: "West Africa operations" },
+  { code: "NL", name: "Amsterdam, Netherlands", desc: "European operations" },
+  { code: "KE", name: "Nairobi, Kenya", desc: "East Africa operations" },
+  { code: "ZA", name: "Cape Town, South Africa", desc: "Southern Africa operations" },
 ];
 
 const FAQS = [
-  { q: "How far in advance should I book?", a: "We recommend at least 6–8 weeks for group tours and 4 weeks for individual trips, especially for peak season departures (June–September, December)." },
+  { q: "How far in advance should I book?", a: "We recommend at least 6 to 8 weeks for group tours and 4 weeks for individual trips, especially for peak season departures (June to September, December)." },
   { q: "Do you handle flights?", a: "We can assist with flight coordination and hotel bookings as part of a full package, or work alongside your existing travel arrangements." },
-  { q: "What group sizes do you accommodate?", a: "We work with groups from 6 to 200+ travelers — universities, corporations, family reunions, and everything in between." },
+  { q: "What group sizes do you accommodate?", a: "We work with groups from 6 to 200+ travelers: universities, corporations, family reunions, and everything in between." },
   { q: "Is travel insurance included?", a: "Travel insurance is not included by default but we strongly recommend it and can connect you with trusted providers." },
+  { q: "Do you offer visa on arrival assistance?", a: "Yes. We guide eligible travelers through Ghana's visa on arrival process, including required documents, fees, and airport procedures for a smooth entry." },
 ];
 
 function InputField({ label, id, type = "text", required, placeholder, value, onChange, error }) {
@@ -237,7 +239,7 @@ export default function ContactPage() {
               Let&apos;s plan your journey
             </h1>
             <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-white/80">
-              Whether you&apos;re organizing a university trip, corporate retreat, or solo adventure — our team responds within 24 hours.
+              Whether you&apos;re organizing a university trip, corporate retreat, or solo adventure, our team responds within 24 hours.
             </p>
           </motion.div>
         </Container>
@@ -403,11 +405,23 @@ export default function ContactPage() {
                 <div className="grid grid-cols-2 gap-px bg-brand-border/30">
                   {HUBS.map((h) => (
                     <div key={h.name} className="bg-white px-5 py-4">
-                      <span className="text-xl">{h.flag}</span>
+                      <span className="inline-flex h-7 w-7 items-center justify-center rounded-md bg-brand-cream text-[10px] font-bold uppercase tracking-wide text-brand-primary">
+                        {h.code}
+                      </span>
                       <p className="mt-1.5 text-xs font-bold text-brand-ink">{h.name}</p>
                       <p className="text-[11px] text-brand-muted">{h.desc}</p>
                     </div>
                   ))}
+                </div>
+              </motion.div>
+
+              <motion.div {...rise(0.18)} className="overflow-hidden rounded-[1.5rem] border border-brand-border/60 bg-white shadow-sm">
+                <div className="border-b border-brand-border/40 px-6 py-4">
+                  <h2 className="text-base font-bold text-brand-ink">Follow us</h2>
+                </div>
+                <div className="px-6 py-5">
+                  <SocialLinks />
+                  <p className="mt-3 text-xs text-brand-muted">Connect on Instagram or chat with us on WhatsApp.</p>
                 </div>
               </motion.div>
 

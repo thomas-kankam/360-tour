@@ -6,15 +6,19 @@ import {
   BookOpen,
   CalendarCheck,
   CreditCard,
+  FileText,
+  LayoutTemplate,
   Map,
   Menu,
   MessageSquare,
+  Plus,
   ShieldCheck,
-  Store,
+  Star,
   UserCircle,
   UserCog,
   Users,
 } from "lucide-react";
+import { Link } from "react-router";
 import ScrollToTop from "../components/misc/ScrollToTop";
 import PortalSidebar, { PortalNavItem, PortalNavSection } from "../components/layout/PortalSidebar";
 import AccountDropdown from "../components/navigation/AccountDropdown";
@@ -26,20 +30,22 @@ import { useAuth } from "../hooks/useAuth";
 const EASE = [0.22, 1, 0.36, 1];
 
 const PERMISSION_NAV_MAP = {
-  [ADMIN_PERMISSIONS.BOOKING_MANAGEMENT]: { to: ROUTES.admin.bookings, label: "Bookings", icon: CalendarCheck },
-  [ADMIN_PERMISSIONS.CLIENT_MANAGEMENT]: { to: ROUTES.admin.clients, label: "Clients", icon: Users },
-  [ADMIN_PERMISSIONS.CONTACT_MANAGEMENT]: { to: ROUTES.admin.contacts, label: "Contacts", icon: MessageSquare },
-  [ADMIN_PERMISSIONS.LISTING_MANAGEMENT]: { to: ROUTES.admin.listings, label: "Listings", icon: Map },
+  [ADMIN_PERMISSIONS.USER_MANAGEMENT]: { to: ROUTES.admin.users, label: "Users & teams", icon: UserCog },
   [ADMIN_PERMISSIONS.ROLE_MANAGEMENT]: { to: ROUTES.admin.roles, label: "Roles & permissions", icon: BookOpen },
-  [ADMIN_PERMISSIONS.USER_MANAGEMENT]: { to: ROUTES.admin.users, label: "User accounts", icon: UserCog },
+  [ADMIN_PERMISSIONS.LISTING_MANAGEMENT]: { to: ROUTES.admin.tours, label: "Tours", icon: Map },
+  [ADMIN_PERMISSIONS.BOOKING_MANAGEMENT]: { to: ROUTES.admin.bookings, label: "Bookings", icon: CalendarCheck },
+  [ADMIN_PERMISSIONS.CONTACT_MANAGEMENT]: { to: ROUTES.admin.contacts, label: "Enquiries", icon: MessageSquare },
+  [ADMIN_PERMISSIONS.CLIENT_MANAGEMENT]: { to: ROUTES.admin.clients, label: "Clients", icon: Users },
 };
+
+const ALWAYS_ADMIN_NAV = [
+  { key: "ratings", to: ROUTES.admin.ratings, label: "Ratings", icon: Star },
+  { key: "invoices", to: ROUTES.admin.invoices, label: "Invoices", icon: FileText },
+  { key: "landing-cms", to: ROUTES.admin.landingCms, label: "Landing CMS", icon: LayoutTemplate },
+];
 
 const BOOKING_EXTRA_NAV = [
   { to: ROUTES.admin.payments, label: "Payments", icon: CreditCard },
-];
-
-const LISTING_EXTRA_NAV = [
-  { to: ROUTES.admin.operators, label: "Operators", icon: Store },
 ];
 
 function AdminSidebarContent({ user, collapsed, onNavigate }) {
@@ -54,13 +60,14 @@ function AdminSidebarContent({ user, collapsed, onNavigate }) {
         items.push({ key: `${key}-${extra.to}`, ...extra });
       });
     }
-    if (key === ADMIN_PERMISSIONS.LISTING_MANAGEMENT) {
-      LISTING_EXTRA_NAV.forEach((extra) => {
-        items.push({ key: `${key}-${extra.to}`, ...extra });
-      });
-    }
     return items;
   });
+
+  const alwaysItems = ALWAYS_ADMIN_NAV.filter(
+    (item) => !managementItems.some((existing) => existing.to === item.to),
+  );
+
+  const canManageTours = permissionNames.includes(ADMIN_PERMISSIONS.LISTING_MANAGEMENT);
 
   return (
     <>
@@ -75,7 +82,7 @@ function AdminSidebarContent({ user, collapsed, onNavigate }) {
         />
       </PortalNavSection>
 
-      {managementItems.length > 0 ? (
+      {(managementItems.length > 0 || alwaysItems.length > 0) ? (
         <PortalNavSection title="Management" collapsed={collapsed}>
           {managementItems.map((item) => (
             <PortalNavItem
@@ -87,6 +94,32 @@ function AdminSidebarContent({ user, collapsed, onNavigate }) {
               onClick={onNavigate}
             />
           ))}
+          {alwaysItems.map((item) => (
+            <PortalNavItem
+              key={item.key}
+              to={item.to}
+              label={item.label}
+              icon={item.icon}
+              collapsed={collapsed}
+              onClick={onNavigate}
+            />
+          ))}
+        </PortalNavSection>
+      ) : null}
+
+      {canManageTours ? (
+        <PortalNavSection title="Quick actions" collapsed={collapsed}>
+          <Link
+            to={ROUTES.admin.tourNew}
+            onClick={onNavigate}
+            className={[
+              "group flex items-center gap-3 rounded-xl bg-brand-green px-3 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-brand-green/90",
+              collapsed ? "justify-center px-2" : "",
+            ].join(" ")}
+          >
+            <Plus className="h-4 w-4 shrink-0" strokeWidth={2} aria-hidden />
+            {!collapsed ? <span>Create tour</span> : null}
+          </Link>
         </PortalNavSection>
       ) : null}
 
@@ -122,11 +155,11 @@ export default function AdminLayout() {
     portalSubtitle: company.name,
     collapsedIcon: ShieldCheck,
     user,
-    showPublicSiteLink: false,
+    showPublicSiteLink: true,
   };
 
   return (
-    <div className="min-h-screen bg-brand-cream">
+    <div className="min-h-screen bg-gradient-to-br from-brand-cream via-white to-brand-accent/10">
       <ScrollToTop />
 
       <aside className={["fixed inset-y-0 left-0 z-40 hidden transition-all duration-300 lg:block", sidebarWidth].join(" ")}>
@@ -177,24 +210,13 @@ export default function AdminLayout() {
                 <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-brand-primary">Administrator</p>
                 <p className="truncate text-sm font-bold text-brand-ink">{user?.name || "Admin console"}</p>
               </div>
-              <div className="min-w-0 lg:hidden">
-                <p className="truncate text-sm font-bold text-brand-ink">{user?.name || "Admin console"}</p>
-                <p className="truncate text-[11px] text-brand-muted">{user?.roleLabel || user?.roleSlug || "administrator"}</p>
-              </div>
             </div>
-
             <AccountDropdown />
           </div>
         </header>
 
         <main className="flex-1 px-4 py-8 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, ease: EASE }}
-          >
-            <Outlet />
-          </motion.div>
+          <Outlet />
         </main>
       </div>
     </div>

@@ -28,7 +28,11 @@ const rise = {
   show: { opacity: 1, y: 0, transition: { duration: 0.65, ease: EASE } },
 };
 
-export default function HomeHero() {
+export default function HomeHero({ cmsOverride }) {
+  const hero = { ...heroContent, ...cmsOverride };
+  const primaryCta = { label: cmsOverride?.primaryCtaLabel || heroContent.primaryCta.label, to: heroContent.primaryCta.to };
+  const secondaryCta = { label: cmsOverride?.secondaryCtaLabel || heroContent.secondaryCta.label, to: heroContent.secondaryCta.to };
+  const heroImage = cmsOverride?.backgroundImage || images.home.hero_img;
   const [location, setLocation] = useState("");
   const [date, setDate] = useState("");
   const navigate = useNavigate();
@@ -53,8 +57,11 @@ export default function HomeHero() {
     <section className="relative bg-brand-cream">
       {/* ── Cinematic image band ── */}
       <div className="relative h-[52vh] min-h-[340px] max-h-[560px] w-full overflow-hidden sm:h-[58vh] lg:h-[62vh]">
-        <img
-          src={images.home.hero_img}
+        <motion.img
+          initial={{ scale: 1.04 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 1.2, ease: EASE }}
+          src={heroImage}
           alt="Discover Africa with 360 Tours and Investment Limited"
           className="absolute inset-0 h-full w-full object-cover"
         />
@@ -67,30 +74,22 @@ export default function HomeHero() {
 
         {/* Top headline overlay — desktop only */}
         <Container className="relative flex h-full flex-col justify-end pb-28 lg:pb-36">
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.75, ease: EASE }}
-            className="hidden max-w-2xl lg:block"
-          >
+          <div className="hidden max-w-2xl lg:block">
             <span className="inline-flex items-center gap-2 rounded-full bg-brand-accent/90 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.14em] text-brand-primary">
-              {heroContent.badge}
+              {hero.badge}
             </span>
             <h1 className="mt-5 text-4xl font-bold leading-[1.08] tracking-tight text-white xl:text-5xl">
-              {heroContent.title}{" "}
-              <span className="text-brand-accent">{heroContent.titleHighlight}</span>
+              {hero.title}{" "}
+              <span className="text-brand-accent">{hero.titleHighlight}</span>
             </h1>
-          </motion.div>
+          </div>
         </Container>
 
         {/* Side destination strip — desktop */}
         <div className="pointer-events-none absolute bottom-8 right-6 hidden gap-3 lg:flex xl:right-12">
-          {destinationChips.map((dest, i) => (
-            <motion.div
+          {destinationChips.map((dest) => (
+            <div
               key={dest.label}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, ease: EASE, delay: 0.3 + i * 0.1 }}
               className="relative h-28 w-20 overflow-hidden rounded-2xl border-2 border-white/30 shadow-xl"
             >
               <img src={dest.image} alt={dest.label} className="h-full w-full object-cover" />
@@ -98,7 +97,7 @@ export default function HomeHero() {
               <span className="absolute bottom-2 left-0 right-0 text-center text-[10px] font-bold uppercase tracking-wide text-white">
                 {dest.label}
               </span>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>
@@ -117,28 +116,28 @@ export default function HomeHero() {
               variants={rise}
               className="inline-flex items-center gap-2 rounded-full bg-brand-accent px-3 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-brand-primary"
             >
-              {heroContent.badge}
+              {hero.badge}
             </motion.span>
             <motion.h1
               variants={rise}
               className="mt-4 text-[2rem] font-bold leading-tight tracking-tight text-white sm:text-[2.35rem]"
             >
-              {heroContent.title}{" "}
-              <span className="text-brand-accent">{heroContent.titleHighlight}</span>
+              {hero.title}{" "}
+              <span className="text-brand-accent">{hero.titleHighlight}</span>
             </motion.h1>
             <motion.p variants={rise} className="mt-3 text-sm leading-relaxed text-white/80">
-              {heroContent.subtitle}
+              {hero.subtitle}
             </motion.p>
             <motion.p variants={rise} className="mt-2 text-xs font-semibold text-brand-accent">
-              {heroContent.tagline}
+              {hero.tagline}
             </motion.p>
           </div>
 
           <div className="px-6 py-7 sm:px-8 sm:py-8">
             {/* Desktop subtitle */}
             <motion.div variants={rise} className="hidden max-w-2xl lg:block">
-              <p className="text-base leading-relaxed text-brand-muted">{heroContent.subtitle}</p>
-              <p className="mt-2 text-sm font-semibold text-brand-primary">{heroContent.tagline}</p>
+              <p className="text-base leading-relaxed text-brand-muted">{hero.subtitle}</p>
+              <p className="mt-2 text-sm font-semibold text-brand-primary">{hero.tagline}</p>
             </motion.div>
 
             {/* Destination quick-picks */}
@@ -227,18 +226,18 @@ export default function HomeHero() {
             {/* Secondary CTAs — desktop */}
             <motion.div variants={rise} className="mt-5 hidden flex-wrap items-center gap-4 lg:flex">
               <Link
-                to={heroContent.primaryCta.to}
+                to={primaryCta.to}
                 className="inline-flex cursor-pointer items-center gap-2 text-sm font-semibold text-brand-primary transition-colors hover:text-brand-primary-dark"
               >
-                {heroContent.primaryCta.label}
+                {primaryCta.label}
                 <ArrowRight className="h-4 w-4" aria-hidden />
               </Link>
               <span className="h-4 w-px bg-brand-border" aria-hidden />
               <Link
-                to={heroContent.secondaryCta.to}
+                to={secondaryCta.to}
                 className="cursor-pointer text-sm font-medium text-brand-muted transition-colors hover:text-brand-primary"
               >
-                {heroContent.secondaryCta.label}
+                {secondaryCta.label}
               </Link>
             </motion.div>
           </div>

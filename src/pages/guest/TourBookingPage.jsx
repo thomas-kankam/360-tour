@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import consumerBookingsServiceApi from "../../apis/ConsumerBookingsServiceApi";
 import publicListingsServiceApi from "../../apis/PublicListingsServiceApi";
 import Container from "../../components/layout/Container";
+import AppIcon from "../../components/icons/AppIcon";
 import PaymentRegionNotice from "../../components/payments/PaymentRegionNotice";
 import { ROUTES } from "../../constants/routes";
 import { useAuth } from "../../hooks/useAuth";
@@ -50,10 +51,10 @@ const STEPS = [
 ];
 
 const GROUP_TYPES = [
-  { id: "university", label: "University / School", icon: "🎓", desc: "Study abroad, faculty-led, or student groups" },
-  { id: "corporate", label: "Corporate", icon: "💼", desc: "Team retreats, incentives, or company travel" },
-  { id: "family", label: "Family & Friends", icon: "👨‍👩‍👧‍👦", desc: "Private group of family or close friends" },
-  { id: "other", label: "Other organisation", icon: "👥", desc: "Community, church, NGO, or custom group" },
+  { id: "university", label: "University / School", icon: "graduation", desc: "Study abroad, faculty-led, or student groups" },
+  { id: "corporate", label: "Corporate", icon: "briefcase", desc: "Team retreats, incentives, or company travel" },
+  { id: "family", label: "Family & Friends", icon: "users", desc: "Private group of family or close friends" },
+  { id: "other", label: "Other organisation", icon: "users", desc: "Community, church, NGO, or custom group" },
 ];
 
 function StepProgress({ currentIndex }) {
@@ -601,7 +602,9 @@ export default function TourBookingPage() {
                                   form.groupType === gt.id ? "border-brand-orange bg-brand-orange/5" : "border-brand-border/70 hover:border-brand-orange/30",
                                 ].join(" ")}
                               >
-                                <span className="text-xl">{gt.icon}</span>
+                                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-cream text-brand-primary">
+                                  <AppIcon name={gt.icon} className="h-5 w-5" />
+                                </span>
                                 <div>
                                   <p className="text-sm font-bold text-brand-ink">{gt.label}</p>
                                   <p className="mt-0.5 text-[11px] text-brand-muted">{gt.desc}</p>

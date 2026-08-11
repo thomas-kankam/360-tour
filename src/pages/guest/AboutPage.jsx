@@ -187,7 +187,7 @@ export default function AboutPage() {
               </div>
 
               <div className="absolute -right-2 top-4 z-20 rounded-2xl border border-brand-border/60 bg-white px-4 py-3 shadow-lg sm:-right-4">
-                <p className="text-lg font-bold text-brand-primary">360°</p>
+                <p className="text-lg font-bold text-brand-primary">360</p>
                 <p className="text-[11px] font-semibold text-brand-muted">Tours · Stay · Transport</p>
               </div>
 

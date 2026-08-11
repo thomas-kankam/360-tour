@@ -5,7 +5,6 @@ import { ROUTES } from "./constants/routes";
 import adminRoutes from "./routing/AdminRoutes";
 import authRoutes from "./routing/AuthRoutes";
 import guestRoutes from "./routing/GuestRoutes";
-import operatorRoutes from "./routing/OperatorRoutes";
 import {
   applyDevPaymentRegionFromUrl,
   installDevPaymentRegionConsoleHelpers,
@@ -26,7 +25,6 @@ function App() {
         {adminRoutes}
         {guestRoutes}
         {authRoutes}
-        {operatorRoutes}
         <Route path="*" element={<Navigate to={ROUTES.home} replace />} />
       </Routes>
     </>

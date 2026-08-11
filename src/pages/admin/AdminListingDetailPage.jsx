@@ -12,7 +12,7 @@ import {
   Mail,
   MapPin,
   Phone,
-  Sparkles,
+  Star,
   Users,
 } from "lucide-react";
 import { toast } from "react-toastify";
@@ -123,7 +123,7 @@ export default function AdminListingDetailPage() {
                 <StatusBadge status={listing.status} />
                 {listing.featured ? (
                   <span className="inline-flex items-center gap-1 rounded-full bg-brand-accent/30 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-brand-primary">
-                    <Sparkles className="h-3 w-3" strokeWidth={2.5} aria-hidden />
+                    <Star className="h-3 w-3 fill-brand-accent text-brand-accent" strokeWidth={2.5} aria-hidden />
                     Featured
                   </span>
                 ) : null}

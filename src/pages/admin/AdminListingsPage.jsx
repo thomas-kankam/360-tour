@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router";
 import { motion } from "motion/react";
-import { Eye, Globe2, Loader2, Map, Search, Sparkles } from "lucide-react";
+import { Eye, Globe2, Loader2, Map, Search, Star } from "lucide-react";
 import { toast } from "react-toastify";
 import adminListingsServiceApi from "../../apis/AdminListingsServiceApi";
 import AdminPagination from "../../components/admin/AdminPagination";
@@ -220,7 +220,7 @@ export default function AdminListingsPage() {
                           <StatusBadge status={listing.status} />
                           {listing.featured ? (
                             <span className="inline-flex items-center gap-1 rounded-full bg-brand-accent/20 px-2 py-0.5 text-[10px] font-bold text-brand-primary">
-                              <Sparkles className="h-3 w-3" strokeWidth={2.5} aria-hidden />
+                              <Star className="h-3 w-3 fill-brand-accent text-brand-accent" strokeWidth={2.5} aria-hidden />
                               Featured
                             </span>
                           ) : null}
@@ -276,7 +276,7 @@ export default function AdminListingsPage() {
                             <div className="mt-1 flex flex-wrap items-center gap-1.5">
                               {listing.featured ? (
                                 <span className="inline-flex items-center gap-1 text-[10px] font-bold text-brand-primary">
-                                  <Sparkles className="h-3 w-3" strokeWidth={2.5} aria-hidden />
+                                  <Star className="h-3 w-3 fill-brand-accent text-brand-accent" strokeWidth={2.5} aria-hidden />
                                   Featured
                                 </span>
                               ) : null}

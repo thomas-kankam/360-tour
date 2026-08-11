@@ -5,6 +5,11 @@ import { toast } from "react-toastify";
 import adminAuthServiceApi from "../../apis/AdminAuthServiceApi";
 import { useAuth } from "../../hooks/useAuth";
 import { getImagePreviewSrc, readImageFile } from "../../utils/tourImageUtils";
+import {
+  loadCompanySettings,
+  mergeCompanySettingsFromProfile,
+} from "../../utils/adminCompanySettings";
+import adminCompanySettingsApi from "../../apis/AdminCompanySettingsApi";
 
 const EASE = [0.22, 1, 0.36, 1];
 const MAX_PROFILE_IMAGE_BYTES = 2 * 1024 * 1024;
@@ -72,6 +77,9 @@ export default function AdminProfilePage() {
   const [profileError, setProfileError] = useState("");
   const [saving, setSaving] = useState(false);
   const [imageRemoved, setImageRemoved] = useState(false);
+  const [companyForm, setCompanyForm] = useState(() => mergeCompanySettingsFromProfile(user, loadCompanySettings()));
+  const [companySaving, setCompanySaving] = useState(false);
+  const invoiceLogoInputRef = useRef(null);
 
   useEffect(() => {
     setForm(getInitialForm(user));
@@ -79,7 +87,17 @@ export default function AdminProfilePage() {
     setProfileImage(null);
     setImageRemoved(false);
     setErrors({});
+    setCompanyForm(mergeCompanySettingsFromProfile(user, loadCompanySettings()));
   }, [user]);
+
+  useEffect(() => {
+    if (!token) return;
+    adminCompanySettingsApi.getSettings(token).then((result) => {
+      if (result.settings) {
+        setCompanyForm(mergeCompanySettingsFromProfile(user, result.settings));
+      }
+    });
+  }, [token, user]);
 
   const handleFieldChange = useCallback((field, value) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -113,6 +131,39 @@ export default function AdminProfilePage() {
     setProfileError("");
     setImageRemoved(true);
     if (profileInputRef.current) profileInputRef.current.value = "";
+  }
+
+  const handleCompanyFieldChange = useCallback((field, value) => {
+    setCompanyForm((prev) => ({ ...prev, [field]: value }));
+  }, []);
+
+  async function handleInvoiceLogoChange(e) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    if (file.size > MAX_PROFILE_IMAGE_BYTES) {
+      toast.error("Invoice logo must be under 2 MB.");
+      return;
+    }
+    try {
+      const image = await readImageFile(file);
+      setCompanyForm((prev) => ({ ...prev, invoiceLogo: getImagePreviewSrc(image) }));
+    } catch (err) {
+      toast.error(err.message || "Could not read logo.");
+    }
+  }
+
+  async function handleSaveCompanySettings(e) {
+    e.preventDefault();
+    setCompanySaving(true);
+    const result = await adminCompanySettingsApi.saveSettings(token, companyForm);
+    setCompanySaving(false);
+    if (!result.ok) {
+      toast.error(result.reason || "Could not save company settings.");
+      return;
+    }
+    if (result.settings) setCompanyForm(result.settings);
+    toast.success(result.source === "api" ? "Company settings saved." : result.reason || "Company settings saved locally.");
   }
 
   async function handleSubmit(e) {
@@ -285,6 +336,208 @@ export default function AdminProfilePage() {
           >
             Sign out of admin console
           </button>
+        </motion.form>
+
+        <motion.form
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, ease: EASE, delay: 0.05 }}
+          onSubmit={handleSaveCompanySettings}
+          className="lg:col-span-3"
+        >
+          <div className="rounded-2xl border border-black/8 bg-white p-6 shadow-sm sm:p-8">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-primary">Invoicing</p>
+              <h2 className="mt-1 text-xl font-bold text-brand-ink">Company & billing details</h2>
+              <p className="mt-2 text-sm text-brand-muted">
+                Used on invoices, PDF exports, and client emails. Invoice numbers are generated automatically.
+              </p>
+            </div>
+
+            <div className="mt-6 grid gap-5 sm:grid-cols-2">
+              <div className="sm:col-span-2">
+                <FormField field="legalName" label="Legal company name">
+                  <input
+                    id="legalName"
+                    type="text"
+                    value={companyForm.legalName}
+                    onChange={(e) => handleCompanyFieldChange("legalName", e.target.value)}
+                    className={inputClass(false)}
+                  />
+                </FormField>
+              </div>
+              <FormField field="taxId" label="Tax ID / VAT number">
+                <input
+                  id="taxId"
+                  type="text"
+                  value={companyForm.taxId}
+                  onChange={(e) => handleCompanyFieldChange("taxId", e.target.value)}
+                  className={inputClass(false)}
+                />
+              </FormField>
+              <FormField field="defaultCurrency" label="Default currency">
+                <input
+                  id="defaultCurrency"
+                  type="text"
+                  value={companyForm.defaultCurrency}
+                  onChange={(e) => handleCompanyFieldChange("defaultCurrency", e.target.value)}
+                  className={inputClass(false)}
+                />
+              </FormField>
+              <div className="sm:col-span-2">
+                <FormField field="addressLine1" label="Address line 1">
+                  <input
+                    id="addressLine1"
+                    type="text"
+                    value={companyForm.addressLine1}
+                    onChange={(e) => handleCompanyFieldChange("addressLine1", e.target.value)}
+                    className={inputClass(false)}
+                  />
+                </FormField>
+              </div>
+              <div className="sm:col-span-2">
+                <FormField field="addressLine2" label="Address line 2">
+                  <input
+                    id="addressLine2"
+                    type="text"
+                    value={companyForm.addressLine2}
+                    onChange={(e) => handleCompanyFieldChange("addressLine2", e.target.value)}
+                    className={inputClass(false)}
+                  />
+                </FormField>
+              </div>
+              <FormField field="phone" label="Billing phone">
+                <input
+                  id="companyPhone"
+                  type="text"
+                  value={companyForm.phone}
+                  onChange={(e) => handleCompanyFieldChange("phone", e.target.value)}
+                  className={inputClass(false)}
+                />
+              </FormField>
+              <FormField field="email" label="Billing email">
+                <input
+                  id="companyEmail"
+                  type="email"
+                  value={companyForm.email}
+                  onChange={(e) => handleCompanyFieldChange("email", e.target.value)}
+                  className={inputClass(false)}
+                />
+              </FormField>
+              <div className="sm:col-span-2">
+                <FormField field="bankName" label="Bank name">
+                  <input
+                    id="bankName"
+                    type="text"
+                    value={companyForm.bankName}
+                    onChange={(e) => handleCompanyFieldChange("bankName", e.target.value)}
+                    className={inputClass(false)}
+                  />
+                </FormField>
+              </div>
+              <FormField field="bankAccount" label="Account number / IBAN">
+                <input
+                  id="bankAccount"
+                  type="text"
+                  value={companyForm.bankAccount}
+                  onChange={(e) => handleCompanyFieldChange("bankAccount", e.target.value)}
+                  className={inputClass(false)}
+                />
+              </FormField>
+              <FormField field="bankRouting" label="Routing / SWIFT">
+                <input
+                  id="bankRouting"
+                  type="text"
+                  value={companyForm.bankRouting}
+                  onChange={(e) => handleCompanyFieldChange("bankRouting", e.target.value)}
+                  className={inputClass(false)}
+                />
+              </FormField>
+              <div className="sm:col-span-2">
+                <FormField field="paypalOrMobileMoney" label="Mobile money / PayPal">
+                  <input
+                    id="paypalOrMobileMoney"
+                    type="text"
+                    value={companyForm.paypalOrMobileMoney}
+                    onChange={(e) => handleCompanyFieldChange("paypalOrMobileMoney", e.target.value)}
+                    className={inputClass(false)}
+                  />
+                </FormField>
+              </div>
+              <div className="sm:col-span-2">
+                <FormField field="paymentNotes" label="Payment notes">
+                  <textarea
+                    id="paymentNotes"
+                    rows={2}
+                    value={companyForm.paymentNotes}
+                    onChange={(e) => handleCompanyFieldChange("paymentNotes", e.target.value)}
+                    className={inputClass(false)}
+                  />
+                </FormField>
+              </div>
+              <div className="sm:col-span-2">
+                <FormField field="invoiceTerms" label="Invoice footer / terms">
+                  <textarea
+                    id="invoiceTerms"
+                    rows={2}
+                    value={companyForm.invoiceTerms}
+                    onChange={(e) => handleCompanyFieldChange("invoiceTerms", e.target.value)}
+                    className={inputClass(false)}
+                  />
+                </FormField>
+              </div>
+              <div className="sm:col-span-2">
+                <label className="block text-xs font-semibold uppercase tracking-[0.12em] text-brand-muted">
+                  Invoice logo
+                </label>
+                <div className="mt-2 flex items-center gap-4">
+                  <button
+                    type="button"
+                    onClick={() => invoiceLogoInputRef.current?.click()}
+                    className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-brand-border bg-brand-cream/40"
+                  >
+                    {companyForm.invoiceLogo ? (
+                      <img src={companyForm.invoiceLogo} alt="" className="h-full w-full object-contain" />
+                    ) : (
+                      <Camera className="h-6 w-6 text-brand-muted" aria-hidden />
+                    )}
+                  </button>
+                  <input
+                    ref={invoiceLogoInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleInvoiceLogoChange}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => invoiceLogoInputRef.current?.click()}
+                    className="rounded-xl border border-brand-border px-3 py-1.5 text-xs font-semibold text-brand-ink"
+                  >
+                    Upload logo
+                  </button>
+                  {companyForm.invoiceLogo ? (
+                    <button
+                      type="button"
+                      onClick={() => handleCompanyFieldChange("invoiceLogo", "")}
+                      className="text-xs font-semibold text-red-600"
+                    >
+                      Remove
+                    </button>
+                  ) : null}
+                </div>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={companySaving}
+              className="btn-primary mt-6 inline-flex items-center gap-2 px-4 py-3 text-sm disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {companySaving ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : <Save className="h-4 w-4" strokeWidth={1.75} aria-hidden />}
+              Save company settings
+            </button>
+          </div>
         </motion.form>
 
         <aside className="space-y-4 lg:col-span-2">

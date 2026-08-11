@@ -14,7 +14,7 @@ export const heroContent = {
 
 export const stats = [
   { value: "15+", label: "Popular destinations" },
-  { value: "360°", label: "Travel services" },
+  { value: "360", label: "Travel services" },
   { value: "100%", label: "Personalized planning" },
   { value: "24/7", label: "Customer support" },
 ];
@@ -484,7 +484,7 @@ export const whyUsSection = {
       title: "Personalized planning",
       description:
         "Every itinerary is tailored to your interests, budget, and schedule — whether solo, family, group, or corporate.",
-      icon: "sparkles",
+      icon: "route",
     },
   ],
 };
@@ -545,7 +545,7 @@ export const homeCtaSection = {
   highlights: [
     { label: "Guided tours", description: "Heritage, culture & adventure", icon: "map" },
     { label: "Transport & stays", description: "Door-to-door coordination", icon: "car" },
-    { label: "Custom planning", description: "Solo, family, or group trips", icon: "sparkles" },
+    { label: "Custom planning", description: "Solo, family, or group trips", icon: "route" },
   ],
   destinationChips: ["Accra", "Cape Coast", "Kumasi", "Volta"],
   primaryCta: { label: "Request a quote", to: ROUTES.contact },

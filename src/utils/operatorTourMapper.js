@@ -18,7 +18,7 @@ import {
   UNLIMITED_TOUR_SLOTS,
 } from "./operatorTourConstants";
 import { inferAudienceScope } from "./tourPricing";
-import { normalizeTourImages, resolveImageForApiPayload } from "./tourImageUtils";
+import { normalizeTourImages, resolveImageForApiPayload, normalizeTourImage } from "./tourImageUtils";
 
 const POPULAR_GHANA_CITIES = [
   "Accra",
@@ -177,9 +177,7 @@ export function mapOperatorTour(raw) {
     galleryImageUrls: galleryUrls,
     description: raw.description || "",
     highlights: raw.highlights?.length ? raw.highlights : [""],
-    itinerary: raw.itinerary?.length
-      ? raw.itinerary
-      : [],
+    itinerary: (raw.itinerary || []).map(normalizeItineraryDay).filter(Boolean),
     included: raw.included?.length ? raw.included : [""],
     notIncluded: raw.notIncluded?.length ? raw.notIncluded : [""],
     totalSlots,
@@ -209,6 +207,29 @@ export function mapOperatorTourList(data) {
 
 export function buildLocationsLabel(locations) {
   return (locations || []).filter(Boolean).join(" · ");
+}
+
+function normalizeItineraryDay(day, index) {
+  if (!day) return null;
+  const imageUrl = day.imageUrl || day.image_url || day.image?.uri || "";
+  return {
+    day: Number(day.day) || index + 1,
+    title: day.title || "",
+    description: day.description || "",
+    imageUrl,
+    image: normalizeTourImage(day.image || imageUrl, imageUrl),
+  };
+}
+
+function mapItineraryForApi(day) {
+  const imageUrl = resolveImageForApiPayload(day.image, day.imageUrl || "");
+  const payload = {
+    day: Number(day.day) || 1,
+    title: (day.title || "").trim(),
+    description: (day.description || "").trim(),
+  };
+  if (imageUrl) payload.imageUrl = imageUrl;
+  return payload;
 }
 
 export function getAllocatedDepartureSlots(departureDates) {
@@ -355,12 +376,8 @@ export function buildTourPayload(form, { isUpdate = false } = {}) {
     description: form.description.trim(),
     highlights: (form.highlights || []).map((h) => h.trim()).filter(Boolean),
     itinerary: (form.itinerary || [])
-      .filter((d) => d.title?.trim() || d.description?.trim())
-      .map((d) => ({
-        day: Number(d.day) || 1,
-        title: d.title.trim(),
-        description: d.description.trim(),
-      })),
+      .filter((d) => d.title?.trim() || d.description?.trim() || d.image?.uri || d.image?.data || d.imageUrl)
+      .map(mapItineraryForApi),
     included: (form.included || []).map((i) => i.trim()).filter(Boolean),
     notIncluded: (form.notIncluded || []).map((i) => i.trim()).filter(Boolean),
     departureDates,

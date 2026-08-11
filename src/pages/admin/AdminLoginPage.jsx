@@ -9,7 +9,7 @@ import adminAuthServiceApi from "../../apis/AdminAuthServiceApi";
 import { normalizeEmailOrPhoneForApi } from "../../utils/phoneUtils";
 import { images } from "../../config/images";
 import { ROUTES } from "../../constants/routes";
-import { getHomeRouteForRole, USER_ROLES } from "../../constants/roles";
+import { getHomeRouteForRole, isAdminRole, USER_ROLES } from "../../constants/roles";
 import { useAuth } from "../../hooks/useAuth";
 
 const EASE = [0.16, 1, 0.3, 1];
@@ -42,7 +42,7 @@ export default function AdminLoginPage() {
     return () => window.clearInterval(timer);
   }, [resendCooldown]);
 
-  if (isAuthenticated) {
+  if (isAuthenticated && isAdminRole(user?.role)) {
     return <Navigate to={getHomeRouteForRole(user?.role)} replace />;
   }
 

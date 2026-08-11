@@ -10,7 +10,6 @@ import {
   MapPin,
   Plus,
   Search,
-  Sparkles,
   Star,
   Trash2,
   Users,
@@ -75,7 +74,7 @@ function TourCard({ tour, index, onDeleteRequest }) {
         </span>
         {tour.featured ? (
           <span className="absolute right-2 top-2 inline-flex items-center gap-0.5 rounded-full bg-white/95 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-brand-primary shadow-sm">
-            <Sparkles className="h-2.5 w-2.5" strokeWidth={2.5} aria-hidden />
+            <Star className="h-2.5 w-2.5 fill-brand-accent text-brand-accent" strokeWidth={2.5} aria-hidden />
             Featured
           </span>
         ) : null}

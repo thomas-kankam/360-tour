@@ -6,7 +6,6 @@ import {
   MapPin,
   Plus,
   Search,
-  Sparkles,
   X,
 } from "lucide-react";
 import { GHANA_CITY_SUGGESTIONS } from "../../utils/operatorTourMapper";
@@ -184,7 +183,7 @@ export default function TourLocationRoutePicker({ value = [], onChange, countryI
           </motion.div>
         ) : (
           <div className="mt-5 rounded-xl border border-dashed border-brand-border/80 bg-white/60 px-4 py-6 text-center">
-            <Sparkles className="mx-auto h-6 w-6 text-brand-primary/70" strokeWidth={1.75} aria-hidden />
+            <MapPin className="mx-auto h-6 w-6 text-brand-primary/70" strokeWidth={1.75} aria-hidden />
             <p className="mt-2 text-sm font-semibold text-brand-ink">No cities added yet</p>
             <p className="mt-1 text-xs text-brand-muted">
               {isGhana

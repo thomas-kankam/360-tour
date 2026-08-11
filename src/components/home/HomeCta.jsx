@@ -8,7 +8,7 @@ import {
   Map,
   MapPin,
   Phone,
-  Sparkles,
+  Route,
 } from "lucide-react";
 import Container from "../layout/Container";
 import { images } from "../../config/images";
@@ -20,7 +20,8 @@ const EASE = [0.16, 1, 0.3, 1];
 const highlightIcons = {
   map: Map,
   car: Car,
-  sparkles: Sparkles,
+  route: Route,
+  sparkles: Route,
 };
 
 function WhatsAppIcon({ className = "h-4 w-4" }) {
@@ -31,9 +32,15 @@ function WhatsAppIcon({ className = "h-4 w-4" }) {
   );
 }
 
-export default function HomeCta() {
+export default function HomeCta({ cmsOverride }) {
+  const content = { ...homeCtaSection, ...cmsOverride };
+  const primaryCta = { label: cmsOverride?.primaryCtaLabel || homeCtaSection.primaryCta.label, to: homeCtaSection.primaryCta.to };
+  const secondaryCta = { label: cmsOverride?.secondaryCtaLabel || homeCtaSection.secondaryCta.label, to: homeCtaSection.secondaryCta.to };
+  const whatsappMessage = cmsOverride?.whatsappMessage || homeCtaSection.whatsappMessage;
   const ctaImage =
-    images.destinations?.popular?.[homeCtaSection.imageKey] ?? images.home.hero_two;
+    content.image ||
+    images.destinations?.popular?.[content.imageKey || homeCtaSection.imageKey] ||
+    images.home.hero_two;
 
   return (
     <section className="relative overflow-hidden bg-brand-cream pb-16 pt-4 sm:pb-20 lg:pb-24">
@@ -83,7 +90,7 @@ export default function HomeCta() {
                   <img src={ctaImage} alt="Explore Ghana with 360 Tours" className="block h-auto w-full" />
                 </div>
                 <div className="absolute -bottom-3 -right-2 rounded-2xl border border-brand-border/60 bg-white px-4 py-3 shadow-lg sm:-right-4">
-                  <p className="text-lg font-bold text-brand-primary">360°</p>
+                  <p className="text-lg font-bold text-brand-primary">360</p>
                   <p className="text-[11px] font-semibold text-brand-muted">Tours · Stay · Transport</p>
                 </div>
               </div>
@@ -92,10 +99,10 @@ export default function HomeCta() {
             {/* Copy & actions */}
             <div className="flex flex-col p-6 sm:p-8 lg:p-10">
               <span className="inline-flex w-fit rounded-full bg-brand-accent/25 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.14em] text-brand-primary">
-                {homeCtaSection.eyebrow}
+                  {content.eyebrow}
               </span>
-              <h2 className="mt-4 text-3xl font-bold text-brand-primary sm:text-4xl">{homeCtaSection.title}</h2>
-              <p className="mt-4 text-base leading-relaxed text-brand-muted">{homeCtaSection.subtitle}</p>
+              <h2 className="mt-4 text-3xl font-bold text-brand-primary sm:text-4xl">{content.title}</h2>
+              <p className="mt-4 text-base leading-relaxed text-brand-muted">{content.subtitle}</p>
 
               <ul className="mt-8 space-y-3">
                 {homeCtaSection.highlights.map((item) => {
@@ -118,16 +125,16 @@ export default function HomeCta() {
               </ul>
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                <Link to={homeCtaSection.primaryCta.to} className="btn-primary gap-2 px-6 py-3.5">
-                  {homeCtaSection.primaryCta.label}
+                <Link to={primaryCta.to} className="btn-primary gap-2 px-6 py-3.5">
+                  {primaryCta.label}
                   <ArrowRight className="h-4 w-4" aria-hidden />
                 </Link>
-                <Link to={homeCtaSection.secondaryCta.to} className="btn-secondary gap-2 px-6 py-3.5">
-                  {homeCtaSection.secondaryCta.label}
+                <Link to={secondaryCta.to} className="btn-secondary gap-2 px-6 py-3.5">
+                  {secondaryCta.label}
                   <ArrowUpRight className="h-4 w-4" aria-hidden />
                 </Link>
                 <a
-                  href={getWhatsAppUrl(homeCtaSection.whatsappMessage)}
+                  href={getWhatsAppUrl(whatsappMessage)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn-accent gap-2 px-6 py-3.5"
