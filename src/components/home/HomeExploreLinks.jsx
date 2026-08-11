@@ -2,9 +2,9 @@ import { Link } from "react-router";
 import { motion } from "motion/react";
 import { ArrowRight, Compass, Info, MessageCircle } from "lucide-react";
 import Container from "../layout/Container";
+import ScrollReveal, { ScrollStagger, ScrollStaggerItem } from "../motion/ScrollReveal";
 import { ROUTES } from "../../constants/routes";
-
-const EASE = [0.16, 1, 0.3, 1];
+import { EASE_OUT } from "../../utils/motionPresets";
 
 const EXPLORE_DEFAULTS = {
   eyebrow: "Learn more",
@@ -20,15 +20,14 @@ const EXPLORE_DEFAULTS = {
   contactCta: "Contact us",
 };
 
-function ExploreCard({ icon: Icon, label, text, cta, to, delay = 0 }) {
+function ExploreCard({ icon: Icon, label, text, cta, to }) {
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 16 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-40px" }}
-      transition={{ duration: 0.5, delay, ease: EASE }}
-      className="group flex flex-col rounded-2xl border border-brand-border/60 bg-white p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:border-brand-primary/20 hover:shadow-md"
-    >
+    <ScrollStaggerItem>
+      <motion.article
+        whileHover={{ y: -6, scale: 1.02 }}
+        transition={{ duration: 0.3, ease: EASE_OUT }}
+        className="group flex h-full flex-col rounded-2xl border border-brand-border/60 bg-white p-6 shadow-sm hover:border-brand-primary/25 hover:shadow-lg"
+      >
       <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-primary/10 text-brand-primary">
         <Icon className="h-5 w-5" strokeWidth={1.75} aria-hidden />
       </span>
@@ -41,7 +40,8 @@ function ExploreCard({ icon: Icon, label, text, cta, to, delay = 0 }) {
         {cta}
         <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
       </Link>
-    </motion.article>
+      </motion.article>
+    </ScrollStaggerItem>
   );
 }
 
@@ -75,22 +75,16 @@ export default function HomeExploreLinks({ cmsOverride }) {
   return (
     <section className="bg-white py-14 sm:py-16">
       <Container>
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.55, ease: EASE }}
-          className="mx-auto max-w-2xl text-center"
-        >
+        <ScrollReveal variant="up" className="mx-auto max-w-2xl text-center">
           <p className="text-xs font-bold uppercase tracking-[0.14em] text-brand-orange">{content.eyebrow}</p>
           <h2 className="mt-3 text-2xl font-bold text-brand-ink sm:text-3xl">{content.title}</h2>
-        </motion.div>
+        </ScrollReveal>
 
-        <div className="mt-10 grid gap-5 md:grid-cols-3">
-          {cards.map((card, index) => (
-            <ExploreCard key={card.to} {...card} delay={index * 0.06} />
+        <ScrollStagger className="mt-10 grid gap-5 md:grid-cols-3">
+          {cards.map((card) => (
+            <ExploreCard key={card.to} {...card} />
           ))}
-        </div>
+        </ScrollStagger>
       </Container>
     </section>
   );

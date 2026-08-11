@@ -2,14 +2,14 @@ import { useCallback, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ChevronLeft, ChevronRight, MessageCircle, Quote, Star } from "lucide-react";
 import Container from "../layout/Container";
-import { images } from "../../config/images";
+import { images, getPopularDestinationImage } from "../../config/images";
 import { testimonials, testimonialsSection } from "../../data/homeContent";
 
 const EASE = [0.16, 1, 0.3, 1];
 const TOTAL = testimonials.length;
 
 function getTestimonialImage(item) {
-  return images.destinations?.popular?.[item.imageKey] ?? images.home.testimonial;
+  return getPopularDestinationImage(item.imageKey) ?? images.home.testimonial;
 }
 
 function wrapIndex(index) {

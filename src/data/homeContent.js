@@ -365,7 +365,7 @@ export const ghanaRegions = [
     tagline: "Capital culture & city life",
     desc: "Explore Independence Square, W.E.B. Du Bois Centre, bustling markets, and the creative energy of Ghana's capital.",
     highlights: ["City tours", "Arts & crafts", "Nightlife"],
-    image: images.tour_sites.arts_and_craft,
+    imageKey: "accraCityTour",
     packageId: "accra",
   },
   {
@@ -375,7 +375,7 @@ export const ghanaRegions = [
     tagline: "Heritage & history",
     desc: "Walk through Cape Coast Castle, Elmina Castle, and UNESCO World Heritage sites that tell Ghana's powerful story.",
     highlights: ["Slave castles", "Museums", "Coastal tours"],
-    image: images.home.ghana,
+    imageKey: "capeCoastCastle",
     packageId: null,
   },
   {
@@ -385,7 +385,7 @@ export const ghanaRegions = [
     tagline: "Royal Ashanti heritage",
     desc: "Visit Manhyia Palace, kente weaving villages, and the living traditions of the Ashanti Kingdom.",
     highlights: ["Palace tours", "Kente villages", "Cultural immersion"],
-    image: images.tour_sites.manhyia_palace,
+    imageKey: "kumasiCulturalTour",
     packageId: "kumasi",
   },
   {
@@ -395,7 +395,7 @@ export const ghanaRegions = [
     tagline: "Waterfalls & adventure",
     desc: "Trek to Wli Falls, explore Boti Falls, canopy walks, and the lush highlands of eastern Ghana.",
     highlights: ["Wli Falls", "Eco tours", "Hiking"],
-    image: images.tour_sites.volta,
+    imageKey: "wliWaterfalls",
     packageId: "volta",
   },
   {
@@ -405,7 +405,7 @@ export const ghanaRegions = [
     tagline: "River cruises & scenery",
     desc: "Enjoy scenic boat cruises on the Volta River, mountain views, and relaxing resort experiences.",
     highlights: ["Boat cruises", "Lake views", "Resort stays"],
-    image: images.tour_sites.waterfall,
+    imageKey: "akosomboBoatCruise",
     packageId: null,
   },
   {
@@ -415,7 +415,7 @@ export const ghanaRegions = [
     tagline: "Wildlife & nature",
     desc: "Discover Mole National Park, savanna landscapes, and unforgettable wildlife adventures in northern Ghana.",
     highlights: ["Safari", "Wildlife", "Nature parks"],
-    image: images.home.destinations.ghana,
+    imageKey: "moleNationalPark",
     packageId: null,
   },
 ];

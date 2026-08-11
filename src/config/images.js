@@ -8,7 +8,11 @@ export const images = {
   favicon_logo: "/images/logo.png",
   home: {
     hero: "/images/home/hero.jpg",
-    hero_img: "/images/hero_img.png",
+    hero_img: "/images/gallery/optimized/hero.webp",
+    heroBanner: {
+      webp: "/images/gallery/optimized/hero.webp",
+      png: "/images/gallery/optimized/hero.png",
+    },
     hero_one: "/images/home/hero_one.jpg",
     hero_two: "/images/home/hero_two.jpg",
     hero_three: "/images/home/hero_three.jpg",
@@ -37,24 +41,69 @@ export const images = {
     arts_and_craft: "/images/home/arts_and_craft.jpg",
   },
 
-  /** Popular destination photos in /public/images/popular_places/ */
+  /** Optimized gallery photos — WebP primary, PNG fallback (1280×800) */
   destinations: {
     popular: {
-      accraCityTour: "/images/popular_places/accra_city_tour.png",
-      capeCoastCastle: "/images/popular_places/cape_coast_castle.png",
-      elminaCastle: "/images/popular_places/elmina_castle.png",
-      kakumNationalPark: "/images/popular_places/kakum_national_park.png",
-      akosomboBoatCruise: "/images/popular_places/akosombo_boat_cruise.png",
-      aburiBotanicalGardens: "/images/popular_places/aburi_botanical_garden.png",
-      wliWaterfalls: "/images/popular_places/wli_waterfalls.png",
-      botiFalls: "/images/popular_places/boti_falls.png",
-      shaiHills: "/images/popular_places/shai_hills.png",
-      adaFoah: "/images/popular_places/ada_foah.png",
-      nzulezuStiltVillage: "/images/popular_places/nzulezu_stilt_village_landscape.png",
-      moleNationalPark: "/images/popular_places/mole_national_park_landscape.png",
-      kumasiCulturalTour: "/images/popular_places/kumasi_cultural_tour_landscape.png",
-      voltaRegionAdventure: "/images/popular_places/volta_region_adventure_landscape.png",
-      tafiAtomeMonkeySanctuary: "/images/popular_places/tafi_atome_monkey_sanctuary_landscape.png",
+      accraCityTour: {
+        webp: "/images/gallery/optimized/accra-city-tour.webp",
+        png: "/images/gallery/optimized/accra-city-tour.png",
+      },
+      capeCoastCastle: {
+        webp: "/images/gallery/optimized/cape-coast-castle.webp",
+        png: "/images/gallery/optimized/cape-coast-castle.png",
+      },
+      elminaCastle: {
+        webp: "/images/gallery/optimized/elmina-castle.webp",
+        png: "/images/gallery/optimized/elmina-castle.png",
+      },
+      kakumNationalPark: {
+        webp: "/images/gallery/optimized/kakum-national-park.webp",
+        png: "/images/gallery/optimized/kakum-national-park.png",
+      },
+      akosomboBoatCruise: {
+        webp: "/images/gallery/optimized/akosombo-boat-cruise.webp",
+        png: "/images/gallery/optimized/akosombo-boat-cruise.png",
+      },
+      aburiBotanicalGardens: {
+        webp: "/images/gallery/optimized/aburi-botanical-gardens.webp",
+        png: "/images/gallery/optimized/aburi-botanical-gardens.png",
+      },
+      wliWaterfalls: {
+        webp: "/images/gallery/optimized/wli-waterfalls.webp",
+        png: "/images/gallery/optimized/wli-waterfalls.png",
+      },
+      botiFalls: {
+        webp: "/images/gallery/optimized/boti-falls.webp",
+        png: "/images/gallery/optimized/boti-falls.png",
+      },
+      shaiHills: {
+        webp: "/images/gallery/optimized/shai-hills.webp",
+        png: "/images/gallery/optimized/shai-hills.png",
+      },
+      adaFoah: {
+        webp: "/images/gallery/optimized/ada-foah.webp",
+        png: "/images/gallery/optimized/ada-foah.png",
+      },
+      nzulezuStiltVillage: {
+        webp: "/images/gallery/optimized/nzulezu-stilt-village.webp",
+        png: "/images/gallery/optimized/nzulezu-stilt-village.png",
+      },
+      moleNationalPark: {
+        webp: "/images/gallery/optimized/mole-national-park.webp",
+        png: "/images/gallery/optimized/mole-national-park.png",
+      },
+      kumasiCulturalTour: {
+        webp: "/images/gallery/optimized/kumasi-cultural-tour.webp",
+        png: "/images/gallery/optimized/kumasi-cultural-tour.png",
+      },
+      voltaRegionAdventure: {
+        webp: "/images/gallery/optimized/volta-region-adventure.webp",
+        png: "/images/gallery/optimized/volta-region-adventure.png",
+      },
+      tafiAtomeMonkeySanctuary: {
+        webp: "/images/gallery/optimized/tafi-atome-monkey-sanctuary.webp",
+        png: "/images/gallery/optimized/tafi-atome-monkey-sanctuary.png",
+      },
     },
   },
 
@@ -62,3 +111,18 @@ export const images = {
     banner_one: "/images/home/sun_city_banner.png",
   }
 };
+
+/** Resolve optimized gallery image — prefers WebP, falls back to PNG or legacy string paths */
+export function getPopularDestinationImage(imageKey, { preferWebp = true } = {}) {
+  const entry = images.destinations?.popular?.[imageKey];
+  if (!entry) return null;
+  if (typeof entry === "string") return entry;
+  return preferWebp ? entry.webp ?? entry.png : entry.png ?? entry.webp;
+}
+
+export function getPopularDestinationSources(imageKey) {
+  const entry = images.destinations?.popular?.[imageKey];
+  if (!entry) return null;
+  if (typeof entry === "string") return { webp: entry, png: entry };
+  return entry;
+}

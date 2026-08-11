@@ -3,14 +3,23 @@ import { Link } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
 import { ArrowRight, ArrowUpRight, ChevronLeft, ChevronRight, Compass, MapPin } from "lucide-react";
 import Container from "../layout/Container";
-import { images } from "../../config/images";
+import ScrollReveal from "../motion/ScrollReveal";
+import { getPopularDestinationSources } from "../../config/images";
 import { popularDestinations, popularDestinationsSection } from "../../data/homeContent";
 import { ROUTES } from "../../constants/routes";
 
 const EASE = [0.16, 1, 0.3, 1];
 
-function getDestinationImage(destination) {
-  return images.destinations?.popular?.[destination.imageKey] ?? destination.fallback;
+const SECTION_DEFAULTS = {
+  eyebrow: popularDestinationsSection.eyebrow,
+  title: popularDestinationsSection.title,
+  subtitle: popularDestinationsSection.subtitle,
+  ctaLabel: "View all tours",
+  bookLabel: "Book this experience",
+};
+
+function getDestinationSources(destination) {
+  return getPopularDestinationSources(destination.imageKey) ?? { webp: destination.fallback, png: destination.fallback };
 }
 
 function scrollListItemIntoView(container, index) {
@@ -52,9 +61,9 @@ function SpotlightNavButton({ direction, onClick, disabled, label }) {
   );
 }
 
-function DestinationSpotlight({ destination, onPrev, onNext, canGoPrev, canGoNext, onTouchStart, onTouchEnd }) {
+function DestinationSpotlight({ destination, onPrev, onNext, canGoPrev, canGoNext, onTouchStart, onTouchEnd, priority = false }) {
   const [failed, setFailed] = useState(false);
-  const src = getDestinationImage(destination);
+  const sources = getDestinationSources(destination);
 
   return (
     <motion.div
@@ -87,13 +96,21 @@ function DestinationSpotlight({ destination, onPrev, onNext, canGoPrev, canGoNex
             <MapPin className="h-12 w-12 text-brand-primary/40" aria-hidden />
           </div>
         ) : (
-          <img
-            src={src}
-            alt={destination.name}
-            className="block h-auto w-full"
-            onError={() => setFailed(true)}
-            draggable={false}
-          />
+          <picture>
+            <source srcSet={sources.webp} type="image/webp" />
+            <img
+              src={sources.png}
+              alt={destination.name}
+              width={1280}
+              height={800}
+              loading={priority ? "eager" : "lazy"}
+              fetchPriority={priority ? "high" : "auto"}
+              decoding="async"
+              className="block aspect-[16/10] h-auto w-full object-cover"
+              onError={() => setFailed(true)}
+              draggable={false}
+            />
+          </picture>
         )}
       </div>
       {/* Corner accent */}
@@ -148,7 +165,8 @@ function DestinationListItem({ destination, index, isActive, onSelect, total }) 
   );
 }
 
-export default function HomeDestinations() {
+export default function HomeDestinations({ cmsOverride }) {
+  const section = { ...SECTION_DEFAULTS, ...cmsOverride };
   const [activeIndex, setActiveIndex] = useState(0);
   const listRef = useRef(null);
   const touchStartX = useRef(null);
@@ -207,31 +225,19 @@ export default function HomeDestinations() {
     <section className="relative overflow-hidden bg-brand-cream py-16 sm:py-20 lg:py-24">
       <Container>
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.65, ease: EASE }}
-          className="mx-auto max-w-2xl text-center"
-        >
+        <ScrollReveal variant="up" className="mx-auto max-w-2xl text-center">
           <span className="inline-flex items-center gap-2 rounded-full bg-brand-accent/30 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.14em] text-brand-primary">
             <MapPin className="h-3.5 w-3.5" aria-hidden />
-            {popularDestinationsSection.eyebrow}
+            {section.eyebrow}
           </span>
           <h2 className="mt-4 text-3xl font-bold text-brand-primary sm:text-4xl">
-            {popularDestinationsSection.title}
+            {section.title}
           </h2>
-          <p className="mt-3 text-base text-brand-muted">{popularDestinationsSection.subtitle}</p>
-        </motion.div>
+          <p className="mt-3 text-base text-brand-muted">{section.subtitle}</p>
+        </ScrollReveal>
 
         {/* Explorer panel */}
-        <motion.div
-          initial={{ opacity: 0, y: 28 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.75, ease: EASE, delay: 0.08 }}
-          className="mt-12 overflow-hidden rounded-3xl border border-brand-border/50 shadow-[0_32px_100px_-32px_rgba(21,67,96,0.28)] lg:mt-14"
-        >
+        <ScrollReveal variant="scale" delay={0.08} className="mt-12 overflow-hidden rounded-3xl border border-brand-border/50 shadow-[0_32px_100px_-32px_rgba(21,67,96,0.28)] lg:mt-14">
           <div className="grid lg:grid-cols-[minmax(260px,340px)_1fr]">
             {/* Left — destination index */}
             <div className="relative flex flex-col bg-brand-primary">
@@ -273,7 +279,7 @@ export default function HomeDestinations() {
                   to={popularDestinationsSection.cta.to}
                   className="group inline-flex cursor-pointer items-center gap-2 text-sm font-semibold text-brand-accent transition-colors hover:text-brand-accent-light"
                 >
-                  View all tours
+                  {section.ctaLabel}
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
                 </Link>
               </div>
@@ -326,6 +332,7 @@ export default function HomeDestinations() {
                       canGoNext={canGoNext}
                       onTouchStart={handleTouchStart}
                       onTouchEnd={handleTouchEnd}
+                      priority={activeIndex === 0}
                     />
                   </AnimatePresence>
                 </div>
@@ -364,14 +371,14 @@ export default function HomeDestinations() {
                     to={ROUTES.toursSearch({ country: "ghana" })}
                     className="group inline-flex shrink-0 cursor-pointer items-center gap-2 rounded-lg bg-brand-primary px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-primary-dark"
                   >
-                    Book this experience
+                    {section.bookLabel}
                     <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden />
                   </Link>
                 </div>
               </div>
             </div>
           </div>
-        </motion.div>
+        </ScrollReveal>
 
         {/* Mobile quick strip — horizontal destination chips */}
         <div className="mt-5 flex gap-2 overflow-x-auto pb-1 lg:hidden [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">

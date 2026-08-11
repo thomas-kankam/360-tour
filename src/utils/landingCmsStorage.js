@@ -1,4 +1,4 @@
-import { heroContent, homeCtaSection, toursPageSection } from "../data/homeContent";
+import { heroContent, homeCtaSection, operatingSection, popularDestinationsSection, toursPageSection } from "../data/homeContent";
 import { images } from "../config/images";
 
 const STORAGE_KEY = "360tours_landing_cms";
@@ -18,13 +18,27 @@ export const LANDING_CMS_DEFAULTS = {
     tagline: heroContent.tagline,
     primaryCtaLabel: heroContent.primaryCta.label,
     secondaryCtaLabel: heroContent.secondaryCta.label,
-    backgroundImage: images.home.hero_img,
+    backgroundImage: images.home.heroBanner.webp,
   },
   tours: {
     eyebrow: "Featured tours",
     title: "Top picks for your next trip",
     subtitle: toursPageSection.subtitle,
     viewAllLabel: "View all tours",
+  },
+  destinations: {
+    eyebrow: popularDestinationsSection.eyebrow,
+    title: popularDestinationsSection.title,
+    subtitle: popularDestinationsSection.subtitle,
+    ctaLabel: "View all tours",
+    bookLabel: "Book this experience",
+  },
+  regions: {
+    eyebrow: operatingSection.eyebrow,
+    title: operatingSection.title,
+    subtitle: operatingSection.subtitle,
+    ctaLabel: operatingSection.cta.label,
+    footerNote: "across Ghana — and curated experiences beyond, across Africa.",
   },
   explore: {
     eyebrow: "Learn more",
@@ -56,7 +70,13 @@ export function loadLandingCms() {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (!raw) return structuredClone(LANDING_CMS_DEFAULTS);
     const parsed = JSON.parse(raw);
-    return deepMerge(structuredClone(LANDING_CMS_DEFAULTS), parsed);
+    const merged = deepMerge(structuredClone(LANDING_CMS_DEFAULTS), parsed);
+    // Migrate old AI hero placeholder to real gallery photo
+    const heroBg = merged.hero?.backgroundImage;
+    if (heroBg === "/images/hero_img.png" || heroBg === "/images/home/hero.jpg") {
+      merged.hero.backgroundImage = LANDING_CMS_DEFAULTS.hero.backgroundImage;
+    }
+    return merged;
   } catch {
     return structuredClone(LANDING_CMS_DEFAULTS);
   }
@@ -82,6 +102,8 @@ function deepMerge(base, patch) {
 export const LANDING_CMS_SECTIONS = [
   { id: "hero", label: "Hero banner" },
   { id: "tours", label: "Featured tours" },
+  { id: "destinations", label: "Popular destinations" },
+  { id: "regions", label: "Ghana regions" },
   { id: "explore", label: "Explore links" },
   { id: "cta", label: "Final call to action" },
 ];

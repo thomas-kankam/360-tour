@@ -3,6 +3,8 @@ import { Eye, ImagePlus, RotateCcw, Save, Trash2 } from "lucide-react";
 import { toast } from "react-toastify";
 import HomeHero from "../../components/home/HomeHero";
 import HomeFeaturedTours from "../../components/home/HomeFeaturedTours";
+import HomeDestinations from "../../components/home/HomeDestinations";
+import HomeHubs from "../../components/home/HomeHubs";
 import HomeExploreLinks from "../../components/home/HomeExploreLinks";
 import HomeCta from "../../components/home/HomeCta";
 import {
@@ -136,7 +138,7 @@ export default function AdminLandingCmsPage() {
           <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-brand-green">Content</p>
           <h1 className="mt-1 text-2xl font-bold text-brand-ink sm:text-3xl">Landing page CMS</h1>
           <p className="mt-2 max-w-2xl text-sm text-brand-muted">
-            Four focused sections: hero, top tours, explore links, and a final call to action. Full details live on About, Why us, and Tours pages.
+            Six editable sections: hero, featured tours, Ghana regions, popular destinations, explore links, and a final call to action.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -204,6 +206,8 @@ export default function AdminLandingCmsPage() {
           <div className="pointer-events-none select-none">
             <HomeHero cmsOverride={cms.hero} />
             <HomeFeaturedTours cmsOverride={cms.tours} />
+            <HomeHubs cmsOverride={cms.regions} />
+            <HomeDestinations cmsOverride={cms.destinations} />
             <HomeExploreLinks cmsOverride={cms.explore} />
             <HomeCta cmsOverride={cms.cta} />
           </div>

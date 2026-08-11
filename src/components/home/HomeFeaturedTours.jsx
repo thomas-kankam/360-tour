@@ -2,12 +2,12 @@ import { Link } from "react-router";
 import { motion } from "motion/react";
 import { ArrowRight, Loader2 } from "lucide-react";
 import Container from "../layout/Container";
+import ScrollReveal, { ScrollStagger, ScrollStaggerItem } from "../motion/ScrollReveal";
 import TourPriceDisplay from "../tours/TourPriceDisplay";
 import { ROUTES } from "../../constants/routes";
 import { toursPageSection } from "../../data/homeContent";
 import { useRandomListings } from "../../hooks/useRandomListings";
-
-const EASE = [0.16, 1, 0.3, 1];
+import { EASE_OUT } from "../../utils/motionPresets";
 const FEATURED_LIMIT = 5;
 
 const SECTION_DEFAULTS = {
@@ -31,13 +31,12 @@ function TourCardSkeleton() {
 
 function FeaturedTourCard({ tour, index }) {
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-30px" }}
-      transition={{ duration: 0.55, ease: EASE, delay: index * 0.05 }}
-      className="group relative flex flex-col overflow-hidden rounded-2xl border border-brand-border/70 bg-white shadow-[0_10px_36px_-20px_rgba(28,43,38,0.22)] transition-all hover:-translate-y-1 hover:shadow-[0_18px_44px_-18px_rgba(28,43,38,0.28)]"
-    >
+    <ScrollStaggerItem>
+      <motion.article
+        whileHover={{ y: -6, scale: 1.02 }}
+        transition={{ duration: 0.35, ease: EASE_OUT }}
+        className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-brand-border/70 bg-white shadow-[0_10px_36px_-20px_rgba(28,43,38,0.22)] hover:shadow-[0_22px_52px_-18px_rgba(28,43,38,0.32)]"
+      >
       <div className="relative aspect-[4/3] overflow-hidden bg-brand-cream">
         {tour.image ? (
           <img
@@ -81,7 +80,8 @@ function FeaturedTourCard({ tour, index }) {
       </div>
 
       <Link to={ROUTES.tourDetail(tour.slug)} className="absolute inset-0 z-10 rounded-2xl" aria-label={`View ${tour.name}`} />
-    </motion.article>
+      </motion.article>
+    </ScrollStaggerItem>
   );
 }
 
@@ -94,17 +94,11 @@ export default function HomeFeaturedTours({ cmsOverride }) {
     <section className="relative overflow-hidden bg-brand-cream py-14 sm:py-16 lg:py-20">
       <Container className="relative">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-40px" }}
-            transition={{ duration: 0.55, ease: EASE }}
-            className="max-w-xl"
-          >
+          <ScrollReveal variant="up" className="max-w-xl">
             <p className="text-xs font-bold uppercase tracking-[0.14em] text-brand-orange">{section.eyebrow}</p>
             <h2 className="mt-2 text-2xl font-bold text-brand-ink sm:text-3xl">{section.title}</h2>
             <p className="mt-2 text-sm leading-relaxed text-brand-muted sm:text-base">{section.subtitle}</p>
-          </motion.div>
+          </ScrollReveal>
 
           <Link
             to={ROUTES.tours}
@@ -133,11 +127,11 @@ export default function HomeFeaturedTours({ cmsOverride }) {
         ) : null}
 
         {!isLoading && !isError && featured.length > 0 ? (
-          <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+          <ScrollStagger className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
             {featured.map((tour, index) => (
               <FeaturedTourCard key={tour.slug} tour={tour} index={index} />
             ))}
-          </div>
+          </ScrollStagger>
         ) : null}
 
         {!isLoading && !isError && featured.length === 0 ? (
@@ -149,18 +143,12 @@ export default function HomeFeaturedTours({ cmsOverride }) {
           </div>
         ) : null}
 
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, ease: EASE, delay: 0.1 }}
-          className="mt-10 flex justify-center"
-        >
+        <ScrollReveal variant="scale" delay={0.08} className="mt-10 flex justify-center">
           <Link to={ROUTES.tours} className="btn-primary inline-flex items-center gap-2 px-8 py-3.5">
             {section.viewAllLabel}
             {isLoading ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : <ArrowRight className="h-4 w-4" aria-hidden />}
           </Link>
-        </motion.div>
+        </ScrollReveal>
       </Container>
     </section>
   );

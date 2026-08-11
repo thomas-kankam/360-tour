@@ -2,11 +2,11 @@ import { Link } from "react-router";
 import { motion } from "motion/react";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import Container from "../layout/Container";
+import ScrollReveal from "../motion/ScrollReveal";
 import { getWhatsAppUrl } from "../../config/env";
 import { homeCtaSection } from "../../data/homeContent";
 import { ROUTES } from "../../constants/routes";
-
-const EASE = [0.16, 1, 0.3, 1];
+import { EASE_OUT } from "../../utils/motionPresets";
 
 function WhatsAppIcon({ className = "h-4 w-4" }) {
   return (
@@ -31,18 +31,18 @@ export default function HomeCta({ cmsOverride }) {
   return (
     <section className="bg-brand-primary py-14 sm:py-16">
       <Container>
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.55, ease: EASE }}
-          className="mx-auto max-w-3xl text-center"
-        >
+        <ScrollReveal variant="scale" className="mx-auto max-w-3xl text-center">
           <p className="text-xs font-bold uppercase tracking-[0.14em] text-brand-accent">{content.eyebrow}</p>
           <h2 className="mt-3 text-2xl font-bold text-white sm:text-3xl">{content.title}</h2>
           <p className="mt-3 text-sm leading-relaxed text-white/75 sm:text-base">{content.subtitle}</p>
 
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: 0.6, delay: 0.15, ease: EASE_OUT }}
+            className="mt-8 flex flex-wrap items-center justify-center gap-3"
+          >
             <Link to={primaryCta.to} className="btn-accent inline-flex items-center gap-2 px-6 py-3.5 text-sm font-semibold">
               {primaryCta.label}
               <ArrowRight className="h-4 w-4" aria-hidden />
@@ -63,8 +63,8 @@ export default function HomeCta({ cmsOverride }) {
               <WhatsAppIcon />
               WhatsApp
             </a>
-          </div>
-        </motion.div>
+          </motion.div>
+        </ScrollReveal>
       </Container>
     </section>
   );
