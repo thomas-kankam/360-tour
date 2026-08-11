@@ -23,17 +23,32 @@ import {
 
 const EASE = [0.16, 1, 0.3, 1];
 
-function StarRating({ value, reviews }) {
-  if (!value) return null;
+function StarRating({ value, reviews, tourSlug }) {
+  const hasRating = Number(value) > 0;
+  const count = Number(reviews) || 0;
+  const reviewsHref = tourSlug ? `${ROUTES.tourDetail(tourSlug)}#tour-reviews` : "#tour-reviews";
+
+  if (hasRating) {
+    return (
+      <Link
+        to={reviewsHref}
+        className="inline-flex items-center gap-1 rounded-full bg-brand-cream/90 px-2 py-0.5 transition-colors hover:bg-brand-accent/25"
+      >
+        <Star className="h-3 w-3 fill-brand-accent text-brand-accent" strokeWidth={0} aria-hidden />
+        <span className="text-[11px] font-bold text-brand-ink">{Number(value).toFixed(1)}</span>
+        {count > 0 ? <span className="text-[10px] text-brand-muted">({count})</span> : null}
+      </Link>
+    );
+  }
 
   return (
-    <span className="inline-flex items-center gap-1 rounded-full bg-brand-cream/90 px-2 py-0.5">
-      <Star className="h-3 w-3 fill-brand-accent text-brand-accent" strokeWidth={0} aria-hidden />
-      <span className="text-[11px] font-bold text-brand-ink">{Number(value).toFixed(1)}</span>
-      {reviews > 0 ? (
-        <span className="text-[10px] text-brand-muted">({reviews})</span>
-      ) : null}
-    </span>
+    <Link
+      to={reviewsHref}
+      className="inline-flex items-center gap-1 rounded-full border border-brand-border/60 bg-white px-2 py-0.5 text-[10px] font-semibold text-brand-muted transition-colors hover:border-brand-primary/30 hover:text-brand-primary"
+    >
+      <Star className="h-3 w-3 text-brand-border" strokeWidth={1.5} aria-hidden />
+      Reviews
+    </Link>
   );
 }
 
@@ -131,11 +146,9 @@ function TourCard({ tour, index }) {
             ) : null}
           </div>
 
-          {tour.rating > 0 ? (
-            <div className="absolute bottom-14 right-3">
-              <StarRating value={tour.rating} reviews={tour.reviews} />
-            </div>
-          ) : null}
+          <div className="absolute bottom-14 right-3">
+            <StarRating value={tour.rating} reviews={tour.reviews} tourSlug={tour.slug} />
+          </div>
 
           <div className="absolute bottom-3 left-3 right-3">
             {tour.packageLineLabel ? (

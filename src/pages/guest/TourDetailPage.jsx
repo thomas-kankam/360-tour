@@ -19,6 +19,7 @@ import publicListingsServiceApi from "../../apis/PublicListingsServiceApi";
 import Container from "../../components/layout/Container";
 import ImageLightbox from "../../components/misc/ImageLightbox";
 import TourItineraryTimeline from "../../components/tours/TourItineraryTimeline";
+import TourReviewsSection from "../../components/tours/TourReviewsSection";
 import TourPriceDisplay from "../../components/tours/TourPriceDisplay";
 import { ROUTES } from "../../constants/routes";
 import { usePaymentRegion } from "../../hooks/usePaymentRegion";
@@ -30,21 +31,29 @@ import { getWhatsAppUrl } from "../../config/env";
 
 const EASE = [0.22, 1, 0.36, 1];
 
-function StarRating({ value, reviews, light = false }) {
-  if (!value) return null;
+function TourRatingBadge({ value, reviewCount, light = false }) {
+  const hasRating = Number(value) > 0;
+  const count = Number(reviewCount) || 0;
+  const textClass = light ? "text-white/80 hover:text-white" : "text-brand-muted hover:text-brand-primary";
 
   return (
-    <span className="inline-flex items-center gap-1.5">
+    <a href="#tour-reviews" className={`inline-flex items-center gap-1.5 text-sm transition-colors ${textClass}`}>
       <Star
-        className={`h-4 w-4 fill-brand-accent text-brand-accent ${light ? "fill-white text-white" : ""}`}
-        strokeWidth={0}
+        className={`h-4 w-4 ${hasRating ? "fill-brand-accent text-brand-accent" : ""} ${light ? "text-white/90" : "text-brand-border"}`}
+        strokeWidth={1.5}
         aria-hidden
       />
-      <span className={`text-sm font-bold ${light ? "text-white" : "text-brand-ink"}`}>{value}</span>
-      {reviews ? (
-        <span className={`text-sm ${light ? "text-white/70" : "text-brand-muted"}`}>({reviews} reviews)</span>
-      ) : null}
-    </span>
+      {hasRating ? (
+        <>
+          <span className={`font-bold ${light ? "text-white" : "text-brand-ink"}`}>{Number(value).toFixed(1)}</span>
+          <span className={light ? "text-white/70" : ""}>
+            ({count} review{count !== 1 ? "s" : ""})
+          </span>
+        </>
+      ) : (
+        <span>Traveler reviews</span>
+      )}
+    </a>
   );
 }
 
@@ -355,7 +364,7 @@ function BookingCard({ tour, paymentRegion }) {
               </p>
             ) : null}
           </div>
-          <StarRating value={tour.rating} reviews={tour.reviews} />
+          <TourRatingBadge value={tour.rating} reviewCount={tour.reviews} />
         </div>
 
         {showSpotsBar ? (
@@ -584,9 +593,7 @@ export default function TourDetailPage() {
                     <CalendarDays className="h-4 w-4 text-brand-primary" strokeWidth={2} aria-hidden />
                     Departs {tour.nextDate}
                   </span>
-                  {tour.rating ? (
-                    <StarRating value={tour.rating} reviews={tour.reviews} />
-                  ) : null}
+                  <TourRatingBadge value={tour.rating} reviewCount={tour.reviews} />
                 </div>
               </div>
 
@@ -624,6 +631,8 @@ export default function TourDetailPage() {
               <TourIncludedSection items={tour.included} />
 
               <TourItineraryTimeline itinerary={tour.itinerary} />
+
+              <TourReviewsSection tourSlug={tour.slug} tourTitle={tour.name} />
 
               {tour.notIncluded.length > 0 ? (
                 <Section title="Not included">

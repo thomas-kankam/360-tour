@@ -1,10 +1,10 @@
 import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { motion } from "motion/react";
-import { ArrowRight, Calendar, MapPin, Star } from "lucide-react";
+import { ArrowRight, Calendar, MapPin } from "lucide-react";
 import Container from "../layout/Container";
 import { images } from "../../config/images";
-import { heroContent, stats } from "../../data/homeContent";
+import { heroContent } from "../../data/homeContent";
 import { ROUTES } from "../../constants/routes";
 import { COUNTRY_FILTER_OPTIONS } from "../../utils/publicListingsHelpers";
 
@@ -125,19 +125,15 @@ export default function HomeHero({ cmsOverride }) {
               {hero.title}{" "}
               <span className="text-brand-accent">{hero.titleHighlight}</span>
             </motion.h1>
-            <motion.p variants={rise} className="mt-3 text-sm leading-relaxed text-white/80">
+            <motion.p variants={rise} className="mt-3 text-sm leading-relaxed text-white/80 line-clamp-3">
               {hero.subtitle}
-            </motion.p>
-            <motion.p variants={rise} className="mt-2 text-xs font-semibold text-brand-accent">
-              {hero.tagline}
             </motion.p>
           </div>
 
           <div className="px-6 py-7 sm:px-8 sm:py-8">
             {/* Desktop subtitle */}
-            <motion.div variants={rise} className="hidden max-w-2xl lg:block">
-              <p className="text-base leading-relaxed text-brand-muted">{hero.subtitle}</p>
-              <p className="mt-2 text-sm font-semibold text-brand-primary">{hero.tagline}</p>
+            <motion.div variants={rise} className="hidden max-w-xl lg:block">
+              <p className="text-sm leading-relaxed text-brand-muted line-clamp-2">{hero.subtitle}</p>
             </motion.div>
 
             {/* Destination quick-picks */}
@@ -241,59 +237,9 @@ export default function HomeHero({ cmsOverride }) {
               </Link>
             </motion.div>
           </div>
-
-          {/* Stats strip */}
-          <motion.div
-            variants={rise}
-            className="grid grid-cols-2 divide-x divide-brand-primary/10 border-t border-brand-border/40 bg-gradient-to-r from-brand-accent/15 via-brand-accent/25 to-brand-accent/15 sm:grid-cols-4"
-          >
-            {stats.slice(0, 4).map((stat) => (
-              <div key={stat.label} className="px-5 py-5 text-center sm:py-6">
-                <p className="text-2xl font-bold text-brand-primary sm:text-3xl">{stat.value}</p>
-                <p className="mt-1 text-xs font-medium text-brand-muted">{stat.label}</p>
-              </div>
-            ))}
-          </motion.div>
         </motion.div>
 
-        {/* Social proof row below card */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: EASE, delay: 0.45 }}
-          className="mt-8 flex flex-wrap items-center justify-center gap-6 pb-14 sm:pb-16 lg:justify-start lg:gap-10"
-        >
-          <div className="flex items-center gap-3">
-            <div className="flex -space-x-2.5">
-              {[images.home.ghana, images.home.kenya, images.home.southAfrica].map((src, i) => (
-                <img
-                  key={i}
-                  src={src}
-                  alt=""
-                  className="h-9 w-9 rounded-full border-2 border-white object-cover shadow-sm"
-                />
-              ))}
-              <span className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-white bg-brand-primary text-[10px] font-bold text-white shadow-sm">
-                5k+
-              </span>
-            </div>
-            <div>
-              <div className="flex items-center gap-1">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} className="h-3.5 w-3.5 fill-brand-accent text-brand-accent" aria-hidden />
-                ))}
-                <span className="ml-1 text-sm font-bold text-brand-ink">4.9</span>
-              </div>
-              <p className="text-xs text-brand-muted">Trusted by 5,000+ travelers</p>
-            </div>
-          </div>
-
-          <div className="hidden h-8 w-px bg-brand-border/70 sm:block" aria-hidden />
-
-          <p className="max-w-xs text-center text-sm text-brand-muted lg:text-left">
-            Tours, accommodation, and transport — everything you need under one roof.
-          </p>
-        </motion.div>
+        <div className="pb-12 sm:pb-14" aria-hidden />
       </Container>
     </section>
   );

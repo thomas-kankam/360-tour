@@ -1,5 +1,4 @@
-import { heroContent, homeCtaSection, whyUsSection, testimonialsSection } from "../data/homeContent";
-import { homeAboutTeaser } from "../data/aboutContent";
+import { heroContent, homeCtaSection, toursPageSection } from "../data/homeContent";
 import { images } from "../config/images";
 
 const STORAGE_KEY = "360tours_landing_cms";
@@ -15,42 +14,39 @@ export const LANDING_CMS_DEFAULTS = {
     badge: heroContent.badge,
     title: heroContent.title,
     titleHighlight: heroContent.titleHighlight,
-    subtitle: heroContent.subtitle,
+    subtitle: "Tours, stays, and transport across Ghana and beyond — planned for you.",
     tagline: heroContent.tagline,
     primaryCtaLabel: heroContent.primaryCta.label,
     secondaryCtaLabel: heroContent.secondaryCta.label,
     backgroundImage: images.home.hero_img,
   },
-  about: {
-    eyebrow: homeAboutTeaser.eyebrow,
-    title: homeAboutTeaser.title,
-    tagline: homeAboutTeaser.tagline,
-    summary: homeAboutTeaser.summary,
-    extended: homeAboutTeaser.extended,
-    image: images.tour_sites.volta,
+  tours: {
+    eyebrow: "Featured tours",
+    title: "Top picks for your next trip",
+    subtitle: toursPageSection.subtitle,
+    viewAllLabel: "View all tours",
   },
-  features: {
-    eyebrow: whyUsSection.eyebrow,
-    title: whyUsSection.title,
-    titleHighlight: whyUsSection.titleHighlight,
-    subtitle: whyUsSection.subtitle,
-    sideImage: images.tour_sites.arts_and_craft,
+  explore: {
+    eyebrow: "Learn more",
+    title: "Explore 360 Tours",
+    aboutLabel: "About us",
+    aboutText: "Our story, services, and offices in Ghana and Amsterdam.",
+    aboutCta: "About 360 Tours",
+    whyLabel: "Why choose us",
+    whyText: "Guided tours, flexible departures, and end-to-end coordination.",
+    whyCta: "See why travelers trust us",
+    contactLabel: "Plan your trip",
+    contactText: "Custom quotes, group travel, and visa-on-arrival guidance.",
+    contactCta: "Contact us",
   },
   cta: {
     eyebrow: homeCtaSection.eyebrow,
     title: homeCtaSection.title,
-    subtitle: homeCtaSection.subtitle,
+    subtitle: "Tell us your dates and interests — we will handle the rest.",
     primaryCtaLabel: homeCtaSection.primaryCta.label,
-    secondaryCtaLabel: homeCtaSection.secondaryCta.label,
+    secondaryCtaLabel: "View all tours",
     whatsappMessage: homeCtaSection.whatsappMessage,
     image: images.home.hero_two,
-  },
-  testimonials: {
-    eyebrow: testimonialsSection.eyebrow,
-    title: testimonialsSection.title,
-    subtitle: testimonialsSection.subtitle,
-    rating: testimonialsSection.rating,
-    reviews: testimonialsSection.reviews,
   },
 };
 
@@ -85,8 +81,7 @@ function deepMerge(base, patch) {
 
 export const LANDING_CMS_SECTIONS = [
   { id: "hero", label: "Hero banner" },
-  { id: "about", label: "About teaser" },
-  { id: "features", label: "Why choose us" },
-  { id: "testimonials", label: "Testimonials" },
-  { id: "cta", label: "Call to action" },
+  { id: "tours", label: "Featured tours" },
+  { id: "explore", label: "Explore links" },
+  { id: "cta", label: "Final call to action" },
 ];

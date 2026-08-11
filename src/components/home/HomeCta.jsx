@@ -1,28 +1,12 @@
 import { Link } from "react-router";
 import { motion } from "motion/react";
-import {
-  ArrowRight,
-  ArrowUpRight,
-  Car,
-  Mail,
-  Map,
-  MapPin,
-  Phone,
-  Route,
-} from "lucide-react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 import Container from "../layout/Container";
-import { images } from "../../config/images";
-import env, { getContactPhoneTelHref, getWhatsAppUrl } from "../../config/env";
+import { getWhatsAppUrl } from "../../config/env";
 import { homeCtaSection } from "../../data/homeContent";
+import { ROUTES } from "../../constants/routes";
 
 const EASE = [0.16, 1, 0.3, 1];
-
-const highlightIcons = {
-  map: Map,
-  car: Car,
-  route: Route,
-  sparkles: Route,
-};
 
 function WhatsAppIcon({ className = "h-4 w-4" }) {
   return (
@@ -34,133 +18,51 @@ function WhatsAppIcon({ className = "h-4 w-4" }) {
 
 export default function HomeCta({ cmsOverride }) {
   const content = { ...homeCtaSection, ...cmsOverride };
-  const primaryCta = { label: cmsOverride?.primaryCtaLabel || homeCtaSection.primaryCta.label, to: homeCtaSection.primaryCta.to };
-  const secondaryCta = { label: cmsOverride?.secondaryCtaLabel || homeCtaSection.secondaryCta.label, to: homeCtaSection.secondaryCta.to };
+  const primaryCta = {
+    label: cmsOverride?.primaryCtaLabel || homeCtaSection.primaryCta.label,
+    to: homeCtaSection.primaryCta.to,
+  };
+  const secondaryCta = {
+    label: cmsOverride?.secondaryCtaLabel || "View all tours",
+    to: ROUTES.tours,
+  };
   const whatsappMessage = cmsOverride?.whatsappMessage || homeCtaSection.whatsappMessage;
-  const ctaImage =
-    content.image ||
-    images.destinations?.popular?.[content.imageKey || homeCtaSection.imageKey] ||
-    images.home.hero_two;
 
   return (
-    <section className="relative overflow-hidden bg-brand-cream pb-16 pt-4 sm:pb-20 lg:pb-24">
-      <div aria-hidden className="pointer-events-none absolute -right-32 top-0 h-80 w-80 rounded-full bg-brand-accent/15 blur-3xl" />
-
-      <Container className="relative">
+    <section className="bg-brand-primary py-14 sm:py-16">
+      <Container>
         <motion.div
-          initial={{ opacity: 0, y: 28 }}
+          initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.75, ease: EASE }}
-          className="overflow-hidden rounded-3xl border border-brand-border/50 bg-white shadow-[0_32px_100px_-32px_rgba(21,67,96,0.22)]"
+          transition={{ duration: 0.55, ease: EASE }}
+          className="mx-auto max-w-3xl text-center"
         >
-          <div className="grid lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:items-start">
-            {/* Visual panel */}
-            <div className="relative flex flex-col bg-[#f4f7fa] p-5 sm:p-6 lg:p-8">
-              <div
-                aria-hidden
-                className="pointer-events-none absolute inset-0 opacity-[0.35]"
-                style={{
-                  backgroundImage:
-                    "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='1' fill='%23154360' fill-opacity='0.08'/%3E%3C/svg%3E\")",
-                  backgroundSize: "32px 32px",
-                }}
-              />
+          <p className="text-xs font-bold uppercase tracking-[0.14em] text-brand-accent">{content.eyebrow}</p>
+          <h2 className="mt-3 text-2xl font-bold text-white sm:text-3xl">{content.title}</h2>
+          <p className="mt-3 text-sm leading-relaxed text-white/75 sm:text-base">{content.subtitle}</p>
 
-              <div className="relative">
-                <span className="inline-flex items-center gap-2 rounded-full bg-brand-accent/35 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-brand-primary">
-                  <MapPin className="h-3.5 w-3.5" aria-hidden />
-                  Ghana awaits
-                </span>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {homeCtaSection.destinationChips.map((chip) => (
-                    <span
-                      key={chip}
-                      className="rounded-full border border-brand-border/60 bg-white px-3 py-1 text-xs font-semibold text-brand-primary"
-                    >
-                      {chip}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <div className="relative mt-6 sm:mt-7">
-                <div className="absolute -inset-3 rounded-[1.75rem] bg-gradient-to-br from-brand-accent/45 via-brand-accent/10 to-brand-primary/10 sm:-inset-4" aria-hidden />
-                <div className="relative overflow-hidden rounded-2xl border border-brand-border/40 bg-white shadow-[0_24px_64px_-28px_rgba(21,67,96,0.35)]">
-                  <img src={ctaImage} alt="Explore Ghana with 360 Tours" className="block h-auto w-full" />
-                </div>
-                <div className="absolute -bottom-3 -right-2 rounded-2xl border border-brand-border/60 bg-white px-4 py-3 shadow-lg sm:-right-4">
-                  <p className="text-lg font-bold text-brand-primary">360</p>
-                  <p className="text-[11px] font-semibold text-brand-muted">Tours · Stay · Transport</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Copy & actions */}
-            <div className="flex flex-col p-6 sm:p-8 lg:p-10">
-              <span className="inline-flex w-fit rounded-full bg-brand-accent/25 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.14em] text-brand-primary">
-                  {content.eyebrow}
-              </span>
-              <h2 className="mt-4 text-3xl font-bold text-brand-primary sm:text-4xl">{content.title}</h2>
-              <p className="mt-4 text-base leading-relaxed text-brand-muted">{content.subtitle}</p>
-
-              <ul className="mt-8 space-y-3">
-                {homeCtaSection.highlights.map((item) => {
-                  const Icon = highlightIcons[item.icon] ?? Map;
-                  return (
-                    <li
-                      key={item.label}
-                      className="flex items-start gap-3 rounded-2xl border border-brand-border/50 bg-brand-cream/50 px-4 py-3"
-                    >
-                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-accent/30 text-brand-primary">
-                        <Icon className="h-5 w-5" strokeWidth={1.75} aria-hidden />
-                      </span>
-                      <span>
-                        <p className="text-sm font-bold text-brand-primary">{item.label}</p>
-                        <p className="text-xs text-brand-muted">{item.description}</p>
-                      </span>
-                    </li>
-                  );
-                })}
-              </ul>
-
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                <Link to={primaryCta.to} className="btn-primary gap-2 px-6 py-3.5">
-                  {primaryCta.label}
-                  <ArrowRight className="h-4 w-4" aria-hidden />
-                </Link>
-                <Link to={secondaryCta.to} className="btn-secondary gap-2 px-6 py-3.5">
-                  {secondaryCta.label}
-                  <ArrowUpRight className="h-4 w-4" aria-hidden />
-                </Link>
-                <a
-                  href={getWhatsAppUrl(whatsappMessage)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-accent gap-2 px-6 py-3.5"
-                >
-                  <WhatsAppIcon />
-                  Chat on WhatsApp
-                </a>
-              </div>
-
-              <div className="mt-auto flex flex-col gap-3 border-t border-brand-border/50 pt-6 sm:flex-row sm:flex-wrap sm:items-center sm:gap-6">
-                <a
-                  href={`mailto:${env.contactEmail}`}
-                  className="inline-flex items-center gap-2 text-sm font-medium text-brand-muted transition-colors hover:text-brand-primary"
-                >
-                  <Mail className="h-4 w-4 shrink-0" aria-hidden />
-                  {env.contactEmail}
-                </a>
-                <a
-                  href={getContactPhoneTelHref()}
-                  className="inline-flex items-center gap-2 text-sm font-medium text-brand-muted transition-colors hover:text-brand-primary"
-                >
-                  <Phone className="h-4 w-4 shrink-0" aria-hidden />
-                  {env.contactPhone}
-                </a>
-              </div>
-            </div>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <Link to={primaryCta.to} className="btn-accent inline-flex items-center gap-2 px-6 py-3.5 text-sm font-semibold">
+              {primaryCta.label}
+              <ArrowRight className="h-4 w-4" aria-hidden />
+            </Link>
+            <Link
+              to={secondaryCta.to}
+              className="inline-flex items-center gap-2 rounded-xl border border-white/25 bg-white/10 px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-white/15"
+            >
+              {secondaryCta.label}
+              <ArrowUpRight className="h-4 w-4" aria-hidden />
+            </Link>
+            <a
+              href={getWhatsAppUrl(whatsappMessage)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-xl border border-white/25 bg-white/10 px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-white/15"
+            >
+              <WhatsAppIcon />
+              WhatsApp
+            </a>
           </div>
         </motion.div>
       </Container>
