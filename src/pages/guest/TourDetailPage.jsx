@@ -66,7 +66,7 @@ function SpotsBar({ spotsLeft, totalSpots }) {
   if (left <= 0) {
     return (
       <p className="mt-4 rounded-lg bg-brand-cream px-3 py-2 text-xs font-semibold text-brand-muted">
-        Fully booked on the next departure — contact us to join the waitlist.
+        Fully booked on the next departure, contact us to join the waitlist.
       </p>
     );
   }
@@ -121,7 +121,7 @@ function resolveTourDateRangeLabel(tour) {
 
   if (rangeDeparture) {
     if (rangeDeparture.dateLabel && rangeDeparture.endDateLabel) {
-      return `${rangeDeparture.dateLabel} – ${rangeDeparture.endDateLabel}`;
+      return `${rangeDeparture.dateLabel}, ${rangeDeparture.endDateLabel}`;
     }
     return formatDepartureRangeLabel(rangeDeparture.date, rangeDeparture.endDate);
   }
@@ -222,7 +222,7 @@ function TourIncludedSection({ items }) {
   return (
     <Section
       title="What's included in your price"
-      subtitle="These items are part of your booking — no extra charge for what's listed here."
+      subtitle="These items are part of your booking, no extra charge for what's listed here."
     >
       <div className="grid gap-x-10 gap-y-7 sm:grid-cols-2">
         {features.map((feature, index) => {

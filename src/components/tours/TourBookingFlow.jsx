@@ -228,8 +228,7 @@ export default function TourBookingFlow({ tour, open, onClose }) {
     setForm((f) => {
       const extra = Math.max(0, travelers - 1);
       const list = Array.from({ length: extra }, (_, i) => ({
-        ...EMPTY_TRAVELER,
-        ...f.travelers[i],
+        ...EMPTY_TRAVELER, ...f.travelers[i],
       }));
       return { ...f, travelers: list };
     });
@@ -451,7 +450,7 @@ export default function TourBookingFlow({ tour, open, onClose }) {
                   </div>
                   {travelers > 1 && (
                     <p className="mt-3 text-xs text-brand-muted">
-                      Paying for {travelers} people — total {formatCurrency(subtotal, currency)}
+                      Paying for {travelers} people, total {formatCurrency(subtotal, currency)}
                     </p>
                   )}
                 </div>
@@ -460,7 +459,7 @@ export default function TourBookingFlow({ tour, open, onClose }) {
 
             {step === "details" && (
               <motion.div key="details" initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -16 }} transition={{ duration: 0.3, ease: EASE }} className="space-y-4">
-                <p className="text-sm text-brand-muted">Lead traveler — we&apos;ll send your confirmation here.</p>
+                <p className="text-sm text-brand-muted">Lead traveler, we&apos;ll send your confirmation here.</p>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <Field label="First name" id="firstName" required placeholder="Jane" value={form.firstName} onChange={updateForm("firstName")} />
                   <Field label="Last name" id="lastName" required placeholder="Doe" value={form.lastName} onChange={updateForm("lastName")} />
@@ -602,7 +601,7 @@ export default function TourBookingFlow({ tour, open, onClose }) {
                     <div>
                       <p className="text-sm font-bold text-brand-ink">Secure payment checkout</p>
                       <p className="mt-1 text-xs leading-relaxed text-brand-muted">
-                        You&apos;ll be redirected to our secure payment partner to complete your {payType === "deposit" ? "deposit" : "payment"} of {formatCurrency(payNowAmount, currency)}. Card details are handled entirely by the gateway — we never store them.
+                        You&apos;ll be redirected to our secure payment partner to complete your {payType === "deposit" ? "deposit" : "payment"} of {formatCurrency(payNowAmount, currency)}. Card details are handled entirely by the gateway, we never store them.
                       </p>
                     </div>
                   </div>
@@ -620,7 +619,7 @@ export default function TourBookingFlow({ tour, open, onClose }) {
                     </>
                   ) : (
                     <>
-                      Continue to secure checkout — {formatCurrency(payNowAmount, currency)}
+                      Continue to secure checkout, {formatCurrency(payNowAmount, currency)}
                       <ArrowRight className="h-4 w-4" strokeWidth={2.2} aria-hidden />
                     </>
                   )}
@@ -661,7 +660,7 @@ export default function TourBookingFlow({ tour, open, onClose }) {
 
                 <ul className="space-y-2 text-xs text-brand-muted">
                   <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 shrink-0 text-brand-green" strokeWidth={2.5} aria-hidden /> Confirmation email sent immediately</li>
-                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 shrink-0 text-brand-green" strokeWidth={2.5} aria-hidden /> Flexible — pay deposit or full amount later</li>
+                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 shrink-0 text-brand-green" strokeWidth={2.5} aria-hidden /> Flexible, pay deposit or full amount later</li>
                   <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 shrink-0 text-brand-green" strokeWidth={2.5} aria-hidden /> Spots released if deposit not received in time</li>
                 </ul>
 
@@ -670,7 +669,7 @@ export default function TourBookingFlow({ tour, open, onClose }) {
                   disabled={processing}
                   className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-accent py-3.5 text-sm font-semibold text-brand-primary shadow-lg transition-all hover:bg-brand-accent-dark disabled:opacity-70"
                 >
-                  {processing ? "Reserving…" : "Reserve my spots — pay later"}
+                  {processing ? "Reserving…" : "Reserve my spots, pay later"}
                 </button>
               </motion.form>
             )}

@@ -213,7 +213,7 @@ function CompactStatusCard({ phase, isSuccess, bookingRef, errorMessage, childre
               {phase === "loading"
                 ? "Confirming your payment…"
                 : isSuccess
-                  ? "Thank you — you're all set!"
+                  ? "Thank you, you're all set!"
                   : phase === "missing"
                     ? "Missing booking reference"
                     : "Payment could not be verified"}
@@ -362,7 +362,7 @@ export default function PaymentSuccessPage() {
                 Payment verified
               </p>
               <p role="heading" aria-level={1} className="relative mt-2 font-heading text-2xl font-bold text-white sm:text-3xl">
-                Thank you — you&apos;re all set!
+                Thank you, you&apos;re all set!
               </p>
               <p className="relative mt-3 max-w-md text-sm leading-relaxed text-white/80">
                 Your payment is confirmed and your booking is secured. View your receipt anytime.

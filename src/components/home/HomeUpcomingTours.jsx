@@ -225,7 +225,7 @@ function PopularToursEmpty() {
   return (
     <div className="mt-10 rounded-2xl border border-brand-border bg-brand-cream/60 px-6 py-10 text-center">
       <p className="text-sm text-brand-muted">
-        No departures are listed right now — browse all tours to find your next trip.
+        No departures are listed right now, browse all tours to find your next trip.
       </p>
       <Link to={ROUTES.tours} className="btn-primary mt-5 inline-flex px-6 py-2.5 text-sm">
         Browse all tours
@@ -274,7 +274,7 @@ export default function HomeUpcomingTours() {
               Popular upcoming tours
             </h2>
             <p className="mt-3 text-base leading-relaxed text-brand-muted">
-              Hand-picked departures with live availability — reserve early to secure your spot on
+              Hand-picked departures with live availability, reserve early to secure your spot on
               these in-demand journeys.
             </p>
           </motion.div>

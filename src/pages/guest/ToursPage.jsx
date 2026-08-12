@@ -60,7 +60,7 @@ function SpotsBar({ spotsLeft, totalSpots }) {
 
   if (left <= 0) {
     return (
-      <p className="mt-3 text-[11px] font-semibold text-brand-muted">Fully booked — join the waitlist on the tour page</p>
+      <p className="mt-3 text-[11px] font-semibold text-brand-muted">Fully booked, join the waitlist on the tour page</p>
     );
   }
 

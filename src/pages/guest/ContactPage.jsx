@@ -257,7 +257,7 @@ export default function ContactPage() {
                   <h2 className="text-lg font-bold text-brand-ink">Send us a message</h2>
                   <p className="mt-0.5 text-sm text-brand-muted">
                     We&apos;ll get back to you within one business day.
-                    {isAuthenticated ? " Your account details are pre-filled — edit them if needed." : ""}
+                    {isAuthenticated ? " Your account details are pre-filled, edit them if needed." : ""}
                   </p>
                 </div>
 
@@ -432,7 +432,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <p className="text-sm font-bold text-brand-green">We respond within 24 hours</p>
-                  <p className="text-xs text-brand-muted">Mon–Fri · 9am – 6pm EST &amp; GMT</p>
+                  <p className="text-xs text-brand-muted">Mon, Fri · 9am, 6pm EST &amp; GMT</p>
                 </div>
               </motion.div>
             </div>

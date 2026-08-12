@@ -6,7 +6,7 @@ function ReceiptField({ label, value, mono = false, className = "" }) {
     <div className={className}>
       <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-brand-muted">{label}</p>
       <p className={`mt-0.5 text-sm font-semibold text-brand-ink ${mono ? "font-mono text-xs tracking-wide" : ""}`}>
-        {value || "—"}
+        {value || "Not set"}
       </p>
     </div>
   );

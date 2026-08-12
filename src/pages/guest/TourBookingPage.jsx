@@ -454,7 +454,7 @@ export default function TourBookingPage() {
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease: EASE }}>
             <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brand-orange">Secure booking</p>
             <h1 className="mt-1.5 text-2xl font-bold text-brand-ink sm:text-3xl">Book your tour</h1>
-            <p className="mt-1 text-sm text-brand-muted">Complete the steps below — takes about 3 minutes.</p>
+            <p className="mt-1 text-sm text-brand-muted">Complete the steps below, takes about 3 minutes.</p>
           </motion.div>
 
           <div ref={formTopRef} className="mt-8 scroll-mt-28 rounded-[1.75rem] border border-brand-border/50 bg-white p-5 shadow-sm sm:p-6">
@@ -496,7 +496,7 @@ export default function TourBookingPage() {
                       <input id="phone" type="tel" value={form.phone} onChange={(e) => update("phone", e.target.value)} onBlur={() => touch("phone")} className={inputClass(showError("phone"))} placeholder="+233 24 123 4567" autoComplete="tel" />
                     </FormField>
 
-                    <FormField label="Nationality" id="nationality" hint="Optional — helps us prepare visa guidance">
+                    <FormField label="Nationality" id="nationality" hint="Optional, helps us prepare visa guidance">
                       <input id="nationality" value={form.nationality} onChange={(e) => update("nationality", e.target.value)} className={inputClass("")} placeholder="Ghanaian, American, British…" />
                     </FormField>
 
@@ -619,7 +619,7 @@ export default function TourBookingPage() {
                           <input id="organization" value={form.organization} onChange={(e) => update("organization", e.target.value)} className={inputClass("")} placeholder="University of Lincoln, ABC Corp…" />
                         </FormField>
 
-                        <FormField label="Number of travelers" id="travelers" required error={showError("travelers")} hint="Large groups welcome — we'll confirm capacity for your departure">
+                        <FormField label="Number of travelers" id="travelers" required error={showError("travelers")} hint="Large groups welcome, we'll confirm capacity for your departure">
                           <div className="flex flex-wrap items-center gap-3">
                             <button
                               type="button"
@@ -687,7 +687,7 @@ export default function TourBookingPage() {
                       {showError("selectedDate") && <p className="mt-2 text-[11px] font-medium text-red-500">{errors.selectedDate}</p>}
                     </div>
 
-                    <FormField label="Dietary or accessibility needs" id="dietaryNeeds" hint="Optional — vegetarian, halal, mobility support, etc.">
+                    <FormField label="Dietary or accessibility needs" id="dietaryNeeds" hint="Optional, vegetarian, halal, mobility support, etc.">
                       <textarea
                         id="dietaryNeeds"
                         rows={2}
@@ -749,7 +749,7 @@ export default function TourBookingPage() {
                       </div>
                       <div className="flex-1">
                         <p className="font-bold text-brand-ink group-hover:text-brand-green">Pay online</p>
-                        <p className="mt-1 text-xs leading-relaxed text-brand-muted">Redirect to our secure payment gateway — card details handled entirely off-site.</p>
+                        <p className="mt-1 text-xs leading-relaxed text-brand-muted">Redirect to our secure payment gateway, card details handled entirely off-site.</p>
                         <p className="mt-2 text-sm font-bold text-brand-green">{formatBookingCurrency(subtotal, chargeCurrency)}</p>
                       </div>
                       <svg className="mt-1 h-5 w-5 shrink-0 text-brand-muted group-hover:text-brand-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden><path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" /></svg>
@@ -897,7 +897,7 @@ export default function TourBookingPage() {
 
                     <div className="rounded-xl border border-brand-border/60 bg-brand-cream/50 p-4 text-sm space-y-2">
                       <div className="flex justify-between"><span className="text-brand-muted">Tour total</span><span className="font-bold text-brand-ink">{formatBookingCurrency(subtotal, tour.priceCurrency)}</span></div>
-                      <div className="flex justify-between"><span className="text-brand-muted">Due today</span><span className="font-bold text-brand-orange">{formatBookingCurrency(0, tour.priceCurrency)} — pay on site</span></div>
+                      <div className="flex justify-between"><span className="text-brand-muted">Due today</span><span className="font-bold text-brand-orange">{formatBookingCurrency(0, tour.priceCurrency)}, pay on site</span></div>
                     </div>
 
                     <div className="flex justify-between pt-2">

@@ -372,8 +372,8 @@ export default function MyBookingsPage() {
                     <p className="mt-0.5 text-sm text-brand-muted">
                       Reference <span className="font-mono font-semibold text-brand-green">{welcomeRef}</span>
                       {welcomeHasReceipt
-                        ? " — your receipt is ready. Present it on arrival."
-                        : " — complete payment to download your receipt."}
+                        ? ", your receipt is ready. Present it on arrival."
+                        : ", complete payment to download your receipt."}
                     </p>
                   </div>
                 </div>
@@ -430,7 +430,7 @@ export default function MyBookingsPage() {
             {filtered.length === 1 ? " booking" : " bookings"}
             {filter !== "all" && <> · {FILTERS.find((f) => f.id === filter)?.label}</>}
             {paginationMeta.totalItems > 0 && filter === "all" && !search.trim() ? (
-              <> · {paginationMeta.rangeStart}–{paginationMeta.rangeEnd} of {paginationMeta.totalItems}</>
+              <> · {paginationMeta.rangeStart} to {paginationMeta.rangeEnd} of {paginationMeta.totalItems}</>
             ) : null}
           </p>
 

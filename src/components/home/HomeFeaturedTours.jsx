@@ -136,7 +136,7 @@ export default function HomeFeaturedTours({ cmsOverride }) {
 
         {!isLoading && !isError && featured.length === 0 ? (
           <div className="mt-8 rounded-2xl border border-dashed border-brand-border/70 bg-white px-6 py-12 text-center">
-            <p className="text-sm text-brand-muted">No tours listed yet — browse all listings when they are published.</p>
+            <p className="text-sm text-brand-muted">No tours listed yet, browse all listings when they are published.</p>
             <Link to={ROUTES.tours} className="btn-primary mt-4 inline-flex px-6 py-2.5 text-sm">
               {section.viewAllLabel}
             </Link>

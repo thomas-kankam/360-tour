@@ -66,7 +66,7 @@ const BOOKING_TYPE_OPTIONS = [
   {
     id: "group",
     label: "Group",
-    desc: "Others are joining — universities, families, or teams",
+    desc: "Others are joining, universities, families, or teams",
     Icon: Users,
   },
 ];
@@ -143,7 +143,7 @@ function BookingSummary({ tour, form, subtotal, bookingRef, initialSubtotal, cur
         </div>
         <div className="flex justify-between gap-2">
           <span className="text-brand-muted">Departure</span>
-          <span className="text-right font-semibold text-brand-ink">{departure?.dateLabel || form.selectedDate || "—"}</span>
+          <span className="text-right font-semibold text-brand-ink">{departure?.dateLabel || form.selectedDate || "Not set"}</span>
         </div>
         <div className="flex justify-between">
           <span className="text-brand-muted">Travelers</span>
@@ -370,7 +370,7 @@ export default function MyBookingEditPage() {
       });
 
       if (redirected) {
-        toast.success("Booking updated — redirecting to checkout…");
+        toast.success("Booking updated, redirecting to checkout…");
         return;
       }
       return;
@@ -448,7 +448,7 @@ export default function MyBookingEditPage() {
                   <div>
                     <h2 className="text-lg font-bold text-brand-ink">Trip details</h2>
                     <p className="mt-1 text-sm text-brand-muted">
-                      Switch to a group booking if others are joining — your total updates automatically.
+                      Switch to a group booking if others are joining, your total updates automatically.
                     </p>
                   </div>
 
@@ -525,7 +525,7 @@ export default function MyBookingEditPage() {
                           <button type="button" onClick={() => update("travelers", clampGroupTravelers(form.travelers + 1, tour))} className="flex h-10 w-10 items-center justify-center rounded-xl border border-brand-border bg-white text-brand-ink hover:border-brand-green/40">
                             <Plus className="h-4 w-4" strokeWidth={2} aria-hidden />
                           </button>
-                          <span className="text-xs text-brand-muted">{groupLimits.min}–{groupLimits.max} travelers</span>
+                          <span className="text-xs text-brand-muted">{groupLimits.min} to {groupLimits.max} travelers</span>
                         </div>
                         <p className="mt-2 text-[11px] text-brand-muted">
                           {formatBookingCurrency(resolveTourUnitPrice(tour), tour.priceCurrency)} × {travelerCount} ={" "}
@@ -533,7 +533,7 @@ export default function MyBookingEditPage() {
                         </p>
                       </Field>
                       <Field label="Organisation" id="organization">
-                        <input id="organization" value={form.organization} onChange={(e) => update("organization", e.target.value)} className={inputClass("")} placeholder="Optional — school or company name" />
+                        <input id="organization" value={form.organization} onChange={(e) => update("organization", e.target.value)} className={inputClass("")} placeholder="Optional, school or company name" />
                       </Field>
                     </>
                   ) : (
@@ -636,7 +636,7 @@ export default function MyBookingEditPage() {
                       </div>
                       <div className="flex-1">
                         <p className="font-bold text-brand-ink group-hover:text-brand-green">Pay online now</p>
-                        <p className="mt-1 text-xs text-brand-muted">Redirect to Paystack — instant confirmation and receipt.</p>
+                        <p className="mt-1 text-xs text-brand-muted">Redirect to Paystack, instant confirmation and receipt.</p>
                         <p className="mt-2 text-sm font-bold text-brand-green">{formatBookingCurrency(subtotal, chargeCurrency)}</p>
                       </div>
                     </button>
@@ -654,7 +654,7 @@ export default function MyBookingEditPage() {
                       </div>
                       <div className="flex-1">
                         <p className="font-bold text-brand-ink group-hover:text-brand-orange">Keep pay on site</p>
-                        <p className="mt-1 text-xs text-brand-muted">No payment today — pay at check-in or our Accra office.</p>
+                        <p className="mt-1 text-xs text-brand-muted">No payment today, pay at check-in or our Accra office.</p>
                         <p className="mt-2 text-sm font-bold text-brand-orange">Due on arrival</p>
                       </div>
                     </button>

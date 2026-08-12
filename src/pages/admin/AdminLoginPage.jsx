@@ -8,6 +8,7 @@ import LoginContactTabs, { getLoginContactValue, validateLoginContact } from "..
 import adminAuthServiceApi from "../../apis/AdminAuthServiceApi";
 import { normalizeEmailOrPhoneForApi } from "../../utils/phoneUtils";
 import { images } from "../../config/images";
+import AuthPanelBackground from "../../components/auth/AuthPanelBackground";
 import { ROUTES } from "../../constants/routes";
 import { getHomeRouteForRole, isAdminRole, USER_ROLES } from "../../constants/roles";
 import { useAuth } from "../../hooks/useAuth";
@@ -159,7 +160,7 @@ export default function AdminLoginPage() {
   return (
     <main className="flex h-screen min-h-0 overflow-hidden bg-brand-ink">
       <section className="relative hidden w-[46%] overflow-hidden lg:block">
-        <img src={images.home.ghana} alt="" className="absolute inset-0 h-full w-full object-cover opacity-45" />
+        <AuthPanelBackground variant="admin" className="opacity-45" />
         <div className="absolute inset-0 bg-gradient-to-br from-brand-ink via-brand-green/80 to-brand-ink" />
         <div className="relative z-10 flex h-full flex-col justify-between p-10 xl:p-14">
           <Link to={ROUTES.home} className="inline-flex text-sm font-semibold text-white/70 hover:text-white">

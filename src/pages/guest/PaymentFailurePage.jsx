@@ -64,7 +64,7 @@ export default function PaymentFailurePage() {
             Payment was unsuccessful
           </p>
           <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-white/80">
-            {reason || "Your payment could not be processed. Your booking is still reserved — you can try again."}
+            {reason || "Your payment could not be processed. Your booking is still reserved, you can try again."}
           </p>
         </div>
 

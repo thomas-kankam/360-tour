@@ -35,7 +35,7 @@ const EXPERIENCES = [
     icon: "🏛️",
     tagline: "Walk the corridors of African history",
     description:
-      "From the slave dungeons of Cape Coast Castle to the Ashanti Manhyia Palace and Soweto's Apartheid Museum — these are journeys that transform understanding. History felt, not just heard.",
+      "From the slave dungeons of Cape Coast Castle to the Ashanti Manhyia Palace and Soweto's Apartheid Museum, these are journeys that transform understanding. History felt, not just heard.",
     highlights: ["Cape Coast Castle", "Manhyia Palace, Kumasi", "Apartheid Museum, Joburg", "Elmina & Elmina Castle"],
     countries: ["Ghana", "South Africa"],
     image: images.home.destinations.ghana,
@@ -49,7 +49,7 @@ const EXPERIENCES = [
     icon: "🎭",
     tagline: "Live it, don't just observe it",
     description:
-      "Kente weaving workshops in Bonwire, Maasai beadwork and ceremonies, Cape Town's Bo-Kaap neighbourhood walking tours. Our cultural experiences are participatory, not performative.",
+      "Kente weaving workshops in Bonwire, Maasai beadwork and ceremonies, Cape Town's Bo Kaap neighbourhood walking tours. Our cultural experiences are participatory, not performative.",
     highlights: ["Kente weaving, Bonwire", "Maasai village stays", "Ghanaian drumming sessions", "Cape Malay cooking class"],
     countries: ["Ghana", "Kenya", "South Africa"],
     image: images.home.ghana,
@@ -77,7 +77,7 @@ const EXPERIENCES = [
     icon: "🌊",
     tagline: "Where the Indian Ocean meets culture",
     description:
-      "Diani Beach, Mombasa's Old Town, and the Garden Route coastline — AfriQuest pairs beach relaxation with authentic local encounters so every day feels earned.",
+      "Diani Beach, Mombasa's Old Town, and the Garden Route coastline, AfriQuest pairs beach relaxation with authentic local encounters so every day feels earned.",
     highlights: ["Diani Beach, Kenya", "Mombasa Old Town", "Knysna Lagoon, SA", "Labadi Beach, Accra"],
     countries: ["Kenya", "South Africa", "Ghana"],
     image: images.home.destinations.kenya,
@@ -91,8 +91,8 @@ const EXPERIENCES = [
     icon: "🎓",
     tagline: "Study Africa, not just visit it",
     description:
-      "Structured academic itineraries built around your institution's curriculum — history, anthropology, public health, business, and development. We handle logistics; you focus on learning.",
-    highlights: ["Curriculum-aligned itineraries", "Faculty co-design", "Guest lectures by locals", "Safe group logistics"],
+      "Structured academic itineraries built around your institution's curriculum, history, anthropology, public health, business, and development. We handle logistics; you focus on learning.",
+    highlights: ["Curriculum-aligned itineraries", "Faculty co design", "Guest lectures by locals", "Safe group logistics"],
     countries: ["Ghana", "Kenya", "South Africa"],
     image: images.home.destinations.southAfrica,
     accent: "from-violet-900/80",
@@ -259,7 +259,7 @@ export default function ExperiencesPage() {
               <span className="text-brand-gold"> done right</span>
             </h1>
             <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-white/80 sm:text-lg">
-              From big-five safaris to university study tours — we specialize in eight distinct experience types, all delivered with the same depth of cultural knowledge and logistical precision.
+              From big-five safaris to university study tours, we specialize in eight distinct experience types, all delivered with the same depth of cultural knowledge and logistical precision.
             </p>
           </motion.div>
 
@@ -364,7 +364,7 @@ export default function ExperiencesPage() {
           <motion.div {...rise()}>
             <h2 className="text-2xl font-bold text-white sm:text-3xl">Not sure which experience is right for you?</h2>
             <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-white/80">
-              Chat with our team — we&apos;ll match you to the perfect journey in minutes.
+              Chat with our team, we&apos;ll match you to the perfect journey in minutes.
             </p>
             <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Link to={ROUTES.contact} className="inline-flex items-center gap-2 rounded-xl bg-white px-7 py-3 text-sm font-semibold text-brand-green shadow-lg hover:bg-brand-cream">

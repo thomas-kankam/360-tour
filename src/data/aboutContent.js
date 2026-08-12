@@ -15,7 +15,7 @@ export const aboutPageHero = {
   titleLine: "Discover Africa.",
   titleHighlight: "Travel Without Limits.",
   description:
-    "Welcome to 360 Tours and Investment Limited — where unforgettable travel experiences begin. We create exciting, safe, and seamless journeys across Ghana and beyond, with guided tours, comfortable stays, and reliable transport under one roof.",
+    "Welcome to 360 Tours and Investment Limited, where unforgettable travel experiences begin. We create exciting, safe, and seamless journeys across Ghana and beyond, with guided tours, comfortable stays, and reliable transport under one roof.",
   tagline: "Explore More. Travel Better. Experience Africa with 360 Tours.",
   services: [
     { label: "Guided Tours", icon: "compass" },
@@ -31,7 +31,7 @@ export const homeAboutTeaser = {
   tagline: company.tagline,
   subtitle: company.subtitle,
   summary:
-    "360 Tours and Investment Limited is a registered travel and tourism company dedicated to showcasing the very best of Ghana and Africa — through authentic tours, comfortable accommodation, and reliable transportation.",
+    "360 Tours and Investment Limited is a registered travel and tourism company dedicated to showcasing the very best of Ghana and Africa, through authentic tours, comfortable accommodation, and reliable transportation.",
   extended:
     "From Accra to Cape Coast, Akosombo to the Volta Region, we help travelers discover Africa from a local perspective with personalized, safe, and memorable experiences.",
   highlights: [
@@ -230,7 +230,7 @@ export const whyUsPage = {
   eyebrow: "Why Choose Us",
   title: "Why Travel With 360 Tours?",
   subtitle:
-    "From airport pickup to your last day of touring — we handle every detail so you can focus on the experience.",
+    "From airport pickup to your last day of touring, we handle every detail so you can focus on the experience.",
   intro:
     "360 Tours and Investment Limited is built on professionalism, local knowledge, and a genuine passion for showcasing Ghana. Here's what sets us apart.",
   reasons: [
@@ -255,7 +255,7 @@ export const whyUsPage = {
     {
       title: "Competitive pricing",
       description:
-        "Affordable, transparent rates with excellent value — no hidden costs, just honest pricing you can trust.",
+        "Affordable, transparent rates with excellent value, no hidden costs, just honest pricing you can trust.",
       icon: "badge",
     },
     {
@@ -273,13 +273,13 @@ export const whyUsPage = {
     {
       title: "Exceptional support",
       description:
-        "Responsive customer service before, during, and after your trip — via phone, email, or WhatsApp.",
+        "Responsive customer service before, during, and after your trip, via phone, email, or WhatsApp.",
       icon: "headphones",
     },
     {
       title: "Authentic local experiences",
       description:
-        "Go beyond sightseeing — connect with communities, taste local cuisine, and experience Ghana from a local perspective.",
+        "Go beyond sightseeing, connect with communities, taste local cuisine, and experience Ghana from a local perspective.",
       icon: "heart",
     },
   ],
@@ -291,7 +291,7 @@ export const whyUsPage = {
   ],
   cta: {
     title: "Ready to explore Ghana?",
-    subtitle: "Let our team plan your next unforgettable journey — from first enquiry to final transfer.",
+    subtitle: "Let our team plan your next unforgettable journey, from first enquiry to final transfer.",
     primary: { label: "Browse tours", to: ROUTES.tours },
     secondary: { label: "Contact us", to: ROUTES.contact },
   },

@@ -4,7 +4,7 @@ import { brand, signatureTours2025 } from "./brandContent";
 export const stories = [
   {
     slug: "cultural-immersion-newsletter-issue-01",
-    title: "Cultural Immersion Newsletter — Issue 01: Connecting Africa to the World",
+    title: "Cultural Immersion Newsletter, Issue 01: Connecting Africa to the World",
     excerpt:
       "Welcome to AfriQuest Global's inaugural Cultural Immersion Newsletter. Discover our 2025 African Cultural Travel Series and join a community of travelers, explorers, and cultural ambassadors.",
     category: "Newsletter",
@@ -50,7 +50,7 @@ export const stories = [
       },
       {
         type: "paragraph",
-        text: "Whether you're a university planning a global exchange, a company seeking an adventure retreat, or an individual ready to discover Africa's heartbeat — AfriQuest is your trusted partner.",
+        text: "Whether you're a university planning a global exchange, a company seeking an adventure retreat, or an individual ready to discover Africa's heartbeat, AfriQuest is your trusted partner.",
       },
       {
         type: "quote",
@@ -82,7 +82,7 @@ export const stories = [
       },
       {
         type: "paragraph",
-        text: "Become part of the AfriQuest Global community of travelers, explorers, and cultural ambassadors. Follow our stories, join our programs, and let's explore Africa together — one journey at a time.",
+        text: "Become part of the AfriQuest Global community of travelers, explorers, and cultural ambassadors. Follow our stories, join our programs, and let's explore Africa together, one journey at a time.",
       },
     ],
   },
@@ -90,7 +90,7 @@ export const stories = [
     slug: "cape-coast-castle-reflection",
     title: "Standing Inside Cape Coast Castle: A Reflection on Memory and Healing",
     excerpt:
-      "Our group of 22 students stood in the dungeons of Cape Coast Castle — a silence fell that no guide's words could fill. This is what happened next.",
+      "Our group of 22 students stood in the dungeons of Cape Coast Castle, a silence fell that no guide's words could fill. This is what happened next.",
     category: "Heritage",
     country: "Ghana",
     author: "Dr. Amara Williams",
@@ -102,11 +102,11 @@ export const stories = [
     body: [
       {
         type: "paragraph",
-        text: "Our group of 22 students stood in the dungeons of Cape Coast Castle — a silence fell that no guide's words could fill. The weight of history pressed against the stone walls, and for a moment, the Atlantic itself seemed to hold its breath.",
+        text: "Our group of 22 students stood in the dungeons of Cape Coast Castle, a silence fell that no guide's words could fill. The weight of history pressed against the stone walls, and for a moment, the Atlantic itself seemed to hold its breath.",
       },
       {
         type: "paragraph",
-        text: "AfriQuest's local guides didn't rush us through. They gave us space to feel, to reflect, and to connect with a past that shaped nations. That is what cultural immersion means — not observation, but presence.",
+        text: "AfriQuest's local guides didn't rush us through. They gave us space to feel, to reflect, and to connect with a past that shaped nations. That is what cultural immersion means, not observation, but presence.",
       },
     ],
   },
@@ -126,7 +126,7 @@ export const stories = [
     body: [
       {
         type: "paragraph",
-        text: "The alarm says 5:30am. You groan. Then the Land Cruiser crests a ridge and ten thousand wildebeest appear below you in the morning mist — and every complaint disappears.",
+        text: "The alarm says 5:30am. You groan. Then the Land Cruiser crests a ridge and ten thousand wildebeest appear below you in the morning mist, and every complaint disappears.",
       },
     ],
   },
@@ -146,7 +146,7 @@ export const stories = [
     body: [
       {
         type: "paragraph",
-        text: "Each pattern in Kente cloth carries a proverb, a lineage, a belief. Sitting at a loom in Bonwire with a master weaver, I learned that fabric can be a language — and Africa speaks fluently to those who listen.",
+        text: "Each pattern in Kente cloth carries a proverb, a lineage, a belief. Sitting at a loom in Bonwire with a master weaver, I learned that fabric can be a language, and Africa speaks fluently to those who listen.",
       },
     ],
   },
@@ -154,7 +154,7 @@ export const stories = [
     slug: "soweto-walking-tour-perspective",
     title: "Soweto on Foot: What No Bus Tour Can Show You",
     excerpt:
-      "Walking through Vilakazi Street — the only street in the world to have housed two Nobel Peace Prize winners — you feel the weight of courage underfoot.",
+      "Walking through Vilakazi Street, the only street in the world to have housed two Nobel Peace Prize winners, you feel the weight of courage underfoot.",
     category: "Heritage",
     country: "South Africa",
     author: "Nathan Reed",
@@ -166,7 +166,7 @@ export const stories = [
     body: [
       {
         type: "paragraph",
-        text: "Walking through Vilakazi Street — the only street in the world to have housed two Nobel Peace Prize winners — you feel the weight of courage underfoot. Soweto on foot is history made tangible.",
+        text: "Walking through Vilakazi Street, the only street in the world to have housed two Nobel Peace Prize winners, you feel the weight of courage underfoot. Soweto on foot is history made tangible.",
       },
     ],
   },
@@ -174,7 +174,7 @@ export const stories = [
     slug: "table-mountain-sunrise",
     title: "Table Mountain at Sunrise: Africa's Most Spectacular First Hour",
     excerpt:
-      "We started our hike at 4am — headlamps cutting the fynbos. By the time the sun rose over Cape Town, every breathless step made sense.",
+      "We started our hike at 4am, headlamps cutting the fynbos. By the time the sun rose over Cape Town, every breathless step made sense.",
     category: "Adventure",
     country: "South Africa",
     author: "Sarah Mitchell",
@@ -186,7 +186,7 @@ export const stories = [
     body: [
       {
         type: "paragraph",
-        text: "We started our hike at 4am — headlamps cutting the fynbos. By the time the sun rose over Cape Town, every breathless step made sense.",
+        text: "We started our hike at 4am, headlamps cutting the fynbos. By the time the sun rose over Cape Town, every breathless step made sense.",
       },
     ],
   },
@@ -194,7 +194,7 @@ export const stories = [
     slug: "accra-food-scene",
     title: "Eating Accra: A Guide to Ghana's Most Underrated Culinary Capital",
     excerpt:
-      "Jollof rice debates aside, Accra's food scene — from Labadi beach grills to the Oxford Street chop bars — is one of West Africa's best-kept secrets.",
+      "Jollof rice debates aside, Accra's food scene, from Labadi beach grills to the Oxford Street chop bars, is one of West Africa's best-kept secrets.",
     category: "Culture",
     country: "Ghana",
     author: "Emily Kariuki",
@@ -206,7 +206,7 @@ export const stories = [
     body: [
       {
         type: "paragraph",
-        text: "Jollof rice debates aside, Accra's food scene — from Labadi beach grills to the Oxford Street chop bars — is one of West Africa's best-kept secrets.",
+        text: "Jollof rice debates aside, Accra's food scene, from Labadi beach grills to the Oxford Street chop bars, is one of West Africa's best-kept secrets.",
       },
     ],
   },
@@ -234,7 +234,7 @@ export const stories = [
     slug: "corporate-retreat-kenya",
     title: "How a Kenya Retreat Reset Our Entire Leadership Team",
     excerpt:
-      "We came for the game drives. We left with a shared language, a deeper trust, and a clarity about what we were building — together.",
+      "We came for the game drives. We left with a shared language, a deeper trust, and a clarity about what we were building, together.",
     category: "Corporate",
     country: "Kenya",
     author: "Sarah Mitchell",
@@ -246,15 +246,15 @@ export const stories = [
     body: [
       {
         type: "paragraph",
-        text: "We came for the game drives. We left with a shared language, a deeper trust, and a clarity about what we were building — together.",
+        text: "We came for the game drives. We left with a shared language, a deeper trust, and a clarity about what we were building, together.",
       },
     ],
   },
   {
-    slug: "kruger-big-five",
+    slug: "kruger-big five",
     title: "The Big Five in 48 Hours: Is It Really Possible?",
     excerpt:
-      "Our Kruger guide laughed when we asked. Then, in two extraordinary days, we checked all five off the list — and understood why every single one matters.",
+      "Our Kruger guide laughed when we asked. Then, in two extraordinary days, we checked all five off the list, and understood why every single one matters.",
     category: "Safari",
     country: "South Africa",
     author: "Nathan Reed",
@@ -266,7 +266,7 @@ export const stories = [
     body: [
       {
         type: "paragraph",
-        text: "Our Kruger guide laughed when we asked. Then, in two extraordinary days, we checked all five off the list — and understood why every single one matters.",
+        text: "Our Kruger guide laughed when we asked. Then, in two extraordinary days, we checked all five off the list, and understood why every single one matters.",
       },
     ],
   },

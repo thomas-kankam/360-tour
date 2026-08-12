@@ -4,11 +4,11 @@ export const brand = {
   tagline: "Connecting Africa to the World through Travel, Culture, and Discovery",
   taglineShort: "Your Journey, Our Passion.",
   mission:
-    "To create journeys that go beyond sightseeing — journeys that transform lives, celebrate cultures, and tell Africa's story with pride.",
-  movementLine: "More than a travel agency — we are a movement that celebrates culture, discovery, and shared humanity.",
+    "To create journeys that go beyond sightseeing, journeys that transform lives, celebrate cultures, and tell Africa's story with pride.",
+  movementLine: "More than a travel agency, we are a movement that celebrates culture, discovery, and shared humanity.",
   transformationLine: "This is not just travel. It is a transformation.",
   feelAfricaLine:
-    "When you travel with AfriQuest, you don't just visit Africa — you feel Africa. You taste Africa. You live Africa.",
+    "When you travel with AfriQuest, you don't just visit Africa, you feel Africa. You taste Africa. You live Africa.",
   intro:
     "Welcome to AfriQuest Global Travel & Tour, a proud travel brand born from a passion to connect the world to Africa's heart and heritage. With over 10 years of experience, we combine local expertise with global standards to create meaningful experiences that leave a lifelong impact.",
   originStory:
@@ -16,7 +16,7 @@ export const brand = {
   launch2025:
     "AfriQuest Global is thrilled to announce the launch of our 2025 African Cultural Travel Series, bringing travelers closer to the soul of Africa. From Ghana's historic Cape Coast Castles, to Kenya's majestic safaris, and South Africa's vibrant cities, we are reimagining what it means to experience Africa authentically.",
   operations:
-    "With operations in Ghana, Kenya, South Africa, and the USA — and our global headquarters in Houston, Texas — we bridge continents and cultures, curating authentic experiences for travelers, students, and organizations worldwide.",
+    "With operations in Ghana, Kenya, South Africa, and the USA, and our global headquarters in Houston, Texas, we bridge continents and cultures, curating authentic experiences for travelers, students, and organizations worldwide.",
 };
 
 export const immersionExperiences = [
@@ -36,7 +36,7 @@ export const whyChooseAfriQuest = [
   {
     title: "Deep local connections",
     description:
-      "Trusted partnerships across Ghana, Kenya, and South Africa — rooted in communities, not just itineraries.",
+      "Trusted partnerships across Ghana, Kenya, and South Africa, rooted in communities, not just itineraries.",
   },
   {
     title: "Safe & curated packages",
@@ -46,7 +46,7 @@ export const whyChooseAfriQuest = [
   {
     title: "Seamless coordination",
     description:
-      "End-to-end logistics from arrival to departure — so you can focus on the experience, not the details.",
+      "End to end logistics from arrival to departure, so you can focus on the experience, not the details.",
   },
   {
     title: "Passionate team",
@@ -58,17 +58,17 @@ export const whyChooseAfriQuest = [
 export const signatureTours2025 = [
   {
     emoji: "🌴",
-    name: "Ghana – 10-Day Classic Heritage Tour",
+    name: "Ghana, 10 Day Classic Heritage Tour",
     slug: "ghana-heritage-classic",
   },
   {
     emoji: "🦒",
-    name: "Kenya – 9-Day Safari & Culture Expedition",
+    name: "Kenya, 9 Day Safari & Culture Expedition",
     slug: "kenya-safari-culture",
   },
   {
     emoji: "🌊",
-    name: "South Africa – Cape Town & Johannesburg Discovery",
+    name: "South Africa, Cape Town & Johannesburg Discovery",
     slug: "south-africa-discovery",
   },
 ];
@@ -76,7 +76,7 @@ export const signatureTours2025 = [
 export const experienceCategories = [
   {
     title: "Classic Cultural Tours",
-    description: "Accra, Cape Coast, Kumasi, and Johannesburg — heritage walks, living culture, and historic landmarks.",
+    description: "Accra, Cape Coast, Kumasi, and Johannesburg, heritage walks, living culture, and historic landmarks.",
     icon: "🏛️",
   },
   {
@@ -86,12 +86,12 @@ export const experienceCategories = [
   },
   {
     title: "Educational Exchange Programs",
-    description: "Global learning tours for universities and schools — Africa as a living classroom.",
+    description: "Global learning tours for universities and schools, Africa as a living classroom.",
     icon: "🎓",
   },
   {
     title: "Corporate Retreats",
-    description: "Business meets leisure in Africa's most scenic destinations — team building with purpose.",
+    description: "Business meets leisure in Africa's most scenic destinations, team building with purpose.",
     icon: "💼",
   },
   {

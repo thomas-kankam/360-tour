@@ -6,6 +6,7 @@ import { Camera } from "lucide-react";
 import { ROUTES } from "../../constants/routes";
 import { ROLE_META, USER_ROLES } from "../../constants/roles";
 import { images } from "../../config/images";
+import AuthPanelBackground from "../../components/auth/AuthPanelBackground";
 import InternationalPhoneInput from "../../components/forms/InternationalPhoneInput";
 import AppIcon from "../../components/icons/AppIcon";
 import consumerAuthServiceApi from "../../apis/ConsumerAuthServiceApi";
@@ -222,13 +223,9 @@ export default function SignupPage() {
   return (
     <div className="flex h-full min-h-0">
 
-      {/* ── Left panel — fixed, non-scrollable ── */}
+      {/* ── Left panel, fixed, non-scrollable ── */}
       <div className="relative hidden h-full overflow-hidden lg:flex lg:w-[44%] xl:w-[46%]">
-        <img
-          src={images.home.kenya}
-          alt="360 Tours travel"
-          className="absolute inset-0 h-full w-full object-cover"
-        />
+        <AuthPanelBackground variant="signup" />
         <div className="absolute inset-0 bg-[#1C2B26]/45" />
         <div className="absolute inset-0 bg-gradient-to-br from-[#1C2B26]/50 via-[#2D5A47]/35 to-[#1C2B26]/50" />
 
@@ -309,7 +306,7 @@ export default function SignupPage() {
         </div>
       </div>
 
-      {/* ── Right panel — scrollable ── */}
+      {/* ── Right panel, scrollable ── */}
       <div ref={panelRef} className="flex h-full min-h-0 flex-1 flex-col overflow-y-auto bg-brand-cream">
         <div className="flex w-full flex-col items-center px-5 py-8 sm:px-10 sm:py-10 lg:px-14 xl:px-20">
         {/* Mobile top bar */}

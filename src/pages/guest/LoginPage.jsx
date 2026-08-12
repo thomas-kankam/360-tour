@@ -6,6 +6,7 @@ import { ROUTES } from "../../constants/routes";
 import { resolvePostAuthRedirect, ROLE_META, USER_ROLES } from "../../constants/roles";
 import { useAuth } from "../../hooks/useAuth";
 import { images } from "../../config/images";
+import AuthPanelBackground from "../../components/auth/AuthPanelBackground";
 import OtpInput from "../../components/misc/OtpInput";
 import LoginContactTabs, { getLoginContactValue, validateLoginContact } from "../../components/auth/LoginContactTabs";
 import consumerAuthServiceApi from "../../apis/ConsumerAuthServiceApi";
@@ -200,7 +201,7 @@ export default function LoginPage() {
   return (
     <div className="flex h-full min-h-0">
       <div className="relative hidden h-full overflow-hidden lg:flex lg:w-[44%] xl:w-[46%]">
-        <img src={images.home.ghana} alt="360 Tours travel" className="absolute inset-0 h-full w-full object-cover" />
+        <AuthPanelBackground variant="login" />
         <div className="absolute inset-0 bg-[#1C2B26]/45" />
         <div className="absolute inset-0 bg-gradient-to-br from-[#1C2B26]/50 via-[#2D5A47]/35 to-[#1C2B26]/50" />
 

@@ -15,7 +15,7 @@ const SECTION_DEFAULTS = {
   title: operatingSection.title,
   subtitle: operatingSection.subtitle,
   ctaLabel: operatingSection.cta.label,
-  footerNote: "across Ghana — and curated experiences beyond, across Africa.",
+  footerNote: "Ghana is our home base, with curated experiences across Africa.",
 };
 
 function regionTourLink(region) {

@@ -6,7 +6,7 @@ export const heroContent = {
   title: "Discover Africa.",
   titleHighlight: "Travel Without Limits.",
   subtitle:
-    "Your trusted partner for tours, accommodation, and transportation across Ghana and beyond. We create exciting, safe, and memorable journeys — making every leisure, business, cultural, or adventure trip seamless from start to finish.",
+    "Your trusted partner for tours, accommodation, and transportation across Ghana and beyond. We create exciting, safe, and memorable journeys, making every leisure, business, cultural, or adventure trip seamless from start to finish.",
   tagline: "Explore More. Travel Better. Experience Africa with 360 Tours.",
   primaryCta: { label: "Explore our tours", to: ROUTES.tours },
   secondaryCta: { label: "Plan your trip", to: ROUTES.contact },
@@ -23,11 +23,11 @@ export const toursPageSection = {
   eyebrow: "Our tours",
   title: "Explore Ghana with 360 Tours",
   subtitle:
-    "Heritage tours, adventure trails, beach getaways, and custom itineraries — guided by local experts with transport and stays arranged for you.",
+    "Heritage tours, adventure trails, beach getaways, and custom itineraries, guided by local experts with transport and stays arranged for you.",
   highlights: ["Guided experiences", "Flexible departures", "Custom planning"],
   customCta: {
     title: "Need something tailored?",
-    subtitle: "Tell us your dates, group size, and interests — we'll build a bespoke Ghana itinerary.",
+    subtitle: "Tell us your dates, group size, and interests, we'll build a bespoke Ghana itinerary.",
     label: "Request a custom quote",
     to: ROUTES.contact,
   },
@@ -40,7 +40,7 @@ export const featuredTours = [
     country: "Ghana",
     duration: "10 days",
     description:
-      "Accra, Cape Coast Castle, Kumasi, and living culture — a deep dive into West Africa's history and hospitality.",
+      "Accra, Cape Coast Castle, Kumasi, and living culture, a deep dive into West Africa's history and hospitality.",
     priceLabel: "From $1,850",
     rating: "5.0",
     image: images.home.ghana,
@@ -179,7 +179,7 @@ export const upcomingTours = [
 export const popularDestinationsSection = {
   eyebrow: "Tour Packages",
   title: "Popular Destinations",
-  subtitle: "Fifteen unforgettable stops across Ghana — from historic castles to rainforest canopy walks.",
+  subtitle: "Fifteen unforgettable stops across Ghana, from historic castles to rainforest canopy walks.",
   cta: { label: "View all tours", to: ROUTES.toursSearch({ country: "ghana" }) },
 };
 
@@ -353,7 +353,7 @@ export const operatingSection = {
   eyebrow: "Where We Operate",
   title: "Discover Ghana, Region by Region",
   subtitle:
-    "From Accra's vibrant streets to Cape Coast's historic castles, Volta's waterfalls, and beyond — we bring every corner of Ghana to life.",
+    "From Accra's vibrant streets to Cape Coast's historic castles, Volta's waterfalls, and beyond, we bring every corner of Ghana to life.",
   cta: { label: "View all Ghana tours", to: ROUTES.toursSearch({ country: "ghana" }) },
 };
 
@@ -454,7 +454,7 @@ export const ghanaPackageHubs = [
     name: "End of Year",
     region: "Ghana",
     tagline: "Detty December",
-    desc: "Festival season energy — concerts, Afrochella vibes, and December celebrations.",
+    desc: "Festival season energy, concerts, Afrochella vibes, and December celebrations.",
     image: images.tour_sites.detty_december,
     badge: "bg-brand-orange/20 text-brand-orange",
   },
@@ -465,25 +465,25 @@ export const whyUsSection = {
   title: "Travel With Confidence",
   titleHighlight: "360 Tours",
   subtitle:
-    "We combine deep local expertise with professional service — delivering safe, authentic, and unforgettable journeys across Ghana and beyond.",
+    "We combine deep local expertise with professional service, delivering safe, authentic, and unforgettable journeys across Ghana and beyond.",
   cta: { label: "See all reasons", to: ROUTES.whyUs },
   pillars: [
     {
       title: "Local expertise",
       description:
-        "Our guides know Ghana inside out — from hidden gems to historic landmarks — giving you an authentic perspective on every destination.",
+        "Our guides know Ghana inside out, from hidden gems to historic landmarks, giving you an authentic perspective on every destination.",
       icon: "map",
     },
     {
       title: "Complete travel solutions",
       description:
-        "Tours, accommodation, airport transfers, and private transport — everything coordinated under one roof for a seamless trip.",
+        "Tours, accommodation, airport transfers, and private transport, everything coordinated under one roof for a seamless trip.",
       icon: "layers",
     },
     {
       title: "Personalized planning",
       description:
-        "Every itinerary is tailored to your interests, budget, and schedule — whether solo, family, group, or corporate.",
+        "Every itinerary is tailored to your interests, budget, and schedule, whether solo, family, group, or corporate.",
       icon: "route",
     },
   ],
@@ -506,7 +506,7 @@ export const testimonials = [
   {
     id: "family-vacation",
     quote:
-      "Everything was perfectly organized—from airport pickup to our cultural tours. Highly recommended!",
+      "Everything was perfectly organized, from airport pickup to our cultural tours. Highly recommended!",
     name: "Satisfied Guest",
     role: "Family vacation",
     rating: "5.0",
@@ -540,7 +540,7 @@ export const homeCtaSection = {
   eyebrow: "Start your journey",
   title: "Ready to explore Ghana?",
   subtitle:
-    "From heritage tours and adventure trails to transport, stays, and fully custom itineraries — 360 Tours handles every detail so you can focus on the experience.",
+    "From heritage tours and adventure trails to transport, stays, and fully custom itineraries, 360 Tours handles every detail so you can focus on the experience.",
   imageKey: "capeCoastCastle",
   highlights: [
     { label: "Guided tours", description: "Heritage, culture & adventure", icon: "map" },

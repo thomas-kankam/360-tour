@@ -89,7 +89,7 @@ const heroServiceIcons = {
 export default function AboutPage() {
   return (
     <div className="overflow-x-hidden">
-      {/* Hero — editorial split layout */}
+      {/* Hero, editorial split layout */}
       <section className="relative overflow-hidden bg-white pb-14 pt-10 sm:pb-16 sm:pt-12 lg:pb-20 lg:pt-16">
         <div aria-hidden className="pointer-events-none absolute -left-32 top-0 h-96 w-96 rounded-full bg-brand-accent/10 blur-3xl" />
         <div

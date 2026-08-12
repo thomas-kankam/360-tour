@@ -73,7 +73,7 @@ function PaymentTableRow({ payment, onRetry, retryingSlug }) {
             {payment.bookingCode}
           </Link>
         ) : (
-          <span className="text-sm text-brand-muted">—</span>
+          <span className="text-sm text-brand-muted">, </span>
         )}
       </td>
       <td className="whitespace-nowrap px-4 py-4 sm:px-5">
@@ -363,7 +363,7 @@ export default function MyPaymentsPage() {
             {filtered.length === 1 ? " payment" : " payments"}
             {filter !== "all" && <> · {FILTERS.find((f) => f.id === filter)?.label}</>}
             {paginationMeta.totalItems > 0 && filter === "all" && !search.trim() ? (
-              <> · {paginationMeta.rangeStart}–{paginationMeta.rangeEnd} of {paginationMeta.totalItems}</>
+              <> · {paginationMeta.rangeStart} to {paginationMeta.rangeEnd} of {paginationMeta.totalItems}</>
             ) : null}
           </p>
 

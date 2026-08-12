@@ -95,7 +95,7 @@ export default function PaymentRegionNotice({
               onClick={onSelectDomestic}
               className="text-left text-xs font-semibold text-brand-green hover:underline"
             >
-              I&apos;m in Ghana — use local payment methods
+              I&apos;m in Ghana, use local payment methods
             </button>
           )}
         </div>

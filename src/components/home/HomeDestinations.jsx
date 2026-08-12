@@ -239,7 +239,7 @@ export default function HomeDestinations({ cmsOverride }) {
         {/* Explorer panel */}
         <ScrollReveal variant="scale" delay={0.08} className="mt-12 overflow-hidden rounded-3xl border border-brand-border/50 shadow-[0_32px_100px_-32px_rgba(21,67,96,0.28)] lg:mt-14">
           <div className="grid lg:grid-cols-[minmax(260px,340px)_1fr]">
-            {/* Left — destination index */}
+            {/* Left, destination index */}
             <div className="relative flex flex-col bg-brand-primary">
               <div className="border-b border-white/10 px-5 py-5">
                 <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-brand-accent">
@@ -285,7 +285,7 @@ export default function HomeDestinations({ cmsOverride }) {
               </div>
             </div>
 
-            {/* Right — spotlight stage */}
+            {/* Right, spotlight stage */}
             <div className="relative flex flex-col bg-[#f4f7fa]">
               {/* Subtle map-dot texture */}
               <div
@@ -364,8 +364,8 @@ export default function HomeDestinations({ cmsOverride }) {
 
                 <div className="mt-8 flex flex-col gap-3 border-t border-brand-border/40 pt-6 sm:flex-row sm:items-center sm:justify-between">
                   <p className="max-w-sm text-sm text-brand-muted">
-                    <span className="font-semibold text-brand-ink">{active.region}</span>
-                    {" "}— use the arrows, dots, index list, or swipe to browse.
+                    Use the arrows, dots, index list, or swipe to browse destinations in{" "}
+                    <span className="font-semibold text-brand-ink">{active.region}</span>.
                   </p>
                   <Link
                     to={ROUTES.toursSearch({ country: "ghana" })}
@@ -380,7 +380,7 @@ export default function HomeDestinations({ cmsOverride }) {
           </div>
         </ScrollReveal>
 
-        {/* Mobile quick strip — horizontal destination chips */}
+        {/* Mobile quick strip, horizontal destination chips */}
         <div className="mt-5 flex gap-2 overflow-x-auto pb-1 lg:hidden [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {popularDestinations.map((destination, index) => (
             <button

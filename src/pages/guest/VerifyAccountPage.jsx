@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { ROUTES } from "../../constants/routes";
 import { resolvePostAuthRedirect, USER_ROLES } from "../../constants/roles";
 import { useAuth } from "../../hooks/useAuth";
-import { images } from "../../config/images";
+import AuthPanelBackground from "../../components/auth/AuthPanelBackground";
 import OtpInput from "../../components/misc/OtpInput";
 import consumerAuthServiceApi from "../../apis/ConsumerAuthServiceApi";
 import { normalizeEmailOrPhoneForApi } from "../../utils/phoneUtils";
@@ -79,7 +79,7 @@ export default function VerifyAccountPage() {
 
     login(result.token, result.user);
     toast.success(
-      result.reason || (isRegistration ? "Welcome to AfriQuest!" : "Account verified — welcome back!")
+      result.reason || (isRegistration ? "Welcome to AfriQuest!" : "Account verified, welcome back!")
     );
     navigate(resolvePostAuthRedirect(redirectTo, USER_ROLES.TOURIST), { replace: true });
   }
@@ -108,7 +108,7 @@ export default function VerifyAccountPage() {
   return (
     <div className="flex h-full min-h-0">
       <div className="relative hidden h-full overflow-hidden lg:flex lg:w-[44%] xl:w-[46%]">
-        <img src={images.home.ghana} alt="" className="absolute inset-0 h-full w-full object-cover" />
+        <AuthPanelBackground variant="verify" />
         <div className="absolute inset-0 bg-[#1C2B26]/50" />
         <div className="relative z-10 flex h-full flex-col justify-between p-10 xl:p-14">
           <Link to={ROUTES.home} className="text-sm font-medium text-white/70 hover:text-white">
@@ -121,7 +121,7 @@ export default function VerifyAccountPage() {
             </h2>
             <p className="mt-4 max-w-sm text-sm leading-relaxed text-white/65">
               {isRegistration
-                ? "One quick step left — enter the code we sent to your inbox to activate your traveler account."
+                ? "One quick step left, enter the code we sent to your inbox to activate your traveler account."
                 : "Enter the verification code to continue."}
             </p>
           </div>

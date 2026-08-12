@@ -232,7 +232,7 @@ export default function HomeTestimonial({ cmsOverride }) {
       <div aria-hidden className="pointer-events-none absolute -left-24 bottom-0 h-72 w-72 rounded-full bg-brand-accent/10 blur-3xl" />
 
       <Container className="relative">
-        {/* Header — same pattern as About / Features / Destinations */}
+        {/* Header, same pattern as About / Features / Destinations */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -248,7 +248,7 @@ export default function HomeTestimonial({ cmsOverride }) {
           <p className="mt-3 text-base leading-relaxed text-brand-muted">{sectionMeta.subtitle}</p>
         </motion.div>
 
-        {/* Unified explorer panel — sibling to Popular Destinations */}
+        {/* Unified explorer panel, sibling to Popular Destinations */}
         <motion.div
           initial={{ opacity: 0, y: 28 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -257,7 +257,7 @@ export default function HomeTestimonial({ cmsOverride }) {
           className="mt-12 overflow-hidden rounded-3xl border border-brand-border/50 shadow-[0_32px_100px_-32px_rgba(21,67,96,0.22)] lg:mt-14"
         >
           <div className="grid lg:grid-cols-[minmax(280px,340px)_1fr]">
-            {/* Left — story index */}
+            {/* Left, story index */}
             <div className="flex flex-col border-b border-brand-border/50 bg-brand-cream lg:border-b-0 lg:border-r">
               <div className="border-b border-brand-border/50 px-5 py-5">
                 <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-brand-primary">
@@ -291,7 +291,7 @@ export default function HomeTestimonial({ cmsOverride }) {
               </div>
             </div>
 
-            {/* Right — spotlight stage */}
+            {/* Right, spotlight stage */}
             <div className="relative flex flex-col bg-[#f4f7fa]">
               <div
                 aria-hidden
