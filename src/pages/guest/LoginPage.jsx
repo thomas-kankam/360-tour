@@ -32,7 +32,6 @@ export default function LoginPage() {
   const isBookingReturn = Boolean(returnPath?.includes("/book"));
 
   const [step, setStep] = useState("contact");
-  const [role] = useState(USER_ROLES.TOURIST);
   const [contactMode, setContactMode] = useState("email");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
