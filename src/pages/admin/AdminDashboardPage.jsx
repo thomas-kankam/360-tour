@@ -7,10 +7,12 @@ import {
   Globe,
   Loader2,
   Map,
+  MessageSquare,
   ShieldCheck,
 } from "lucide-react";
 import { toast } from "react-toastify";
 import adminBookingsServiceApi from "../../apis/AdminBookingsServiceApi";
+import adminContactsServiceApi from "../../apis/AdminContactsServiceApi";
 import adminListingsServiceApi from "../../apis/AdminListingsServiceApi";
 import { ROUTES } from "../../constants/routes";
 import { useAuth } from "../../hooks/useAuth";
@@ -25,6 +27,7 @@ import {
 import PlatformHealthDonut from "../../components/admin/PlatformHealthDonut";
 import AdminActivePermissionsCard from "../../components/admin/AdminActivePermissionsCard";
 import { buildListQueryParams, mapServerPagination } from "../../utils/adminPaginationHelpers";
+import { formatContactDate, formatContactLabel } from "../../utils/adminContactHelpers";
 
 const EASE = [0.22, 1, 0.36, 1];
 
@@ -111,6 +114,8 @@ export default function AdminDashboardPage() {
     cancelled: 0,
   });
   const [recentBookings, setRecentBookings] = useState([]);
+  const [totalContacts, setTotalContacts] = useState(null);
+  const [recentContacts, setRecentContacts] = useState([]);
 
   useEffect(() => {
     if (!location.state?.accessDenied) return;
@@ -138,6 +143,8 @@ export default function AdminDashboardPage() {
         recentBookingsResult,
         listingsTotalResult,
         publishedListingsResult,
+        contactsTotalResult,
+        recentContactsResult,
       ] = await Promise.all([
         adminBookingsServiceApi.listBookings(token, buildListQueryParams({ page: 1, per_page: 1 })),
         adminBookingsServiceApi.listBookings(token, buildListQueryParams({ page: 1, per_page: 1, status: "confirmed" })),
@@ -146,6 +153,8 @@ export default function AdminDashboardPage() {
         adminBookingsServiceApi.listBookings(token, buildListQueryParams({ page: 1, per_page: 15 })),
         adminListingsServiceApi.listListings(token, buildListQueryParams({ page: 1, per_page: 1 })),
         adminListingsServiceApi.listListings(token, buildListQueryParams({ page: 1, per_page: 1, status: "published" })),
+        adminContactsServiceApi.listContacts(token, buildListQueryParams({ page: 1, per_page: 1 })),
+        adminContactsServiceApi.listContacts(token, buildListQueryParams({ page: 1, per_page: 5 })),
       ]);
 
       if (!active) return;
@@ -158,6 +167,8 @@ export default function AdminDashboardPage() {
         recentBookingsResult,
         listingsTotalResult,
         publishedListingsResult,
+        contactsTotalResult,
+        recentContactsResult,
       ].find((result) => !result.ok);
 
       if (failedResult) {
@@ -173,6 +184,8 @@ export default function AdminDashboardPage() {
       setRecentBookings(recentBookingsResult.ok ? recentBookingsResult.items : []);
       setTotalListings(mapServerPagination(listingsTotalResult.pagination, { page: 1, pageSize: 1 }).totalItems);
       setPublishedListings(mapServerPagination(publishedListingsResult.pagination, { page: 1, pageSize: 1 }).totalItems);
+      setTotalContacts(mapServerPagination(contactsTotalResult.pagination, { page: 1, pageSize: 1 }).totalItems);
+      setRecentContacts(recentContactsResult.ok ? recentContactsResult.items : []);
       setLoading(false);
     }
 
@@ -213,10 +226,11 @@ export default function AdminDashboardPage() {
       </motion.div>
 
       {/* Stats row */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-5">
         <StatPill label="Total bookings" value={totalBookings ?? 0} icon={CalendarCheck} loading={loading} />
         <StatPill label="Total listings" value={totalListings ?? 0} icon={Map} loading={loading} />
         <StatPill label="Published tours" value={publishedListings ?? 0} icon={Globe} loading={loading} />
+        <StatPill label="Contact enquiries" value={totalContacts ?? 0} icon={MessageSquare} loading={loading} />
         <StatPill label="Permissions" value={permissions.length} icon={ShieldCheck} />
       </div>
 
@@ -330,6 +344,99 @@ export default function AdminDashboardPage() {
                 <tbody>
                   {recentBookings.map((booking, index) => (
                     <BookingRow key={booking.bookingRef || booking.bookingCode || index} booking={booking} index={index} />
+                  ))}
+                </tbody>
+              </table>
+            </AdminTableDesktop>
+          </>
+        )}
+      </section>
+
+      {/* Recent contact enquiries */}
+      <section className="rounded-2xl border border-black/8 bg-white p-6 shadow-sm">
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brand-muted">Live data</p>
+            <h2 className="mt-0.5 text-base font-bold text-brand-ink">Recent contact enquiries</h2>
+          </div>
+          {permNames.includes("contact_management") && (totalContacts ?? 0) > 0 && (
+            <Link
+              to={ROUTES.admin.contacts}
+              className="flex items-center gap-1 text-sm font-semibold text-brand-green hover:underline"
+            >
+              View all <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.5} aria-hidden />
+            </Link>
+          )}
+        </div>
+
+        {loading ? (
+          <div className="mt-6 flex min-h-[220px] items-center justify-center rounded-2xl border border-dashed border-black/12 bg-brand-cream/40">
+            <Loader2 className="h-7 w-7 animate-spin text-brand-green" strokeWidth={2} aria-hidden />
+          </div>
+        ) : recentContacts.length === 0 ? (
+          <div className="mt-6 flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-black/12 bg-brand-cream/40 py-16 text-center">
+            <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-brand-muted/40 shadow-sm">
+              <MessageSquare className="h-7 w-7" strokeWidth={1.5} aria-hidden />
+            </span>
+            <div>
+              <p className="text-base font-bold text-brand-ink">No contact enquiries yet</p>
+              <p className="mt-1 max-w-sm text-sm text-brand-muted">
+                Messages from the contact form will appear here as soon as visitors submit them.
+              </p>
+            </div>
+          </div>
+        ) : (
+          <>
+            <AdminTableMobile columns={2} className="mt-4">
+              {recentContacts.map((contact, index) => (
+                <AdminMobileCard key={contact.id || index}>
+                  <AdminMobileCardHeader
+                    title={contact.fullname || "—"}
+                    subtitle={contact.email || "—"}
+                    trailing={
+                      <span className="inline-flex items-center rounded-full bg-sky-100 px-2.5 py-0.5 text-[11px] font-semibold capitalize text-sky-700">
+                        {formatContactLabel(contact.status)}
+                      </span>
+                    }
+                  />
+                  <AdminMobileCardBody>
+                    <AdminMobileCardRow label="Type" value={formatContactLabel(contact.type)} />
+                    <AdminMobileCardRow label="Message" value={contact.message || "—"} />
+                    <AdminMobileCardRow label="Received" value={formatContactDate(contact.created_at)} />
+                  </AdminMobileCardBody>
+                </AdminMobileCard>
+              ))}
+            </AdminTableMobile>
+
+            <AdminTableDesktop className="mt-4">
+              <table className="w-full text-left">
+                <thead className="border-b border-black/8 bg-brand-cream/50">
+                  <tr>
+                    <th className="px-5 py-3.5 text-[11px] font-bold uppercase tracking-[0.12em] text-brand-muted">Contact</th>
+                    <th className="px-5 py-3.5 text-[11px] font-bold uppercase tracking-[0.12em] text-brand-muted">Type</th>
+                    <th className="px-5 py-3.5 text-[11px] font-bold uppercase tracking-[0.12em] text-brand-muted">Message</th>
+                    <th className="px-5 py-3.5 text-[11px] font-bold uppercase tracking-[0.12em] text-brand-muted">Received</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {recentContacts.map((contact, index) => (
+                    <motion.tr
+                      key={contact.id || index}
+                      initial={{ opacity: 0, x: -8 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.3, ease: EASE, delay: index * 0.04 }}
+                      className="group border-b border-black/5 last:border-0 hover:bg-brand-cream/30"
+                    >
+                      <td className="px-5 py-4">
+                        <p className="text-sm font-semibold text-brand-ink group-hover:text-brand-green">
+                          {contact.fullname || "—"}
+                        </p>
+                        <p className="text-xs text-brand-muted">{contact.email || "—"}</p>
+                      </td>
+                      <td className="px-5 py-4 text-sm text-brand-ink">{formatContactLabel(contact.type)}</td>
+                      <td className="max-w-xs truncate px-5 py-4 text-sm text-brand-muted">{contact.message || "—"}</td>
+                      <td className="px-5 py-4 text-sm text-brand-muted">{formatContactDate(contact.created_at)}</td>
+                    </motion.tr>
                   ))}
                 </tbody>
               </table>

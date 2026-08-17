@@ -1,6 +1,7 @@
 import axios from "axios";
 import env from "../config/env";
 import { parseApiEnvelope, parseApiError } from "../utils/apiResponse";
+import { parsePaginatedList } from "../utils/adminPaginationHelpers";
 import { toQueryString } from "../utils/queryString";
 import { buildRequestKey, dedupeRequest } from "./dedupService";
 
@@ -38,8 +39,12 @@ class AdminContactsServiceApi {
     return dedupe ? dedupeRequest(key, exec) : exec();
   }
 
-  listContacts(token, params) {
-    return this.request("GET", "/admin/contacts", { token, params, dedupe: false });
+  async listContacts(token, params) {
+    const result = await this.request("GET", "/admin/contacts", { token, params, dedupe: false });
+    if (!result.ok) return { ...result, items: [], pagination: null };
+
+    const { items, pagination } = parsePaginatedList(result.data);
+    return { ...result, items, pagination };
   }
 
   getContact(token, id) {

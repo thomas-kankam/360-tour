@@ -137,7 +137,10 @@ export default function AdminContactsPage() {
       return;
     }
 
-    const { items, shouldRefetch } = pagination.syncFromResponse(result.data, pagination.page);
+    const { items, shouldRefetch } = pagination.syncFromResponse(
+      { items: result.items, pagination: result.pagination },
+      pagination.page,
+    );
     if (shouldRefetch) return;
 
     setContacts(items);

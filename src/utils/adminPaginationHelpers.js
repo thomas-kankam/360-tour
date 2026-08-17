@@ -20,6 +20,13 @@ export function parsePaginatedList(data) {
     };
   }
 
+  if (data && Array.isArray(data.data)) {
+    return {
+      items: data.data,
+      pagination: data.pagination ?? null,
+    };
+  }
+
   return { items: [], pagination: null };
 }
 
