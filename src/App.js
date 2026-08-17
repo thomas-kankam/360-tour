@@ -1,5 +1,7 @@
+import { Suspense } from "react";
 import { Navigate, Route, Routes } from "react-router";
 import DevPaymentRegionToolbar from "./components/dev/DevPaymentRegionToolbar";
+import Loader from "./components/misc/Loader";
 import env from "./config/env";
 import { ROUTES } from "./constants/routes";
 import adminRoutes from "./routing/AdminRoutes";
@@ -21,12 +23,14 @@ function App() {
     <>
       <Toastr />
       {env.isDev ? <DevPaymentRegionToolbar /> : null}
-      <Routes>
-        {adminRoutes}
-        {guestRoutes}
-        {authRoutes}
-        <Route path="*" element={<Navigate to={ROUTES.home} replace />} />
-      </Routes>
+      <Suspense fallback={<Loader />}>
+        <Routes>
+          {adminRoutes}
+          {guestRoutes}
+          {authRoutes}
+          <Route path="*" element={<Navigate to={ROUTES.home} replace />} />
+        </Routes>
+      </Suspense>
     </>
   );
 }

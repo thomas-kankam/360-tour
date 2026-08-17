@@ -1,5 +1,9 @@
-import { jsPDF } from "jspdf";
 import { calculateInvoiceTotals } from "./invoiceHelpers";
+
+async function loadJsPDF() {
+  const { jsPDF } = await import("jspdf");
+  return jsPDF;
+}
 
 function formatMoney(amount, currency = "USD") {
   try {
@@ -15,7 +19,8 @@ function addWrappedText(doc, text, x, y, maxWidth, lineHeight = 5) {
   return y + lines.length * lineHeight;
 }
 
-export function buildInvoicePdfBlob(invoice, company = {}) {
+export async function buildInvoicePdfBlob(invoice, company = {}) {
+  const jsPDF = await loadJsPDF();
   const doc = new jsPDF({ unit: "mm", format: "a4" });
   const margin = 16;
   let y = margin;
@@ -167,8 +172,8 @@ export function buildInvoicePdfBlob(invoice, company = {}) {
   return doc.output("blob");
 }
 
-export function downloadInvoicePdf(invoice, company) {
-  const blob = buildInvoicePdfBlob(invoice, company);
+export async function downloadInvoicePdf(invoice, company) {
+  const blob = await buildInvoicePdfBlob(invoice, company);
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;

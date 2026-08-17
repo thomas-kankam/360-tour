@@ -1,36 +1,34 @@
 import { Route } from "react-router";
-import GuestLayout from "../layouts/GuestLayout";
-import AuthPageLayout from "../layouts/AuthPageLayout";
-import AboutPage from "../pages/guest/AboutPage";
-import ContactPage from "../pages/guest/ContactPage";
-import ExperiencesPage from "../pages/guest/ExperiencesPage";
-import HomePage from "../pages/guest/HomePage";
-import LoginPage from "../pages/guest/LoginPage";
-import SignupPage from "../pages/guest/SignupPage";
-import VerifyAccountPage from "../pages/guest/VerifyAccountPage";
-import StoriesPage from "../pages/guest/StoriesPage";
-import StoryDetailPage from "../pages/guest/StoryDetailPage";
-import MyBookingsPage from "../pages/guest/MyBookingsPage";
-import MyBookingDetailPage from "../pages/guest/MyBookingDetailPage";
-import MyBookingEditPage from "../pages/guest/MyBookingEditPage";
-import MyPaymentsPage from "../pages/guest/MyPaymentsPage";
-import MyReviewsPage from "../pages/guest/MyReviewsPage";
-import BookingSuccessPage from "../pages/guest/BookingSuccessPage";
-import PaymentSuccessPage from "../pages/guest/PaymentSuccessPage";
-import PaymentFailurePage from "../pages/guest/PaymentFailurePage";
-import TourBookingPage from "../pages/guest/TourBookingPage";
-import TourDetailPage from "../pages/guest/TourDetailPage";
-import ToursPage from "../pages/guest/ToursPage";
-import WhyUsPage from "../pages/guest/WhyUsPage";
 import { USER_ROLES } from "../constants/roles";
 import ProtectedRoute from "./ProtectedRoute";
 import PublicOnlyRoute from "./PublicOnlyRoute";
 import RoleRoute from "./RoleRoute";
+import {
+  AboutPage,
+  AuthPageLayout,
+  BookingSuccessPage,
+  ContactPage,
+  ExperiencesPage,
+  GuestLayout,
+  HomePage,
+  LoginPage,
+  MyBookingDetailPage,
+  MyBookingEditPage,
+  MyBookingsPage,
+  MyPaymentsPage,
+  MyReviewsPage,
+  PaymentFailurePage,
+  PaymentSuccessPage,
+  SignupPage,
+  StoriesPage,
+  StoryDetailPage,
+  TourBookingPage,
+  TourDetailPage,
+  ToursPage,
+  VerifyAccountPage,
+  WhyUsPage,
+} from "./lazyPages";
 
-/**
- * Public marketing site — accessible to guests and authenticated users.
- * Login and signup use AuthPageLayout (no nav/footer, viewport-locked).
- */
 const guestRoutes = (
   <>
     <Route element={<GuestLayout />}>

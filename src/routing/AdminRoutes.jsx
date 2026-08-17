@@ -1,37 +1,39 @@
 import { Navigate, Route } from "react-router";
-import AdminLayout from "../layouts/AdminLayout";
 import { ADMIN_PERMISSIONS } from "../constants/adminPermissions";
-import AdminBookingDetailPage from "../pages/admin/AdminBookingDetailPage";
-import AdminBookingsPage from "../pages/admin/AdminBookingsPage";
-import AdminClientDetailPage from "../pages/admin/AdminClientDetailPage";
-import AdminClientsPage from "../pages/admin/AdminClientsPage";
-import AdminContactDetailPage from "../pages/admin/AdminContactDetailPage";
-import AdminContactsPage from "../pages/admin/AdminContactsPage";
-import AdminDashboardPage from "../pages/admin/AdminDashboardPage";
-import AdminListingDetailPage from "../pages/admin/AdminListingDetailPage";
-import AdminListingsPage from "../pages/admin/AdminListingsPage";
-import AdminLoginPage from "../pages/admin/AdminLoginPage";
-import AdminOperatorDetailPage from "../pages/admin/AdminOperatorDetailPage";
-import AdminOperatorsPage from "../pages/admin/AdminOperatorsPage";
-import AdminPaymentDetailPage from "../pages/admin/AdminPaymentDetailPage";
-import AdminPaymentsPage from "../pages/admin/AdminPaymentsPage";
-import AdminProfilePage from "../pages/admin/AdminProfilePage";
-import AdminRatingsPage from "../pages/admin/AdminRatingsPage";
-import AdminRolesPage from "../pages/admin/AdminRolesPage";
-import AdminInvoicesPage from "../pages/admin/AdminInvoicesPage";
-import AdminInvoiceFormPage from "../pages/admin/AdminInvoiceFormPage";
-import AdminInvoiceDetailPage from "../pages/admin/AdminInvoiceDetailPage";
-import AdminLandingCmsPage from "../pages/admin/AdminLandingCmsPage";
-import AdminUserDetailPage from "../pages/admin/AdminUserDetailPage";
-import AdminUserFormPage from "../pages/admin/AdminUserFormPage";
-import AdminUsersPage from "../pages/admin/AdminUsersPage";
-import OperatorTourDetailPage from "../pages/operator/OperatorTourDetailPage";
-import OperatorTourFormPage from "../pages/operator/OperatorTourFormPage";
-import OperatorToursPage from "../pages/operator/OperatorToursPage";
 import { ROUTES } from "../constants/routes";
 import { USER_ROLES } from "../constants/roles";
 import AdminPermissionRoute from "./AdminPermissionRoute";
 import RoleRoute from "./RoleRoute";
+import {
+  AdminBookingDetailPage,
+  AdminBookingsPage,
+  AdminClientDetailPage,
+  AdminClientsPage,
+  AdminContactDetailPage,
+  AdminContactsPage,
+  AdminDashboardPage,
+  AdminInvoiceDetailPage,
+  AdminInvoiceFormPage,
+  AdminInvoicesPage,
+  AdminLandingCmsPage,
+  AdminLayout,
+  AdminListingDetailPage,
+  AdminListingsPage,
+  AdminLoginPage,
+  AdminOperatorDetailPage,
+  AdminOperatorsPage,
+  AdminPaymentDetailPage,
+  AdminPaymentsPage,
+  AdminProfilePage,
+  AdminRatingsPage,
+  AdminRolesPage,
+  AdminUserDetailPage,
+  AdminUserFormPage,
+  AdminUsersPage,
+  OperatorTourDetailPage,
+  OperatorTourFormPage,
+  OperatorToursPage,
+} from "./lazyPages";
 
 const adminRoutes = (
   <>
@@ -90,7 +92,6 @@ const adminRoutes = (
       </Route>
     </Route>
 
-    {/* Legacy operator URLs redirect into the unified admin console */}
     <Route path="operator/*" element={<Navigate to={ROUTES.admin.dashboard} replace />} />
   </>
 );

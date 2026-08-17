@@ -70,7 +70,7 @@ export default function AdminInvoiceDetailPage() {
     }
 
     setSending(true);
-    downloadInvoicePdf(invoice, company);
+    await downloadInvoicePdf(invoice, company);
     const result = await adminInvoicesServiceApi.sendInvoice(token, id, {
       email: selectedClientEmail,
       attach_pdf: true,
@@ -110,7 +110,7 @@ export default function AdminInvoiceDetailPage() {
           <Link to={ROUTES.admin.invoiceEdit(id)} className="inline-flex items-center gap-2 rounded-xl border border-brand-border/70 px-4 py-2 text-sm font-semibold text-brand-ink hover:bg-brand-cream">
             <Edit3 className="h-4 w-4" aria-hidden /> Edit
           </Link>
-          <button type="button" onClick={() => downloadInvoicePdf(invoice, company)} className="inline-flex items-center gap-2 rounded-xl border border-brand-border/70 px-4 py-2 text-sm font-semibold text-brand-ink hover:bg-brand-cream">
+          <button type="button" onClick={() => void downloadInvoicePdf(invoice, company)} className="inline-flex items-center gap-2 rounded-xl border border-brand-border/70 px-4 py-2 text-sm font-semibold text-brand-ink hover:bg-brand-cream">
             <Download className="h-4 w-4" aria-hidden /> Download PDF
           </button>
           <button type="button" onClick={handleDelete} className="inline-flex items-center gap-2 rounded-xl border border-red-200 px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50">

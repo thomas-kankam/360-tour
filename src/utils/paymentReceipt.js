@@ -1,4 +1,3 @@
-import { jsPDF } from "jspdf";
 import env from "../config/env";
 import { formatBookingCurrency } from "./bookingHelpers";
 import { getBookingStatus } from "./bookingStorage";
@@ -463,7 +462,7 @@ export async function downloadPaymentReceiptPdf(data) {
   if (!data) return false;
 
   try {
-    const logoAsset = await loadReceiptLogoAsset();
+    const [{ jsPDF }, logoAsset] = await Promise.all([import("jspdf"), loadReceiptLogoAsset()]);
     const doc = buildPaymentReceiptPdf(data, jsPDF, logoAsset);
     doc.save(buildReceiptFilename(data));
     return true;
