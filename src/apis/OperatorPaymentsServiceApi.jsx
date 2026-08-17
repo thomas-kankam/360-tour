@@ -40,7 +40,7 @@ class OperatorPaymentsServiceApi {
   }
 
   async listPayments(token, params) {
-    const result = await this.request("GET", "/operator/payments", { token, params, dedupe: false });
+    const result = await this.request("GET", "/admin/payments", { token, params, dedupe: false });
     if (!result.ok) return { ...result, items: [], pagination: null };
 
     const { items, pagination } = mapOperatorPaymentList(result.data);
@@ -48,7 +48,7 @@ class OperatorPaymentsServiceApi {
   }
 
   async getPayment(token, paymentSlug) {
-    const result = await this.request("GET", `/operator/payments/${encodeURIComponent(paymentSlug)}`, {
+    const result = await this.request("GET", `/admin/payments/${encodeURIComponent(paymentSlug)}`, {
       token,
       dedupe: false,
     });
@@ -61,7 +61,7 @@ class OperatorPaymentsServiceApi {
   }
 
   async recordOnsitePayment(token, { bookingCode, amount }) {
-    const result = await this.request("POST", "/operator/payments", {
+    const result = await this.request("POST", "/admin/payments", {
       token,
       body: {
         bookingCode: String(bookingCode || "").trim(),

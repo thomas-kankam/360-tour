@@ -34,7 +34,7 @@ class OperatorAuthServiceApi {
   }
 
   async registerOperator(payload) {
-    const result = await this.post("/operator/register", payload, { dedupe: false });
+    const result = await this.post("/admin/register", payload, { dedupe: false });
     if (!result.ok) return { ...result, user: null };
 
     return {
@@ -44,7 +44,7 @@ class OperatorAuthServiceApi {
   }
 
   async loginOperator(payload) {
-    const result = await this.post("/operator/login", payload, { dedupe: false });
+    const result = await this.post("/admin/login", payload, { dedupe: false });
     if (!result.ok) return { ...result, user: null };
 
     return {
@@ -54,7 +54,7 @@ class OperatorAuthServiceApi {
   }
 
   async verifyOtp(payload) {
-    const result = await this.post("/operator/verify-otp", payload, { dedupe: false });
+    const result = await this.post("/admin/verify-otp", payload, { dedupe: false });
     if (!result.ok) return { ...result, user: null, token: null };
 
     const token = result.data?.token ?? null;
@@ -68,7 +68,7 @@ class OperatorAuthServiceApi {
   }
 
   async resendOtp(payload) {
-    const result = await this.post("/operator/resend-otp", payload, { dedupe: false });
+    const result = await this.post("/admin/resend-otp", payload, { dedupe: false });
     if (!result.ok) return { ...result, user: null };
 
     return {
@@ -78,7 +78,7 @@ class OperatorAuthServiceApi {
   }
 
   async updateProfile(token, payload) {
-    const result = await this.post("/operator/update-profile", payload, { token, dedupe: false });
+    const result = await this.post("/admin/update-profile", payload, { token, dedupe: false });
     if (!result.ok) return { ...result, user: null };
 
     return {
@@ -88,7 +88,7 @@ class OperatorAuthServiceApi {
   }
 
   async logout(token) {
-    return this.post("/operator/logout", {}, { token, dedupe: false });
+    return this.post("/admin/logout", {}, { token, dedupe: false });
   }
 }
 

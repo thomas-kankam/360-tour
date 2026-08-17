@@ -40,7 +40,7 @@ class OperatorToursServiceApi {
   }
 
   async listTours(token, params) {
-    const result = await this.request("GET", "/operator/tours", { token, params, dedupe: false });
+    const result = await this.request("GET", "/admin/tours", { token, params, dedupe: false });
     if (!result.ok) return { ...result, items: [], pagination: null };
 
     const { items, pagination } = mapOperatorTourList(result.data);
@@ -48,7 +48,7 @@ class OperatorToursServiceApi {
   }
 
   async getTour(token, slug) {
-    const result = await this.request("GET", `/operator/tours/${slug}`, { token });
+    const result = await this.request("GET", `/admin/tours/${slug}`, { token });
     if (!result.ok) return { ...result, tour: null };
 
     return {
@@ -58,7 +58,7 @@ class OperatorToursServiceApi {
   }
 
   async createTour(token, payload) {
-    const result = await this.request("POST", "/operator/tours", { token, body: payload, dedupe: false });
+    const result = await this.request("POST", "/admin/tours", { token, body: payload, dedupe: false });
     if (!result.ok) return { ...result, tour: null };
 
     return {
@@ -68,7 +68,7 @@ class OperatorToursServiceApi {
   }
 
   async updateTour(token, slug, payload) {
-    const result = await this.request("PUT", `/operator/tours/${slug}`, { token, body: payload, dedupe: false });
+    const result = await this.request("PUT", `/admin/tours/${slug}`, { token, body: payload, dedupe: false });
     if (!result.ok) return { ...result, tour: null };
 
     return {
@@ -78,7 +78,7 @@ class OperatorToursServiceApi {
   }
 
   async deleteTour(token, slug) {
-    return this.request("DELETE", `/operator/tours/${slug}`, { token, dedupe: false });
+    return this.request("DELETE", `/admin/tours/${slug}`, { token, dedupe: false });
   }
 }
 

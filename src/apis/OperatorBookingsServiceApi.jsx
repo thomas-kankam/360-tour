@@ -40,7 +40,7 @@ class OperatorBookingsServiceApi {
   }
 
   async listBookings(token, params) {
-    const result = await this.request("GET", "/operator/bookings", { token, params, dedupe: false });
+    const result = await this.request("GET", "/admin/bookings", { token, params, dedupe: false });
     if (!result.ok) return { ...result, items: [], pagination: null };
 
     const { items, pagination } = mapOperatorBookingList(result.data);
@@ -48,7 +48,7 @@ class OperatorBookingsServiceApi {
   }
 
   async getBooking(token, bookingCode) {
-    const result = await this.request("GET", `/operator/bookings/${encodeURIComponent(bookingCode)}`, {
+    const result = await this.request("GET", `/admin/bookings/${encodeURIComponent(bookingCode)}`, {
       token,
       dedupe: false,
     });
