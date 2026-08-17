@@ -1,18 +1,18 @@
-import { useMemo, useRef, useState } from "react";
-import { Eye, ImagePlus, RotateCcw, Save, Trash2 } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Eye, ImagePlus, Loader2, RotateCcw, Save, Trash2, UploadCloud } from "lucide-react";
 import { toast } from "react-toastify";
+import adminLandingCmsServiceApi from "../../apis/AdminLandingCmsServiceApi";
 import HomeHero from "../../components/home/HomeHero";
 import HomeFeaturedTours from "../../components/home/HomeFeaturedTours";
 import HomeDestinations from "../../components/home/HomeDestinations";
 import HomeHubs from "../../components/home/HomeHubs";
 import HomeExploreLinks from "../../components/home/HomeExploreLinks";
 import HomeCta from "../../components/home/HomeCta";
+import { useAuth } from "../../hooks/useAuth";
 import {
   isCmsImageField,
   LANDING_CMS_DEFAULTS,
   LANDING_CMS_SECTIONS,
-  loadLandingCms,
-  saveLandingCms,
 } from "../../utils/landingCmsStorage";
 import { getImagePreviewSrc, readImageFile } from "../../utils/tourImageUtils";
 
@@ -102,11 +102,46 @@ function formatFieldLabel(key) {
 const MULTILINE_KEYS = new Set(["subtitle", "aboutText", "whyText", "contactText", "whatsappMessage"]);
 
 export default function AdminLandingCmsPage() {
-  const [cms, setCms] = useState(() => loadLandingCms());
+  const { token } = useAuth();
+  const [cms, setCms] = useState(() => structuredClone(LANDING_CMS_DEFAULTS));
   const [activeSection, setActiveSection] = useState("hero");
   const [preview, setPreview] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [savingDraft, setSavingDraft] = useState(false);
+  const [publishing, setPublishing] = useState(false);
+  const [resetting, setResetting] = useState(false);
+  const [meta, setMeta] = useState(null);
 
   const sectionFields = useMemo(() => cms[activeSection] || {}, [cms, activeSection]);
+  const isBusy = savingDraft || publishing || resetting;
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadCms() {
+      if (!token) {
+        setLoading(false);
+        return;
+      }
+
+      setLoading(true);
+      const result = await adminLandingCmsServiceApi.getCms(token);
+      if (cancelled) return;
+
+      if (result.content) setCms(result.content);
+      setMeta(result.meta);
+      setLoading(false);
+
+      if (!result.ok && result.reason) {
+        toast.error(result.reason);
+      }
+    }
+
+    loadCms();
+    return () => {
+      cancelled = true;
+    };
+  }, [token]);
 
   function updateField(key, value) {
     setCms((prev) => ({
@@ -118,15 +153,65 @@ export default function AdminLandingCmsPage() {
     }));
   }
 
-  function handleSave() {
-    saveLandingCms(cms);
+  async function handleSaveDraft() {
+    if (!token) {
+      toast.error("Sign in again to save landing page content.");
+      return;
+    }
+
+    setSavingDraft(true);
+    const result = await adminLandingCmsServiceApi.saveDraft(token, cms);
+    setSavingDraft(false);
+
+    if (!result.ok) {
+      toast.error(result.reason || "Could not save draft.");
+      return;
+    }
+
+    setCms(result.content);
+    setMeta(result.meta);
     window.dispatchEvent(new Event("landing-cms-updated"));
-    toast.success("Landing page content saved.");
+    toast.success(result.source === "local" ? result.reason || "Draft saved locally." : "Draft saved.");
   }
 
-  function handleReset() {
-    setCms(structuredClone(LANDING_CMS_DEFAULTS));
-    saveLandingCms(LANDING_CMS_DEFAULTS);
+  async function handlePublish() {
+    if (!token) {
+      toast.error("Sign in again to publish landing page content.");
+      return;
+    }
+
+    setPublishing(true);
+    const result = await adminLandingCmsServiceApi.publish(token, cms);
+    setPublishing(false);
+
+    if (!result.ok) {
+      toast.error(result.reason || "Could not publish landing page.");
+      return;
+    }
+
+    setCms(result.content);
+    setMeta(result.meta);
+    window.dispatchEvent(new Event("landing-cms-updated"));
+    toast.success(result.source === "local" ? result.reason || "Saved locally." : "Landing page published.");
+  }
+
+  async function handleReset() {
+    if (!token) {
+      toast.error("Sign in again to reset landing page content.");
+      return;
+    }
+
+    setResetting(true);
+    const result = await adminLandingCmsServiceApi.resetDraft(token);
+    setResetting(false);
+
+    if (!result.ok) {
+      toast.error(result.reason || "Could not reset landing page.");
+      return;
+    }
+
+    setCms(result.content);
+    setMeta(result.meta);
     window.dispatchEvent(new Event("landing-cms-updated"));
     toast.success("Landing page reset to defaults.");
   }
@@ -140,65 +225,104 @@ export default function AdminLandingCmsPage() {
           <p className="mt-2 max-w-2xl text-sm text-brand-muted">
             Six editable sections: hero, featured tours, Ghana regions, popular destinations, explore links, and a final call to action.
           </p>
+          {meta?.publishedAt ? (
+            <p className="mt-2 text-xs text-brand-muted">
+              Last published {new Date(meta.publishedAt).toLocaleString()}
+              {meta.hasUnpublishedChanges ? " · unpublished draft changes" : ""}
+            </p>
+          ) : null}
         </div>
         <div className="flex flex-wrap gap-2">
-          <button type="button" onClick={() => setPreview((p) => !p)} className="inline-flex items-center gap-2 rounded-xl border border-brand-border/70 px-4 py-2 text-sm font-semibold text-brand-ink hover:bg-brand-cream">
+          <button
+            type="button"
+            onClick={() => setPreview((p) => !p)}
+            disabled={loading || isBusy}
+            className="inline-flex items-center gap-2 rounded-xl border border-brand-border/70 px-4 py-2 text-sm font-semibold text-brand-ink hover:bg-brand-cream disabled:opacity-60"
+          >
             <Eye className="h-4 w-4" aria-hidden /> {preview ? "Hide preview" : "Show preview"}
           </button>
-          <button type="button" onClick={handleReset} className="inline-flex items-center gap-2 rounded-xl border border-brand-border/70 px-4 py-2 text-sm font-semibold text-brand-muted hover:bg-brand-cream">
-            <RotateCcw className="h-4 w-4" aria-hidden /> Reset
+          <button
+            type="button"
+            onClick={handleReset}
+            disabled={loading || isBusy}
+            className="inline-flex items-center gap-2 rounded-xl border border-brand-border/70 px-4 py-2 text-sm font-semibold text-brand-muted hover:bg-brand-cream disabled:opacity-60"
+          >
+            {resetting ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : <RotateCcw className="h-4 w-4" aria-hidden />}
+            Reset
           </button>
-          <button type="button" onClick={handleSave} className="inline-flex items-center gap-2 rounded-xl bg-brand-green px-4 py-2 text-sm font-semibold text-white hover:bg-brand-green/90">
-            <Save className="h-4 w-4" aria-hidden /> Publish changes
+          <button
+            type="button"
+            onClick={handleSaveDraft}
+            disabled={loading || isBusy}
+            className="inline-flex items-center gap-2 rounded-xl border border-brand-green/30 bg-white px-4 py-2 text-sm font-semibold text-brand-green hover:bg-brand-green/5 disabled:opacity-60"
+          >
+            {savingDraft ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : <Save className="h-4 w-4" aria-hidden />}
+            Save draft
+          </button>
+          <button
+            type="button"
+            onClick={handlePublish}
+            disabled={loading || isBusy}
+            className="inline-flex items-center gap-2 rounded-xl bg-brand-green px-4 py-2 text-sm font-semibold text-white hover:bg-brand-green/90 disabled:opacity-60"
+          >
+            {publishing ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : <UploadCloud className="h-4 w-4" aria-hidden />}
+            Publish changes
           </button>
         </div>
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-[280px_1fr]">
-        <div className="rounded-2xl border border-brand-border/60 bg-white p-3 shadow-sm">
-          {LANDING_CMS_SECTIONS.map((section) => (
-            <button
-              key={section.id}
-              type="button"
-              onClick={() => setActiveSection(section.id)}
-              className={[
-                "mb-1 w-full rounded-xl px-3 py-2.5 text-left text-sm font-semibold transition-colors",
-                activeSection === section.id ? "bg-brand-green text-white" : "text-brand-ink hover:bg-brand-cream",
-              ].join(" ")}
-            >
-              {section.label}
-            </button>
-          ))}
+      {loading ? (
+        <div className="flex items-center gap-2 rounded-2xl border border-brand-border/60 bg-white px-4 py-6 text-sm text-brand-muted">
+          <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+          Loading landing page content…
         </div>
+      ) : (
+        <div className="grid gap-6 xl:grid-cols-[280px_1fr]">
+          <div className="rounded-2xl border border-brand-border/60 bg-white p-3 shadow-sm">
+            {LANDING_CMS_SECTIONS.map((section) => (
+              <button
+                key={section.id}
+                type="button"
+                onClick={() => setActiveSection(section.id)}
+                className={[
+                  "mb-1 w-full rounded-xl px-3 py-2.5 text-left text-sm font-semibold transition-colors",
+                  activeSection === section.id ? "bg-brand-green text-white" : "text-brand-ink hover:bg-brand-cream",
+                ].join(" ")}
+              >
+                {section.label}
+              </button>
+            ))}
+          </div>
 
-        <div className="rounded-2xl border border-brand-border/60 bg-white p-5 shadow-sm sm:p-6">
-          <p className="mb-4 text-sm font-bold text-brand-ink">
-            Edit {LANDING_CMS_SECTIONS.find((s) => s.id === activeSection)?.label}
-          </p>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {Object.entries(sectionFields).map(([key, value]) =>
-              isCmsImageField(key) ? (
-                <ImageField
-                  key={key}
-                  label={formatFieldLabel(key)}
-                  value={value}
-                  onChange={(next) => updateField(key, next)}
-                />
-              ) : (
-                <Field
-                  key={key}
-                  label={formatFieldLabel(key)}
-                  value={value}
-                  onChange={(next) => updateField(key, next)}
-                  multiline={MULTILINE_KEYS.has(key)}
-                />
-              ),
-            )}
+          <div className="rounded-2xl border border-brand-border/60 bg-white p-5 shadow-sm sm:p-6">
+            <p className="mb-4 text-sm font-bold text-brand-ink">
+              Edit {LANDING_CMS_SECTIONS.find((s) => s.id === activeSection)?.label}
+            </p>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {Object.entries(sectionFields).map(([key, value]) =>
+                isCmsImageField(key) ? (
+                  <ImageField
+                    key={key}
+                    label={formatFieldLabel(key)}
+                    value={value}
+                    onChange={(next) => updateField(key, next)}
+                  />
+                ) : (
+                  <Field
+                    key={key}
+                    label={formatFieldLabel(key)}
+                    value={value}
+                    onChange={(next) => updateField(key, next)}
+                    multiline={MULTILINE_KEYS.has(key)}
+                  />
+                ),
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
-      {preview ? (
+      {preview && !loading ? (
         <div className="overflow-hidden rounded-2xl border border-brand-border/60 bg-white shadow-sm">
           <div className="border-b border-brand-border/40 bg-brand-cream/50 px-4 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-brand-muted">
             Live preview

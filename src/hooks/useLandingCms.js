@@ -1,20 +1,35 @@
 import { useCallback, useEffect, useState } from "react";
-import { loadLandingCms } from "../utils/landingCmsStorage";
+import publicLandingCmsServiceApi from "../apis/PublicLandingCmsServiceApi";
+import { loadLandingCms, saveLandingCms, STORAGE_KEY } from "../utils/landingCmsStorage";
 
 export function useLandingCms() {
   const [cms, setCms] = useState(() => loadLandingCms());
+  const [loading, setLoading] = useState(true);
 
-  const refresh = useCallback(() => {
-    setCms(loadLandingCms());
+  const refresh = useCallback(async () => {
+    const cached = loadLandingCms();
+    setCms(cached);
+
+    const result = await publicLandingCmsServiceApi.getPublishedContent();
+    if (result.ok && result.content) {
+      saveLandingCms(result.content);
+      setCms(result.content);
+    }
+
+    setLoading(false);
   }, []);
 
   useEffect(() => {
+    refresh();
+
     function handleStorage(event) {
-      if (event.key === "360tours_landing_cms") refresh();
+      if (event.key === STORAGE_KEY) refresh();
     }
+
     function handleLocalUpdate() {
-      refresh();
+      setCms(loadLandingCms());
     }
+
     window.addEventListener("storage", handleStorage);
     window.addEventListener("landing-cms-updated", handleLocalUpdate);
     return () => {
@@ -23,5 +38,5 @@ export function useLandingCms() {
     };
   }, [refresh]);
 
-  return { cms, refresh };
+  return { cms, loading, refresh };
 }

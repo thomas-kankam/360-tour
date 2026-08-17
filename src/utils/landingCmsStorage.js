@@ -3,6 +3,8 @@ import { images } from "../config/images";
 
 const STORAGE_KEY = "360tours_landing_cms";
 
+export { STORAGE_KEY };
+
 const IMAGE_FIELD_KEYS = new Set(["backgroundImage", "image", "sideImage"]);
 
 export function isCmsImageField(key) {
