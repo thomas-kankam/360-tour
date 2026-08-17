@@ -5,7 +5,7 @@
 export const images = {
   logo: "/images/logo.png",
   general_logo: "/images/logo.png",
-  favicon_logo: "/images/logo.png",
+  favicon_logo: "/images/seo/favicon-192x192.png",
   home: {
     hero: "/images/home/hero.jpg",
     hero_img: "/images/gallery/optimized/hero.webp",
