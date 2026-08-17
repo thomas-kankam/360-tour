@@ -1,0 +1,14 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Serve existing files and directories as-is (images, css, js, etc.)
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+
+  # React Router — send all other requests to index.html
+  RewriteRule ^ index.html [QSA,L]
+</IfModule>
+
+# Optional: prevent directory listing
+Options -Indexes
