@@ -11,7 +11,7 @@ export function getCanonicalOrigin() {
   try {
     return new URL(normalizeWebsiteBase()).origin;
   } catch {
-    return "https://afriquestglobaltours.com";
+    return "https://360toursghana.com";
   }
 }
 
