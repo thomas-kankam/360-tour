@@ -273,7 +273,6 @@ export function createEmptyTourListing() {
     priceAmount: 1850,
     priceAmountGhs: 1850,
     priceAmountUsd: "",
-    priceAmountUsd: "",
     audienceScope: "local",
     priceCurrency: "GHS",
     priceLabel: "From GH₵1,850",

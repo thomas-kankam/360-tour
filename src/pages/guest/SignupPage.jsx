@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { toast } from "react-toastify";
 import { Camera } from "lucide-react";
 import { ROUTES } from "../../constants/routes";
-import { ROLE_META, USER_ROLES } from "../../constants/roles";
+import { USER_ROLES } from "../../constants/roles";
 import { images } from "../../config/images";
 import AuthPanelBackground from "../../components/auth/AuthPanelBackground";
 import InternationalPhoneInput from "../../components/forms/InternationalPhoneInput";
@@ -33,7 +33,6 @@ const perks = [
 export default function SignupPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const presetRole = location.state?.role;
   const returnPath = location.state?.from?.pathname;
   const isBookingReturn = Boolean(returnPath?.includes("/book"));
 
@@ -47,12 +46,9 @@ export default function SignupPage() {
     phone: "",
     organization: "",
   });
-  const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
-  const [otpError, setOtpError] = useState("");
-  const [otpHint, setOtpHint] = useState("");
   const [profilePreview, setProfilePreview] = useState("");
   const [profileImage, setProfileImage] = useState("");
   const [profileError, setProfileError] = useState("");
@@ -182,13 +178,7 @@ export default function SignupPage() {
     });
   }
 
-  function handleOtpChange(val) {
-    setOtp(val);
-    if (otpError) setOtpError("");
-  }
 
-
-  const roleMeta = ROLE_META[role];
   const activePerks = perks;
   const signupSteps = isBookingReturn
     ? [{ id: "details", label: "Traveler details" }]

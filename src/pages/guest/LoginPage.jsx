@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
 import { toast } from "react-toastify";
 import { ROUTES } from "../../constants/routes";
-import { resolvePostAuthRedirect, ROLE_META, USER_ROLES } from "../../constants/roles";
+import { resolvePostAuthRedirect, USER_ROLES } from "../../constants/roles";
 import { useAuth } from "../../hooks/useAuth";
 import { images } from "../../config/images";
 import AuthPanelBackground from "../../components/auth/AuthPanelBackground";
@@ -27,7 +27,6 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const presetRole = location.state?.role;
   const returnTo = location.state?.from;
   const returnPath = returnTo?.pathname;
   const isBookingReturn = Boolean(returnPath?.includes("/book"));
@@ -189,7 +188,6 @@ export default function LoginPage() {
     toast.success(result.reason || "OTP resent.");
   }
 
-  const roleMeta = ROLE_META[role];
   const loginSteps = [
     { id: "contact", label: "Contact" },
     { id: "otp", label: "Verify" },
