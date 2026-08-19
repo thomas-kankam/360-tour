@@ -12,7 +12,7 @@ const env = {
   apiUrl:
     process.env.REACT_APP_API_URL ||
     (process.env.NODE_ENV === "development"
-      ? "http://127.0.0.1:8000/api"
+      ? "/api"
       : "https://api.360toursghana.com/api"),
   contactEmail: (process.env.REACT_APP_CONTACT_EMAIL || "360tours.gh@gmail.com").replace(/^\./, ""),
   contactPhone: process.env.REACT_APP_CONTACT_PHONE_US || "+(31) 0684724905",
