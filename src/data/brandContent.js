@@ -1,22 +1,22 @@
 export const brand = {
-  name: "AfriQuest Global",
-  legalName: "AfriQuest Global Travel & Tour",
-  tagline: "Connecting Africa to the World through Travel, Culture, and Discovery",
-  taglineShort: "Your Journey, Our Passion.",
+  name: "360 Tours and Investment Limited",
+  legalName: "360 Tours and Investment Limited",
+  tagline: "Discover Africa. Travel Without Limits.",
+  taglineShort: "Explore More. Travel Better.",
   mission:
-    "To create journeys that go beyond sightseeing, journeys that transform lives, celebrate cultures, and tell Africa's story with pride.",
-  movementLine: "More than a travel agency, we are a movement that celebrates culture, discovery, and shared humanity.",
-  transformationLine: "This is not just travel. It is a transformation.",
+    "To create journeys that go beyond sightseeing — experiences that celebrate culture, connect travelers to Ghana and Africa, and leave a lasting impact.",
+  movementLine: "More than a travel company, we help you explore Ghana and beyond with confidence.",
+  transformationLine: "This is not just travel. It is discovery.",
   feelAfricaLine:
-    "When you travel with AfriQuest, you don't just visit Africa, you feel Africa. You taste Africa. You live Africa.",
+    "When you travel with 360 Tours, you don't just visit Africa — you feel its rhythm, taste its flavors, and connect with its people.",
   intro:
-    "Welcome to AfriQuest Global Travel & Tour, a proud travel brand born from a passion to connect the world to Africa's heart and heritage. With over 10 years of experience, we combine local expertise with global standards to create meaningful experiences that leave a lifelong impact.",
+    "Welcome to 360 Tours and Investment Limited, your trusted partner for guided tours, accommodation, and transport across Ghana and beyond. We combine local expertise with professional coordination for seamless journeys.",
   originStory:
-    "AfriQuest Global began with a vision: to showcase Africa not just as a destination, but as a living classroom, a cultural powerhouse, and a continent of endless inspiration. For over a decade, our team has led travelers from across the world on journeys that combine exploration, learning, and genuine connection.",
+    "360 Tours began with a simple goal: make African travel accessible, authentic, and well organized. From heritage tours in Ghana to curated experiences across the continent, we design trips that combine exploration, culture, and genuine connection.",
   launch2025:
-    "AfriQuest Global is thrilled to announce the launch of our 2025 African Cultural Travel Series, bringing travelers closer to the soul of Africa. From Ghana's historic Cape Coast Castles, to Kenya's majestic safaris, and South Africa's vibrant cities, we are reimagining what it means to experience Africa authentically.",
+    "360 Tours continues to expand curated departures across Ghana — from Cape Coast heritage routes to Volta adventures and Accra city experiences — helping travelers experience Africa authentically.",
   operations:
-    "With operations in Ghana, Kenya, South Africa, and the USA, and our global headquarters in Houston, Texas, we bridge continents and cultures, curating authentic experiences for travelers, students, and organizations worldwide.",
+    "Based in Accra, Ghana, with coordination support in Amsterdam, we serve travelers worldwide with end-to-end tour planning, stays, and transport.",
 };
 
 export const immersionExperiences = [
@@ -27,16 +27,16 @@ export const immersionExperiences = [
   "Listening to the stories that shaped nations",
 ];
 
-export const whyChooseAfriQuest = [
+export const whyChooseUs = [
   {
     title: "10+ years of expertise",
     description:
-      "Over a decade of professional travel experience with a strong reputation for excellence, cultural insight, and authentic African hospitality.",
+      "Professional travel experience with a strong reputation for excellence, cultural insight, and authentic hospitality.",
   },
   {
     title: "Deep local connections",
     description:
-      "Trusted partnerships across Ghana, Kenya, and South Africa, rooted in communities, not just itineraries.",
+      "Trusted partnerships across Ghana and Africa, rooted in communities, not just itineraries.",
   },
   {
     title: "Safe & curated packages",
@@ -46,7 +46,7 @@ export const whyChooseAfriQuest = [
   {
     title: "Seamless coordination",
     description:
-      "End to end logistics from arrival to departure, so you can focus on the experience, not the details.",
+      "End-to-end logistics from arrival to departure, so you can focus on the experience, not the details.",
   },
   {
     title: "Passionate team",
@@ -76,22 +76,22 @@ export const signatureTours2025 = [
 export const experienceCategories = [
   {
     title: "Classic Cultural Tours",
-    description: "Accra, Cape Coast, Kumasi, and Johannesburg, heritage walks, living culture, and historic landmarks.",
+    description: "Accra, Cape Coast, Kumasi, and Johannesburg — heritage walks, living culture, and historic landmarks.",
     icon: "🏛️",
   },
   {
     title: "Adventure Trails",
-    description: "Maasai Mara safaris, Volta River experiences, and scenic trails across our three hub countries.",
+    description: "Safari experiences, Volta River adventures, and scenic trails across our hub destinations.",
     icon: "🏔️",
   },
   {
     title: "Educational Exchange Programs",
-    description: "Global learning tours for universities and schools, Africa as a living classroom.",
+    description: "Global learning tours for universities and schools — Africa as a living classroom.",
     icon: "🎓",
   },
   {
     title: "Corporate Retreats",
-    description: "Business meets leisure in Africa's most scenic destinations, team building with purpose.",
+    description: "Business meets leisure in Africa's most scenic destinations — team building with purpose.",
     icon: "💼",
   },
   {

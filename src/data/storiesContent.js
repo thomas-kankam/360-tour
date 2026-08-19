@@ -6,10 +6,10 @@ export const stories = [
     slug: "cultural-immersion-newsletter-issue-01",
     title: "Cultural Immersion Newsletter, Issue 01: Connecting Africa to the World",
     excerpt:
-      "Welcome to AfriQuest Global's inaugural Cultural Immersion Newsletter. Discover our 2025 African Cultural Travel Series and join a community of travelers, explorers, and cultural ambassadors.",
+      "Welcome to the 360 Tours inaugural Cultural Immersion Newsletter. Discover our African Cultural Travel Series and join a community of travelers, explorers, and cultural ambassadors.",
     category: "Newsletter",
     country: "Pan-African",
-    author: "AfriQuest Global",
+    author: "360 Tours",
     authorRole: "Editorial Team",
     date: "November 2025",
     readTime: "8 min read",
@@ -50,7 +50,7 @@ export const stories = [
       },
       {
         type: "paragraph",
-        text: "Whether you're a university planning a global exchange, a company seeking an adventure retreat, or an individual ready to discover Africa's heartbeat, AfriQuest is your trusted partner.",
+        text: "Whether you're a university planning a global exchange, a company seeking an adventure retreat, or an individual ready to discover Africa's heartbeat, 360 Tours is your trusted partner.",
       },
       {
         type: "quote",
@@ -82,7 +82,7 @@ export const stories = [
       },
       {
         type: "paragraph",
-        text: "Become part of the AfriQuest Global community of travelers, explorers, and cultural ambassadors. Follow our stories, join our programs, and let's explore Africa together, one journey at a time.",
+        text: "Become part of the 360 Tours community of travelers, explorers, and cultural ambassadors. Follow our stories, join our programs, and let's explore Africa together, one journey at a time.",
       },
     ],
   },
@@ -106,7 +106,7 @@ export const stories = [
       },
       {
         type: "paragraph",
-        text: "AfriQuest's local guides didn't rush us through. They gave us space to feel, to reflect, and to connect with a past that shaped nations. That is what cultural immersion means, not observation, but presence.",
+        text: "360 Tours local guides didn't rush us through. They gave us space to feel, to reflect, and to connect with a past that shaped nations. That is what cultural immersion means, not observation, but presence.",
       },
     ],
   },

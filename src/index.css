@@ -56,31 +56,31 @@
     overflow: hidden;
   }
 
-  .afriquest-phone-input {
+  .tours-phone-input {
     @apply rounded-xl border-2 border-brand-border bg-white transition-all duration-200 focus-within:border-brand-green focus-within:ring-2 focus-within:ring-brand-green/15;
   }
 
-  .afriquest-phone-input--error {
+  .tours-phone-input--error {
     @apply border-red-400 focus-within:border-red-400 focus-within:ring-red-100;
   }
 
-  .afriquest-phone-input .PhoneInput {
+  .tours-phone-input .PhoneInput {
     @apply flex items-center gap-2;
   }
 
-  .afriquest-phone-input .PhoneInputCountry {
+  .tours-phone-input .PhoneInputCountry {
     @apply ml-3 shrink-0 self-stretch;
   }
 
-  .afriquest-phone-input .PhoneInputCountrySelect {
+  .tours-phone-input .PhoneInputCountrySelect {
     @apply cursor-pointer;
   }
 
-  .afriquest-phone-input .PhoneInputCountryIcon {
+  .tours-phone-input .PhoneInputCountryIcon {
     @apply h-4 w-6 overflow-hidden rounded-sm shadow-sm;
   }
 
-  .afriquest-phone-input .PhoneInputInput {
+  .tours-phone-input .PhoneInputInput {
     @apply min-w-0 flex-1 border-0 bg-transparent py-3 pr-4 text-sm font-medium text-brand-ink outline-none placeholder:text-brand-muted/50;
   }
 }

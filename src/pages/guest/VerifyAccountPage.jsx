@@ -79,7 +79,7 @@ export default function VerifyAccountPage() {
 
     login(result.token, result.user);
     toast.success(
-      result.reason || (isRegistration ? "Welcome to AfriQuest!" : "Account verified, welcome back!")
+      result.reason || (isRegistration ? "Welcome to 360 Tours!" : "Account verified, welcome back!")
     );
     navigate(resolvePostAuthRedirect(redirectTo, USER_ROLES.TOURIST), { replace: true });
   }

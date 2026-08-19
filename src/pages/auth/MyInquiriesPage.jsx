@@ -4,7 +4,7 @@ export default function MyInquiriesPage() {
   return (
     <PageShell
       title="My inquiries"
-      subtitle="Track tour requests and follow-ups with the AfriQuest team."
+      subtitle="Track tour requests and follow-ups with the 360 Tours team."
     />
   );
 }

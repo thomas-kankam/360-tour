@@ -728,7 +728,7 @@ export default function TourBookingFlow({ tour, open, onClose }) {
                     <div>
                       <p className="text-sm font-bold text-brand-ink">Present this receipt at the premises</p>
                       <p className="mt-1 text-xs leading-relaxed text-brand-muted">
-                        Download your receipt and show it to AfriQuest staff or your guide upon arrival. This confirms your booking and traveler details.
+                        Download your receipt and show it to 360 Tours staff or your guide upon arrival. This confirms your booking and traveler details.
                       </p>
                       <button
                         type="button"
@@ -745,7 +745,7 @@ export default function TourBookingFlow({ tour, open, onClose }) {
                 ) : null}
 
                 <a
-                  href={getWhatsAppUrl(`Hi AfriQuest, my booking ref is ${bookingRef}. I'd like to confirm details for ${tour.name}.`)}
+                  href={getWhatsAppUrl(`Hi 360 Tours, my booking ref is ${bookingRef}. I'd like to confirm details for ${tour.name}.`)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-brand-green hover:underline"

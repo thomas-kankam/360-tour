@@ -23,7 +23,7 @@ export default function PaymentReceiptPreview({ receipt }) {
 
       <div className="flex items-start justify-between gap-3 bg-brand-green px-5 py-4 text-white">
         <div>
-          <p className="text-lg font-bold">AfriQuest Travel &amp; Tours</p>
+          <p className="text-lg font-bold">360 Tours and Investment Limited</p>
           <p className="mt-0.5 text-xs text-white/80">Payment receipt</p>
         </div>
         <span className="shrink-0 rounded-full border border-brand-accent/45 bg-brand-accent/30 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.08em] text-brand-primary">

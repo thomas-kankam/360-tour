@@ -13,7 +13,8 @@ import {
 } from "./operatorTourConstants";
 import { getImagePreviewSrc, MAX_FEATURE_IMAGES, normalizeTourImages, toApiImagePayload } from "./tourImageUtils";
 
-const tour_KEY = "afriqwest_operator_tours";
+const tour_KEY = "360tours_operator_tours";
+const LEGACY_TOUR_KEY = "afriqwest_operator_tours";
 
 function generateId() {
   return `tour_${Date.now().toString(36)}`;
@@ -21,7 +22,7 @@ function generateId() {
 
 export function getOperatorTours() {
   try {
-    const raw = localStorage.getItem(tour_KEY);
+    const raw = localStorage.getItem(tour_KEY) ?? localStorage.getItem(LEGACY_TOUR_KEY);
     const tours = raw ? JSON.parse(raw) : [];
     return tours.map(normalizeTourListing);
   } catch {
@@ -31,7 +32,7 @@ export function getOperatorTours() {
 
 function saveAll(tours) {
   localStorage.setItem(tour_KEY, JSON.stringify(tours));
-  window.dispatchEvent(new CustomEvent("afriqwest:operator-tours-updated"));
+  window.dispatchEvent(new CustomEvent("360tours:operator-tours-updated"));
 }
 
 export function getOperatorTourById(id) {

@@ -1,5 +1,5 @@
 /**
- * AfriQuest logo-aligned palette.
+ * 360 Tours brand palette.
  * Green = primary | Orange = accent/CTA highlight | Gold = sparing highlights | Cream = base
  */
 export const brandColors = {

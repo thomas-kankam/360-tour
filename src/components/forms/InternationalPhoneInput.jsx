@@ -15,8 +15,8 @@ export default function InternationalPhoneInput({
   return (
     <div
       className={[
-        "afriquest-phone-input",
-        hasError ? "afriquest-phone-input--error" : "",
+        "tours-phone-input",
+        hasError ? "tours-phone-input--error" : "",
       ]
         .filter(Boolean)
         .join(" ")}

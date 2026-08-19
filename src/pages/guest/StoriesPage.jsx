@@ -103,7 +103,7 @@ export default function StoriesPage() {
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brand-orange">Cultural Immersion Newsletter</p>
               <h1 className="mt-1.5 text-2xl font-bold text-brand-ink sm:text-3xl">Stories from the field</h1>
-              <p className="mt-1 text-sm text-brand-muted">Travel perspectives, cultural insights, and news from AfriQuest Global</p>
+              <p className="mt-1 text-sm text-brand-muted">Travel perspectives, cultural insights, and news from 360 Tours</p>
             </div>
             <div className="relative w-full max-w-xs sm:w-64">
               <svg className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-brand-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden><circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" /></svg>

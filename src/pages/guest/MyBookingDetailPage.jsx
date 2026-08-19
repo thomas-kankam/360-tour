@@ -350,7 +350,7 @@ export default function MyBookingDetailPage() {
                 View payments
               </Link>
               <a
-                href={getWhatsAppUrl(`Hi AfriQuest, I need help with booking ${booking.bookingCode || booking.bookingRef}.`)}
+                href={getWhatsAppUrl(`Hi 360 Tours, I need help with booking ${booking.bookingCode || booking.bookingRef}.`)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 rounded-xl border border-brand-border px-5 py-2.5 text-sm font-semibold text-brand-muted hover:text-brand-green"

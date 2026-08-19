@@ -472,7 +472,7 @@ function buildItinerary(tour) {
     title: i === 0 ? `Welcome to ${city}` : i === days - 1 ? "Departure day" : plans[Math.min(i, plans.length - 1)],
     description:
       i === 0
-        ? `Meet your AfriQuest guide, settle in, and receive a full trip briefing over a welcome dinner.`
+        ? `Meet your 360 Tours guide, settle in, and receive a full trip briefing over a welcome dinner.`
         : i === days - 1
           ? `Final breakfast, checkout, and transfer to the airport. Safe travels!`
           : `Explore ${tour.country} with curated activities, local guides, and authentic encounters.`,

@@ -172,7 +172,7 @@ export default function AdminLoginPage() {
             </div>
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand-gold">Administrator access</p>
             <h1 className="mt-4 max-w-md text-4xl font-bold leading-tight text-white xl:text-5xl">
-              Secure control for AfriQuest operations.
+              Secure control for 360 Tours operations.
             </h1>
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-white/65">
               Admin routes are isolated from traveler and operator accounts. Only verified administrator sessions can enter.
@@ -190,7 +190,7 @@ export default function AdminLoginPage() {
             className="w-full max-w-md"
           >
             <div className="mb-8 flex items-center justify-between">
-              <img src={images.general_logo} alt="AfriQuest Global" className="h-10 w-auto" />
+              <img src={images.general_logo} alt="360 Tours and Investment Limited" className="h-10 w-auto" />
               <span className="rounded-full border border-brand-border bg-white px-3 py-1 text-xs font-bold uppercase tracking-[0.14em] text-brand-green">
                 Admin
               </span>

@@ -27,8 +27,8 @@ export default function DashboardPage() {
       setBookings(getBookings());
     }
     refresh();
-    window.addEventListener("afriqwest:bookings-updated", refresh);
-    return () => window.removeEventListener("afriqwest:bookings-updated", refresh);
+    window.addEventListener("360tours:bookings-updated", refresh);
+    return () => window.removeEventListener("360tours:bookings-updated", refresh);
   }, []);
 
   const upcoming = bookings.filter(isUpcoming);

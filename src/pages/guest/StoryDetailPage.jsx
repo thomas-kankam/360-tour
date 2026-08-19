@@ -152,7 +152,7 @@ export default function StoryDetailPage() {
               <div className="mt-10 rounded-2xl border border-brand-green/20 bg-brand-green/5 p-6 sm:p-8 lg:hidden">
                 <p className="text-sm font-semibold uppercase tracking-[0.14em] text-brand-orange">Join the movement</p>
                 <p className="mt-2 text-base leading-relaxed text-brand-ink">
-                  Become part of the AfriQuest Global community, explore our 2025 Cultural Travel Series and plan your journey today.
+                  Become part of the 360 Tours community, explore our cultural travel series, and plan your journey today.
                 </p>
                 <div className="mt-5 flex flex-wrap gap-3">
                   <Link

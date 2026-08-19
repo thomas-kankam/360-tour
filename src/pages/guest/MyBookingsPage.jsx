@@ -185,7 +185,7 @@ function BookingCard({ booking, index, onCompletePayment, onDownloadReceipt, pay
               </Link>
             )}
             <a
-              href={getWhatsAppUrl(`Hi AfriQuest, I need help with booking ${booking.bookingRef}.`)}
+              href={getWhatsAppUrl(`Hi 360 Tours, I need help with booking ${booking.bookingRef}.`)}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 rounded-xl border border-brand-border bg-white px-4 py-2 text-xs font-semibold text-brand-muted transition-all hover:border-brand-green/30 hover:text-brand-green"

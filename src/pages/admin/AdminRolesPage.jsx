@@ -17,15 +17,11 @@ import AdminModal from "../../components/admin/AdminModal";
 import AdminPagination from "../../components/admin/AdminPagination";
 import {
   AdminMobileCard,
-  AdminMobileCardActions,
   AdminMobileCardBody,
   AdminMobileCardHeader,
   AdminMobileCardRow,
   AdminTableDesktop,
   AdminTableMobile,
-  adminIconBtnClass,
-  adminIconBtnDangerClass,
-  adminIconBtnViewClass,
 } from "../../components/admin/AdminResponsiveTable";
 import { useAuth } from "../../hooks/useAuth";
 import { useServerAdminPagination } from "../../hooks/useAdminPagination";
@@ -63,12 +59,6 @@ function EmptyState({ icon: Icon, title, description, action }) {
 function PermissionsPanel({ token }) {
   const [permissions, setPermissions] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [deleteTarget, setDeleteTarget] = useState(null);
-  const [editing, setEditing] = useState(null);
-  const [label, setLabel] = useState("");
-  const [fieldError, setFieldError] = useState("");
   const pagination = useServerAdminPagination();
 
   const loadPermissions = useCallback(async () => {
@@ -94,86 +84,15 @@ function PermissionsPanel({ token }) {
     loadPermissions();
   }, [loadPermissions]);
 
-  function openCreateModal() {
-    setEditing(null);
-    setLabel("");
-    setFieldError("");
-    setModalOpen(true);
-  }
-
-  function openEditModal(permission) {
-    setEditing(permission);
-    setLabel(permission.label);
-    setFieldError("");
-    setModalOpen(true);
-  }
-
-  function closeModal() {
-    if (saving) return;
-    setModalOpen(false);
-    setEditing(null);
-    setLabel("");
-    setFieldError("");
-  }
-
-  async function handleSubmit(e) {
-    e.preventDefault();
-    const trimmed = label.trim();
-    if (!trimmed) {
-      setFieldError("Permission label is required.");
-      return;
-    }
-
-    setSaving(true);
-    setFieldError("");
-
-    const result = editing
-      ? await adminRolesServiceApi.updatePermission(token, editing.id, { label: trimmed })
-      : await adminRolesServiceApi.createPermission(token, { label: trimmed });
-
-    setSaving(false);
-
-    if (!result.ok) {
-      setFieldError(result.reason || result.message);
-      toast.error(result.reason || result.message);
-      return;
-    }
-
-    toast.success(result.reason || (editing ? "Permission updated." : "Permission created."));
-    closeModal();
-    loadPermissions();
-  }
-
-  async function handleDelete() {
-    if (!deleteTarget) return;
-
-    setSaving(true);
-    const result = await adminRolesServiceApi.deletePermission(token, deleteTarget.id);
-    setSaving(false);
-
-    if (!result.ok) {
-      toast.error(result.reason || result.message);
-      return;
-    }
-
-    toast.success(result.reason || "Permission deleted.");
-    setDeleteTarget(null);
-    loadPermissions();
-  }
-
   const isEmpty = !loading && permissions.length === 0;
 
   return (
     <div className="space-y-5">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h2 className="text-lg font-bold text-brand-ink">Permissions</h2>
-          <p className="text-sm text-brand-muted">Define access modules that can be assigned to roles.</p>
-        </div>
-        <button type="button" onClick={openCreateModal} className="btn-primary inline-flex items-center gap-2 px-4 py-2.5 text-sm">
-          <Plus className="h-4 w-4" strokeWidth={2} aria-hidden />
-          New permission
-        </button>
+      <div>
+        <h2 className="text-lg font-bold text-brand-ink">Permissions</h2>
+        <p className="text-sm text-brand-muted">
+          System-defined access modules. View only — assign them to roles on the Roles tab.
+        </p>
       </div>
 
       {loading ? (
@@ -183,14 +102,8 @@ function PermissionsPanel({ token }) {
       ) : isEmpty ? (
         <EmptyState
           icon={KeyRound}
-          title="No permissions yet"
-          description="Create your first permission to start building role access controls."
-          action={
-            <button type="button" onClick={openCreateModal} className="btn-primary inline-flex items-center gap-2 px-4 py-2 text-sm">
-              <Plus className="h-4 w-4" strokeWidth={2} aria-hidden />
-              Create permission
-            </button>
-          }
+          title="No permissions found"
+          description="Permission modules are managed by the system and will appear here when available."
         />
       ) : (
         <>
@@ -214,24 +127,6 @@ function PermissionsPanel({ token }) {
                       }
                     />
                   </AdminMobileCardBody>
-                  <AdminMobileCardActions>
-                    <button
-                      type="button"
-                      onClick={() => openEditModal(permission)}
-                      className={`${adminIconBtnClass} ${adminIconBtnViewClass}`}
-                      aria-label={`Edit ${permission.label}`}
-                    >
-                      <Pencil className="h-4 w-4" strokeWidth={1.75} aria-hidden />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setDeleteTarget(permission)}
-                      className={`${adminIconBtnClass} ${adminIconBtnDangerClass}`}
-                      aria-label={`Delete ${permission.label}`}
-                    >
-                      <Trash2 className="h-4 w-4" strokeWidth={1.75} aria-hidden />
-                    </button>
-                  </AdminMobileCardActions>
                 </AdminMobileCard>
               </motion.div>
             ))}
@@ -241,7 +136,7 @@ function PermissionsPanel({ token }) {
             <table className="w-full text-left">
               <thead className="border-b border-black/8 bg-brand-cream/50">
                 <tr>
-                  {["Label", "System name", "Actions"].map((heading) => (
+                  {["Label", "System name"].map((heading) => (
                     <th key={heading} className="px-5 py-3.5 text-[11px] font-bold uppercase tracking-[0.12em] text-brand-muted">
                       {heading}
                     </th>
@@ -263,26 +158,6 @@ function PermissionsPanel({ token }) {
                     <td className="px-5 py-4">
                       <code className="rounded-lg bg-brand-cream px-2 py-1 text-xs text-brand-muted">{permission.name}</code>
                     </td>
-                    <td className="px-5 py-4">
-                      <div className="flex items-center gap-2">
-                        <button
-                          type="button"
-                          onClick={() => openEditModal(permission)}
-                          className={`${adminIconBtnClass} ${adminIconBtnViewClass}`}
-                          aria-label={`Edit ${permission.label}`}
-                        >
-                          <Pencil className="h-4 w-4" strokeWidth={1.75} aria-hidden />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setDeleteTarget(permission)}
-                          className={`${adminIconBtnClass} ${adminIconBtnDangerClass}`}
-                          aria-label={`Delete ${permission.label}`}
-                        >
-                          <Trash2 className="h-4 w-4" strokeWidth={1.75} aria-hidden />
-                        </button>
-                      </div>
-                    </td>
                   </motion.tr>
                 ))}
               </tbody>
@@ -299,64 +174,6 @@ function PermissionsPanel({ token }) {
           />
         </>
       )}
-
-      <AdminModal
-        open={modalOpen}
-        title={editing ? "Edit permission" : "Create permission"}
-        subtitle={editing ? "Update the permission label." : "The system name is generated automatically from the label."}
-        onClose={closeModal}
-        footer={
-          <>
-            <button type="button" onClick={closeModal} disabled={saving} className="btn-secondary px-4 py-2 text-sm">
-              Cancel
-            </button>
-            <button
-              type="submit"
-              form="permission-form"
-              disabled={saving}
-              className="btn-primary inline-flex items-center gap-2 px-4 py-2 text-sm disabled:opacity-60"
-            >
-              {saving ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : null}
-              {editing ? "Save changes" : "Create permission"}
-            </button>
-          </>
-        }
-      >
-        <form id="permission-form" onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="permission-label" className="block text-xs font-semibold uppercase tracking-[0.12em] text-brand-muted">
-              Label
-            </label>
-            <input
-              id="permission-label"
-              type="text"
-              value={label}
-              onChange={(e) => {
-                setLabel(e.target.value);
-                if (fieldError) setFieldError("");
-              }}
-              placeholder="e.g. Token management"
-              className={[
-                "mt-2 w-full rounded-xl border-2 bg-white px-4 py-3 text-sm font-medium text-brand-ink outline-none transition-all focus:ring-2",
-                fieldError
-                  ? "border-red-400 focus:border-red-400 focus:ring-red-100"
-                  : "border-brand-border focus:border-brand-green focus:ring-brand-green/15",
-              ].join(" ")}
-            />
-            {fieldError ? <p className="mt-1.5 text-xs font-medium text-red-500">{fieldError}</p> : null}
-          </div>
-        </form>
-      </AdminModal>
-
-      <AdminConfirmModal
-        open={Boolean(deleteTarget)}
-        title="Delete permission"
-        itemLabel={deleteTarget?.label}
-        message="This action cannot be undone. Roles that include this permission may lose access."
-        loading={saving}
-        onClose={() => !saving && setDeleteTarget(null)}
-        onConfirm={handleDelete}
-      />
     </div>
   );
 }
@@ -644,7 +461,7 @@ function RolesPanel({ token }) {
 
             {permissions.length === 0 ? (
               <p className="rounded-xl bg-brand-cream/60 px-4 py-3 text-sm text-brand-muted">
-                No permissions available. Create permissions first.
+                No permissions available from the system yet.
               </p>
             ) : (
               <div className="max-h-64 space-y-2 overflow-y-auto rounded-2xl border border-brand-border/60 bg-brand-cream/30 p-3">
@@ -714,7 +531,7 @@ export default function AdminRolesPage() {
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-primary">Role management</p>
           <h1 className="mt-1 font-heading text-3xl font-bold text-brand-ink">Roles & permissions</h1>
           <p className="mt-2 max-w-2xl text-sm text-brand-muted">
-            Create permissions, bundle them into roles, and control what each administrator can access.
+            View system permissions and bundle them into roles to control what each administrator can access.
           </p>
         </div>
 

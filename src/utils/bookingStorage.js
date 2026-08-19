@@ -1,4 +1,6 @@
-const STORAGE_KEY = "afriqwest_bookings";
+const STORAGE_KEY = "360tours_bookings";
+const LEGACY_STORAGE_KEY = "afriqwest_bookings";
+const BOOKINGS_UPDATED_EVENT = "360tours:bookings-updated";
 
 export function getBookingStatus(booking) {
   if (booking.apiStatus === "confirmed" && booking.paymentStatus === "paid") return "paid";
@@ -15,7 +17,7 @@ export function getBookingStatus(booking) {
 
 export function getBookings() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(STORAGE_KEY) ?? localStorage.getItem(LEGACY_STORAGE_KEY);
     return raw ? JSON.parse(raw) : [];
   } catch {
     return [];
@@ -31,7 +33,7 @@ export function saveBooking(booking) {
   const existing = getBookings();
   const updated = [record, ...existing.filter((b) => b.bookingRef !== record.bookingRef)];
   localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-  window.dispatchEvent(new CustomEvent("afriqwest:bookings-updated"));
+  window.dispatchEvent(new CustomEvent(BOOKINGS_UPDATED_EVENT));
   return record;
 }
 

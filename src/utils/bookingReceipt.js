@@ -111,7 +111,7 @@ export function buildReceiptHtml(data) {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AfriQuest Booking Receipt — ${escapeHtml(bookingRef)}</title>
+  <title>360 Tours Booking Receipt — ${escapeHtml(bookingRef)}</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: Georgia, "Times New Roman", serif; color: #1C2B26; background: #F7F3EB; padding: 32px 16px; }
@@ -148,7 +148,7 @@ export function buildReceiptHtml(data) {
 <body>
   <div class="receipt">
     <div class="header">
-      <h1>AfriQuest Travel &amp; Tours</h1>
+      <h1>360 Tours and Investment Limited</h1>
       <p>Official booking receipt</p>
       <div class="ref">
         <div class="ref-label">Booking reference</div>
@@ -158,7 +158,7 @@ export function buildReceiptHtml(data) {
 
     <div class="notice">
       <strong>⚠ Present this receipt at the premises upon arrival</strong>
-      <p>Please download, print, or save this receipt on your device and show it to AfriQuest staff or your tour guide when you arrive. This confirms your booking and traveler details.</p>
+      <p>Please download, print, or save this receipt on your device and show it to 360 Tours staff or your tour guide when you arrive. This confirms your booking and traveler details.</p>
     </div>
 
     <div class="body">

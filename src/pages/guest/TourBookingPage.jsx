@@ -829,7 +829,7 @@ export default function TourBookingPage() {
                         <div>
                           <p className="text-sm font-bold text-brand-ink">You&apos;ll be redirected to our payment gateway</p>
                           <p className="mt-1 text-xs leading-relaxed text-brand-muted">
-                            AfriQuest never stores card details. Payment of {formatBookingCurrency(subtotal, chargeCurrency)} is processed securely by our payment partner. Confirmation is sent to <strong className="text-brand-ink">{form.email}</strong>.
+                            360 Tours never stores card details. Payment of {formatBookingCurrency(subtotal, chargeCurrency)} is processed securely by our payment partner. Confirmation is sent to <strong className="text-brand-ink">{form.email}</strong>.
                           </p>
                         </div>
                       </div>

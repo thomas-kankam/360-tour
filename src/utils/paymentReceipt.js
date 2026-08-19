@@ -171,7 +171,7 @@ export function buildPaymentReceiptHtml(data) {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AfriQuest Payment Receipt — ${escapeHtml(paymentReference)}</title>
+  <title>360 Tours Payment Receipt — ${escapeHtml(paymentReference)}</title>
   <style>
     @page { size: A4; margin: 14mm; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -270,7 +270,7 @@ export function buildPaymentReceiptHtml(data) {
 
     <div class="header">
       <div>
-        <h1>AfriQuest Travel &amp; Tours</h1>
+        <h1>360 Tours and Investment Limited</h1>
         <p>Payment receipt</p>
       </div>
       <span class="badge">Paid</span>
@@ -323,7 +323,7 @@ export function buildPaymentReceiptHtml(data) {
 }
 
 function buildReceiptFilename(data) {
-  return buildPdfFilename("AfriQuest-Receipt", data.bookingRef || data.paymentReference);
+  return buildPdfFilename("360 Tours-Receipt", data.bookingRef || data.paymentReference);
 }
 
 function formatPdfAmountLabel(data) {
@@ -374,7 +374,7 @@ export function buildPaymentReceiptPdf(data, JsPDF, logoAsset = null) {
     y,
     contentWidth,
     logoAsset,
-    title: "AfriQuest Travel & Tours",
+    title: "360 Tours and Investment Limited",
     subtitle: receiptSubtitle,
     badgeText: receiptBadge,
   });

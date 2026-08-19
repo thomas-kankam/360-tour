@@ -1,7 +1,7 @@
 import { PAYMENT_REGION } from "../constants/paymentRegions";
 
-export const DEV_PAYMENT_REGION_KEY = "afriquest_dev_payment_region";
-export const PAYMENT_REGION_OVERRIDE_EVENT = "afriquest:payment-region-override-changed";
+export const DEV_PAYMENT_REGION_KEY = "360tours_dev_payment_region";
+export const PAYMENT_REGION_OVERRIDE_EVENT = "360tours:payment-region-override-changed";
 
 export function isDevPaymentRegionEnabled() {
   return process.env.NODE_ENV !== "production";
@@ -80,12 +80,12 @@ export function applyDevPaymentRegionFromUrl(search = "") {
 export function installDevPaymentRegionConsoleHelpers() {
   if (!isDevPaymentRegionEnabled() || typeof window === "undefined") return;
 
-  window.afriquestDev = {
+  window.tours360Dev = {
     setPaymentRegion: (value) => {
       const normalized = normalizePaymentRegionParam(value);
       if (!normalized) {
         console.warn(
-          "Use afriquestDev.setPaymentRegion('domestic') or afriquestDev.setPaymentRegion('international')",
+          "Use tours360Dev.setPaymentRegion('domestic') or tours360Dev.setPaymentRegion('international')",
         );
         return null;
       }

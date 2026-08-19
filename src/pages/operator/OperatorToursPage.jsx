@@ -217,7 +217,7 @@ export default function OperatorToursPage() {
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-gold">Your catalog</p>
             <h1 className="mt-2 font-heading text-3xl font-bold sm:text-4xl">Tour listings</h1>
             <p className="mt-3 max-w-xl text-sm leading-relaxed text-white/70">
-              Create rich multi-city experiences, publish to AfriQuest, and manage departures from one place.
+              Create rich multi-city experiences, publish to 360 Tours, and manage departures from one place.
             </p>
           </div>
           <Link to={ROUTES.operator.tourNew} className="btn-primary inline-flex items-center gap-2 bg-white text-brand-ink hover:bg-brand-cream">

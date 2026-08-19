@@ -231,7 +231,7 @@ export default function LoginPage() {
               starts with a single step.
             </h2>
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-white/65">
-              Join 5,000+ travelers who have explored Ghana, Kenya, and South Africa with AfriQuest.
+              Join 5,000+ travelers who have explored Ghana, Kenya, and South Africa with 360 Tours.
             </p>
           </div>
         </div>
@@ -247,7 +247,7 @@ export default function LoginPage() {
               Back to home
             </Link>
             <div className="mt-5 flex justify-center">
-              <img src={images.general_logo} alt="AfriQuest Global" className="h-10 w-auto" />
+              <img src={images.general_logo} alt="360 Tours and Investment Limited" className="h-10 w-auto" />
             </div>
           </div>
 
