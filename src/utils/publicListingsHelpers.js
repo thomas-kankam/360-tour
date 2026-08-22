@@ -122,7 +122,21 @@ export function formatDepartureDateLabel(isoDate) {
 
 export function tourHasDepartureOnDate(tour, isoDate) {
   if (!isoDate || !tour) return true;
-  return (tour.departureDates || []).includes(isoDate);
+
+  const departures = tour.departureDates || [];
+  if (!departures.length) return false;
+
+  return departures.some((departure) => {
+    if (typeof departure === "string") {
+      return departure === isoDate;
+    }
+
+    const start = departure?.date || departure?.startDate || "";
+    const end = departure?.endDate || start;
+    if (!start) return false;
+    if (isoDate === start || isoDate === end) return true;
+    return isoDate > start && isoDate < end;
+  });
 }
 
 export function resolveCountryFilterFromParams(countryParam) {

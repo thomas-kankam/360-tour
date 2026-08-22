@@ -16,8 +16,8 @@ class PublicRatingsServiceApi {
     };
   }
 
-  async getTourReviews(tourSlug) {
-    const url = `${this.baseUrl}/listings/${encodeURIComponent(tourSlug)}/reviews`;
+  async getTourReviews(tourSlug, { page = 1, perPage = 10 } = {}) {
+    const url = `${this.baseUrl}/listings/${encodeURIComponent(tourSlug)}/reviews?page=${page}&per_page=${perPage}`;
     const key = buildRequestKey({ method: "GET", url });
 
     const exec = async () => {
@@ -25,20 +25,30 @@ class PublicRatingsServiceApi {
         const response = await axios.get(url, { headers: this.getHeaders() });
         const result = parseApiEnvelope(response);
         if (!result.ok) {
-          return { ...result, items: getLocalTourReviews(tourSlug), source: "local" };
+          return { ...result, items: getLocalTourReviews(tourSlug), source: "local", pagination: null };
         }
 
         const payload = result.data;
-        const rawItems = Array.isArray(payload?.data) ? payload.data : Array.isArray(payload?.reviews) ? payload.reviews : Array.isArray(payload) ? payload : [];
+        const nested = payload?.data ?? payload;
+        const rawItems = Array.isArray(nested?.data)
+          ? nested.data
+          : Array.isArray(payload?.data)
+            ? payload.data
+            : Array.isArray(payload?.reviews)
+              ? payload.reviews
+              : Array.isArray(payload)
+                ? payload
+                : [];
         const items = rawItems.map(mapPublicReview).filter((item) => item && item.status === "approved");
+        const pagination = nested?.pagination ?? payload?.pagination ?? null;
 
-        return { ...result, items, source: "api" };
+        return { ...result, items, pagination, source: "api" };
       } catch (error) {
         const status = error?.response?.status;
         if (status === 404 || status === 405 || status === 501) {
-          return { ok: true, items: getLocalTourReviews(tourSlug), source: "local" };
+          return { ok: true, items: getLocalTourReviews(tourSlug), source: "local", pagination: null };
         }
-        return { ...parseApiError(error), items: getLocalTourReviews(tourSlug), source: "local" };
+        return { ...parseApiError(error), items: getLocalTourReviews(tourSlug), source: "local", pagination: null };
       }
     };
 

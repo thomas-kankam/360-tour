@@ -196,7 +196,7 @@ function StorySpotlight({ item, activeIndex, total, onPrev, onNext, onTouchStart
 }
 
 export default function HomeTestimonial({ cmsOverride }) {
-  const sectionMeta = { ...testimonialsSection, ...cmsOverride };
+  const sectionMeta = useMemo(() => ({ ...testimonialsSection, ...cmsOverride }), [cmsOverride]);
   const stories = useMemo(() => resolveCmsTestimonialItems(sectionMeta), [sectionMeta]);
   const total = stories.length;
   const [activeIndex, setActiveIndex] = useState(0);

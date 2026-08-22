@@ -483,10 +483,6 @@ export default function ToursPage() {
   const visibleTours = useMemo(() => {
     let list = tours;
 
-    if (activeRegion !== "all") {
-      list = list.filter((tour) => tourMatchesRegion(tour, activeRegion));
-    }
-
     if (activeDate) {
       list = list.filter((tour) => tourHasDepartureOnDate(tour, activeDate));
     }
@@ -501,7 +497,7 @@ export default function ToursPage() {
         tour.country.toLowerCase().includes(query) ||
         (tour.regionLabels || []).some((label) => label.toLowerCase().includes(query)),
     );
-  }, [tours, search, activeDate, activeRegion]);
+  }, [tours, search, activeDate]);
 
   const applySearchParams = useCallback(({ country, date, region, type }) => {
     setSearchParams(buildToursSearchParams({ country, date, region, type }), { replace: true });

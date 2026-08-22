@@ -79,12 +79,20 @@ const adminRoutes = (
           <Route path="operators/:operatorSlug" element={<AdminOperatorDetailPage />} />
         </Route>
 
-        <Route path="ratings" element={<AdminRatingsPage />} />
-        <Route path="invoices" element={<AdminInvoicesPage />} />
-        <Route path="invoices/new" element={<AdminInvoiceFormPage />} />
-        <Route path="invoices/:id/edit" element={<AdminInvoiceFormPage />} />
-        <Route path="invoices/:id" element={<AdminInvoiceDetailPage />} />
-        <Route path="landing-cms" element={<AdminLandingCmsPage />} />
+        <Route element={<AdminPermissionRoute permission={ADMIN_PERMISSIONS.RATING_MANAGEMENT} />}>
+          <Route path="ratings" element={<AdminRatingsPage />} />
+        </Route>
+
+        <Route element={<AdminPermissionRoute permission={ADMIN_PERMISSIONS.INVOICE_MANAGEMENT} />}>
+          <Route path="invoices" element={<AdminInvoicesPage />} />
+          <Route path="invoices/new" element={<AdminInvoiceFormPage />} />
+          <Route path="invoices/:id/edit" element={<AdminInvoiceFormPage />} />
+          <Route path="invoices/:id" element={<AdminInvoiceDetailPage />} />
+        </Route>
+
+        <Route element={<AdminPermissionRoute permission={ADMIN_PERMISSIONS.CMS_MANAGEMENT} />}>
+          <Route path="landing-cms" element={<AdminLandingCmsPage />} />
+        </Route>
 
         <Route element={<AdminPermissionRoute permission={ADMIN_PERMISSIONS.ROLE_MANAGEMENT} />}>
           <Route path="roles" element={<AdminRolesPage />} />

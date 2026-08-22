@@ -17,7 +17,7 @@ export function mapAdminOperator(raw) {
 
   return {
     id: raw.id,
-    operatorSlug: raw.operatorSlug || raw.operator_slug || "",
+    operatorSlug: raw.operatorSlug || raw.operator_slug || raw.adminSlug || raw.admin_slug || "",
     firstName,
     lastName,
     name: `${firstName} ${lastName}`.trim(),

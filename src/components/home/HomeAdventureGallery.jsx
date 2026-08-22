@@ -29,14 +29,12 @@ const SPANS = [
 ];
 
 export default function HomeAdventureGallery({ cmsOverride }) {
-  const section = { ...SECTION_DEFAULTS, ...cmsOverride };
+  const section = useMemo(() => ({ ...SECTION_DEFAULTS, ...cmsOverride }), [cmsOverride]);
   const [lightboxIndex, setLightboxIndex] = useState(-1);
 
-  const tiles = useMemo(() => resolveCmsGalleryItems(section).slice(0, SPANS.length), [section]);
-  const lightboxImages = useMemo(
-    () => resolveCmsGalleryItems(section).map((item) => item.sources.webp),
-    [section],
-  );
+  const galleryItems = useMemo(() => resolveCmsGalleryItems(section), [section]);
+  const tiles = useMemo(() => galleryItems.slice(0, SPANS.length), [galleryItems]);
+  const lightboxImages = useMemo(() => galleryItems.map((item) => item.sources.webp), [galleryItems]);
 
   return (
     <section className="relative overflow-hidden bg-brand-charcoal py-16 sm:py-20 lg:py-24">

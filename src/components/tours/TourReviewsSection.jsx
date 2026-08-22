@@ -85,21 +85,35 @@ export default function TourReviewsSection({ tourSlug, tourTitle }) {
 
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
-  const loadReviews = useCallback(async () => {
+  const loadReviews = useCallback(async (nextPage = 1, append = false) => {
     if (!tourSlug) return;
-    setLoading(true);
-    const result = await publicRatingsServiceApi.getTourReviews(tourSlug);
-    setLoading(false);
-    setReviews(result.items ?? []);
+    if (append) setLoadingMore(true);
+    else setLoading(true);
+
+    const result = await publicRatingsServiceApi.getTourReviews(tourSlug, { page: nextPage, perPage: 10 });
+
+    if (append) setLoadingMore(false);
+    else setLoading(false);
+
+    const items = result.items ?? [];
+    setReviews((prev) => (append ? [...prev, ...items.filter((item) => !prev.some((r) => r.id === item.id))] : items));
+
+    const pagination = result.pagination;
+    const totalPages = pagination?.totalPages ?? pagination?.last_page ?? 1;
+    setPage(nextPage);
+    setHasMore(nextPage < totalPages);
   }, [tourSlug]);
 
   useEffect(() => {
-    loadReviews();
+    loadReviews(1, false);
   }, [loadReviews]);
 
   const summary = summarizeReviews(reviews);
@@ -139,7 +153,7 @@ export default function TourReviewsSection({ tourSlug, tourTitle }) {
     setSubmitted(true);
     setRating(0);
     setComment("");
-    loadReviews();
+    loadReviews(1, false);
   }
 
   const loginHref = ROUTES.login;
@@ -178,6 +192,19 @@ export default function TourReviewsSection({ tourSlug, tourTitle }) {
           {reviews.map((review) => (
             <ReviewCard key={review.id} review={review} />
           ))}
+          {hasMore ? (
+            <div className="flex justify-center pt-2">
+              <button
+                type="button"
+                onClick={() => loadReviews(page + 1, true)}
+                disabled={loadingMore}
+                className="inline-flex items-center gap-2 rounded-xl border border-brand-border/70 px-4 py-2 text-sm font-semibold text-brand-ink transition-colors hover:border-brand-green/40 hover:text-brand-green disabled:opacity-60"
+              >
+                {loadingMore ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : null}
+                Load more reviews
+              </button>
+            </div>
+          ) : null}
         </div>
       ) : (
         <div className="mt-6 rounded-2xl border border-dashed border-brand-border/70 bg-brand-cream/40 px-6 py-10 text-center">

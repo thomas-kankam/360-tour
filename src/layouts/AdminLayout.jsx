@@ -36,13 +36,10 @@ const PERMISSION_NAV_MAP = {
   [ADMIN_PERMISSIONS.BOOKING_MANAGEMENT]: { to: ROUTES.admin.bookings, label: "Bookings", icon: CalendarCheck },
   [ADMIN_PERMISSIONS.CONTACT_MANAGEMENT]: { to: ROUTES.admin.contacts, label: "Enquiries", icon: MessageSquare },
   [ADMIN_PERMISSIONS.CLIENT_MANAGEMENT]: { to: ROUTES.admin.clients, label: "Clients", icon: Users },
+  [ADMIN_PERMISSIONS.RATING_MANAGEMENT]: { to: ROUTES.admin.ratings, label: "Ratings", icon: Star },
+  [ADMIN_PERMISSIONS.INVOICE_MANAGEMENT]: { to: ROUTES.admin.invoices, label: "Invoices", icon: FileText },
+  [ADMIN_PERMISSIONS.CMS_MANAGEMENT]: { to: ROUTES.admin.landingCms, label: "Landing CMS", icon: LayoutTemplate },
 };
-
-const ALWAYS_ADMIN_NAV = [
-  { key: "ratings", to: ROUTES.admin.ratings, label: "Ratings", icon: Star },
-  { key: "invoices", to: ROUTES.admin.invoices, label: "Invoices", icon: FileText },
-  { key: "landing-cms", to: ROUTES.admin.landingCms, label: "Landing CMS", icon: LayoutTemplate },
-];
 
 const BOOKING_EXTRA_NAV = [
   { to: ROUTES.admin.payments, label: "Payments", icon: CreditCard },
@@ -63,10 +60,6 @@ function AdminSidebarContent({ user, collapsed, onNavigate }) {
     return items;
   });
 
-  const alwaysItems = ALWAYS_ADMIN_NAV.filter(
-    (item) => !managementItems.some((existing) => existing.to === item.to),
-  );
-
   const canManageTours = permissionNames.includes(ADMIN_PERMISSIONS.LISTING_MANAGEMENT);
 
   return (
@@ -82,19 +75,9 @@ function AdminSidebarContent({ user, collapsed, onNavigate }) {
         />
       </PortalNavSection>
 
-      {(managementItems.length > 0 || alwaysItems.length > 0) ? (
+      {managementItems.length > 0 ? (
         <PortalNavSection title="Management" collapsed={collapsed}>
           {managementItems.map((item) => (
-            <PortalNavItem
-              key={item.key}
-              to={item.to}
-              label={item.label}
-              icon={item.icon}
-              collapsed={collapsed}
-              onClick={onNavigate}
-            />
-          ))}
-          {alwaysItems.map((item) => (
             <PortalNavItem
               key={item.key}
               to={item.to}
