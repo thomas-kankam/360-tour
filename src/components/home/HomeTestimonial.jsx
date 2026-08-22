@@ -1,20 +1,20 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ChevronLeft, ChevronRight, MessageCircle, Quote, Star } from "lucide-react";
 import Container from "../layout/Container";
 import { images, getPopularDestinationImage } from "../../config/images";
-import { testimonials, testimonialsSection } from "../../data/homeContent";
+import { testimonialsSection } from "../../data/homeContent";
+import { resolveCmsTestimonialItems } from "../../utils/landingCmsItems";
 
 const EASE = [0.16, 1, 0.3, 1];
-const TOTAL = testimonials.length;
 const AUTOPLAY_MS = 7000;
 
 function getTestimonialImage(item) {
-  return getPopularDestinationImage(item.imageKey) ?? images.home.testimonial;
+  return item.imageSrc || getPopularDestinationImage(item.imageKey) || images.home.testimonial;
 }
 
-function wrapIndex(index) {
-  return ((index % TOTAL) + TOTAL) % TOTAL;
+function wrapIndex(index, total) {
+  return ((index % total) + total) % total;
 }
 
 function scrollListItemIntoView(container, index) {
@@ -124,7 +124,7 @@ function SpotlightNavButton({ direction, onClick, label }) {
   );
 }
 
-function StorySpotlight({ item, activeIndex, onPrev, onNext, onTouchStart, onTouchEnd }) {
+function StorySpotlight({ item, activeIndex, total, onPrev, onNext, onTouchStart, onTouchEnd }) {
   return (
     <motion.div
       key={item.id}
@@ -185,7 +185,7 @@ function StorySpotlight({ item, activeIndex, onPrev, onNext, onTouchStart, onTou
           <SpotlightNavButton direction="next" onClick={onNext} label="Next story" />
         </div>
         <span className="text-xs font-bold tabular-nums text-brand-muted">
-          {String(activeIndex + 1).padStart(2, "0")} / {String(TOTAL).padStart(2, "0")}
+          {String(activeIndex + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
         </span>
         <span className="hidden rounded-full bg-brand-primary/8 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-brand-primary sm:inline-block">
           {item.tour}
@@ -197,29 +197,32 @@ function StorySpotlight({ item, activeIndex, onPrev, onNext, onTouchStart, onTou
 
 export default function HomeTestimonial({ cmsOverride }) {
   const sectionMeta = { ...testimonialsSection, ...cmsOverride };
+  const stories = useMemo(() => resolveCmsTestimonialItems(sectionMeta), [sectionMeta]);
+  const total = stories.length;
   const [activeIndex, setActiveIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const listRef = useRef(null);
   const touchStartX = useRef(null);
-  const active = testimonials[activeIndex];
+  const active = stories[activeIndex] || stories[0];
 
   const selectStory = useCallback((index) => {
-    const next = wrapIndex(index);
+    if (!total) return;
+    const next = wrapIndex(index, total);
     setActiveIndex(next);
     requestAnimationFrame(() => scrollListItemIntoView(listRef.current, next));
-  }, []);
+  }, [total]);
 
   const goPrev = useCallback(() => selectStory(activeIndex - 1), [activeIndex, selectStory]);
   const goNext = useCallback(() => selectStory(activeIndex + 1), [activeIndex, selectStory]);
 
   /** Rotate stories on their own so the section feels alive, but never while the visitor is interacting. */
   useEffect(() => {
-    if (paused || TOTAL < 2) return undefined;
+    if (paused || total < 2) return undefined;
     if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return undefined;
 
     const timer = window.setTimeout(goNext, AUTOPLAY_MS);
     return () => window.clearTimeout(timer);
-  }, [paused, goNext, activeIndex]);
+  }, [paused, goNext, activeIndex, total]);
 
   const handleTouchStart = useCallback((e) => {
     touchStartX.current = e.touches[0].clientX;
@@ -237,6 +240,8 @@ export default function HomeTestimonial({ cmsOverride }) {
     },
     [goNext, goPrev],
   );
+
+  if (!total || !active) return null;
 
   return (
     <section className="relative overflow-hidden bg-white py-16 sm:py-20 lg:py-24">
@@ -280,7 +285,7 @@ export default function HomeTestimonial({ cmsOverride }) {
                 <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-brand-primary">
                   Guest voices
                 </p>
-                <p className="mt-1 text-sm text-brand-muted">{TOTAL} stories from real travelers</p>
+                <p className="mt-1 text-sm text-brand-muted">{total} stories from real travelers</p>
 
                 <div className="mt-4 flex items-center gap-3 rounded-2xl border border-brand-border/50 bg-white px-4 py-3">
                   <StarRating rating={sectionMeta.rating} size="lg" />
@@ -295,12 +300,12 @@ export default function HomeTestimonial({ cmsOverride }) {
                 ref={listRef}
                 className="max-h-[320px] overflow-y-auto [-ms-overflow-style:none] [scrollbar-width:thin] lg:max-h-[420px] [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-brand-primary/15"
               >
-                {testimonials.map((item, index) => (
+                {stories.map((item, index) => (
                   <StoryListItem
                     key={item.id}
                     item={item}
                     index={index}
-                    total={TOTAL}
+                    total={total}
                     isActive={index === activeIndex}
                     onSelect={selectStory}
                   />
@@ -340,6 +345,7 @@ export default function HomeTestimonial({ cmsOverride }) {
                   <StorySpotlight
                     item={active}
                     activeIndex={activeIndex}
+                    total={total}
                     onPrev={goPrev}
                     onNext={goNext}
                     onTouchStart={handleTouchStart}
@@ -353,7 +359,7 @@ export default function HomeTestimonial({ cmsOverride }) {
 
         {/* Mobile story pills */}
         <div className="mt-5 flex gap-2 overflow-x-auto pb-1 lg:hidden [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {testimonials.map((item, index) => (
+          {stories.map((item, index) => (
             <button
               key={item.id}
               type="button"

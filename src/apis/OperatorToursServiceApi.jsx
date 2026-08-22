@@ -77,6 +77,20 @@ class OperatorToursServiceApi {
     };
   }
 
+  async updateTourStatus(token, slug, status) {
+    const result = await this.request("PATCH", `/admin/listings/${encodeURIComponent(slug)}/status`, {
+      token,
+      body: { status },
+      dedupe: false,
+    });
+    if (!result.ok) return { ...result, tour: null };
+
+    return {
+      ...result,
+      tour: mapOperatorTour(result.data),
+    };
+  }
+
   async deleteTour(token, slug) {
     return this.request("DELETE", `/admin/listings/${encodeURIComponent(slug)}`, { token, dedupe: false });
   }

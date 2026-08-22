@@ -291,7 +291,7 @@ function SortDropdown({ value, onChange, compact = false }) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 4, scale: 0.97 }}
             transition={{ duration: 0.15 }}
-            className="absolute right-0 top-full z-30 mt-2 max-w-[min(100vw-2rem,220px)] overflow-hidden rounded-xl border border-brand-border/60 bg-white shadow-xl"
+            className="absolute right-0 top-full z-50 mt-2 max-w-[min(100vw-2rem,220px)] overflow-hidden rounded-xl border border-brand-border/60 bg-white shadow-xl"
           >
             {LISTING_SORT_OPTIONS.map((option) => (
               <li key={option.value}>
@@ -642,7 +642,7 @@ export default function ToursPage() {
         ref={filterRef}
         style={{ top: navOffset }}
         className={[
-          "sticky z-40 w-full max-w-full overflow-x-hidden border-b transition-all duration-300",
+          "sticky z-40 w-full max-w-full overflow-visible border-b transition-all duration-300",
           filterScrolled
             ? "border-brand-border/60 bg-white/95 shadow-[0_4px_20px_-8px_rgba(0,107,63,0.12)] backdrop-blur-xl"
             : "border-brand-border/40 bg-white/90",
@@ -700,7 +700,7 @@ export default function ToursPage() {
                 ) : null}
               </div>
 
-              <div className="shrink-0">
+              <div className="relative z-[55] shrink-0">
                 <SortDropdown value={sort} onChange={handleSortChange} compact />
               </div>
             </motion.div>

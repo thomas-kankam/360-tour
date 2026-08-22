@@ -7,6 +7,19 @@ function normalizePhoneForTel(value) {
   return digits ? `+${digits}` : "";
 }
 
+const PUBLIC_CONTACT_EMAIL = "360toursghana@gmail.com";
+const LEGACY_CONTACT_EMAILS = new Set([
+  "360tours.gh@gmail.com",
+  "info@360toursghana.com",
+  "accounts@360toursghana.com",
+]);
+
+function normalizeContactEmail(value) {
+  const email = String(value || "").trim();
+  if (!email) return PUBLIC_CONTACT_EMAIL;
+  return LEGACY_CONTACT_EMAILS.has(email.toLowerCase()) ? PUBLIC_CONTACT_EMAIL : email;
+}
+
 const env = {
   appName: process.env.REACT_APP_APP_NAME || "360 Tours and Investment Limited",
   apiUrl:
@@ -14,7 +27,7 @@ const env = {
     (process.env.NODE_ENV === "development"
       ? "/api"
       : "https://api.360toursghana.com/api"),
-  contactEmail: (process.env.REACT_APP_CONTACT_EMAIL || "360toursghana@gmail.com").replace(/^\./, ""),
+  contactEmail: normalizeContactEmail(process.env.REACT_APP_CONTACT_EMAIL || PUBLIC_CONTACT_EMAIL).replace(/^\./, ""),
   contactPhone: process.env.REACT_APP_CONTACT_PHONE_US || "+(31) 0684724905",
   whatsappNumber: normalizeWhatsAppNumber(
     process.env.REACT_APP_WHATSAPP_NUMBER || "233500404151",

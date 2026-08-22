@@ -1,4 +1,4 @@
-import { buildTourPayload, mapOperatorTour, validateTourSlotAllocation } from "./operatorTourMapper";
+import { buildTourPayload, mapOperatorTour, mapOperatorTourList, validateTourSlotAllocation } from "./operatorTourMapper";
 import {
   createEmptyTourListing,
   DEPARTURE_SCHEDULE_SPECIFIC,
@@ -87,5 +87,18 @@ describe("buildTourPayload", () => {
     expect(payload).not.toHaveProperty("badgeVariant");
     expect(payload).not.toHaveProperty("featured");
     expect(payload).not.toHaveProperty("packageLineId");
+  });
+});
+
+describe("mapOperatorTourList", () => {
+  it("reads paginated admin listings from the data array key", () => {
+    const { items, pagination } = mapOperatorTourList({
+      data: [{ slug: "coast-tour", name: "Coast Tour", status: "draft" }],
+      pagination: { current_page: 1, total: 1 },
+    });
+
+    expect(items).toHaveLength(1);
+    expect(items[0].slug).toBe("coast-tour");
+    expect(pagination?.total).toBe(1);
   });
 });

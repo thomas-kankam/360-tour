@@ -207,6 +207,7 @@ export default function OperatorTourDetailPage() {
   const [notFound, setNotFound] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [statusUpdating, setStatusUpdating] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(null);
 
   useEffect(() => {
@@ -256,6 +257,26 @@ export default function OperatorTourDetailPage() {
     toast.success(result.reason || "Tour deleted.");
     setDeleteOpen(false);
     navigate(ROUTES.operator.tours, { replace: true });
+  }
+
+  async function handleStatusChange(nextStatus) {
+    if (!token || !slug || !tour || tour.status === nextStatus || statusUpdating) return;
+
+    setStatusUpdating(true);
+    const result = await operatorToursServiceApi.updateTourStatus(token, slug, nextStatus);
+    setStatusUpdating(false);
+
+    if (!result.ok || !result.tour) {
+      toast.error(result.reason || result.message || "Could not update listing status.");
+      return;
+    }
+
+    setTour(result.tour);
+    toast.success(
+      nextStatus === "published"
+        ? "Listing published — it can now appear on the public tours page."
+        : `Listing marked as ${nextStatus}.`,
+    );
   }
 
   if (loading) {
@@ -315,6 +336,34 @@ export default function OperatorTourDetailPage() {
                   {label}
                 </span>
               ))}
+            </div>
+
+            <div className="mt-4 flex flex-wrap items-center gap-2">
+              <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-white/50">Listing status</span>
+              {["draft", "published", "archived"].map((option) => (
+                <button
+                  key={option}
+                  type="button"
+                  disabled={statusUpdating}
+                  onClick={() => handleStatusChange(option)}
+                  aria-pressed={tour.status === option}
+                  className={[
+                    "rounded-full px-3 py-1.5 text-[11px] font-bold capitalize transition-all",
+                    tour.status === option
+                      ? "bg-brand-accent text-brand-charcoal shadow-sm"
+                      : "border border-white/20 bg-white/10 text-white hover:bg-white/15",
+                    statusUpdating ? "opacity-60" : "",
+                  ].join(" ")}
+                >
+                  {option}
+                </button>
+              ))}
+              {statusUpdating ? (
+                <span className="inline-flex items-center gap-1 text-xs text-white/70">
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden />
+                  Updating…
+                </span>
+              ) : null}
             </div>
 
             <h1 className="mt-4 font-heading text-3xl font-bold sm:text-4xl">{tour.name}</h1>
@@ -515,10 +564,21 @@ export default function OperatorTourDetailPage() {
               </div>
               <div className="py-4">
                 <dt className="text-[11px] font-semibold uppercase tracking-[0.12em] text-brand-muted">Status</dt>
-                <dd className="mt-3">
-                  <span className={`inline-flex rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wide ${statusClass(tour.status)}`}>
-                    {tour.status}
-                  </span>
+                <dd className="mt-3 flex flex-wrap gap-2">
+                  {["draft", "published", "archived"].map((option) => (
+                    <button
+                      key={option}
+                      type="button"
+                      disabled={statusUpdating || tour.status === option}
+                      onClick={() => handleStatusChange(option)}
+                      className={[
+                        "rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wide transition-colors disabled:cursor-not-allowed",
+                        tour.status === option ? statusClass(option) : "bg-brand-cream text-brand-muted ring-1 ring-brand-border hover:text-brand-ink disabled:opacity-50",
+                      ].join(" ")}
+                    >
+                      {option}
+                    </button>
+                  ))}
                 </dd>
               </div>
               <div className="py-4">

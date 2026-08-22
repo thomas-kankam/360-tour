@@ -55,7 +55,7 @@ describe("buildListingsPayload", () => {
   });
 
   it("maps sort choices onto the API sort keys", () => {
-    expect(buildListingsPayload({ sort: "price-asc" })).toEqual({ sort_by_price: "asc" });
+    expect(buildListingsPayload({ sort: "price-asc" })).toEqual({ price_amount: "asc" });
     expect(buildListingsPayload({ sort: "newest" })).toEqual({ sort_by: "desc" });
   });
 });

@@ -1,4 +1,5 @@
 import { ROUTES } from "../constants/routes";
+import env from "../config/env";
 
 export const company = {
   name: "360 Tours and Investment Limited",
@@ -6,7 +7,7 @@ export const company = {
   tagline: "Discover Africa. Travel Without Limits.",
   subtitle: "Your trusted travel partner for tours, accommodation & transportation",
   location: "Accra, Ghana",
-  email: "360toursghana@gmail.com",
+  email: env.contactEmail,
   motto: "Explore. Experience. Remember.",
 };
 

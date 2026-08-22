@@ -8,7 +8,7 @@ import {
 } from "../data/homeContent";
 import { images } from "../config/images";
 import { isTrustedMediaUrl } from "./imageOptimize";
-import { buildDefaultDestinationItems, buildDefaultRegionItems, mergeCmsItems } from "./landingCmsItems";
+import { buildDefaultDestinationItems, buildDefaultGalleryItems, buildDefaultRegionItems, buildDefaultTestimonialItems, mergeCmsItems } from "./landingCmsItems";
 
 const STORAGE_KEY = "360tours_landing_cms";
 
@@ -59,6 +59,7 @@ export const LANDING_CMS_DEFAULTS = {
     subtitle:
       "Real stops from real departures — castles on the coast, waterfalls in the Volta hills, palaces in Kumasi, and savanna at sunrise.",
     ctaLabel: "Browse tours by region",
+    items: buildDefaultGalleryItems(),
   },
   testimonials: {
     eyebrow: testimonialsSection.eyebrow,
@@ -66,6 +67,7 @@ export const LANDING_CMS_DEFAULTS = {
     subtitle: testimonialsSection.subtitle,
     rating: testimonialsSection.rating,
     reviews: testimonialsSection.reviews,
+    items: buildDefaultTestimonialItems(),
   },
   explore: {
     eyebrow: "Learn more",
@@ -78,6 +80,7 @@ export const LANDING_CMS_DEFAULTS = {
     whyCta: "See why travelers trust us",
     contactLabel: "Plan your trip",
     contactText: "Custom quotes, group travel, and visa on arrival guidance.",
+    contactEmail: "360toursghana@gmail.com",
     contactCta: "Contact us",
   },
   cta: {
@@ -120,7 +123,7 @@ function isStaleGalleryDestinationImage(image) {
 }
 
 function sanitizeBrokenRemoteImages(content) {
-  ["regions", "destinations"].forEach((sectionId) => {
+  ["regions", "destinations", "gallery", "testimonials"].forEach((sectionId) => {
     const items = content?.[sectionId]?.items;
     if (!Array.isArray(items)) return;
 

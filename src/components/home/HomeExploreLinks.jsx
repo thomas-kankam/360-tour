@@ -17,10 +17,11 @@ const EXPLORE_DEFAULTS = {
   whyCta: "See why travelers trust us",
   contactLabel: "Plan your trip",
   contactText: "Custom quotes, group travel, and visa-on-arrival guidance.",
+  contactEmail: "360toursghana@gmail.com",
   contactCta: "Contact us",
 };
 
-function ExploreCard({ icon: Icon, label, text, cta, to }) {
+function ExploreCard({ icon: Icon, label, text, cta, to, meta }) {
   return (
     <ScrollStaggerItem>
       <motion.article
@@ -33,6 +34,11 @@ function ExploreCard({ icon: Icon, label, text, cta, to }) {
       </span>
       <h3 className="mt-4 text-lg font-bold text-brand-ink">{label}</h3>
       <p className="mt-2 flex-1 text-sm leading-relaxed text-brand-muted">{text}</p>
+      {meta ? (
+        <a href={`mailto:${meta}`} className="mt-2 text-sm font-semibold text-brand-primary hover:underline">
+          {meta}
+        </a>
+      ) : null}
       <Link
         to={to}
         className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-primary transition-colors group-hover:text-brand-primary-dark"
@@ -69,6 +75,7 @@ export default function HomeExploreLinks({ cmsOverride }) {
       text: content.contactText,
       cta: content.contactCta,
       to: ROUTES.contact,
+      meta: content.contactEmail,
     },
   ];
 

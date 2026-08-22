@@ -109,24 +109,37 @@ export default function LandingCmsItemsEditor({ sectionId, items = [], onChange 
     onChange(next);
   }
 
-  const isRegion = sectionId === "regions";
+  const sectionCopy = {
+    regions: {
+      title: "Ghana region cards",
+      hint: "Edit names, copy, and photos for each region card.",
+    },
+    destinations: {
+      title: "Popular destination cards",
+      hint: "Edit names, copy, and photos for each destination card.",
+    },
+    gallery: {
+      title: "Adventure gallery photos",
+      hint: "Each tile appears in the mosaic on the home page. Upload a photo and set the caption and region label.",
+    },
+    testimonials: {
+      title: "Guest story cards",
+      hint: "Edit the quote, guest name, tour label, rating, and spotlight photo for each story.",
+    },
+  }[sectionId] || { title: "Section items", hint: "Edit each card below." };
 
   return (
     <div className="mt-8 space-y-4 border-t border-brand-border/50 pt-6">
       <div>
-        <p className="text-sm font-bold text-brand-ink">
-          {isRegion ? "Ghana region cards" : "Popular destination cards"}
-        </p>
-        <p className="mt-1 text-xs text-brand-muted">
-          Edit names, copy, and photos for each card. Changes appear on the home page after you publish.
-        </p>
+        <p className="text-sm font-bold text-brand-ink">{sectionCopy.title}</p>
+        <p className="mt-1 text-xs text-brand-muted">{sectionCopy.hint}</p>
       </div>
 
       {items.map((item, index) => (
         <div key={item.id || index} className="rounded-2xl border border-brand-border/60 bg-brand-cream/20 p-4">
           <div className="mb-3 flex items-center justify-between gap-2">
             <p className="text-sm font-bold text-brand-ink">
-              {index + 1}. {item.name || "Untitled"}
+              {index + 1}. {item.name || item.caption || item.tour || "Untitled"}
             </p>
             <div className="flex gap-1">
               <button
@@ -151,9 +164,39 @@ export default function LandingCmsItemsEditor({ sectionId, items = [], onChange 
           </div>
 
           <div className="grid gap-3 sm:grid-cols-2">
-            <ItemField label="Name" value={item.name} onChange={(value) => updateItem(index, { name: value })} />
-            <ItemField label="Region label" value={item.region} onChange={(value) => updateItem(index, { region: value })} />
-            {isRegion ? (
+            {sectionId === "gallery" ? (
+              <>
+                <ItemField label="Caption" value={item.caption} onChange={(value) => updateItem(index, { caption: value })} />
+                <ItemField label="Region label" value={item.region} onChange={(value) => updateItem(index, { region: value })} />
+              </>
+            ) : null}
+
+            {sectionId === "testimonials" ? (
+              <>
+                <ItemField label="Guest name" value={item.name} onChange={(value) => updateItem(index, { name: value })} />
+                <ItemField label="Initials" value={item.initials} onChange={(value) => updateItem(index, { initials: value })} />
+                <ItemField label="Tour label" value={item.tour} onChange={(value) => updateItem(index, { tour: value })} />
+                <ItemField label="Role / group" value={item.role} onChange={(value) => updateItem(index, { role: value })} />
+                <ItemField label="Rating" value={item.rating} onChange={(value) => updateItem(index, { rating: value })} />
+                <div className="sm:col-span-2">
+                  <ItemField
+                    label="Quote"
+                    value={item.quote}
+                    onChange={(value) => updateItem(index, { quote: value })}
+                    multiline
+                  />
+                </div>
+              </>
+            ) : null}
+
+            {sectionId === "regions" || sectionId === "destinations" ? (
+              <>
+                <ItemField label="Name" value={item.name} onChange={(value) => updateItem(index, { name: value })} />
+                <ItemField label="Region label" value={item.region} onChange={(value) => updateItem(index, { region: value })} />
+              </>
+            ) : null}
+
+            {sectionId === "regions" ? (
               <>
                 <ItemField label="Tagline" value={item.tagline} onChange={(value) => updateItem(index, { tagline: value })} />
                 <ItemField
@@ -179,10 +222,17 @@ export default function LandingCmsItemsEditor({ sectionId, items = [], onChange 
                 </div>
               </>
             ) : null}
+
             <ItemImageField
               label="Photo"
               value={item.image || ""}
-              fallbackSrc={getPopularDestinationImage(item.imageKey, { preferWebp: false })}
+              fallbackSrc={
+                sectionId === "gallery"
+                  ? item.slug
+                    ? `/images/gallery/optimized/${item.slug}.webp`
+                    : ""
+                  : getPopularDestinationImage(item.imageKey, { preferWebp: false })
+              }
               onChange={(value) => updateItem(index, { image: value })}
             />
           </div>

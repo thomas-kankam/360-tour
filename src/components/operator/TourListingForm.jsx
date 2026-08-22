@@ -26,6 +26,7 @@ import {
   parseTourPriceAmount,
   isUnlimitedTourSlots,
 } from "../../utils/operatorTourConstants";
+import { resolveRegionIdsFromLocations, getRegionLabel } from "../../data/ghanaRegions";
 import { AUDIENCE_SCOPE, AUDIENCE_SCOPE_OPTIONS } from "../../constants/tourAudience";
 import {
   EXCLUSION_ITEM_HINT,
@@ -157,6 +158,10 @@ export default function TourListingForm({ initial, onSubmit, submitLabel = "Save
   const nextStep = STEPS[stepIndex + 1];
   const tourType = normalizeTourType(form.tourType);
   const isCustomTour = isCustomTourType(tourType);
+  const inferredRegionLabels = useMemo(
+    () => resolveRegionIdsFromLocations(form.locations || []).map(getRegionLabel).filter(Boolean),
+    [form.locations],
+  );
   const departureScheduleType = form.departureScheduleType || DEPARTURE_SCHEDULE_DATE_RANGE;
   const isDateRangeSchedule = departureScheduleType === DEPARTURE_SCHEDULE_DATE_RANGE;
   const dateRangeDeparture = form.departureDates?.[0] || createEmptyDateRangeDeparture();
@@ -512,17 +517,32 @@ export default function TourListingForm({ initial, onSubmit, submitLabel = "Save
               countryId={form.countryId}
               error={formError && !(form.locations || []).length ? formError : ""}
             />
+            {form.countryId === "ghana" && inferredRegionLabels.length ? (
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-brand-muted">Regions covered</span>
+                {inferredRegionLabels.map((label) => (
+                  <span
+                    key={label}
+                    className="rounded-full bg-brand-accent/25 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-brand-primary"
+                  >
+                    {label}
+                  </span>
+                ))}
+              </div>
+            ) : form.countryId === "ghana" ? (
+              <p className="mt-2 text-xs text-brand-muted">
+                Ghana regions are inferred automatically from the cities you add — they power region filters on the public tours page.
+              </p>
+            ) : null}
           </div>
-          <Field label="Duration (days)">
-            <input type="number" min={1} className={inputClass} value={form.durationDays} onChange={(e) => patch({ durationDays: Number(e.target.value) })} />
-          </Field>
-          <Field label="Status">
-            <select className={inputClass} value={form.status} onChange={(e) => patch({ status: e.target.value })}>
-              <option value="draft">Draft</option>
-              <option value="published">Published</option>
-              <option value="archived">Archived</option>
-            </select>
-          </Field>
+          <div className="sm:col-span-2">
+            <Field label="Duration (days)">
+              <input type="number" min={1} className={inputClass} value={form.durationDays} onChange={(e) => patch({ durationDays: Number(e.target.value) })} />
+            </Field>
+          </div>
+          <div className="sm:col-span-2 rounded-xl border border-brand-border/60 bg-brand-cream/40 px-4 py-3 text-sm text-brand-muted">
+            New listings save as <span className="font-semibold text-brand-ink">draft</span>. Publish or archive from the listing detail page after you review it.
+          </div>
         </motion.div>
       )}
 

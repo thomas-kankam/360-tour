@@ -2,6 +2,17 @@ import { company } from "../data/aboutContent";
 import env from "../config/env";
 
 const STORAGE_KEY = "360tours_admin_company_settings";
+const LEGACY_CONTACT_EMAILS = new Set([
+  "360tours.gh@gmail.com",
+  "info@360toursghana.com",
+  "accounts@360toursghana.com",
+]);
+
+function normalizeStoredEmail(email) {
+  const value = String(email || "").trim();
+  if (!value) return env.contactEmail;
+  return LEGACY_CONTACT_EMAILS.has(value.toLowerCase()) ? env.contactEmail : value;
+}
 
 export const DEFAULT_COMPANY_SETTINGS = {
   legalName: company.name,
@@ -28,7 +39,9 @@ export function loadCompanySettings() {
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (!raw) return { ...DEFAULT_COMPANY_SETTINGS };
-    return { ...DEFAULT_COMPANY_SETTINGS, ...JSON.parse(raw) };
+    const parsed = { ...DEFAULT_COMPANY_SETTINGS, ...JSON.parse(raw) };
+    parsed.email = normalizeStoredEmail(parsed.email);
+    return parsed;
   } catch {
     return { ...DEFAULT_COMPANY_SETTINGS };
   }

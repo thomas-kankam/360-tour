@@ -24,6 +24,7 @@ import { useDebouncedValue, useServerAdminPagination } from "../../hooks/useAdmi
 import { buildListQueryParams } from "../../utils/adminPaginationHelpers";
 import { buildLocationsLabel } from "../../utils/operatorTourMapper";
 import { formatTourSlotsLabel, isCustomTourType, TOUR_TYPE } from "../../utils/operatorTourConstants";
+import { GHANA_REGIONS } from "../../data/ghanaRegions";
 
 /** Admin lands on a short "latest listings" view; the full paginated catalog is one click away. */
 const LATEST_LIMIT = 4;
@@ -161,13 +162,14 @@ export default function OperatorToursPage() {
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
+  const [regionFilter, setRegionFilter] = useState("all");
   const [showAll, setShowAll] = useState(false);
   const [search, setSearch] = useState("");
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleting, setDeleting] = useState(false);
   const debouncedSearch = useDebouncedValue(search);
   const { page, setPage, syncFromResponse, totalItems, totalPages, rangeStart, rangeEnd } = useServerAdminPagination({
-    resetKey: `${debouncedSearch}|${typeFilter}`,
+    resetKey: `${debouncedSearch}|${typeFilter}|${statusFilter}|${regionFilter}`,
   });
 
   const loadTours = useCallback(async () => {
@@ -176,32 +178,34 @@ export default function OperatorToursPage() {
 
     const params = buildListQueryParams({ page, per_page: 15, search: debouncedSearch });
     if (typeFilter !== "all") params.tour_type = typeFilter;
+    if (statusFilter !== "all") params.status = statusFilter;
+    if (regionFilter !== "all") params.region = regionFilter;
     const result = await operatorToursServiceApi.listTours(token, params);
     setLoading(false);
 
     if (!result.ok) {
       setTours([]);
+      toast.error(result.reason || result.message || "Could not load tour listings.");
       return;
     }
 
     const sync = syncFromResponse({ items: result.items, pagination: result.pagination }, page);
     setTours(sync.items);
-  }, [token, page, debouncedSearch, typeFilter, syncFromResponse]);
+  }, [token, page, debouncedSearch, typeFilter, statusFilter, regionFilter, syncFromResponse]);
 
   useEffect(() => {
     loadTours();
   }, [loadTours]);
 
-  const filtered = useMemo(() => {
-    if (statusFilter === "all") return tours;
-    return tours.filter((t) => t.status === statusFilter);
-  }, [tours, statusFilter]);
-
-  /** Search, pagination, or an explicit "view all" all mean the operator wants the full catalog. */
-  const expanded = showAll || Boolean(debouncedSearch.trim()) || page > 1;
-  const visible = expanded ? filtered : filtered.slice(0, LATEST_LIMIT);
-  const hiddenCount = Math.max((totalItems || filtered.length) - visible.length, 0);
-
+  const expanded =
+    showAll ||
+    Boolean(debouncedSearch.trim()) ||
+    page > 1 ||
+    statusFilter !== "all" ||
+    regionFilter !== "all" ||
+    typeFilter !== "all";
+  const visible = expanded ? tours : tours.slice(0, LATEST_LIMIT);
+  const hiddenCount = Math.max((totalItems || tours.length) - visible.length, 0);
   const publishedCount = useMemo(() => tours.filter((t) => t.status === "published").length, [tours]);
 
   async function handleDelete() {
@@ -298,6 +302,34 @@ export default function OperatorToursPage() {
             </button>
           ))}
         </div>
+        <div className="flex flex-wrap gap-2 border-t border-brand-border/50 pt-3 sm:border-t-0 sm:pt-0">
+          <span className="self-center text-[10px] font-bold uppercase tracking-[0.12em] text-brand-muted">Region</span>
+          <button
+            type="button"
+            onClick={() => setRegionFilter("all")}
+            aria-pressed={regionFilter === "all"}
+            className={[
+              "rounded-full px-3 py-1.5 text-xs font-semibold transition-all",
+              regionFilter === "all" ? "bg-brand-primary text-white shadow-sm" : "bg-brand-cream text-brand-muted ring-1 ring-brand-border hover:text-brand-ink",
+            ].join(" ")}
+          >
+            All regions
+          </button>
+          {GHANA_REGIONS.map((region) => (
+            <button
+              key={region.id}
+              type="button"
+              onClick={() => setRegionFilter(region.id)}
+              aria-pressed={regionFilter === region.id}
+              className={[
+                "rounded-full px-3 py-1.5 text-xs font-semibold transition-all",
+                regionFilter === region.id ? "bg-brand-primary text-white shadow-sm" : "bg-brand-cream text-brand-muted ring-1 ring-brand-border hover:text-brand-ink",
+              ].join(" ")}
+            >
+              {region.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {loading ? (
@@ -330,7 +362,7 @@ export default function OperatorToursPage() {
               </p>
             </div>
             {expanded ? (
-              !debouncedSearch.trim() && page === 1 ? (
+              !debouncedSearch.trim() && page === 1 && statusFilter === "all" && regionFilter === "all" && typeFilter === "all" ? (
                 <button
                   type="button"
                   onClick={() => setShowAll(false)}
@@ -345,7 +377,7 @@ export default function OperatorToursPage() {
                 onClick={() => setShowAll(true)}
                 className="inline-flex items-center gap-1 rounded-full bg-brand-green px-4 py-2 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-brand-green-dark"
               >
-                View all {totalItems || filtered.length} listings
+                View all {totalItems || tours.length} listings
                 <ChevronRight className="h-3.5 w-3.5" strokeWidth={2.5} aria-hidden />
               </button>
             ) : null}

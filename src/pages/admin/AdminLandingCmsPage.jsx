@@ -120,7 +120,7 @@ function formatFieldLabel(key) {
 }
 
 const MULTILINE_KEYS = new Set(["subtitle", "aboutText", "whyText", "contactText", "whatsappMessage", "footerNote"]);
-const ITEMS_SECTIONS = new Set(["regions", "destinations"]);
+const ITEMS_SECTIONS = new Set(["regions", "destinations", "gallery", "testimonials"]);
 
 export default function AdminLandingCmsPage() {
   const { token } = useAuth();
@@ -250,7 +250,7 @@ export default function AdminLandingCmsPage() {
           <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-brand-green">Content</p>
           <h1 className="mt-1 text-2xl font-bold text-brand-ink sm:text-3xl">Landing page CMS</h1>
           <p className="mt-2 max-w-2xl text-sm text-brand-muted">
-            Six editable sections: hero, featured tours, Ghana regions, popular destinations, explore links, and a final call to action.
+            Six editable sections: hero, featured tours, Ghana regions, popular destinations, adventure gallery, guest stories, explore links, and a final call to action.
           </p>
           {meta?.publishedAt ? (
             <p className="mt-2 text-xs text-brand-muted">

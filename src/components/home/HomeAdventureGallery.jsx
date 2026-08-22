@@ -7,7 +7,7 @@ import GalleryPicture from "./GalleryPicture";
 import ScrollReveal, { ScrollStagger, ScrollStaggerItem } from "../motion/ScrollReveal";
 import ImageLightbox from "../misc/ImageLightbox";
 import { ROUTES } from "../../constants/routes";
-import { adventureGallery, getAdventureGallerySources } from "../../config/images";
+import { resolveCmsGalleryItems } from "../../utils/landingCmsItems";
 
 const SECTION_DEFAULTS = {
   eyebrow: "From the road",
@@ -17,10 +17,6 @@ const SECTION_DEFAULTS = {
   ctaLabel: "Browse tours by region",
 };
 
-/**
- * Mosaic spans keyed by position so the grid keeps a woven, kente-like rhythm
- * instead of a uniform block of squares.
- */
 const SPANS = [
   "sm:col-span-2 sm:row-span-2",
   "",
@@ -36,10 +32,10 @@ export default function HomeAdventureGallery({ cmsOverride }) {
   const section = { ...SECTION_DEFAULTS, ...cmsOverride };
   const [lightboxIndex, setLightboxIndex] = useState(-1);
 
-  const tiles = useMemo(() => adventureGallery.slice(0, SPANS.length), []);
+  const tiles = useMemo(() => resolveCmsGalleryItems(section).slice(0, SPANS.length), [section]);
   const lightboxImages = useMemo(
-    () => adventureGallery.map((item) => getAdventureGallerySources(item.slug).webp),
-    [],
+    () => resolveCmsGalleryItems(section).map((item) => item.sources.webp),
+    [section],
   );
 
   return (
@@ -87,7 +83,7 @@ export default function HomeAdventureGallery({ cmsOverride }) {
                 className="group relative h-full w-full overflow-hidden rounded-2xl ring-1 ring-white/10 transition-all duration-500 hover:ring-brand-accent/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
               >
                 <GalleryPicture
-                  sources={getAdventureGallerySources(item.slug)}
+                  sources={item.sources}
                   alt={item.caption}
                   pictureClassName="block h-full w-full"
                   className="h-full w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-110"
@@ -117,7 +113,7 @@ export default function HomeAdventureGallery({ cmsOverride }) {
           transition={{ duration: 0.6, delay: 0.15 }}
           className="mt-6 text-center text-xs text-white/50"
         >
-          {adventureGallery.length} stops photographed on past departures — tap any frame to open the full gallery.
+          {tiles.length} stops photographed on past departures — tap any frame to open the full gallery.
         </motion.p>
       </Container>
 
@@ -125,7 +121,7 @@ export default function HomeAdventureGallery({ cmsOverride }) {
         open={lightboxIndex >= 0}
         images={lightboxImages}
         index={Math.max(lightboxIndex, 0)}
-        alt={adventureGallery[Math.max(lightboxIndex, 0)]?.caption || ""}
+        alt={tiles[Math.max(lightboxIndex, 0)]?.caption || ""}
         onIndexChange={setLightboxIndex}
         onClose={() => setLightboxIndex(-1)}
       />

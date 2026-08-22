@@ -199,7 +199,8 @@ export function mapOperatorTourList(data) {
     return { items: data.map(mapOperatorTour).filter(Boolean), pagination: null };
   }
 
-  const items = (data?.items || []).map(mapOperatorTour).filter(Boolean);
+  const rawItems = data?.items ?? data?.data ?? [];
+  const items = (Array.isArray(rawItems) ? rawItems : []).map(mapOperatorTour).filter(Boolean);
   return { items, pagination: data?.pagination ?? null };
 }
 

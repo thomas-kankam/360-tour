@@ -8,7 +8,7 @@ function isStaleGalleryDestinationImage(image) {
 }
 
 function sanitizeBrokenRemoteImages(content) {
-  ["regions", "destinations"].forEach((sectionId) => {
+  ["regions", "destinations", "gallery", "testimonials"].forEach((sectionId) => {
     const items = content?.[sectionId]?.items;
     if (!Array.isArray(items)) return;
     items.forEach((item) => {
@@ -19,7 +19,7 @@ function sanitizeBrokenRemoteImages(content) {
   });
 }
 
-const SECTION_IDS = ["hero", "tours", "destinations", "regions", "explore", "cta"];
+const SECTION_IDS = ["hero", "tours", "destinations", "regions", "gallery", "testimonials", "explore", "cta"];
 
 function snakeToCamel(key) {
   return String(key).replace(/_([a-z])/g, (_, char) => char.toUpperCase());
@@ -115,7 +115,7 @@ export async function persistLandingCmsMedia(content, token) {
     next.cta.image = await persistCmsImageValue(next.cta.image, token, "destination");
   }
 
-  for (const sectionId of ["destinations", "regions"]) {
+  for (const sectionId of ["destinations", "regions", "gallery", "testimonials"]) {
     const items = next[sectionId]?.items;
     if (!Array.isArray(items)) continue;
     for (const item of items) {

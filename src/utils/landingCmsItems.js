@@ -1,5 +1,5 @@
-import { ghanaRegions, popularDestinations } from "../data/homeContent";
-import { getPopularDestinationImage, getPopularDestinationSources } from "../config/images";
+import { ghanaRegions, popularDestinations, testimonials } from "../data/homeContent";
+import { adventureGallery, getAdventureGallerySources, getPopularDestinationImage, getPopularDestinationSources } from "../config/images";
 
 export function serializeHighlights(highlights) {
   if (Array.isArray(highlights)) return highlights.join(", ");
@@ -50,6 +50,30 @@ export function buildDefaultDestinationItems() {
   return popularDestinations.map(toCmsDestinationItem);
 }
 
+export function buildDefaultGalleryItems() {
+  return adventureGallery.slice(0, 8).map((item) => ({
+    id: item.id,
+    slug: item.slug,
+    caption: item.caption,
+    region: item.region,
+    image: getAdventureGallerySources(item.slug).webp,
+  }));
+}
+
+export function buildDefaultTestimonialItems() {
+  return testimonials.map((item) => ({
+    id: item.id,
+    quote: item.quote,
+    name: item.name,
+    role: item.role,
+    rating: item.rating,
+    tour: item.tour,
+    initials: item.initials,
+    imageKey: item.imageKey || "",
+    image: getPopularDestinationImage(item.imageKey, { preferWebp: false }) || "",
+  }));
+}
+
 export function mergeCmsItems(defaults = [], overrides = []) {
   if (!Array.isArray(overrides) || overrides.length === 0) {
     return defaults.map((item) => ({ ...item }));
@@ -80,6 +104,30 @@ export function resolveCmsRegionItems(cmsSection) {
 
 export function resolveCmsDestinationItems(cmsSection) {
   return mergeCmsItems(buildDefaultDestinationItems(), cmsSection?.items);
+}
+
+export function resolveCmsGalleryItems(cmsSection) {
+  return mergeCmsItems(buildDefaultGalleryItems(), cmsSection?.items).map((item) => {
+    const slug = item.slug || item.id;
+    const sources = item.image
+      ? { webp: item.image, png: item.image }
+      : getAdventureGallerySources(slug);
+    return {
+      ...item,
+      slug,
+      sources,
+    };
+  });
+}
+
+export function resolveCmsTestimonialItems(cmsSection) {
+  return mergeCmsItems(buildDefaultTestimonialItems(), cmsSection?.items).map((item) => ({
+    ...item,
+    imageSrc:
+      item.image ||
+      getPopularDestinationImage(item.imageKey, { preferWebp: false }) ||
+      null,
+  }));
 }
 
 export function resolveCmsItemImage(item) {

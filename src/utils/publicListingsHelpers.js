@@ -59,8 +59,8 @@ export function buildListingsPayload({ countryFilter, regionFilter, tourTypeFilt
 
   if (sort === "newest") payload.sort_by = "desc";
   if (sort === "oldest") payload.sort_by = "asc";
-  if (sort === "price-asc") payload.sort_by_price = "asc";
-  if (sort === "price-desc") payload.sort_by_price = "desc";
+  if (sort === "price-asc") payload.price_amount = "asc";
+  if (sort === "price-desc") payload.price_amount = "desc";
 
   return payload;
 }
