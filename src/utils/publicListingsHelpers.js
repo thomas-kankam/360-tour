@@ -13,10 +13,10 @@ import {
 export { GHANA_PACKAGE_LINE_OPTIONS as PACKAGE_FILTER_OPTIONS };
 
 export const COUNTRY_FILTER_OPTIONS = [
-  { id: "all", label: "All countries", icon: "🌍" },
-  { id: "ghana", label: "Ghana", icon: "🇬🇭", apiCountry: "Ghana" },
-  { id: "kenya", label: "Kenya", icon: "🇰🇪", apiCountry: "Kenya" },
-  { id: "southafrica", label: "South Africa", icon: "🇿🇦", apiCountry: "South Africa" },
+  { id: "all", label: "All countries", iconKey: "globe" },
+  { id: "ghana", label: "Ghana", iconKey: "mapPin", apiCountry: "Ghana" },
+  { id: "kenya", label: "Kenya", iconKey: "mapPin", apiCountry: "Kenya" },
+  { id: "southafrica", label: "South Africa", iconKey: "mapPin", apiCountry: "South Africa" },
 ];
 
 export const LISTING_SORT_OPTIONS = [

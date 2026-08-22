@@ -6,7 +6,9 @@ import Container from "../layout/Container";
 import GalleryPicture from "./GalleryPicture";
 import ScrollReveal from "../motion/ScrollReveal";
 import { ROUTES } from "../../constants/routes";
-import { ghanaRegions, operatingSection } from "../../data/homeContent";
+import { operatingSection } from "../../data/homeContent";
+import { resolveCmsItemImage, resolveCmsRegionItems } from "../../utils/landingCmsItems";
+import { getPopularDestinationSources } from "../../config/images";
 
 const EASE = [0.16, 1, 0.3, 1];
 
@@ -25,6 +27,10 @@ function regionTourLink(region) {
   return ROUTES.toursSearch({ country: "ghana" });
 }
 
+function regionImageSources(region) {
+  return resolveCmsItemImage(region) ?? getPopularDestinationSources(region.imageKey);
+}
+
 function RegionListItem({ region, index, isActive, onSelect }) {
   return (
     <button
@@ -39,6 +45,7 @@ function RegionListItem({ region, index, isActive, onSelect }) {
     >
       <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl sm:h-16 sm:w-16">
         <GalleryPicture
+          sources={regionImageSources(region)}
           imageKey={region.imageKey}
           alt=""
           className="h-full w-full object-cover"
@@ -77,6 +84,7 @@ function MobileRegionCard({ region, index, isActive, onSelect }) {
     >
       <div className="relative h-36">
         <GalleryPicture
+          sources={regionImageSources(region)}
           imageKey={region.imageKey}
           alt={region.name}
           className="h-full w-full object-cover"
@@ -94,8 +102,9 @@ function MobileRegionCard({ region, index, isActive, onSelect }) {
 
 export default function HomeHubs({ cmsOverride }) {
   const section = { ...SECTION_DEFAULTS, ...cmsOverride };
+  const regions = resolveCmsRegionItems(section);
   const [activeIndex, setActiveIndex] = useState(0);
-  const active = ghanaRegions[activeIndex];
+  const active = regions[activeIndex];
 
   return (
     <section className="relative overflow-hidden bg-brand-primary py-16 sm:py-20 lg:py-24">
@@ -124,7 +133,7 @@ export default function HomeHubs({ cmsOverride }) {
         </ScrollReveal>
 
         <div className="mt-10 flex gap-3 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] lg:hidden [&::-webkit-scrollbar]:hidden">
-          {ghanaRegions.map((region, index) => (
+          {regions.map((region, index) => (
             <MobileRegionCard
               key={region.id}
               region={region}
@@ -155,6 +164,7 @@ export default function HomeHubs({ cmsOverride }) {
                   className="absolute inset-0"
                 >
                   <GalleryPicture
+                    sources={regionImageSources(active)}
                     imageKey={active.imageKey}
                     alt={active.name}
                     pictureClassName="block h-full w-full"
@@ -206,7 +216,7 @@ export default function HomeHubs({ cmsOverride }) {
 
                 <div className="absolute right-6 top-6 flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 backdrop-blur-md sm:right-8 sm:top-8">
                   <span className="text-lg font-bold text-brand-accent">{String(activeIndex + 1).padStart(2, "0")}</span>
-                  <span className="text-xs text-white/50">/ {String(ghanaRegions.length).padStart(2, "0")}</span>
+                  <span className="text-xs text-white/50">/ {String(regions.length).padStart(2, "0")}</span>
                 </div>
               </div>
             </div>
@@ -215,7 +225,7 @@ export default function HomeHubs({ cmsOverride }) {
               <p className="mb-2 px-2 text-[10px] font-bold uppercase tracking-[0.16em] text-brand-muted">
                 Select a region
               </p>
-              {ghanaRegions.map((region, index) => (
+              {regions.map((region, index) => (
                 <RegionListItem
                   key={region.id}
                   region={region}
@@ -237,7 +247,7 @@ export default function HomeHubs({ cmsOverride }) {
           className="mt-8 flex flex-col items-center justify-between gap-4 sm:flex-row"
         >
           <p className="text-center text-sm text-white/60 sm:text-left">
-            <span className="font-semibold text-brand-accent">{ghanaRegions.length} regions</span>
+            <span className="font-semibold text-brand-accent">{regions.length} regions</span>
             {" "}
             {section.footerNote}
           </p>

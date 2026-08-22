@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
+import { BookOpen } from "lucide-react";
 import Container from "../../components/layout/Container";
 import { ROUTES } from "../../constants/routes";
 import { stories } from "../../data/storiesContent";
@@ -227,7 +228,7 @@ export default function StoriesPage() {
                 exit={{ opacity: 0 }}
                 className="py-16 text-center"
               >
-                <span className="text-5xl">📖</span>
+                <BookOpen className="h-12 w-12 text-brand-primary/40" aria-hidden />
                 <p className="mt-4 font-semibold text-brand-ink">No stories found</p>
                 <button type="button" onClick={() => { setActiveCategory("All"); setSearch(""); }} className="mt-4 text-sm font-semibold text-brand-green underline underline-offset-2">
                   View all stories

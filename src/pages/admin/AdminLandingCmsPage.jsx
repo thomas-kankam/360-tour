@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Eye, ImagePlus, Loader2, RotateCcw, Save, Trash2, UploadCloud } from "lucide-react";
 import { toast } from "react-toastify";
 import adminLandingCmsServiceApi from "../../apis/AdminLandingCmsServiceApi";
+import LandingCmsItemsEditor from "../../components/admin/LandingCmsItemsEditor";
 import HomeHero from "../../components/home/HomeHero";
 import HomeFeaturedTours from "../../components/home/HomeFeaturedTours";
 import HomeDestinations from "../../components/home/HomeDestinations";
@@ -99,7 +100,8 @@ function formatFieldLabel(key) {
     .replace("Image", " image");
 }
 
-const MULTILINE_KEYS = new Set(["subtitle", "aboutText", "whyText", "contactText", "whatsappMessage"]);
+const MULTILINE_KEYS = new Set(["subtitle", "aboutText", "whyText", "contactText", "whatsappMessage", "footerNote"]);
+const ITEMS_SECTIONS = new Set(["regions", "destinations"]);
 
 export default function AdminLandingCmsPage() {
   const { token } = useAuth();
@@ -151,6 +153,10 @@ export default function AdminLandingCmsPage() {
         [key]: value,
       },
     }));
+  }
+
+  function updateItems(nextItems) {
+    updateField("items", nextItems);
   }
 
   async function handleSaveDraft() {
@@ -299,7 +305,9 @@ export default function AdminLandingCmsPage() {
               Edit {LANDING_CMS_SECTIONS.find((s) => s.id === activeSection)?.label}
             </p>
             <div className="grid gap-4 sm:grid-cols-2">
-              {Object.entries(sectionFields).map(([key, value]) =>
+              {Object.entries(sectionFields)
+                .filter(([key]) => key !== "items")
+                .map(([key, value]) =>
                 isCmsImageField(key) ? (
                   <ImageField
                     key={key}
@@ -318,6 +326,13 @@ export default function AdminLandingCmsPage() {
                 ),
               )}
             </div>
+            {ITEMS_SECTIONS.has(activeSection) ? (
+              <LandingCmsItemsEditor
+                sectionId={activeSection}
+                items={sectionFields.items || []}
+                onChange={updateItems}
+              />
+            ) : null}
           </div>
         </div>
       )}

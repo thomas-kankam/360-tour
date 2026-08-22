@@ -5,7 +5,8 @@ import { ArrowRight, ArrowUpRight, ChevronLeft, ChevronRight, Compass, MapPin } 
 import Container from "../layout/Container";
 import ScrollReveal from "../motion/ScrollReveal";
 import { getPopularDestinationSources } from "../../config/images";
-import { popularDestinations, popularDestinationsSection } from "../../data/homeContent";
+import { popularDestinationsSection } from "../../data/homeContent";
+import { resolveCmsDestinationItems, resolveCmsItemImage } from "../../utils/landingCmsItems";
 import { ROUTES } from "../../constants/routes";
 
 const EASE = [0.16, 1, 0.3, 1];
@@ -19,7 +20,7 @@ const SECTION_DEFAULTS = {
 };
 
 function getDestinationSources(destination) {
-  return getPopularDestinationSources(destination.imageKey) ?? { webp: destination.fallback, png: destination.fallback };
+  return resolveCmsItemImage(destination) ?? getPopularDestinationSources(destination.imageKey) ?? { webp: destination.fallback, png: destination.fallback };
 }
 
 function scrollListItemIntoView(container, index) {
@@ -97,7 +98,9 @@ function DestinationSpotlight({ destination, onPrev, onNext, canGoPrev, canGoNex
           </div>
         ) : (
           <picture>
-            <source srcSet={sources.webp} type="image/webp" />
+            {!/^https?:\/\//i.test(String(sources.webp || "")) && sources.webp !== sources.png ? (
+              <source srcSet={sources.webp} type="image/webp" />
+            ) : null}
             <img
               src={sources.png}
               alt={destination.name}
@@ -167,19 +170,20 @@ function DestinationListItem({ destination, index, isActive, onSelect, total }) 
 
 export default function HomeDestinations({ cmsOverride }) {
   const section = { ...SECTION_DEFAULTS, ...cmsOverride };
+  const destinations = resolveCmsDestinationItems(section);
   const [activeIndex, setActiveIndex] = useState(0);
   const listRef = useRef(null);
   const touchStartX = useRef(null);
-  const active = popularDestinations[activeIndex];
-  const progress = ((activeIndex + 1) / popularDestinations.length) * 100;
+  const active = destinations[activeIndex];
+  const progress = ((activeIndex + 1) / destinations.length) * 100;
   const canGoPrev = activeIndex > 0;
-  const canGoNext = activeIndex < popularDestinations.length - 1;
+  const canGoNext = activeIndex < destinations.length - 1;
 
   const selectDestination = useCallback((index) => {
-    const next = Math.max(0, Math.min(index, popularDestinations.length - 1));
+    const next = Math.max(0, Math.min(index, destinations.length - 1));
     setActiveIndex(next);
     requestAnimationFrame(() => scrollListItemIntoView(listRef.current, next));
-  }, []);
+  }, [destinations.length]);
 
   const goPrev = useCallback(() => {
     if (canGoPrev) selectDestination(activeIndex - 1);
@@ -246,7 +250,7 @@ export default function HomeDestinations({ cmsOverride }) {
                   Pick a destination
                 </p>
                 <p className="mt-1 text-sm text-white/55">
-                  {popularDestinations.length} places across Ghana
+                  {destinations.length} places across Ghana
                 </p>
                 {/* Progress track */}
                 <div className="mt-4 h-1 overflow-hidden rounded-full bg-white/10">
@@ -262,12 +266,12 @@ export default function HomeDestinations({ cmsOverride }) {
                 ref={listRef}
                 className="max-h-[280px] overflow-y-auto [-ms-overflow-style:none] [scrollbar-width:thin] lg:max-h-[520px] [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-white/20"
               >
-                {popularDestinations.map((destination, index) => (
+                {destinations.map((destination, index) => (
                   <DestinationListItem
                     key={destination.id}
                     destination={destination}
                     index={index}
-                    total={popularDestinations.length}
+                    total={destinations.length}
                     isActive={index === activeIndex}
                     onSelect={selectDestination}
                   />
@@ -318,7 +322,7 @@ export default function HomeDestinations({ cmsOverride }) {
                     </AnimatePresence>
                   </div>
                   <span className="shrink-0 rounded-full bg-brand-primary/10 px-3 py-1 text-xs font-bold text-brand-primary">
-                    {String(activeIndex + 1).padStart(2, "0")}/{popularDestinations.length}
+                    {String(activeIndex + 1).padStart(2, "0")}/{destinations.length}
                   </span>
                 </div>
 
@@ -343,7 +347,7 @@ export default function HomeDestinations({ cmsOverride }) {
                   role="tablist"
                   aria-label="Destination navigation"
                 >
-                  {popularDestinations.map((destination, index) => (
+                  {destinations.map((destination, index) => (
                     <button
                       key={destination.id}
                       type="button"
@@ -382,7 +386,7 @@ export default function HomeDestinations({ cmsOverride }) {
 
         {/* Mobile quick strip, horizontal destination chips */}
         <div className="mt-5 flex gap-2 overflow-x-auto pb-1 lg:hidden [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {popularDestinations.map((destination, index) => (
+          {destinations.map((destination, index) => (
             <button
               key={destination.id}
               type="button"

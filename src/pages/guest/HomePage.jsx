@@ -4,7 +4,6 @@ import HomeDestinations from "../../components/home/HomeDestinations";
 import HomeHubs from "../../components/home/HomeHubs";
 import HomeExploreLinks from "../../components/home/HomeExploreLinks";
 import HomeCta from "../../components/home/HomeCta";
-import LandingQuickActions from "../../components/layout/LandingQuickActions";
 import { useLandingCms } from "../../hooks/useLandingCms";
 
 export default function HomePage() {
@@ -18,7 +17,6 @@ export default function HomePage() {
       <HomeDestinations cmsOverride={cms.destinations} />
       <HomeExploreLinks cmsOverride={cms.explore} />
       <HomeCta cmsOverride={cms.cta} />
-      <LandingQuickActions />
     </>
   );
 }

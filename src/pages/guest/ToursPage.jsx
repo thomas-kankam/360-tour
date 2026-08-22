@@ -2,6 +2,7 @@ import { useState, useEffect, useLayoutEffect, useRef, useCallback, useMemo } fr
 import { Link, useSearchParams } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
 import { Loader2, ArrowRight, Calendar, Clock, Compass, MapPin, Star, Users } from "lucide-react";
+import { GuestIcon, resolveTourFallbackIcon } from "../../utils/guestIcons";
 import publicListingsServiceApi from "../../apis/PublicListingsServiceApi";
 import Container from "../../components/layout/Container";
 import TourPriceDisplay from "../../components/tours/TourPriceDisplay";
@@ -109,8 +110,8 @@ function TourCard({ tour, index }) {
               onError={() => setImgError(true)}
             />
           ) : (
-            <div className="flex h-full w-full items-center justify-center bg-brand-cream text-4xl">
-              {tour.categories.includes("safari") ? "🦁" : tour.categories.includes("beach") ? "🌊" : "🌍"}
+            <div className="flex h-full w-full items-center justify-center bg-brand-cream text-brand-primary/50">
+              <GuestIcon name={resolveTourFallbackIcon(tour.categories)} className="h-10 w-10" />
             </div>
           )}
 
@@ -231,7 +232,7 @@ function FilterChip({ option, active, onClick }) {
           : "border-brand-border/70 bg-white text-brand-muted hover:border-brand-accent hover:bg-brand-accent/15 hover:text-brand-primary",
       ].join(" ")}
     >
-      <span className="text-sm leading-none">{option.icon}</span>
+      <GuestIcon name={option.iconKey || "globe"} className="h-3.5 w-3.5 shrink-0" />
       <span className="whitespace-nowrap">{option.label}</span>
     </button>
   );
@@ -798,7 +799,7 @@ export default function ToursPage() {
                 exit={{ opacity: 0 }}
                 className="flex flex-col items-center justify-center py-20 text-center"
               >
-                <span className="text-5xl">🌍</span>
+                <GuestIcon name="globe" className="h-12 w-12 text-brand-primary/40" />
                 <p className="mt-4 text-lg font-semibold text-brand-ink">No tours found</p>
                 <p className="mt-1.5 text-sm text-brand-muted">
                   {activeDate

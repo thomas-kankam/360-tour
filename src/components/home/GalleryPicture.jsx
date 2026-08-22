@@ -23,9 +23,12 @@ export default function GalleryPicture({
 
   if (!resolved?.webp && !resolved?.png) return null;
 
+  const isRemote = (url) => /^https?:\/\//i.test(String(url || ""));
+  const skipWebpSource = isRemote(resolved.webp) || resolved.webp === resolved.png;
+
   return (
     <picture className={pictureClassName}>
-      {resolved.webp ? <source srcSet={resolved.webp} type="image/webp" /> : null}
+      {!skipWebpSource && resolved.webp ? <source srcSet={resolved.webp} type="image/webp" /> : null}
       <img
         src={resolved.png ?? resolved.webp}
         alt={alt}

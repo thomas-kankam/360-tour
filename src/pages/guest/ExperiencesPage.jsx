@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
 import Container from "../../components/layout/Container";
+import { GuestIcon } from "../../utils/guestIcons";
 import { ROUTES } from "../../constants/routes";
 import { images } from "../../config/images";
 import { getWhatsAppUrl } from "../../config/env";
@@ -18,7 +19,7 @@ const EXPERIENCES = [
   {
     id: "safari",
     label: "Wildlife Safaris",
-    icon: "🦁",
+    iconKey: "binoculars",
     tagline: "Witness Africa's Big Five up close",
     description:
       "Game drives at dawn through Maasai Mara and Kruger National Park, guided by expert naturalists who bring the bush to life. Every sighting is part of a deeper story about Africa's ecosystems.",
@@ -32,7 +33,7 @@ const EXPERIENCES = [
   {
     id: "heritage",
     label: "Heritage & History",
-    icon: "🏛️",
+    iconKey: "landmark",
     tagline: "Walk the corridors of African history",
     description:
       "From the slave dungeons of Cape Coast Castle to the Ashanti Manhyia Palace and Soweto's Apartheid Museum, these are journeys that transform understanding. History felt, not just heard.",
@@ -46,7 +47,7 @@ const EXPERIENCES = [
   {
     id: "cultural",
     label: "Cultural Immersion",
-    icon: "🎭",
+    iconKey: "drama",
     tagline: "Live it, don't just observe it",
     description:
       "Kente weaving workshops in Bonwire, Maasai beadwork and ceremonies, Cape Town's Bo Kaap neighbourhood walking tours. Our cultural experiences are participatory, not performative.",
@@ -60,7 +61,7 @@ const EXPERIENCES = [
   {
     id: "adventure",
     label: "Adventure Travel",
-    icon: "🏔️",
+    iconKey: "mountain",
     tagline: "Push your limits across Africa's terrain",
     description:
       "Hike Table Mountain at sunrise, navigate the Volta gorge, or trek the highlands of Kenya. Adventure here means natural awe, not manufactured thrills.",
@@ -74,7 +75,7 @@ const EXPERIENCES = [
   {
     id: "beach",
     label: "Beach Getaways",
-    icon: "🌊",
+    iconKey: "waves",
     tagline: "Where the Indian Ocean meets culture",
     description:
       "Diani Beach, Mombasa's Old Town, and the Garden Route coastline — 360 Tours pairs beach relaxation with authentic local encounters so every day feels earned.",
@@ -88,7 +89,7 @@ const EXPERIENCES = [
   {
     id: "university",
     label: "University Programs",
-    icon: "🎓",
+    iconKey: "graduation",
     tagline: "Study Africa, not just visit it",
     description:
       "Structured academic itineraries built around your institution's curriculum, history, anthropology, public health, business, and development. We handle logistics; you focus on learning.",
@@ -102,7 +103,7 @@ const EXPERIENCES = [
   {
     id: "corporate",
     label: "Corporate Retreats",
-    icon: "💼",
+    iconKey: "briefcase",
     tagline: "Team building with real purpose",
     description:
       "Leadership retreats that combine team development with meaningful cultural exchange. We design programmes that challenge, inspire, and bond teams through shared African experience.",
@@ -116,7 +117,7 @@ const EXPERIENCES = [
   {
     id: "community",
     label: "Community Impact",
-    icon: "🤝",
+    iconKey: "handshake",
     tagline: "Travel that gives back",
     description:
       "Volunteer programmes, school visits, and community development partnerships that ensure your group leaves a positive footprint. Travel with conscience, not just curiosity.",
@@ -157,7 +158,7 @@ function ExperienceCard({ exp, index }) {
           {exp.badgeText}
         </span>
         <div className="absolute bottom-3 left-4">
-          <span className="text-2xl">{exp.icon}</span>
+          <GuestIcon name={exp.iconKey} className="h-7 w-7 text-white" />
           <p className="mt-1 text-lg font-bold text-white">{exp.label}</p>
           <p className="text-xs text-white/80">{exp.tagline}</p>
         </div>
@@ -338,14 +339,14 @@ export default function ExperiencesPage() {
           <div className="relative mt-12 grid gap-8 sm:grid-cols-4">
             <div aria-hidden className="pointer-events-none absolute left-[12.5%] right-[12.5%] top-6 hidden h-px bg-gradient-to-r from-transparent via-brand-border to-transparent sm:block" />
             {[
-              { n: "01", icon: "💬", t: "Tell us your vision", d: "Share your group size, dates, interests, and budget via our quick inquiry form or WhatsApp." },
-              { n: "02", icon: "📋", t: "We design your itinerary", d: "Our team crafts a bespoke day-by-day plan with accommodation, transport, and experiences." },
-              { n: "03", icon: "✅", t: "Review & confirm", d: "We refine the plan together until every detail is exactly right, then lock in your booking." },
-              { n: "04", icon: "✈️", t: "Travel with confidence", d: "Arrive knowing every detail is handled. Our on-ground team supports you throughout." },
+              { n: "01", iconKey: "message", t: "Tell us your vision", d: "Share your group size, dates, interests, and budget via our quick inquiry form or WhatsApp." },
+              { n: "02", iconKey: "clipboard", t: "We design your itinerary", d: "Our team crafts a bespoke day-by-day plan with accommodation, transport, and experiences." },
+              { n: "03", iconKey: "check", t: "Review & confirm", d: "We refine the plan together until every detail is exactly right, then lock in your booking." },
+              { n: "04", iconKey: "plane", t: "Travel with confidence", d: "Arrive knowing every detail is handled. Our on-ground team supports you throughout." },
             ].map((step, i) => (
               <motion.div key={step.n} {...rise(i * 0.1)} className="relative flex flex-col items-center text-center">
                 <div className="relative flex h-12 w-12 items-center justify-center rounded-full border-2 border-brand-border bg-white shadow-sm">
-                  <span className="text-xl">{step.icon}</span>
+                  <GuestIcon name={step.iconKey} className="h-5 w-5 text-brand-green" />
                   <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-brand-green text-[9px] font-bold text-white">{step.n}</span>
                 </div>
                 <h3 className="mt-4 text-sm font-bold text-brand-ink">{step.t}</h3>

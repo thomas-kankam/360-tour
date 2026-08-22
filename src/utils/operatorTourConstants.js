@@ -13,7 +13,7 @@ export const GHANA_PACKAGE_LINE_OPTIONS = [
   {
     id: "accra",
     label: "Accra",
-    icon: "🏙️",
+    iconKey: "building",
     tagline: "Arts & city culture",
     description: "Markets, crafts, and vibrant capital experiences — Arts Centre, Aburi, and more.",
     photoHints: {
@@ -24,7 +24,7 @@ export const GHANA_PACKAGE_LINE_OPTIONS = [
   {
     id: "kumasi",
     label: "Kumasi",
-    icon: "👑",
+    iconKey: "crown",
     tagline: "Ashanti heritage",
     description: "Royal history, kente weaving, and the cultural heart of the Ashanti Kingdom.",
     photoHints: {
@@ -35,7 +35,7 @@ export const GHANA_PACKAGE_LINE_OPTIONS = [
   {
     id: "volta",
     label: "Volta",
-    icon: "⛰️",
+    iconKey: "mountain",
     tagline: "Mountains & waterfalls",
     description: "Highland treks, Wli Falls, and nature-forward journeys in Ghana's Volta Region.",
     photoHints: {
@@ -46,7 +46,7 @@ export const GHANA_PACKAGE_LINE_OPTIONS = [
   {
     id: "end-of-year",
     label: "End of Year",
-    icon: "🎉",
+    iconKey: "party",
     tagline: "Detty December",
     description: "Festival season energy — concerts, Afrochella vibes, and December celebrations.",
     photoHints: {

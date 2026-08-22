@@ -105,6 +105,31 @@ const FAQS = [
   { q: "Do you offer visa on arrival assistance?", a: "Yes. We guide eligible travelers through Ghana's visa on arrival process, including required documents, fees, and airport procedures for a smooth entry." },
 ];
 
+function MessageField({ label, id, required, placeholder, value, onChange, error }) {
+  return (
+    <div className="min-w-0 w-full">
+      <label htmlFor={id} className="text-xs font-semibold text-brand-ink">
+        {label}{required ? <span className="ml-0.5 text-brand-orange">*</span> : null}
+      </label>
+      <textarea
+        id={id}
+        rows={5}
+        required={required}
+        placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+        className={[
+          "mt-1.5 box-border block h-36 w-full max-w-full resize-none overflow-x-hidden overflow-y-auto rounded-xl border bg-white px-4 py-3 text-sm leading-relaxed text-brand-ink placeholder:text-brand-muted/60 shadow-sm outline-none transition-[border-color,box-shadow] focus:ring-2 [overflow-wrap:anywhere]",
+          error
+            ? "border-red-400 focus:border-red-400 focus:ring-red-100"
+            : "border-brand-border/70 focus:border-brand-green/50 focus:ring-brand-green/15",
+        ].join(" ")}
+      />
+      {error ? <p className="mt-1.5 text-xs font-medium text-red-500">{error}</p> : null}
+    </div>
+  );
+}
+
 function InputField({ label, id, type = "text", required, placeholder, value, onChange, error }) {
   return (
     <div className="flex flex-col gap-1.5">
@@ -222,7 +247,7 @@ export default function ContactPage() {
   }
 
   return (
-    <div className="overflow-x-hidden">
+    <div className="min-w-0">
 
       {/* ── Hero banner ── */}
       <section className="relative overflow-hidden bg-brand-green py-14 sm:py-16">
@@ -248,11 +273,11 @@ export default function ContactPage() {
       {/* ── Main content ── */}
       <section className="bg-brand-cream py-14 sm:py-18">
         <Container>
-          <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:gap-14">
+          <div className="grid min-w-0 gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-14">
 
             {/* ── Left: Contact form ── */}
-            <motion.div {...rise()}>
-              <div className="overflow-hidden rounded-[1.75rem] border border-brand-border/60 bg-white shadow-[0_16px_48px_-20px_rgba(28,43,38,0.25)]">
+            <div className="min-w-0">
+              <div className="rounded-[1.75rem] border border-brand-border/60 bg-white shadow-[0_16px_48px_-20px_rgba(28,43,38,0.25)]">
                 <div className="border-b border-brand-border/40 px-7 py-5">
                   <h2 className="text-lg font-bold text-brand-ink">Send us a message</h2>
                   <p className="mt-0.5 text-sm text-brand-muted">
@@ -286,7 +311,7 @@ export default function ContactPage() {
                     </button>
                   </motion.div>
                 ) : (
-                  <form onSubmit={handleSubmit} className="space-y-5 px-7 py-7">
+                  <form onSubmit={handleSubmit} noValidate className="min-w-0 space-y-5 px-7 py-7">
                     <div className="grid gap-4 sm:grid-cols-2">
                       <InputField label="Full name" id="name" required placeholder="Jane Doe" value={form.name} onChange={update("name")} error={errors.name} />
                       <InputField label="Email address" id="email" type="email" required placeholder="jane@example.com" value={form.email} onChange={update("email")} error={errors.email} />
@@ -317,26 +342,15 @@ export default function ContactPage() {
                         {errors.inquiry ? <p className="text-xs font-medium text-red-500">{errors.inquiry}</p> : null}
                       </div>
                     </div>
-                    <div className="flex flex-col gap-1.5">
-                      <label htmlFor="message" className="text-xs font-semibold text-brand-ink">
-                        Message<span className="ml-0.5 text-brand-orange">*</span>
-                      </label>
-                      <textarea
-                        id="message"
-                        rows={5}
-                        required
-                        placeholder="Tell us about your group size, desired dates, countries of interest, and any special requirements…"
-                        value={form.message}
-                        onChange={update("message")}
-                        className={[
-                          "w-full resize-none rounded-xl border bg-white px-4 py-3 text-sm text-brand-ink placeholder:text-brand-muted/60 shadow-sm outline-none transition-all focus:ring-2",
-                          errors.message
-                            ? "border-red-400 focus:border-red-400 focus:ring-red-100"
-                            : "border-brand-border/70 focus:border-brand-green/50 focus:ring-brand-green/15",
-                        ].join(" ")}
-                      />
-                      {errors.message ? <p className="text-xs font-medium text-red-500">{errors.message}</p> : null}
-                    </div>
+                    <MessageField
+                      label="Message"
+                      id="message"
+                      required
+                      placeholder="Tell us about your group size, desired dates, countries of interest, and any special requirements…"
+                      value={form.message}
+                      onChange={update("message")}
+                      error={errors.message}
+                    />
                     <button
                       type="submit"
                       disabled={loading}
@@ -357,10 +371,10 @@ export default function ContactPage() {
                   </form>
                 )}
               </div>
-            </motion.div>
+            </div>
 
             {/* ── Right: Info panel ── */}
-            <div className="flex flex-col gap-6">
+            <div className="flex min-w-0 flex-col gap-6">
 
               {/* Contact methods */}
               <motion.div {...rise(0.1)} className="overflow-hidden rounded-[1.5rem] border border-brand-border/60 bg-white shadow-sm">

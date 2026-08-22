@@ -41,7 +41,7 @@ export const images = {
     arts_and_craft: "/images/home/arts_and_craft.jpg",
   },
 
-  /** Optimized gallery photos — WebP primary, PNG fallback (1280×800) */
+  /** Ghana destination photos — local gallery (refreshed from Wikimedia stock via scripts/fetch-ghana-gallery-images.mjs) */
   destinations: {
     popular: {
       accraCityTour: {

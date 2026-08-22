@@ -8,6 +8,7 @@ import { ROUTES } from "../../constants/routes";
 import { getWhatsAppUrl } from "../../config/env";
 import consumerPaymentsServiceApi from "../../apis/ConsumerPaymentsServiceApi";
 import { useAuth } from "../../hooks/useAuth";
+import { GuestIcon } from "../../utils/guestIcons";
 import { useClientBookings } from "../../hooks/useClientBookings";
 import { downloadBookingReceipt } from "../../utils/bookingReceipt";
 import { formatBookingCurrency, canViewBookingReceipt, canEditBooking, resolveBookingCurrency } from "../../utils/bookingHelpers";
@@ -71,7 +72,9 @@ function BookingCard({ booking, index, onCompletePayment, onDownloadReceipt, pay
           {image ? (
             <img src={image} alt={booking.tour.name} className="h-full w-full object-cover sm:min-h-[200px]" />
           ) : (
-            <div className="flex h-full min-h-[160px] items-center justify-center bg-brand-cream text-4xl sm:min-h-[200px]">🌍</div>
+            <div className="flex h-full min-h-[160px] items-center justify-center bg-brand-cream sm:min-h-[200px]">
+              <GuestIcon name="globe" className="h-10 w-10 text-brand-primary/40" />
+            </div>
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent sm:bg-gradient-to-r" />
           {!upcoming && (
@@ -483,7 +486,9 @@ export default function MyBookingsPage() {
                 exit={{ opacity: 0 }}
                 className="mt-12 flex flex-col items-center rounded-[1.75rem] border border-brand-border/60 bg-white px-8 py-16 text-center shadow-sm"
               >
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-brand-green/10 text-3xl">🧳</div>
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-brand-green/10">
+                  <GuestIcon name="luggage" className="h-8 w-8 text-brand-green" />
+                </div>
                 <h2 className="mt-5 text-xl font-bold text-brand-ink">
                   {bookings.length === 0 ? "No bookings yet" : "No matching bookings"}
                 </h2>

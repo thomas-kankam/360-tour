@@ -1,6 +1,7 @@
 import { Outlet } from "react-router";
 import Footer from "../components/layout/Footer";
 import GuestNavbar from "../components/navigation/GuestNavbar";
+import LandingQuickActions from "../components/layout/LandingQuickActions";
 import ScrollToTop from "../components/misc/ScrollToTop";
 import PageSeo from "../components/seo/PageSeo";
 
@@ -14,6 +15,7 @@ export default function GuestLayout() {
         <Outlet />
       </main>
       <Footer />
+      <LandingQuickActions />
     </div>
   );
 }

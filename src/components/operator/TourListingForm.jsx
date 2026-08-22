@@ -8,6 +8,7 @@ import ItineraryDayImageField from "./ItineraryDayImageField";
 import TourFeatureImagesField from "./TourFeatureImagesField";
 import TourLocationRoutePicker from "./TourLocationRoutePicker";
 import CountrySearchSelect from "../forms/CountrySearchSelect";
+import { GuestIcon } from "../../utils/guestIcons";
 import {
   BADGE_VARIANTS,
   GHANA_PACKAGE_LINE_OPTIONS,
@@ -513,7 +514,7 @@ export default function TourListingForm({ initial, onSubmit, submitLabel = "Save
                           : "border-brand-border bg-white hover:border-brand-green/30",
                       ].join(" ")}
                     >
-                      <span className="text-lg" aria-hidden>{option.icon}</span>
+                      <GuestIcon name={option.iconKey || "mapPin"} className="h-5 w-5 text-brand-green" aria-hidden />
                       <p className="mt-1 text-sm font-bold text-brand-ink">{option.label}</p>
                       <p className="mt-0.5 text-xs text-brand-muted">{option.description}</p>
                     </button>

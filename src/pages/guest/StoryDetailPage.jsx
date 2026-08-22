@@ -1,5 +1,6 @@
 import { Link, useParams } from "react-router";
 import { motion } from "motion/react";
+import { BookOpen } from "lucide-react";
 import Container from "../../components/layout/Container";
 import { ROUTES } from "../../constants/routes";
 import { getStoryBySlug, stories } from "../../data/storiesContent";
@@ -73,7 +74,7 @@ export default function StoryDetailPage() {
     return (
       <div className="min-h-[50vh] bg-white py-20 text-center">
         <Container>
-          <span className="text-5xl">📖</span>
+          <BookOpen className="h-12 w-12 text-brand-primary/40" aria-hidden />
           <h1 className="mt-4 text-2xl font-bold text-brand-ink">Story not found</h1>
           <p className="mt-2 text-brand-muted">This story may have moved or no longer exists.</p>
           <Link

@@ -1,4 +1,17 @@
 import { LANDING_CMS_DEFAULTS } from "./landingCmsStorage";
+import { mergeCmsItems } from "./landingCmsItems";
+
+function sanitizeBrokenRemoteImages(content) {
+  ["regions", "destinations"].forEach((sectionId) => {
+    const items = content?.[sectionId]?.items;
+    if (!Array.isArray(items)) return;
+    items.forEach((item) => {
+      if (/^https?:\/\//i.test(String(item?.image || ""))) {
+        item.image = "";
+      }
+    });
+  });
+}
 
 const SECTION_IDS = ["hero", "tours", "destinations", "regions", "explore", "cta"];
 
@@ -18,7 +31,9 @@ function normalizeFieldKeys(section = {}) {
 function deepMerge(base, patch) {
   const out = { ...base };
   Object.entries(patch || {}).forEach(([key, value]) => {
-    if (value && typeof value === "object" && !Array.isArray(value)) {
+    if (key === "items" && Array.isArray(value)) {
+      out.items = mergeCmsItems(base.items || [], value);
+    } else if (value && typeof value === "object" && !Array.isArray(value)) {
       out[key] = deepMerge(base[key] || {}, value);
     } else if (value !== undefined) {
       out[key] = value;
@@ -36,6 +51,8 @@ export function mergeLandingCmsWithDefaults(content) {
       normalizeFieldKeys(content?.[sectionId]),
     );
   });
+
+  sanitizeBrokenRemoteImages(merged);
 
   return merged;
 }
