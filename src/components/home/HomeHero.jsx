@@ -186,7 +186,7 @@ export default function HomeHero({ cmsOverride }) {
           variants={container}
           initial="hidden"
           animate="show"
-          className="relative overflow-hidden rounded-3xl border border-brand-border/60 bg-white shadow-[0_24px_64px_-24px_rgba(21,67,96,0.28)]"
+          className="relative overflow-hidden rounded-3xl border border-brand-border/60 bg-white shadow-[0_24px_64px_-24px_rgba(0,107,63,0.28)]"
         >
           <div className="px-6 py-7 sm:px-8 sm:py-8">
             <motion.div variants={rise} className="hidden max-w-2xl lg:block">

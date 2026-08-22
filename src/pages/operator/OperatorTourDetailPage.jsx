@@ -11,14 +11,13 @@ import {
   Loader2,
   MapPin,
   Pencil,
-  Star,
   Trash2,
   Users,
   XCircle,
 } from "lucide-react";
 import operatorToursServiceApi from "../../apis/OperatorToursServiceApi";
 import { AUDIENCE_SCOPE_OPTIONS } from "../../constants/tourAudience";
-import { formatTourCategoryLabel, formatDepartureAvailability, formatTourSlotsLabel } from "../../utils/operatorTourConstants";
+import { formatTourCategoryLabel, formatDepartureAvailability, formatTourSlotsLabel, getTourTypeLabel } from "../../utils/operatorTourConstants";
 import { buildTourPriceDisplay, stripTourPriceFromPrefix } from "../../utils/tourPricing";
 import AdminConfirmModal from "../../components/admin/AdminConfirmModal";
 import ImageLightbox from "../../components/misc/ImageLightbox";
@@ -305,17 +304,17 @@ export default function OperatorTourDetailPage() {
               <span className={`rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wide ${statusClass(tour.status)}`}>
                 {tour.status}
               </span>
-              {tour.featured ? (
-                <span className="inline-flex items-center gap-1 rounded-full bg-brand-accent px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-brand-primary">
-                  <Star className="h-3 w-3 fill-brand-accent text-brand-accent" strokeWidth={2.5} aria-hidden />
-                  Featured
+              <span className="inline-flex items-center gap-1 rounded-full bg-brand-accent px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-brand-charcoal">
+                {getTourTypeLabel(tour.tourType)}
+              </span>
+              {(tour.regionLabels || []).map((label) => (
+                <span
+                  key={label}
+                  className="rounded-full bg-white/15 px-3 py-1 text-[11px] font-bold text-white backdrop-blur-sm"
+                >
+                  {label}
                 </span>
-              ) : null}
-              {tour.badge ? (
-                <span className="rounded-full bg-white/15 px-3 py-1 text-[11px] font-bold text-white backdrop-blur-sm">
-                  {tour.badge}
-                </span>
-              ) : null}
+              ))}
             </div>
 
             <h1 className="mt-4 font-heading text-3xl font-bold sm:text-4xl">{tour.name}</h1>

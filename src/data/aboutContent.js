@@ -2,10 +2,11 @@ import { ROUTES } from "../constants/routes";
 
 export const company = {
   name: "360 Tours and Investment Limited",
+  shortName: "360 Tours Ghana",
   tagline: "Discover Africa. Travel Without Limits.",
   subtitle: "Your trusted travel partner for tours, accommodation & transportation",
   location: "Accra, Ghana",
-  email: "360tours.gh@gmail.com",
+  email: "360toursghana@gmail.com",
   motto: "Explore. Experience. Remember.",
 };
 

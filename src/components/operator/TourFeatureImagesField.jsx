@@ -1,13 +1,13 @@
 import { useRef, useState } from "react";
 import { ImagePlus, Upload, X, ZoomIn } from "lucide-react";
 import ImageLightbox from "../misc/ImageLightbox";
+import { useAuth } from "../../hooks/useAuth";
+import uploadServiceApi from "../../apis/UploadServiceApi";
+import { isAdminRole, isOperatorRole } from "../../constants/roles";
+import { optimizeImageFile } from "../../utils/imageOptimize";
 import {
   MAX_FEATURE_IMAGES,
-  MAX_FEATURE_IMAGES_TOTAL_BYTES,
-  formatBytes,
-  getFeatureImagesTotalBytes,
   getImagePreviewSrc,
-  readImageFile,
   validateFeatureImageFile,
 } from "../../utils/tourImageUtils";
 
@@ -15,8 +15,10 @@ const labelClass = "block text-xs font-semibold uppercase tracking-[0.12em] text
 
 export default function TourFeatureImagesField({ value = [], coverImage, onChange, onError }) {
   const inputRef = useRef(null);
+  const { token, role } = useAuth();
   const [uploading, setUploading] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(null);
+  const uploadRole = isAdminRole(role) || isOperatorRole(role) ? "admin" : "client";
 
   const images = Array.isArray(value) ? value : [];
   const coverSrc = getImagePreviewSrc(coverImage);
@@ -26,7 +28,6 @@ export default function TourFeatureImagesField({ value = [], coverImage, onChang
     ...featureSources.filter((src) => src !== coverSrc),
   ];
   const featureCount = images.filter((img) => img?.uri || img?.data).length;
-  const featureBytesUsed = getFeatureImagesTotalBytes(images);
   const slotsLeft = MAX_FEATURE_IMAGES - images.length;
   const atLimit = images.length >= MAX_FEATURE_IMAGES;
 
@@ -65,8 +66,19 @@ export default function TourFeatureImagesField({ value = [], coverImage, onChang
       }
 
       try {
-        const image = await readImageFile(file);
-        next.push(image);
+        if (!token) {
+          onError?.("Sign in again to upload images.");
+          blocked = true;
+          break;
+        }
+        const optimized = await optimizeImageFile(file, "tour");
+        const result = await uploadServiceApi.uploadImage(token, optimized, { variant: "tour", role: uploadRole });
+        if (!result.ok || !result.url) {
+          onError?.(result.reason || "Could not upload one of the selected images.");
+          blocked = true;
+          break;
+        }
+        next.push({ uri: result.url, data: "", mimeType: optimized.type || "image/jpeg" });
       } catch (err) {
         onError?.(err.message || "Could not read one of the selected images.");
         blocked = true;
@@ -97,19 +109,19 @@ export default function TourFeatureImagesField({ value = [], coverImage, onChang
       <div className="mb-4">
         <p className={labelClass}>Feature images</p>
         <p className="mt-1 text-[11px] text-brand-muted">
-          Select up to {MAX_FEATURE_IMAGES} images at once — {formatBytes(MAX_FEATURE_IMAGES_TOTAL_BYTES)} total max.
+          Select up to {MAX_FEATURE_IMAGES} images. Each photo is optimized and stored as a file URL.
         </p>
       </div>
 
       <div className="mb-5 rounded-xl border border-brand-border/60 bg-brand-cream/40 px-4 py-3">
         <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-medium text-brand-ink">
           <span>{featureCount} / {MAX_FEATURE_IMAGES} images</span>
-          <span>{formatBytes(featureBytesUsed)} / {formatBytes(MAX_FEATURE_IMAGES_TOTAL_BYTES)} used</span>
+          <span>Stored as file URLs</span>
         </div>
         <div className="mt-2 h-2 overflow-hidden rounded-full bg-white">
           <div
-            className={`h-full rounded-full transition-all ${featureBytesUsed > MAX_FEATURE_IMAGES_TOTAL_BYTES ? "bg-red-500" : "bg-brand-green"}`}
-            style={{ width: `${Math.min(100, (featureBytesUsed / MAX_FEATURE_IMAGES_TOTAL_BYTES) * 100)}%` }}
+            className="h-full rounded-full bg-brand-green transition-all"
+            style={{ width: `${Math.min(100, (featureCount / MAX_FEATURE_IMAGES) * 100)}%` }}
           />
         </div>
       </div>

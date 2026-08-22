@@ -1,12 +1,18 @@
-import { useRef } from "react";
-import { ChevronDown, ChevronUp, ImagePlus, Trash2 } from "lucide-react";
+import { useRef, useState } from "react";
+import { ChevronDown, ChevronUp, ImagePlus, Loader2 } from "lucide-react";
 import { toast } from "react-toastify";
-import { getImagePreviewSrc, readImageFile } from "../../utils/tourImageUtils";
+import { getPopularDestinationImage } from "../../config/images";
+import { useAuth } from "../../hooks/useAuth";
+import uploadServiceApi from "../../apis/UploadServiceApi";
+import { optimizeImageFile } from "../../utils/imageOptimize";
 
 const MAX_IMAGE_BYTES = 2 * 1024 * 1024;
 
-function ItemImageField({ label, value, onChange }) {
+function ItemImageField({ label, value, fallbackSrc, onChange }) {
   const inputRef = useRef(null);
+  const { token } = useAuth();
+  const [uploading, setUploading] = useState(false);
+  const preview = value || fallbackSrc;
 
   async function handleFileChange(e) {
     const file = e.target.files?.[0];
@@ -16,11 +22,23 @@ function ItemImageField({ label, value, onChange }) {
       toast.error("Image must be under 2 MB.");
       return;
     }
+    if (!token) {
+      toast.error("Sign in again to upload images.");
+      return;
+    }
     try {
-      const image = await readImageFile(file);
-      onChange(getImagePreviewSrc(image));
+      setUploading(true);
+      const optimized = await optimizeImageFile(file, "destination");
+      const result = await uploadServiceApi.uploadImage(token, optimized, { variant: "destination", role: "admin" });
+      if (!result.ok || !result.url) {
+        toast.error(result.reason || "Could not upload image.");
+        return;
+      }
+      onChange(result.url);
     } catch (err) {
       toast.error(err.message || "Could not read image.");
+    } finally {
+      setUploading(false);
     }
   }
 
@@ -31,10 +49,13 @@ function ItemImageField({ label, value, onChange }) {
         <button
           type="button"
           onClick={() => inputRef.current?.click()}
+          disabled={uploading}
           className="relative flex h-20 w-28 items-center justify-center overflow-hidden rounded-xl border border-dashed border-brand-border bg-brand-cream/40"
         >
-          {value ? (
-            <img src={value} alt="" className="h-full w-full object-cover" />
+          {preview ? (
+            <img src={preview} alt="" className="h-full w-full object-cover" />
+          ) : uploading ? (
+            <Loader2 className="h-6 w-6 animate-spin text-brand-muted" aria-hidden />
           ) : (
             <ImagePlus className="h-6 w-6 text-brand-muted" aria-hidden />
           )}
@@ -52,6 +73,9 @@ function ItemImageField({ label, value, onChange }) {
           </button>
         ) : null}
       </div>
+      <p className="mt-1.5 text-[11px] text-brand-muted">
+        Photos are cropped to 16:10 and compressed so they fit the landing page cards.
+      </p>
     </div>
   );
 }
@@ -155,7 +179,12 @@ export default function LandingCmsItemsEditor({ sectionId, items = [], onChange 
                 </div>
               </>
             ) : null}
-            <ItemImageField label="Photo" value={item.image || ""} onChange={(value) => updateItem(index, { image: value })} />
+            <ItemImageField
+              label="Photo"
+              value={item.image || ""}
+              fallbackSrc={getPopularDestinationImage(item.imageKey, { preferWebp: false })}
+              onChange={(value) => updateItem(index, { image: value })}
+            />
           </div>
         </div>
       ))}

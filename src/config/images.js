@@ -5,6 +5,8 @@
 export const images = {
   logo: "/images/logo.png",
   general_logo: "/images/logo.png",
+  /** Ghana flag roundel with no wordmark — for avatars, tight badges, and loaders. */
+  logo_mark: "/images/logo-mark.png",
   favicon_logo: "/images/seo/favicon-192x192.png",
   home: {
     hero: "/images/home/hero.jpg",
@@ -41,69 +43,24 @@ export const images = {
     arts_and_craft: "/images/home/arts_and_craft.jpg",
   },
 
-  /** Ghana destination photos — local gallery (refreshed from Wikimedia stock via scripts/fetch-ghana-gallery-images.mjs) */
+  /** Ghana destination photos — original local assets that match each stop. */
   destinations: {
     popular: {
-      accraCityTour: {
-        webp: "/images/gallery/optimized/accra-city-tour.webp",
-        png: "/images/gallery/optimized/accra-city-tour.png",
-      },
-      capeCoastCastle: {
-        webp: "/images/gallery/optimized/cape-coast-castle.webp",
-        png: "/images/gallery/optimized/cape-coast-castle.png",
-      },
-      elminaCastle: {
-        webp: "/images/gallery/optimized/elmina-castle.webp",
-        png: "/images/gallery/optimized/elmina-castle.png",
-      },
-      kakumNationalPark: {
-        webp: "/images/gallery/optimized/kakum-national-park.webp",
-        png: "/images/gallery/optimized/kakum-national-park.png",
-      },
-      akosomboBoatCruise: {
-        webp: "/images/gallery/optimized/akosombo-boat-cruise.webp",
-        png: "/images/gallery/optimized/akosombo-boat-cruise.png",
-      },
-      aburiBotanicalGardens: {
-        webp: "/images/gallery/optimized/aburi-botanical-gardens.webp",
-        png: "/images/gallery/optimized/aburi-botanical-gardens.png",
-      },
-      wliWaterfalls: {
-        webp: "/images/gallery/optimized/wli-waterfalls.webp",
-        png: "/images/gallery/optimized/wli-waterfalls.png",
-      },
-      botiFalls: {
-        webp: "/images/gallery/optimized/boti-falls.webp",
-        png: "/images/gallery/optimized/boti-falls.png",
-      },
-      shaiHills: {
-        webp: "/images/gallery/optimized/shai-hills.webp",
-        png: "/images/gallery/optimized/shai-hills.png",
-      },
-      adaFoah: {
-        webp: "/images/gallery/optimized/ada-foah.webp",
-        png: "/images/gallery/optimized/ada-foah.png",
-      },
-      nzulezuStiltVillage: {
-        webp: "/images/gallery/optimized/nzulezu-stilt-village.webp",
-        png: "/images/gallery/optimized/nzulezu-stilt-village.png",
-      },
-      moleNationalPark: {
-        webp: "/images/gallery/optimized/mole-national-park.webp",
-        png: "/images/gallery/optimized/mole-national-park.png",
-      },
-      kumasiCulturalTour: {
-        webp: "/images/gallery/optimized/kumasi-cultural-tour.webp",
-        png: "/images/gallery/optimized/kumasi-cultural-tour.png",
-      },
-      voltaRegionAdventure: {
-        webp: "/images/gallery/optimized/volta-region-adventure.webp",
-        png: "/images/gallery/optimized/volta-region-adventure.png",
-      },
-      tafiAtomeMonkeySanctuary: {
-        webp: "/images/gallery/optimized/tafi-atome-monkey-sanctuary.webp",
-        png: "/images/gallery/optimized/tafi-atome-monkey-sanctuary.png",
-      },
+      accraCityTour: "/images/home/arts_and_craft.jpg",
+      capeCoastCastle: "/images/home/ghana_tour.png",
+      elminaCastle: "/images/home/hero_three.jpg",
+      kakumNationalPark: "/images/home/dest-ghana.jpg",
+      akosomboBoatCruise: "/images/home/waterfall.jpg",
+      aburiBotanicalGardens: "/images/home/hero_one.jpg",
+      wliWaterfalls: "/images/home/volta.jpg",
+      botiFalls: "/images/home/waterfall.jpg",
+      shaiHills: "/images/home/hero_four.png",
+      adaFoah: "/images/home/hero_two.jpg",
+      nzulezuStiltVillage: "/images/home/dest-ghana.jpg",
+      moleNationalPark: "/images/home/dest-ghana.jpg",
+      kumasiCulturalTour: "/images/home/manhyia_palace.jpg",
+      voltaRegionAdventure: "/images/home/volta.jpg",
+      tafiAtomeMonkeySanctuary: "/images/home/hero.jpg",
     },
   },
 
@@ -111,6 +68,32 @@ export const images = {
     banner_one: "/images/home/sun_city_banner.png",
   }
 };
+
+/**
+ * Moments from tours we have already run — used by the adventure gallery.
+ * Each entry points at the optimized WebP/PNG pair in /public/images/gallery/optimized.
+ */
+export const adventureGallery = [
+  { id: "cape-coast-castle", slug: "cape-coast-castle", caption: "Cape Coast Castle", region: "Central" },
+  { id: "wli-waterfalls", slug: "wli-waterfalls", caption: "Wli Waterfalls", region: "Volta" },
+  { id: "kumasi-cultural-tour", slug: "kumasi-cultural-tour", caption: "Manhyia & Kejetia, Kumasi", region: "Ashanti" },
+  { id: "kakum-national-park", slug: "kakum-national-park", caption: "Kakum Canopy Walk", region: "Central" },
+  { id: "accra-city-tour", slug: "accra-city-tour", caption: "Accra City Tour", region: "Greater Accra" },
+  { id: "nzulezu-stilt-village", slug: "nzulezu-stilt-village", caption: "Nzulezu Stilt Village", region: "Western" },
+  { id: "mole-national-park", slug: "mole-national-park", caption: "Mole Safari", region: "Savannah" },
+  { id: "ada-foah", slug: "ada-foah", caption: "Ada Foah Estuary", region: "Greater Accra" },
+  { id: "elmina-castle", slug: "elmina-castle", caption: "Elmina Castle", region: "Central" },
+  { id: "aburi-botanical-gardens", slug: "aburi-botanical-gardens", caption: "Aburi Gardens", region: "Eastern" },
+  { id: "tafi-atome", slug: "tafi-atome-monkey-sanctuary", caption: "Tafi Atome Sanctuary", region: "Volta" },
+  { id: "shai-hills", slug: "shai-hills", caption: "Shai Hills Reserve", region: "Greater Accra" },
+];
+
+export function getAdventureGallerySources(slug) {
+  return {
+    webp: `/images/gallery/optimized/${slug}.webp`,
+    png: `/images/gallery/optimized/${slug}.png`,
+  };
+}
 
 /** Resolve optimized gallery image — prefers WebP, falls back to PNG or legacy string paths */
 export function getPopularDestinationImage(imageKey, { preferWebp = true } = {}) {

@@ -18,7 +18,7 @@ import operatorAuthServiceApi from "../../apis/OperatorAuthServiceApi";
 import { ROUTES } from "../../constants/routes";
 import { useAuth } from "../../hooks/useAuth";
 import { normalizePhoneForApi } from "../../utils/phoneUtils";
-import { getImagePreviewSrc, readImageFile } from "../../utils/tourImageUtils";
+import { resolveProfileImageSrc, uploadProfilePhoto } from "../../utils/profileImage";
 
 const EASE = [0.22, 1, 0.36, 1];
 const MAX_PROFILE_IMAGE_BYTES = 2 * 1024 * 1024;
@@ -98,7 +98,7 @@ export default function OperatorProfilePage() {
   const [form, setForm] = useState(() => getInitialForm(user));
   const [errors, setErrors] = useState({});
   const [profileImage, setProfileImage] = useState(null);
-  const [profilePreview, setProfilePreview] = useState(user?.profileImage || "");
+  const [profilePreview, setProfilePreview] = useState(() => resolveProfileImageSrc(user?.profileImage));
   const [profileError, setProfileError] = useState("");
   const [saving, setSaving] = useState(false);
   const [imageRemoved, setImageRemoved] = useState(false);
@@ -106,7 +106,7 @@ export default function OperatorProfilePage() {
   useEffect(() => {
     if (!user) return;
     setForm(getInitialForm(user));
-    setProfilePreview(user.profileImage || "");
+    setProfilePreview(resolveProfileImageSrc(user.profileImage));
     setProfileImage(null);
     setImageRemoved(false);
     setErrors({});
@@ -129,9 +129,17 @@ export default function OperatorProfilePage() {
     }
 
     try {
-      const image = await readImageFile(file);
-      setProfileImage(image);
-      setProfilePreview(getImagePreviewSrc(image));
+      if (!token) {
+        setProfileError("Sign in again to upload a photo.");
+        return;
+      }
+      const result = await uploadProfilePhoto(token, file, "admin");
+      if (!result.ok || !result.url) {
+        setProfileError(result.reason || "Could not upload photo.");
+        return;
+      }
+      setProfileImage(result.url);
+      setProfilePreview(result.url);
       setProfileError("");
       setImageRemoved(false);
     } catch (err) {
@@ -169,7 +177,7 @@ export default function OperatorProfilePage() {
     };
 
     if (profileImage) {
-      payload.profile_image = getImagePreviewSrc(profileImage);
+      payload.profile_image = profileImage;
     } else if (imageRemoved) {
       payload.profile_image = "";
     }
@@ -349,8 +357,8 @@ export default function OperatorProfilePage() {
           <div className="rounded-2xl border border-black/8 bg-white p-6 shadow-sm">
             <div className="flex items-center gap-3">
               <span className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-xl bg-brand-ink text-brand-gold">
-                {user?.profileImage ? (
-                  <img src={user.profileImage} alt="" className="h-full w-full object-cover" />
+                {resolveProfileImageSrc(user?.profileImage) ? (
+                  <img src={resolveProfileImageSrc(user.profileImage)} alt="" className="h-full w-full object-cover" />
                 ) : (
                   <Building2 className="h-6 w-6" strokeWidth={1.75} aria-hidden />
                 )}

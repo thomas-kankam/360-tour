@@ -1,5 +1,5 @@
 import { ghanaRegions, popularDestinations } from "../data/homeContent";
-import { getPopularDestinationSources } from "../config/images";
+import { getPopularDestinationImage, getPopularDestinationSources } from "../config/images";
 
 export function serializeHighlights(highlights) {
   if (Array.isArray(highlights)) return highlights.join(", ");
@@ -14,6 +14,10 @@ export function parseHighlights(value) {
     .filter(Boolean);
 }
 
+function defaultItemImage(item) {
+  return item.fallback || getPopularDestinationImage(item.imageKey, { preferWebp: false }) || "";
+}
+
 function toCmsRegionItem(region) {
   return {
     id: region.id,
@@ -22,7 +26,7 @@ function toCmsRegionItem(region) {
     tagline: region.tagline,
     desc: region.desc,
     highlights: serializeHighlights(region.highlights),
-    image: "",
+    image: defaultItemImage(region),
     imageKey: region.imageKey || "",
     packageId: region.packageId || "",
   };
@@ -33,7 +37,7 @@ function toCmsDestinationItem(destination) {
     id: destination.id,
     name: destination.name,
     region: destination.region,
-    image: "",
+    image: defaultItemImage(destination),
     imageKey: destination.imageKey || "",
   };
 }
@@ -79,7 +83,7 @@ export function resolveCmsDestinationItems(cmsSection) {
 }
 
 export function resolveCmsItemImage(item) {
-  if (item?.image) {
+  if (item?.image && !/\/images\/gallery\/optimized\/(?!hero\b)/i.test(item.image)) {
     return { webp: item.image, png: item.image };
   }
   if (item?.imageKey) {

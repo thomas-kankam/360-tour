@@ -15,4 +15,13 @@ module.exports = function setupProxy(app) {
       logLevel: process.env.DEBUG_PROXY === "1" ? "debug" : "warn",
     }),
   );
+
+  app.use(
+    "/storage",
+    createProxyMiddleware({
+      target: API_TARGET,
+      changeOrigin: true,
+      logLevel: process.env.DEBUG_PROXY === "1" ? "debug" : "warn",
+    }),
+  );
 };

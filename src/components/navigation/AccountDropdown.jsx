@@ -6,6 +6,7 @@ import { ADMIN_PERMISSIONS } from "../../constants/adminPermissions";
 import { ROUTES } from "../../constants/routes";
 import { USER_ROLES } from "../../constants/roles";
 import { useAuth } from "../../hooks/useAuth";
+import { resolveProfileImageSrc } from "../../utils/profileImage";
 
 const EASE = [0.16, 1, 0.3, 1];
 
@@ -126,9 +127,9 @@ export default function AccountDropdown() {
             : "border-brand-border/70 bg-white text-brand-ink hover:border-brand-primary/25 hover:bg-brand-cream",
         ].join(" ")}
       >
-        <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-primary text-xs font-bold text-white">
-          {user?.profileImage ? (
-            <img src={user.profileImage} alt="" className="h-full w-full rounded-lg object-cover" />
+        <span className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-lg bg-brand-primary text-xs font-bold text-white">
+          {resolveProfileImageSrc(user?.profileImage) ? (
+            <img src={resolveProfileImageSrc(user.profileImage)} alt="" className="h-full w-full rounded-lg object-cover" />
           ) : (
             initials
           )}
@@ -147,7 +148,7 @@ export default function AccountDropdown() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.98 }}
             transition={{ duration: 0.2, ease: EASE }}
-            className="absolute right-0 z-50 mt-2 w-64 overflow-hidden rounded-2xl border border-brand-border/60 bg-white shadow-[0_16px_48px_-20px_rgba(21,67,96,0.3)]"
+            className="absolute right-0 z-50 mt-2 w-64 overflow-hidden rounded-2xl border border-brand-border/60 bg-white shadow-[0_16px_48px_-20px_rgba(0,107,63,0.3)]"
             role="menu"
           >
             <div className="border-b border-brand-border/50 bg-gradient-to-r from-brand-primary/[0.04] to-brand-accent/10 px-4 py-3">
@@ -174,8 +175,8 @@ export function AccountMobileSection({ onNavigate }) {
     <div className="rounded-2xl border border-brand-border/50 bg-gradient-to-br from-brand-primary/[0.04] to-brand-accent/10 p-4">
       <div className="mb-3 flex items-center gap-3">
         <span className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl bg-brand-primary text-sm font-bold text-white">
-          {user?.profileImage ? (
-            <img src={user.profileImage} alt="" className="h-full w-full object-cover" />
+          {resolveProfileImageSrc(user?.profileImage) ? (
+            <img src={resolveProfileImageSrc(user.profileImage)} alt="" className="h-full w-full object-cover" />
           ) : (
             getInitials(user)
           )}

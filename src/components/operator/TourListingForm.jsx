@@ -9,24 +9,20 @@ import TourFeatureImagesField from "./TourFeatureImagesField";
 import TourLocationRoutePicker from "./TourLocationRoutePicker";
 import CountrySearchSelect from "../forms/CountrySearchSelect";
 import { GuestIcon } from "../../utils/guestIcons";
-import {
-  BADGE_VARIANTS,
-  GHANA_PACKAGE_LINE_OPTIONS,
-  getPackageLinePhotoHints,
-  isCountryCategoryId,
-  isGhanaPackageLineId,
-  TOUR_CATEGORY_OPTIONS,
-  findCountryOption,
-} from "../../utils/operatorTourStorage";
+import { findCountryOption } from "../../utils/operatorTourStorage";
 import {
   TOUR_CURRENCY,
   TOUR_CURRENCY_USD,
+  TOUR_TYPE,
+  TOUR_TYPE_OPTIONS,
   UNLIMITED_TOUR_SLOTS,
   DEPARTURE_SCHEDULE_DATE_RANGE,
   DEPARTURE_SCHEDULE_OPTIONS,
   createEmptyDateRangeDeparture,
   createEmptySpecificDeparture,
   formatTourPriceLabel,
+  isCustomTourType,
+  normalizeTourType,
   parseTourPriceAmount,
   isUnlimitedTourSlots,
 } from "../../utils/operatorTourConstants";
@@ -67,55 +63,63 @@ const STEPS = [
   { id: "booking", label: "Booking rules" },
 ];
 
-function ListingStepProgress({ currentIndex }) {
+function ListingStepProgress({ currentIndex, tourTypeLabel }) {
   return (
-    <div className="rounded-[1.75rem] border border-brand-border/60 bg-white p-5 shadow-sm sm:p-6">
-      <div className="mb-4 flex items-center justify-between gap-3">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brand-primary">Listing wizard</p>
-          <p className="mt-1 text-sm font-semibold text-brand-ink">
-            Step {currentIndex + 1} of {STEPS.length} — {STEPS[currentIndex].label}
-          </p>
+    <div className="overflow-hidden rounded-[1.75rem] border border-brand-border/60 bg-white shadow-sm">
+      <div aria-hidden className="h-1.5 bg-kente-band" />
+      <div className="p-5 sm:p-6">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brand-primary">Listing wizard</p>
+            <p className="mt-1 text-sm font-semibold text-brand-ink">
+              Step {currentIndex + 1} of {STEPS.length} — {STEPS[currentIndex].label}
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="rounded-full bg-brand-primary/10 px-3 py-1 text-xs font-bold text-brand-primary">
+              {tourTypeLabel}
+            </span>
+            <span className="rounded-full bg-brand-cream px-3 py-1 text-xs font-bold text-brand-green">
+              {Math.round(((currentIndex + 1) / STEPS.length) * 100)}%
+            </span>
+          </div>
         </div>
-        <span className="rounded-full bg-brand-cream px-3 py-1 text-xs font-bold text-brand-green">
-          {Math.round(((currentIndex + 1) / STEPS.length) * 100)}%
-        </span>
-      </div>
-      <div className="flex items-center gap-1">
-        {STEPS.map((step, i) => {
-          const done = i < currentIndex;
-          const active = i === currentIndex;
-          return (
-            <div key={step.id} className="flex flex-1 items-center gap-1">
-              <div className="flex min-w-0 flex-1 flex-col items-center gap-1.5">
-                <div
-                  className={[
-                    "flex h-9 w-9 items-center justify-center rounded-full text-[11px] font-bold transition-all duration-300",
-                    done
-                      ? "bg-brand-green text-white"
-                      : active
-                        ? "bg-brand-primary text-white ring-4 ring-brand-primary/20"
-                        : "bg-brand-border/40 text-brand-muted",
-                  ].join(" ")}
-                >
-                  {done ? (
-                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3} aria-hidden>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                  ) : (
-                    i + 1
-                  )}
+        <div className="flex items-center gap-1">
+          {STEPS.map((step, i) => {
+            const done = i < currentIndex;
+            const active = i === currentIndex;
+            return (
+              <div key={step.id} className="flex flex-1 items-center gap-1">
+                <div className="flex min-w-0 flex-1 flex-col items-center gap-1.5">
+                  <div
+                    className={[
+                      "flex h-9 w-9 items-center justify-center rounded-full text-[11px] font-bold transition-all duration-300",
+                      done
+                        ? "bg-brand-green text-white"
+                        : active
+                          ? "bg-brand-primary text-white ring-4 ring-brand-accent/40"
+                          : "bg-brand-border/40 text-brand-muted",
+                    ].join(" ")}
+                  >
+                    {done ? (
+                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3} aria-hidden>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    ) : (
+                      i + 1
+                    )}
+                  </div>
+                  <span className={`hidden max-w-full truncate text-center text-[10px] font-semibold sm:block ${active ? "text-brand-ink" : "text-brand-muted"}`}>
+                    {step.label}
+                  </span>
                 </div>
-                <span className={`hidden max-w-full truncate text-center text-[10px] font-semibold sm:block ${active ? "text-brand-ink" : "text-brand-muted"}`}>
-                  {step.label}
-                </span>
+                {i < STEPS.length - 1 && (
+                  <div className={`mb-5 h-0.5 flex-1 rounded-full transition-colors duration-300 ${done ? "bg-brand-green" : "bg-brand-border/50"}`} />
+                )}
               </div>
-              {i < STEPS.length - 1 && (
-                <div className={`mb-5 h-0.5 flex-1 rounded-full transition-colors duration-300 ${done ? "bg-brand-green" : "bg-brand-border/50"}`} />
-              )}
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
     </div>
   );
@@ -151,6 +155,8 @@ export default function TourListingForm({ initial, onSubmit, submitLabel = "Save
   const step = STEPS[stepIndex].id;
   const isLastStep = stepIndex === STEPS.length - 1;
   const nextStep = STEPS[stepIndex + 1];
+  const tourType = normalizeTourType(form.tourType);
+  const isCustomTour = isCustomTourType(tourType);
   const departureScheduleType = form.departureScheduleType || DEPARTURE_SCHEDULE_DATE_RANGE;
   const isDateRangeSchedule = departureScheduleType === DEPARTURE_SCHEDULE_DATE_RANGE;
   const dateRangeDeparture = form.departureDates?.[0] || createEmptyDateRangeDeparture();
@@ -341,40 +347,31 @@ export default function TourListingForm({ initial, onSubmit, submitLabel = "Save
   function handleCountryChange(countryId) {
     const country = findCountryOption(countryId);
     if (!country) return;
-    const themeCategories = form.categories.filter(
-      (c) => TOUR_CATEGORY_OPTIONS.some((option) => option.id === c),
-    );
     patch({
       countryId: country.id,
       countryCode: country.dialCode,
       country: country.country,
-      packageLineId: country.id === "ghana" ? form.packageLineId : "",
-      categories: [country.id, ...(country.id === "ghana" && form.packageLineId ? [form.packageLineId] : []), ...themeCategories],
+      categories: [country.id],
     });
   }
 
-  function handlePackageLineChange(packageLineId) {
-    const themeCategories = form.categories.filter(
-      (c) => TOUR_CATEGORY_OPTIONS.some((option) => option.id === c),
-    );
-    patch({
-      packageLineId,
-      categories: [form.countryId, packageLineId, ...themeCategories],
-    });
-  }
+  function handleTourTypeChange(nextType) {
+    const normalized = normalizeTourType(nextType);
+    if (normalized === tourType) return;
 
-  function toggleCategory(id) {
-    if (isCountryCategoryId(id) || isGhanaPackageLineId(id)) return;
-    const has = form.categories.includes(id);
-    const themeCategories = has
-      ? form.categories.filter((c) => c !== id)
-      : [...form.categories, id];
-    const nextCategories = [form.countryId];
-    if (form.countryId === "ghana" && form.packageLineId) {
-      nextCategories.push(form.packageLineId);
+    setFormError("");
+
+    if (normalized === TOUR_TYPE.CUSTOM) {
+      // Tailor-made trips carry no published departures — dates are agreed per enquiry.
+      patch({ tourType: normalized, departureDates: [] });
+      return;
     }
-    nextCategories.push(...themeCategories.filter((c) => TOUR_CATEGORY_OPTIONS.some((option) => option.id === c)));
-    patch({ categories: [...new Set(nextCategories)] });
+
+    patch({
+      tourType: normalized,
+      departureScheduleType: DEPARTURE_SCHEDULE_DATE_RANGE,
+      departureDates: [createEmptyDateRangeDeparture(18)],
+    });
   }
 
   function validateStep(index) {
@@ -382,9 +379,6 @@ export default function TourListingForm({ initial, onSubmit, submitLabel = "Save
     if (stepId === "basics") {
       if (!form.name.trim()) return "Tour name is required before continuing.";
       if (!(form.locations || []).length) return "Add at least one city to your tour route before continuing.";
-      if (form.countryId === "ghana" && !form.packageLineId) {
-        return "Select a Ghana package line (Accra, Kumasi, Volta, or End of Year) before continuing.";
-      }
     }
     if (stepId === "images") {
       return validateFeatureImagesCollection(form.featureImages) || "";
@@ -434,7 +428,7 @@ export default function TourListingForm({ initial, onSubmit, submitLabel = "Save
       included: form.included.filter(Boolean),
       notIncluded: form.notIncluded.filter(Boolean),
       featureImages: (form.featureImages || []).filter((img) => img?.uri || img?.data),
-      departureDates: form.departureDates.filter((d) => d.date),
+      departureDates: isCustomTour ? [] : (form.departureDates || []).filter((d) => d.date),
     }, { isUpdate });
 
     try {
@@ -457,7 +451,10 @@ export default function TourListingForm({ initial, onSubmit, submitLabel = "Save
   return (
     <form onSubmit={handleFormSubmit} className="space-y-6">
       <div ref={formTopRef} className="scroll-mt-28">
-        <ListingStepProgress currentIndex={stepIndex} />
+        <ListingStepProgress
+          currentIndex={stepIndex}
+          tourTypeLabel={isCustomTour ? "Customized tour" : "Regular tour"}
+        />
       </div>
 
       <AnimatePresence mode="wait">
@@ -467,10 +464,41 @@ export default function TourListingForm({ initial, onSubmit, submitLabel = "Save
             <h2 className="text-xl font-bold text-brand-ink">Tour basics</h2>
             <p className="mt-1 text-sm text-brand-muted">Core details shown on listing cards. URL slug is generated by the backend.</p>
           </div>
+
+          <div className="sm:col-span-2">
+            <p className={labelClass}>Listing type</p>
+            <p className="mt-1 text-xs text-brand-muted">
+              Decides whether travellers book a published departure or send an enquiry to build the trip.
+            </p>
+            <div className="mt-3 grid gap-3 sm:grid-cols-2">
+              {TOUR_TYPE_OPTIONS.map((option) => {
+                const active = tourType === option.id;
+                return (
+                  <button
+                    key={option.id}
+                    type="button"
+                    onClick={() => handleTourTypeChange(option.id)}
+                    aria-pressed={active}
+                    className={[
+                      "rounded-xl border px-4 py-4 text-left transition-all",
+                      active
+                        ? "border-brand-primary bg-brand-primary/5 ring-2 ring-brand-accent/40"
+                        : "border-brand-border bg-white hover:border-brand-primary/40",
+                    ].join(" ")}
+                  >
+                    <GuestIcon name={option.iconKey} className="h-5 w-5 text-brand-primary" aria-hidden />
+                    <p className="mt-1.5 text-sm font-bold text-brand-ink">{option.label}</p>
+                    <p className="mt-0.5 text-xs leading-relaxed text-brand-muted">{option.description}</p>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
           <Field label="Tour name" hint="Displayed on cards and detail pages. URL slug is generated by the backend.">
             <input className={inputClass} value={form.name} onChange={(e) => handleNameChange(e.target.value)} required placeholder="Ghana Heritage Classic" />
           </Field>
-          <Field label="Country" hint="Where this tour takes place. Ghana package lines appear when Ghana is selected.">
+          <Field label="Country" hint="Where this tour takes place.">
             <CountrySearchSelect
               value={form.countryId}
               onChange={handleCountryChange}
@@ -495,72 +523,6 @@ export default function TourListingForm({ initial, onSubmit, submitLabel = "Save
               <option value="archived">Archived</option>
             </select>
           </Field>
-          {form.countryId === "ghana" ? (
-            <div className="sm:col-span-2">
-              <p className={labelClass}>Ghana package line</p>
-              <p className="mt-1 text-xs text-brand-muted">Primary product category — used for browsing and photo guidance.</p>
-              <div className="mt-3 grid gap-2 sm:grid-cols-2">
-                {GHANA_PACKAGE_LINE_OPTIONS.map((option) => {
-                  const active = form.packageLineId === option.id;
-                  return (
-                    <button
-                      key={option.id}
-                      type="button"
-                      onClick={() => handlePackageLineChange(option.id)}
-                      className={[
-                        "rounded-xl border px-4 py-3 text-left transition-all",
-                        active
-                          ? "border-brand-green bg-brand-green/5 ring-2 ring-brand-green/20"
-                          : "border-brand-border bg-white hover:border-brand-green/30",
-                      ].join(" ")}
-                    >
-                      <GuestIcon name={option.iconKey || "mapPin"} className="h-5 w-5 text-brand-green" aria-hidden />
-                      <p className="mt-1 text-sm font-bold text-brand-ink">{option.label}</p>
-                      <p className="mt-0.5 text-xs text-brand-muted">{option.description}</p>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          ) : null}
-          <div className="sm:col-span-2">
-            <p className={labelClass}>Experience themes</p>
-            <p className="mt-1 text-xs text-brand-muted">Optional tags describing the type of experience.</p>
-            <div className="mt-2 flex flex-wrap gap-2">
-              {TOUR_CATEGORY_OPTIONS.map((cat) => {
-                const active = form.categories.includes(cat.id);
-                return (
-                  <button
-                    key={cat.id}
-                    type="button"
-                    onClick={() => toggleCategory(cat.id)}
-                    className={[
-                      "rounded-full px-3 py-1.5 text-xs font-semibold transition-all",
-                      active ? "bg-brand-green text-white" : "bg-brand-cream text-brand-muted ring-1 ring-brand-border",
-                    ].join(" ")}
-                  >
-                    {cat.label}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-          <div className="flex flex-wrap gap-4 sm:col-span-2">
-            <label className="flex items-center gap-2 text-sm font-medium text-brand-ink">
-              <input type="checkbox" checked={form.featured} onChange={(e) => patch({ featured: e.target.checked })} className="h-4 w-4 rounded border-brand-border text-brand-green" />
-              Featured on homepage
-            </label>
-          </div>
-          <Field label="Badge text (optional)">
-            <input className={inputClass} value={form.badge} onChange={(e) => patch({ badge: e.target.value })} placeholder="Best seller" />
-          </Field>
-          <Field label="Badge color">
-            <select className={inputClass} value={form.badgeVariant} onChange={(e) => patch({ badgeVariant: e.target.value })}>
-              {BADGE_VARIANTS.map((b) => (
-                <option key={b.id} value={b.id}>{b.label}</option>
-              ))}
-            </select>
-          </Field>
         </motion.div>
       )}
 
@@ -571,28 +533,23 @@ export default function TourListingForm({ initial, onSubmit, submitLabel = "Save
             <p className="mt-1 text-sm text-brand-muted">Cover image plus up to five gallery photos — select multiple at once.</p>
           </div>
 
-          {form.countryId === "ghana" && form.packageLineId ? (
-            <div className="rounded-xl border border-brand-gold/30 bg-brand-gold/5 p-4">
-              <p className="text-xs font-bold uppercase tracking-[0.14em] text-brand-primary">Photo guidance</p>
-              <p className="mt-2 text-sm font-semibold text-brand-ink">
-                {GHANA_PACKAGE_LINE_OPTIONS.find((option) => option.id === form.packageLineId)?.label} package
-              </p>
-              {(() => {
-                const hints = getPackageLinePhotoHints(form.packageLineId);
-                if (!hints) return null;
-                return (
-                  <ul className="mt-2 space-y-1.5 text-sm text-brand-muted">
-                    <li><span className="font-semibold text-brand-ink">Cover:</span> {hints.cover}</li>
-                    <li><span className="font-semibold text-brand-ink">Gallery:</span> {hints.gallery}</li>
-                  </ul>
-                );
-              })()}
-            </div>
-          ) : null}
+          <div className="rounded-xl border border-brand-accent/40 bg-brand-accent/10 p-4">
+            <p className="text-xs font-bold uppercase tracking-[0.14em] text-brand-primary">Photo guidance</p>
+            <ul className="mt-2 space-y-1.5 text-sm text-brand-muted">
+              <li>
+                <span className="font-semibold text-brand-ink">Cover:</span> one wide, well-lit shot of the signature
+                stop on this route — landmark, landscape, or people mid-experience.
+              </li>
+              <li>
+                <span className="font-semibold text-brand-ink">Gallery:</span> mix the places, the food, and the faces.
+                Photos with people in them convert far better than empty scenery.
+              </li>
+            </ul>
+          </div>
 
           <TourImageField
             label="Cover image"
-            hint="Paste a public image URL or upload a file — sent as coverImageUrl in the API payload."
+            hint="Upload a photo or paste a public URL. Images are optimized and stored as file URLs, not base64."
             value={form.coverImage}
             onChange={(coverImage) => patch({ coverImage })}
             uriPlaceholder="https://…/cover.jpg"
@@ -805,20 +762,32 @@ export default function TourListingForm({ initial, onSubmit, submitLabel = "Save
       {step === "pricing" && (
         <motion.div key="pricing" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.35, ease: EASE }} className={`${sectionClass} space-y-6`}>
           <div>
-            <h2 className="text-xl font-bold text-brand-ink">Pricing & departures</h2>
+            <h2 className="text-xl font-bold text-brand-ink">
+              {isCustomTour ? "Pricing & trip length" : "Pricing & departures"}
+            </h2>
             <p className="mt-1 text-sm text-brand-muted">
-              Set your tour price and schedule when travelers can book.
+              {isCustomTour
+                ? "Set a from-price and a typical trip length. Exact dates are agreed with each traveller."
+                : "Set your tour price and schedule when travelers can book."}
             </p>
           </div>
 
           <div className="flex items-start gap-3 rounded-xl border border-brand-green/20 bg-brand-green/5 px-4 py-3">
             <Info className="mt-0.5 h-4 w-4 shrink-0 text-brand-green" strokeWidth={2} aria-hidden />
-            <p className="text-xs leading-relaxed text-brand-muted">
-              <span className="font-semibold text-brand-ink">How this works:</span> Choose a{" "}
-              <span className="font-semibold text-brand-ink">date range</span> for one continuous window
-              (ideal for hotel stays and flexible trips), or add{" "}
-              <span className="font-semibold text-brand-ink">specific departure dates</span> for fixed trip starts.
-            </p>
+            {isCustomTour ? (
+              <p className="text-xs leading-relaxed text-brand-muted">
+                <span className="font-semibold text-brand-ink">How this works:</span> customized tours publish without
+                departure dates. Travellers see your from-price and send an enquiry, then your team agrees dates,
+                group size, and the final quote.
+              </p>
+            ) : (
+              <p className="text-xs leading-relaxed text-brand-muted">
+                <span className="font-semibold text-brand-ink">How this works:</span> Choose a{" "}
+                <span className="font-semibold text-brand-ink">date range</span> for one continuous window
+                (ideal for hotel stays and flexible trips), or add{" "}
+                <span className="font-semibold text-brand-ink">specific departure dates</span> for fixed trip starts.
+              </p>
+            )}
           </div>
 
           <div>
@@ -912,6 +881,28 @@ export default function TourListingForm({ initial, onSubmit, submitLabel = "Save
             </Field>
           )}
 
+          {isCustomTour ? (
+            <div className="rounded-xl border border-brand-border/60 bg-brand-cream/40 p-4">
+              <p className="text-sm font-bold text-brand-ink">Typical trip length</p>
+              <p className="mt-1 text-[11px] text-brand-muted">
+                Shown on the listing as a guide. Travellers can request a shorter or longer version.
+              </p>
+              <div className="mt-4 max-w-xs">
+                <Field label="Duration (days)" hint="Used for the listing card and itinerary outline.">
+                  <input
+                    type="number"
+                    min={1}
+                    className={inputClass}
+                    value={form.durationDays}
+                    onChange={(e) => patch({
+                      durationDays: Math.max(1, Number(e.target.value) || 1),
+                      durationLabel: `${Math.max(1, Number(e.target.value) || 1)} days`,
+                    })}
+                  />
+                </Field>
+              </div>
+            </div>
+          ) : (
           <div>
             <p className={labelClass}>Scheduled departures</p>
             <p className="mt-1 text-[11px] text-brand-muted">Choose how travelers can book this tour.</p>
@@ -937,8 +928,9 @@ export default function TourListingForm({ initial, onSubmit, submitLabel = "Save
               })}
             </div>
           </div>
+          )}
 
-          {isDateRangeSchedule ? (
+          {isCustomTour ? null : isDateRangeSchedule ? (
             <div className="rounded-xl border border-brand-border/60 bg-brand-cream/40 p-4">
               <p className="text-sm font-bold text-brand-ink">Date range window</p>
               <p className="mt-1 text-[11px] text-brand-muted">

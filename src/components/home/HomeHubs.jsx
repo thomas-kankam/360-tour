@@ -21,10 +21,7 @@ const SECTION_DEFAULTS = {
 };
 
 function regionTourLink(region) {
-  if (region.packageId) {
-    return ROUTES.toursSearch({ country: "ghana", package: region.packageId });
-  }
-  return ROUTES.toursSearch({ country: "ghana" });
+  return ROUTES.toursSearch({ country: "ghana", region: region.regionId });
 }
 
 function regionImageSources(region) {
@@ -39,7 +36,7 @@ function RegionListItem({ region, index, isActive, onSelect }) {
       className={[
         "group flex w-full cursor-pointer items-center gap-4 rounded-2xl border p-3 text-left transition-all duration-300 sm:p-4",
         isActive
-          ? "border-brand-accent/60 bg-white shadow-[0_8px_32px_-12px_rgba(21,67,96,0.2)]"
+          ? "border-brand-accent/60 bg-white shadow-[0_8px_32px_-12px_rgba(0,107,63,0.2)]"
           : "border-transparent bg-white/40 hover:border-brand-primary/15 hover:bg-white/70",
       ].join(" ")}
     >

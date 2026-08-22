@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ChevronLeft, ChevronRight, MessageCircle, Quote, Star } from "lucide-react";
 import Container from "../layout/Container";
@@ -7,6 +7,7 @@ import { testimonials, testimonialsSection } from "../../data/homeContent";
 
 const EASE = [0.16, 1, 0.3, 1];
 const TOTAL = testimonials.length;
+const AUTOPLAY_MS = 7000;
 
 function getTestimonialImage(item) {
   return getPopularDestinationImage(item.imageKey) ?? images.home.testimonial;
@@ -163,7 +164,7 @@ function StorySpotlight({ item, activeIndex, onPrev, onNext, onTouchStart, onTou
         {/* Popular place banner */}
         <div className="relative mx-auto w-full max-w-[320px] lg:mx-0 lg:max-w-none">
           <div className="absolute -inset-2 rounded-[1.35rem] bg-gradient-to-br from-brand-accent/50 via-brand-accent/15 to-brand-primary/10 sm:-inset-3" aria-hidden />
-          <div className="relative overflow-hidden rounded-2xl border border-brand-border/40 bg-white shadow-[0_16px_48px_-20px_rgba(21,67,96,0.35)]">
+          <div className="relative overflow-hidden rounded-2xl border border-brand-border/40 bg-white shadow-[0_16px_48px_-20px_rgba(0,107,63,0.35)]">
             <img
               src={getTestimonialImage(item)}
               alt={item.tour}
@@ -197,6 +198,7 @@ function StorySpotlight({ item, activeIndex, onPrev, onNext, onTouchStart, onTou
 export default function HomeTestimonial({ cmsOverride }) {
   const sectionMeta = { ...testimonialsSection, ...cmsOverride };
   const [activeIndex, setActiveIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
   const listRef = useRef(null);
   const touchStartX = useRef(null);
   const active = testimonials[activeIndex];
@@ -209,6 +211,15 @@ export default function HomeTestimonial({ cmsOverride }) {
 
   const goPrev = useCallback(() => selectStory(activeIndex - 1), [activeIndex, selectStory]);
   const goNext = useCallback(() => selectStory(activeIndex + 1), [activeIndex, selectStory]);
+
+  /** Rotate stories on their own so the section feels alive, but never while the visitor is interacting. */
+  useEffect(() => {
+    if (paused || TOTAL < 2) return undefined;
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return undefined;
+
+    const timer = window.setTimeout(goNext, AUTOPLAY_MS);
+    return () => window.clearTimeout(timer);
+  }, [paused, goNext, activeIndex]);
 
   const handleTouchStart = useCallback((e) => {
     touchStartX.current = e.touches[0].clientX;
@@ -240,12 +251,13 @@ export default function HomeTestimonial({ cmsOverride }) {
           transition={{ duration: 0.65, ease: EASE }}
           className="mx-auto max-w-2xl text-center"
         >
-          <span className="inline-flex items-center gap-2 rounded-full bg-brand-accent/25 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.14em] text-brand-primary">
+          <span className="eyebrow-pill">
             <MessageCircle className="h-3.5 w-3.5" aria-hidden />
             {sectionMeta.eyebrow}
           </span>
           <h2 className="mt-4 text-3xl font-bold text-brand-primary sm:text-4xl">{sectionMeta.title}</h2>
-          <p className="mt-3 text-base leading-relaxed text-brand-muted">{sectionMeta.subtitle}</p>
+          <div className="kente-rule mx-auto mt-4" aria-hidden />
+          <p className="mt-4 text-base leading-relaxed text-brand-muted">{sectionMeta.subtitle}</p>
         </motion.div>
 
         {/* Unified explorer panel, sibling to Popular Destinations */}
@@ -254,8 +266,13 @@ export default function HomeTestimonial({ cmsOverride }) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-40px" }}
           transition={{ duration: 0.75, ease: EASE, delay: 0.08 }}
-          className="mt-12 overflow-hidden rounded-3xl border border-brand-border/50 shadow-[0_32px_100px_-32px_rgba(21,67,96,0.22)] lg:mt-14"
+          onMouseEnter={() => setPaused(true)}
+          onMouseLeave={() => setPaused(false)}
+          onFocusCapture={() => setPaused(true)}
+          onBlurCapture={() => setPaused(false)}
+          className="mt-12 overflow-hidden rounded-3xl border border-brand-border/50 shadow-kente-lg lg:mt-14"
         >
+          <div aria-hidden className="kente-rule-wide" />
           <div className="grid lg:grid-cols-[minmax(280px,340px)_1fr]">
             {/* Left, story index */}
             <div className="flex flex-col border-b border-brand-border/50 bg-brand-cream lg:border-b-0 lg:border-r">
@@ -292,16 +309,7 @@ export default function HomeTestimonial({ cmsOverride }) {
             </div>
 
             {/* Right, spotlight stage */}
-            <div className="relative flex flex-col bg-[#f4f7fa]">
-              <div
-                aria-hidden
-                className="pointer-events-none absolute inset-0 opacity-[0.35]"
-                style={{
-                  backgroundImage:
-                    "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='1' fill='%23154360' fill-opacity='0.08'/%3E%3C/svg%3E\")",
-                  backgroundSize: "32px 32px",
-                }}
-              />
+            <div className="adinkra-field relative flex flex-col bg-brand-cream">
 
               <div className="relative flex flex-1 flex-col p-5 sm:p-8 lg:p-10">
                 <div className="mb-6 flex items-start justify-between gap-4">

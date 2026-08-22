@@ -56,7 +56,7 @@ function BookingLookupResult({ booking, onClear, onRecordPayment }) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 8 }}
       transition={{ duration: 0.45, ease: EASE }}
-      className="overflow-hidden rounded-2xl border border-brand-green/25 bg-white shadow-[0_16px_48px_-20px_rgba(45,90,71,0.28)]"
+      className="overflow-hidden rounded-2xl border border-brand-green/25 bg-white shadow-[0_16px_48px_-20px_rgba(0,107,63,0.28)]"
     >
       <div className="relative">
         {booking.tour?.image ? (

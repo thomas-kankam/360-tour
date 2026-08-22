@@ -102,7 +102,7 @@ export default function PortalSidebar({
     || (user?.name?.[0] || "U").toUpperCase();
 
   return (
-    <div className="flex h-full flex-col bg-gradient-to-b from-brand-primary via-brand-primary to-brand-primary-dark shadow-[4px_0_28px_-12px_rgba(21,67,96,0.45)]">
+    <div className="flex h-full flex-col bg-gradient-to-b from-brand-primary via-brand-primary to-brand-primary-dark shadow-[4px_0_28px_-12px_rgba(0,107,63,0.45)]">
       <PortalLogoHeader
         portalLabel={portalLabel}
         portalSubtitle={portalSubtitle}

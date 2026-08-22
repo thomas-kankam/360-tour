@@ -1,16 +1,20 @@
 import { mapOperatorTour } from "./operatorTourMapper";
 import { resolveTourUnitPrice } from "./bookingHelpers";
 import { buildTourPriceDisplay, inferAudienceScope, resolveTourListPriceGhs, resolveTourListPriceUsd } from "./tourPricing";
+import { GHANA_REGIONS, getRegionLabel, isGhanaRegionId } from "../data/ghanaRegions";
 import {
-  GHANA_PACKAGE_LINE_OPTIONS,
-  extractPackageLineId,
-  formatTourCategoryLabel,
   formatTourSlotsLabel,
-  getGhanaPackageLineOption,
-  isGhanaPackageLineId,
+  getTourTypeLabel,
+  isCustomTourType,
+  normalizeTourType,
+  TOUR_TYPE,
 } from "./operatorTourConstants";
 
-export { GHANA_PACKAGE_LINE_OPTIONS as PACKAGE_FILTER_OPTIONS };
+/** Region chips for the tours browser — "All regions" first, then every Ghana region. */
+export const REGION_FILTER_OPTIONS = [
+  { id: "all", label: "All regions", iconKey: "globe" },
+  ...GHANA_REGIONS.map((region) => ({ ...region, iconKey: "mapPin" })),
+];
 
 export const COUNTRY_FILTER_OPTIONS = [
   { id: "all", label: "All countries", iconKey: "globe" },
@@ -19,21 +23,21 @@ export const COUNTRY_FILTER_OPTIONS = [
   { id: "southafrica", label: "South Africa", iconKey: "mapPin", apiCountry: "South Africa" },
 ];
 
+export const TOUR_TYPE_FILTER_OPTIONS = [
+  { id: "all", label: "All trips" },
+  { id: TOUR_TYPE.REGULAR, label: "Scheduled" },
+  { id: TOUR_TYPE.CUSTOM, label: "Tailor-made" },
+];
+
 export const LISTING_SORT_OPTIONS = [
-  { value: "default", label: "Featured", description: "Platform default order" },
+  { value: "default", label: "Recommended", description: "Platform default order" },
   { value: "newest", label: "Newest first", description: "sort_by: desc" },
   { value: "oldest", label: "Oldest first", description: "sort_by: asc" },
   { value: "price-asc", label: "Price: low to high", description: "sort_by_price: asc" },
   { value: "price-desc", label: "Price: high to low", description: "sort_by_price: desc" },
 ];
 
-const BADGE_COLORS = {
-  orange: "bg-brand-accent text-brand-primary",
-  gold: "bg-brand-gold text-brand-ink",
-  green: "bg-brand-green text-white",
-};
-
-export function buildListingsPayload({ countryFilter, sort, departureDate, packageFilter }) {
+export function buildListingsPayload({ countryFilter, regionFilter, tourTypeFilter, sort, departureDate }) {
   const payload = {};
 
   const countryOption = COUNTRY_FILTER_OPTIONS.find((option) => option.id === countryFilter);
@@ -41,8 +45,12 @@ export function buildListingsPayload({ countryFilter, sort, departureDate, packa
     payload.country = countryOption.apiCountry;
   }
 
-  if (packageFilter && isGhanaPackageLineId(packageFilter)) {
-    payload.category = packageFilter;
+  if (regionFilter && isGhanaRegionId(regionFilter)) {
+    payload.region = regionFilter;
+  }
+
+  if (tourTypeFilter && tourTypeFilter !== "all") {
+    payload.tour_type = normalizeTourType(tourTypeFilter);
   }
 
   if (departureDate) {
@@ -57,27 +65,36 @@ export function buildListingsPayload({ countryFilter, sort, departureDate, packa
   return payload;
 }
 
-export function buildToursSearchPath({ country, date, package: packageId } = {}) {
+export function buildToursSearchPath({ country, date, region, tourType } = {}) {
   const params = new URLSearchParams();
   if (country && country !== "all") params.set("country", country);
-  if (packageId && isGhanaPackageLineId(packageId)) params.set("package", packageId);
+  if (region && isGhanaRegionId(region)) params.set("region", region);
+  if (tourType && tourType !== "all") params.set("type", normalizeTourType(tourType));
   if (date) params.set("date", date);
   const query = params.toString();
   return query ? `/tours?${query}` : "/tours";
 }
 
-export function resolvePackageFilterFromParams(packageParam) {
-  if (packageParam && isGhanaPackageLineId(packageParam)) return packageParam;
-  return "";
+export function resolveRegionFilterFromParams(regionParam) {
+  return regionParam && isGhanaRegionId(regionParam) ? regionParam : "all";
 }
 
-export function tourMatchesPackageLine(tour, packageId) {
-  if (!packageId) return true;
-  return (tour.categories || []).includes(packageId);
+export function resolveTourTypeFilterFromParams(typeParam) {
+  const value = String(typeParam || "").toLowerCase();
+  return value === TOUR_TYPE.REGULAR || value === TOUR_TYPE.CUSTOM ? value : "all";
 }
 
-export function getPackageLineLabel(packageId) {
-  return getGhanaPackageLineOption(packageId)?.label || packageId;
+export function tourMatchesRegion(tour, regionId) {
+  if (!regionId || regionId === "all") return true;
+  if ((tour.regions || []).includes(regionId)) return true;
+
+  const label = getRegionLabel(regionId);
+  if (!label) return false;
+  return (tour.locations || []).some((location) => String(location).includes(label));
+}
+
+export function getRegionFilterLabel(regionId) {
+  return getRegionLabel(regionId) || regionId;
 }
 
 export function resolveCountryFilterIdFromName(countryName) {
@@ -147,12 +164,13 @@ export function mapPublicTourCard(tour) {
     }
   }
 
-  const packageLineId = extractPackageLineId(tour.categories);
-  const categoryLabels = (tour.categories || [])
-    .filter((category) => category && !isGhanaPackageLineId(category))
-    .map(formatTourCategoryLabel)
-    .filter(Boolean)
-    .slice(0, 2);
+  const tourType = normalizeTourType(tour.tourType);
+  const isCustom = isCustomTourType(tourType);
+  const regions = tour.regions || [];
+  const regionLabels = (tour.regionLabels?.length
+    ? tour.regionLabels
+    : regions.map(getRegionLabel)
+  ).filter(Boolean);
   const highlight = (tour.highlights || []).find((item) => String(item || "").trim()) || "";
   const descriptionSnippet = String(tour.description || "").trim();
 
@@ -162,12 +180,18 @@ export function mapPublicTourCard(tour) {
     location: locations.join(" · ") || tour.country || "",
     country: tour.country,
     categories: tour.categories || [],
-    categoryLabels,
-    packageLineLabel: packageLineId ? getPackageLineLabel(packageLineId) : "",
+    tourType,
+    isCustom,
+    tourTypeLabel: getTourTypeLabel(tourType),
+    regions,
+    regionLabels,
+    locations,
     duration: tour.durationLabel || `${tour.durationDays || 1} days`,
     durationDays: Number(tour.durationDays) || 1,
     groupSize: formatTourSlotsLabel(tour.groupSizeMax),
-    nextDate: nextDeparture?.dateLabel || (isoDate ? formatDepartureDateLabel(isoDate) : "Dates coming soon"),
+    nextDate: isCustom
+      ? "Dates to suit you"
+      : nextDeparture?.dateLabel || (isoDate ? formatDepartureDateLabel(isoDate) : "Dates coming soon"),
     departDay,
     departMonth,
     priceLabel: priceDisplay.priceLabel,
@@ -181,11 +205,8 @@ export function mapPublicTourCard(tour) {
     rating: Number(tour.rating) || 0,
     reviews: Number(tour.reviewCount) || 0,
     image: tour.coverImageUrl || "",
-    badge: tour.badge || "",
-    badgeColor: BADGE_COLORS[tour.badgeVariant] || "bg-white/90 text-brand-ink",
     spotsLeft,
     totalSpots,
-    featured: Boolean(tour.featured),
     highlight,
     descriptionSnippet,
     departureDates: (tour.departureDates || []).map((departure) => departure.date).filter(Boolean),

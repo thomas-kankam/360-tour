@@ -1,4 +1,5 @@
 import { USER_ROLES } from "../constants/roles";
+import { resolveProfileImageSrc } from "./profileImage";
 
 export function mapClientUser(client) {
   if (!client) return null;
@@ -20,7 +21,7 @@ export function mapClientUser(client) {
     verifiedAt: client.verified_at ?? client.verifiedAt ?? null,
     location: client.location ?? "",
     status: client.status ?? "active",
-    profileImage: client.profile_image ?? client.profileImage ?? null,
+    profileImage: resolveProfileImageSrc(client.profile_image ?? client.profileImage),
     role: USER_ROLES.TOURIST,
   };
 }

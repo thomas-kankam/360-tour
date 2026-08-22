@@ -133,9 +133,7 @@ const EXPERIENCES = [
 const COUNTRY_FILTERS = ["All", "Ghana", "Kenya", "South Africa"];
 
 function KentePattern() {
-  return (
-    <div aria-hidden className="pointer-events-none absolute inset-0 opacity-40" style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cg fill='none' transform='rotate(45 14 14)'%3E%3Crect width='14' height='14' fill='%232D5A47' fill-opacity='0.04'/%3E%3Crect x='14' y='14' width='14' height='14' fill='%23E3A020' fill-opacity='0.025'/%3E%3C/g%3E%3C/svg%3E\")", backgroundSize: "28px 28px" }} />
-  );
+  return <div aria-hidden className="adinkra-field pointer-events-none absolute inset-0 opacity-40" />;
 }
 
 function ExperienceCard({ exp, index }) {
@@ -144,7 +142,7 @@ function ExperienceCard({ exp, index }) {
   return (
     <motion.div
       {...rise(Math.min(index * 0.07, 0.35))}
-      className="group relative overflow-hidden rounded-[1.5rem] border border-brand-border/60 bg-white shadow-[0_12px_40px_-20px_rgba(28,43,38,0.25)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_48px_-18px_rgba(28,43,38,0.3)]"
+      className="group relative overflow-hidden rounded-[1.5rem] border border-brand-border/60 bg-white shadow-[0_12px_40px_-20px_rgba(23,19,14,0.25)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_48px_-18px_rgba(23,19,14,0.3)]"
     >
       {/* Image */}
       <div className="relative aspect-[16/9] overflow-hidden">
@@ -239,10 +237,10 @@ export default function ExperiencesPage() {
         />
 
         {/* Green overlay */}
-        <div aria-hidden className="absolute inset-0 bg-[#2D5A47]/88" />
+        <div aria-hidden className="absolute inset-0 bg-[#006B3F]/88" />
         <div
           aria-hidden
-          className="absolute inset-0 bg-gradient-to-br from-[#234839]/75 via-[#2D5A47]/55 to-[#2D5A47]/40"
+          className="absolute inset-0 bg-gradient-to-br from-[#00512F]/75 via-[#006B3F]/55 to-[#006B3F]/40"
         />
 
         <KentePattern />
@@ -328,7 +326,7 @@ export default function ExperiencesPage() {
 
       {/* ── How it works ── */}
       <section className="relative overflow-hidden bg-white py-16 sm:py-20">
-        <div aria-hidden className="pointer-events-none absolute inset-0 opacity-30" style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Ccircle cx='2' cy='2' r='1' fill='%232D5A47' fill-opacity='0.07'/%3E%3C/svg%3E\")", backgroundSize: "24px 24px" }} />
+        <div aria-hidden className="adinkra-field pointer-events-none absolute inset-0 opacity-40" />
 
         <Container className="relative">
           <motion.div {...rise()} className="mx-auto max-w-xl text-center">

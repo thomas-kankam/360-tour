@@ -5,6 +5,13 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --kente-red: #ce1126;
+    --kente-gold: #fcd116;
+    --kente-green: #006b3f;
+    --kente-black: #0b0b0b;
+  }
+
   body {
     @apply bg-brand-cream p-0 font-sans text-brand-ink antialiased;
   }
@@ -15,30 +22,103 @@
   h4,
   h5,
   h6 {
-    @apply font-heading font-semibold text-brand-primary;
-    font-family: "Onest", sans-serif;
+    @apply font-heading font-bold tracking-[-0.01em] text-brand-primary;
+  }
+
+  h1,
+  h2 {
+    @apply tracking-[-0.02em];
+  }
+
+  ::selection {
+    @apply bg-brand-accent text-brand-charcoal;
+  }
+
+  /* Honour the OS "reduce motion" preference across every decorative animation. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply inline-flex cursor-pointer items-center justify-center rounded-lg bg-brand-primary px-5 py-2.5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-brand-primary-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-primary;
+    @apply inline-flex cursor-pointer items-center justify-center rounded-xl bg-brand-primary px-5 py-2.5 text-sm font-semibold text-white shadow-[0_10px_28px_-14px_rgba(0,107,63,0.7)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-brand-primary-dark hover:shadow-[0_16px_36px_-14px_rgba(0,107,63,0.6)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-primary active:translate-y-0;
   }
 
   .btn-accent {
-    @apply inline-flex cursor-pointer items-center justify-center rounded-lg bg-brand-accent px-5 py-2.5 text-sm font-semibold text-brand-primary transition-colors duration-200 hover:bg-brand-accent-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-accent;
-  }
-
-  .badge-accent {
-    @apply inline-flex items-center rounded-full bg-brand-accent px-3 py-1 text-xs font-bold uppercase tracking-wide text-brand-primary;
-  }
-
-  .surface-accent {
-    @apply bg-brand-accent text-brand-primary;
+    @apply inline-flex cursor-pointer items-center justify-center rounded-xl bg-brand-accent px-5 py-2.5 text-sm font-bold text-brand-charcoal shadow-[0_10px_28px_-14px_rgba(252,209,22,0.9)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-brand-accent-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-accent active:translate-y-0;
   }
 
   .btn-secondary {
-    @apply inline-flex cursor-pointer items-center justify-center rounded-lg border border-brand-primary/20 bg-white px-5 py-2.5 text-sm font-semibold text-brand-primary transition-colors duration-200 hover:border-brand-primary/35 hover:bg-brand-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-primary;
+    @apply inline-flex cursor-pointer items-center justify-center rounded-xl border border-brand-primary/20 bg-white px-5 py-2.5 text-sm font-semibold text-brand-primary transition-all duration-200 hover:-translate-y-0.5 hover:border-brand-primary/40 hover:bg-brand-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-primary active:translate-y-0;
+  }
+
+  /* Dark CTA that echoes the logo tile — use on cream or photo backdrops. */
+  .btn-ink {
+    @apply inline-flex cursor-pointer items-center justify-center rounded-xl bg-brand-charcoal px-5 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-brand-charcoal-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-accent active:translate-y-0;
+  }
+
+  .badge-accent {
+    @apply inline-flex items-center rounded-full bg-brand-accent px-3 py-1 text-xs font-bold uppercase tracking-wide text-brand-charcoal;
+  }
+
+  .surface-accent {
+    @apply bg-brand-accent text-brand-charcoal;
+  }
+
+  /* Small uppercase label used above section headings. */
+  .eyebrow {
+    @apply inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-brand-primary;
+  }
+
+  .eyebrow-pill {
+    @apply inline-flex items-center gap-2 rounded-full bg-brand-accent/25 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.16em] text-brand-primary ring-1 ring-brand-accent/40;
+  }
+
+  /* Three-colour flag rule — a 4px divider under headings and section edges. */
+  .kente-rule {
+    @apply h-1 w-16 rounded-full bg-kente-band;
+  }
+
+  .kente-rule-wide {
+    @apply h-1.5 w-full bg-kente-band;
+  }
+
+  /* Animated woven stripe — decorative banding for hero and footer edges. */
+  .kente-weave {
+    @apply bg-kente-stripe animate-kente-slide;
+    background-size: 288px 100%;
+  }
+
+  .text-ghana-gradient {
+    @apply bg-ghana-sun bg-clip-text text-transparent;
+  }
+
+  /* Adinkra-inspired dotted field for section backgrounds. */
+  .adinkra-field {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cg fill='none' stroke='%23006B3F' stroke-opacity='0.09'%3E%3Ccircle cx='24' cy='24' r='7'/%3E%3Cpath d='M24 10v-6M24 44v-6M10 24H4M44 24h-6'/%3E%3C/g%3E%3Ccircle cx='24' cy='24' r='2' fill='%23FCD116' fill-opacity='0.16'/%3E%3C/svg%3E");
+    background-size: 48px 48px;
+  }
+
+  /* Same motif, tuned for dark green / charcoal surfaces. */
+  .adinkra-field-dark {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cg fill='none' stroke='%23FCD116' stroke-opacity='0.14'%3E%3Ccircle cx='24' cy='24' r='7'/%3E%3Cpath d='M24 10v-6M24 44v-6M10 24H4M44 24h-6'/%3E%3C/g%3E%3Ccircle cx='24' cy='24' r='2' fill='%23FFFFFF' fill-opacity='0.12'/%3E%3C/svg%3E");
+    background-size: 48px 48px;
+  }
+
+  .card-elevated {
+    @apply rounded-2xl border border-brand-border/60 bg-white shadow-[0_12px_40px_-24px_rgba(23,19,14,0.28)];
+  }
+
+  .hover-lift {
+    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-kente;
   }
 
   .section-alt {
@@ -57,11 +137,11 @@
   }
 
   .tours-phone-input {
-    @apply rounded-xl border-2 border-brand-border bg-white transition-all duration-200 focus-within:border-brand-green focus-within:ring-2 focus-within:ring-brand-green/15;
+    @apply rounded-xl border-2 border-brand-border bg-white transition-all duration-200 focus-within:border-brand-primary focus-within:ring-2 focus-within:ring-brand-primary/15;
   }
 
   .tours-phone-input--error {
-    @apply border-red-400 focus-within:border-red-400 focus-within:ring-red-100;
+    @apply border-brand-red/60 focus-within:border-brand-red focus-within:ring-brand-red/15;
   }
 
   .tours-phone-input .PhoneInput {
@@ -82,5 +162,21 @@
 
   .tours-phone-input .PhoneInputInput {
     @apply min-w-0 flex-1 border-0 bg-transparent py-3 pr-4 text-sm font-medium text-brand-ink outline-none placeholder:text-brand-muted/50;
+  }
+}
+
+@layer utilities {
+  /* Hides scrollbars on the horizontal filter/chip rails. */
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
+  .text-balance {
+    text-wrap: balance;
   }
 }

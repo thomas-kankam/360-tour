@@ -1,4 +1,5 @@
 import { parsePaginatedList } from "./adminPaginationHelpers";
+import { resolveProfileImageSrc } from "./profileImage";
 
 export const ADMIN_CLIENT_STATUS_STYLES = {
   active: "bg-emerald-100 text-emerald-700 ring-emerald-200",
@@ -22,7 +23,7 @@ export function mapAdminClient(raw) {
     phoneNumber: raw.phoneNumber || raw.phone_number || "",
     location: raw.location || "",
     status: raw.status || "",
-    profileImage: raw.profileImage || raw.profile_image || "",
+    profileImage: resolveProfileImageSrc(raw.profileImage || raw.profile_image),
     isVerified: Boolean(raw.isVerified ?? raw.is_verified),
     verifiedAt: raw.verifiedAt || raw.verified_at || "",
     createdAt: raw.createdAt || raw.created_at || "",

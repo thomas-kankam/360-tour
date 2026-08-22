@@ -27,12 +27,12 @@ export async function buildInvoicePdfBlob(invoice, company = {}) {
   const pageWidth = doc.internal.pageSize.getWidth();
   const contentWidth = pageWidth - margin * 2;
 
-  doc.setFillColor(21, 67, 96);
+  doc.setFillColor(0, 107, 63);
   doc.rect(0, 0, pageWidth, 8, "F");
 
   doc.setFont("helvetica", "bold");
   doc.setFontSize(20);
-  doc.setTextColor(21, 67, 96);
+  doc.setTextColor(0, 107, 63);
   doc.text("INVOICE", margin, y + 8);
 
   doc.setFont("helvetica", "normal");
@@ -46,7 +46,7 @@ export async function buildInvoicePdfBlob(invoice, company = {}) {
 
   doc.setFont("helvetica", "bold");
   doc.setFontSize(11);
-  doc.setTextColor(21, 67, 96);
+  doc.setTextColor(0, 107, 63);
   doc.text(company.legalName || company.name || "360 Tours and Investment Limited", margin, y);
   y += 5;
 
@@ -68,7 +68,7 @@ export async function buildInvoicePdfBlob(invoice, company = {}) {
 
   y += 4;
   doc.setFont("helvetica", "bold");
-  doc.setTextColor(21, 67, 96);
+  doc.setTextColor(0, 107, 63);
   doc.text("Billed to", margin, y);
   y += 5;
   doc.setFont("helvetica", "normal");
@@ -92,7 +92,7 @@ export async function buildInvoicePdfBlob(invoice, company = {}) {
 
   doc.setFont("helvetica", "bold");
   doc.setFontSize(9);
-  doc.setTextColor(21, 67, 96);
+  doc.setTextColor(0, 107, 63);
   doc.text("Description", margin, y);
   doc.text("Qty", margin + contentWidth * 0.55, y);
   doc.text("Rate", margin + contentWidth * 0.68, y);

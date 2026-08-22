@@ -48,7 +48,7 @@ export default function HomeAbout({ cmsOverride }) {
             transition={{ duration: 0.7, ease: EASE }}
             className="relative"
           >
-            <div className="overflow-hidden rounded-3xl border-4 border-brand-accent/40 shadow-[0_20px_60px_-24px_rgba(21,67,96,0.28)]">
+            <div className="overflow-hidden rounded-3xl border-4 border-brand-accent/40 shadow-[0_20px_60px_-24px_rgba(0,107,63,0.28)]">
               <img
                 src={aboutImage}
                 alt="360 Tours destination"

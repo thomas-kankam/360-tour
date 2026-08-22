@@ -98,7 +98,7 @@ export default function BookingSuccessPage() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45, ease: EASE }}
-          className="overflow-hidden rounded-[1.5rem] border border-brand-border/60 bg-white shadow-[0_12px_40px_-20px_rgba(28,43,38,0.18)]"
+          className="overflow-hidden rounded-[1.5rem] border border-brand-border/60 bg-white shadow-[0_12px_40px_-20px_rgba(23,19,14,0.18)]"
         >
           <div className="border-b border-brand-border/40 bg-gradient-to-r from-brand-cream/80 to-white px-5 py-5 sm:px-7">
             <div className="flex items-start gap-4">

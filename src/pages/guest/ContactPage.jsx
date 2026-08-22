@@ -251,7 +251,7 @@ export default function ContactPage() {
 
       {/* ── Hero banner ── */}
       <section className="relative overflow-hidden bg-brand-green py-14 sm:py-16">
-        <div aria-hidden className="pointer-events-none absolute inset-0 opacity-40" style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cg fill='none' transform='rotate(45 14 14)'%3E%3Crect width='14' height='14' fill='%23ffffff' fill-opacity='0.04'/%3E%3Crect x='14' y='14' width='14' height='14' fill='%23E3A020' fill-opacity='0.04'/%3E%3C/g%3E%3C/svg%3E\")", backgroundSize: "28px 28px" }} />
+        <div aria-hidden className="adinkra-field-dark pointer-events-none absolute inset-0" />
         <div aria-hidden className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-brand-gold/10 blur-3xl" />
 
         <Container className="relative text-center">
@@ -277,7 +277,7 @@ export default function ContactPage() {
 
             {/* ── Left: Contact form ── */}
             <div className="min-w-0">
-              <div className="rounded-[1.75rem] border border-brand-border/60 bg-white shadow-[0_16px_48px_-20px_rgba(28,43,38,0.25)]">
+              <div className="rounded-[1.75rem] border border-brand-border/60 bg-white shadow-[0_16px_48px_-20px_rgba(23,19,14,0.25)]">
                 <div className="border-b border-brand-border/40 px-7 py-5">
                   <h2 className="text-lg font-bold text-brand-ink">Send us a message</h2>
                   <p className="mt-0.5 text-sm text-brand-muted">
@@ -354,7 +354,7 @@ export default function ContactPage() {
                     <button
                       type="submit"
                       disabled={loading}
-                      className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green py-3.5 text-sm font-semibold text-white shadow-[0_8px_24px_-8px_rgba(45,90,71,0.5)] transition-all hover:bg-brand-green/90 disabled:opacity-70"
+                      className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green py-3.5 text-sm font-semibold text-white shadow-[0_8px_24px_-8px_rgba(0,107,63,0.5)] transition-all hover:bg-brand-green/90 disabled:opacity-70"
                     >
                       {loading ? (
                         <>

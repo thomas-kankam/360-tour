@@ -1,16 +1,17 @@
 {
-  "name": "360 Tours and Investment Limited",
+  "name": "360 Tours Ghana",
   "short_name": "360 Tours",
   "description": "Guided tours, accommodation, and transportation across Ghana and beyond.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#2D5A47",
-  "theme_color": "#2D5A47",
+  "background_color": "#0B0B0B",
+  "theme_color": "#006B3F",
   "icons": [
     {
       "src": "/images/seo/favicon-192x192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "/images/seo/favicon-32x32.png",

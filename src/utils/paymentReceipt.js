@@ -177,7 +177,7 @@ export function buildPaymentReceiptHtml(data) {
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: Arial, Helvetica, sans-serif;
-      color: #1C2B26;
+      color: #17130E;
       background: #fff;
       font-size: 12px;
       line-height: 1.45;
@@ -185,13 +185,13 @@ export function buildPaymentReceiptHtml(data) {
     .receipt {
       max-width: 640px;
       margin: 0 auto;
-      border: 1px solid #E0D8C8;
+      border: 1px solid #E6DBC6;
       border-radius: 12px;
       overflow: hidden;
     }
-    .accent { height: 3px; background: linear-gradient(90deg, #2D5A47, #E3A020, #D4611A); }
+    .accent { height: 3px; background: linear-gradient(90deg, #006B3F, #FCD116, #CE1126); }
     .header {
-      background: #2D5A47;
+      background: #006B3F;
       color: #fff;
       padding: 18px 22px;
       display: flex;
@@ -202,8 +202,8 @@ export function buildPaymentReceiptHtml(data) {
     .header h1 { font-size: 18px; font-weight: 700; }
     .header p { margin-top: 2px; font-size: 11px; opacity: 0.85; }
     .badge {
-      background: rgba(227,160,32,0.22);
-      border: 1px solid rgba(227,160,32,0.45);
+      background: rgba(252,209,22,0.22);
+      border: 1px solid rgba(252,209,22,0.45);
       color: #fff;
       font-size: 10px;
       font-weight: 700;
@@ -226,11 +226,11 @@ export function buildPaymentReceiptHtml(data) {
       font-size: 10px;
       text-transform: uppercase;
       letter-spacing: 0.1em;
-      color: #D4611A;
+      color: #CE1126;
       font-weight: 700;
     }
-    .amount-value { font-size: 24px; font-weight: 700; color: #2D5A47; margin-top: 2px; }
-    .amount-meta { font-size: 11px; color: #5A6B64; margin-top: 2px; }
+    .amount-value { font-size: 24px; font-weight: 700; color: #006B3F; margin-top: 2px; }
+    .amount-meta { font-size: 11px; color: #655C4E; margin-top: 2px; }
     .body { padding: 18px 22px 20px; }
     .grid {
       display: grid;
@@ -241,22 +241,22 @@ export function buildPaymentReceiptHtml(data) {
       font-size: 10px;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      color: #5A6B64;
+      color: #655C4E;
       margin-bottom: 2px;
     }
-    .field-value { font-size: 13px; font-weight: 600; color: #1C2B26; }
+    .field-value { font-size: 13px; font-weight: 600; color: #17130E; }
     .field-value.mono { font-family: "Courier New", monospace; font-size: 12px; letter-spacing: 0.04em; }
     .field.full { grid-column: 1 / -1; }
     .divider { height: 1px; background: #F0EBE0; margin: 14px 0; }
     .footer {
-      border-top: 1px solid #E0D8C8;
+      border-top: 1px solid #E6DBC6;
       padding: 12px 22px 14px;
       background: #FAFAF8;
       font-size: 10px;
-      color: #5A6B64;
+      color: #655C4E;
       line-height: 1.5;
     }
-    .footer strong { color: #1C2B26; }
+    .footer strong { color: #17130E; }
     @media print {
       body { background: #fff; }
       .receipt { border: none; border-radius: 0; max-width: 100%; }

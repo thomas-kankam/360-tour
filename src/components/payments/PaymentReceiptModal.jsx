@@ -63,7 +63,7 @@ export default function PaymentReceiptModal({ open, receipt, onClose, onDownload
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: 24 }}
         transition={{ duration: 0.35, ease: EASE }}
-        className="relative z-10 flex max-h-[92vh] w-full max-w-3xl flex-col overflow-hidden rounded-t-[1.5rem] border border-brand-border/60 bg-brand-cream shadow-[0_24px_64px_-24px_rgba(28,43,38,0.35)] sm:rounded-[1.5rem]"
+        className="relative z-10 flex max-h-[92vh] w-full max-w-3xl flex-col overflow-hidden rounded-t-[1.5rem] border border-brand-border/60 bg-brand-cream shadow-[0_24px_64px_-24px_rgba(23,19,14,0.35)] sm:rounded-[1.5rem]"
       >
         <div className="flex items-center justify-between border-b border-brand-border/40 bg-white px-5 py-4">
           <div>
@@ -91,7 +91,7 @@ export default function PaymentReceiptModal({ open, receipt, onClose, onDownload
             type="button"
             onClick={handleDownload}
             disabled={downloading}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green py-3.5 text-sm font-semibold text-white shadow-[0_8px_24px_-8px_rgba(45,90,71,0.45)] transition-all hover:bg-brand-green-dark disabled:opacity-70"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green py-3.5 text-sm font-semibold text-white shadow-[0_8px_24px_-8px_rgba(0,107,63,0.45)] transition-all hover:bg-brand-green-dark disabled:opacity-70"
           >
             {downloading ? (
               <Loader2 className="h-4 w-4 animate-spin" strokeWidth={2} aria-hidden />

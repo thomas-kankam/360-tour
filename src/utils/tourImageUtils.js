@@ -125,11 +125,13 @@ export function resolveImageForApiPayload(image, fallbackUrl = "") {
   }
 
   const candidate = normalized.uri || fallbackUrl;
-  if (isRemoteImageUrl(candidate)) {
+  if (isRemoteImageUrl(candidate) || candidate.startsWith("/storage/") || candidate.startsWith("/images/")) {
     return candidate;
   }
 
-  return fallbackUrl || "";
+  return isRemoteImageUrl(fallbackUrl) || fallbackUrl.startsWith("/storage/") || fallbackUrl.startsWith("/images/")
+    ? fallbackUrl
+    : fallbackUrl || "";
 }
 
 export function toApiImagePayload(image) {

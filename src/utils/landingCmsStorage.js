@@ -1,5 +1,13 @@
-import { heroContent, homeCtaSection, operatingSection, popularDestinationsSection, toursPageSection } from "../data/homeContent";
+import {
+  heroContent,
+  homeCtaSection,
+  operatingSection,
+  popularDestinationsSection,
+  testimonialsSection,
+  toursPageSection,
+} from "../data/homeContent";
 import { images } from "../config/images";
+import { isTrustedMediaUrl } from "./imageOptimize";
 import { buildDefaultDestinationItems, buildDefaultRegionItems, mergeCmsItems } from "./landingCmsItems";
 
 const STORAGE_KEY = "360tours_landing_cms";
@@ -24,8 +32,8 @@ export const LANDING_CMS_DEFAULTS = {
     backgroundImage: images.home.heroBanner.webp,
   },
   tours: {
-    eyebrow: "Featured tours",
-    title: "Top picks for your next trip",
+    eyebrow: "Featured journeys",
+    title: "Start with these four",
     subtitle: toursPageSection.subtitle,
     viewAllLabel: "View all tours",
   },
@@ -44,6 +52,20 @@ export const LANDING_CMS_DEFAULTS = {
     ctaLabel: operatingSection.cta.label,
     footerNote: "Ghana is our home base, with curated experiences across Africa.",
     items: buildDefaultRegionItems(),
+  },
+  gallery: {
+    eyebrow: "From the road",
+    title: "Places we have already taken travellers",
+    subtitle:
+      "Real stops from real departures — castles on the coast, waterfalls in the Volta hills, palaces in Kumasi, and savanna at sunrise.",
+    ctaLabel: "Browse tours by region",
+  },
+  testimonials: {
+    eyebrow: testimonialsSection.eyebrow,
+    title: testimonialsSection.title,
+    subtitle: testimonialsSection.subtitle,
+    rating: testimonialsSection.rating,
+    reviews: testimonialsSection.reviews,
   },
   explore: {
     eyebrow: "Learn more",
@@ -93,6 +115,10 @@ export function saveLandingCms(content) {
   window.localStorage.setItem(STORAGE_KEY, JSON.stringify(content));
 }
 
+function isStaleGalleryDestinationImage(image) {
+  return /\/images\/gallery\/optimized\/(?!hero\b)/i.test(String(image || ""));
+}
+
 function sanitizeBrokenRemoteImages(content) {
   ["regions", "destinations"].forEach((sectionId) => {
     const items = content?.[sectionId]?.items;
@@ -101,7 +127,7 @@ function sanitizeBrokenRemoteImages(content) {
     items.forEach((item) => {
       const image = String(item?.image || "");
       if (!image) return;
-      if (/^https?:\/\//i.test(image)) {
+      if (!isTrustedMediaUrl(item?.image) || isStaleGalleryDestinationImage(image)) {
         item.image = "";
       }
     });
@@ -127,6 +153,8 @@ export const LANDING_CMS_SECTIONS = [
   { id: "tours", label: "Featured tours" },
   { id: "destinations", label: "Popular destinations" },
   { id: "regions", label: "Ghana regions" },
+  { id: "gallery", label: "Adventure gallery" },
+  { id: "testimonials", label: "Guest stories" },
   { id: "explore", label: "Explore links" },
   { id: "cta", label: "Final call to action" },
 ];

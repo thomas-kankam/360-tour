@@ -40,7 +40,7 @@ function TourCardSkeleton({ index }) {
   return (
     <article
       aria-hidden
-      className="flex flex-col overflow-hidden rounded-2xl border border-brand-border/70 bg-white shadow-[0_10px_36px_-20px_rgba(28,43,38,0.3)]"
+      className="flex flex-col overflow-hidden rounded-2xl border border-brand-border/70 bg-white shadow-[0_10px_36px_-20px_rgba(23,19,14,0.3)]"
     >
       <div className="relative aspect-[5/4] animate-pulse bg-brand-cream">
         <div className="absolute left-3 top-3 h-14 w-12 rounded-xl bg-white/60" />
@@ -87,7 +87,7 @@ function FeaturedTourBannerRow({ tour }) {
       <Link
         to={detailPath}
         aria-label={tour.name ? `View details for ${tour.name}` : "View tour details"}
-        className="group relative block overflow-hidden rounded-[1.75rem] border border-brand-border/60 bg-brand-cream shadow-[0_18px_48px_-24px_rgba(28,43,38,0.45)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_24px_56px_-20px_rgba(28,43,38,0.4)]"
+        className="group relative block overflow-hidden rounded-[1.75rem] border border-brand-border/60 bg-brand-cream shadow-[0_18px_48px_-24px_rgba(23,19,14,0.45)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_24px_56px_-20px_rgba(23,19,14,0.4)]"
       >
         <img
           src={images.banners.banner_one}
@@ -110,7 +110,6 @@ function FeaturedTourBannerRow({ tour }) {
 
 function UpcomingTourCard({ tour, index }) {
   const urgent = tour.spotsLeft <= 3;
-  const showFeaturedBadge = index === 0 && (tour.featured || tour.badge);
 
   return (
     <motion.article
@@ -118,7 +117,7 @@ function UpcomingTourCard({ tour, index }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-30px" }}
       transition={{ duration: 0.6, ease: EASE, delay: index * 0.08 }}
-      className="group relative flex flex-col overflow-hidden rounded-2xl border border-brand-border/70 bg-white shadow-[0_10px_36px_-20px_rgba(28,43,38,0.3)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_44px_-18px_rgba(28,43,38,0.25)]"
+      className="group relative flex flex-col overflow-hidden rounded-2xl border border-brand-border/70 bg-white shadow-[0_10px_36px_-20px_rgba(23,19,14,0.3)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_44px_-18px_rgba(23,19,14,0.25)]"
     >
       <div className="relative aspect-[5/4] overflow-hidden bg-brand-cream">
         {tour.image ? (
@@ -144,26 +143,19 @@ function UpcomingTourCard({ tour, index }) {
           </div>
         </div>
 
-        {showFeaturedBadge && tour.badge && (
-          <span
-            className={[
-              "absolute right-3 top-3 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-md",
-              tour.badgeColor?.includes("orange") ? "bg-brand-orange" : "bg-brand-green/90",
-            ].join(" ")}
-          >
-            {tour.badge}
+        {tour.isCustom ? (
+          <span className="absolute right-3 top-3 rounded-full bg-brand-accent px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-brand-charcoal shadow-md">
+            Tailor-made
           </span>
-        )}
-
-        {!showFeaturedBadge && urgent && (
-          <span className="absolute right-3 top-3 rounded-full bg-brand-accent px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-brand-primary shadow-md">
+        ) : urgent ? (
+          <span className="absolute right-3 top-3 rounded-full bg-brand-red px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-md">
             Filling fast
           </span>
-        )}
+        ) : null}
 
         <div className="absolute bottom-3 left-3 right-3">
           <p className="text-[10px] font-semibold uppercase tracking-widest text-white/75">
-            {tour.country}
+            {tour.regionLabels?.[0] || tour.country}
           </p>
           <h3 className="mt-0.5 line-clamp-2 text-base font-bold leading-snug text-white">
             {tour.name}
@@ -248,15 +240,7 @@ export default function HomeUpcomingTours() {
 
   return (
     <section className="relative overflow-hidden border-y border-brand-border bg-white py-16 sm:py-20 lg:py-24">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-30"
-        style={{
-          backgroundImage:
-            "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Ccircle cx='2' cy='2' r='1' fill='%232D5A47' fill-opacity='0.06'/%3E%3C/svg%3E\")",
-          backgroundSize: "24px 24px",
-        }}
-      />
+      <div aria-hidden className="adinkra-field pointer-events-none absolute inset-0 opacity-40" />
 
       <Container className="relative">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">

@@ -64,7 +64,7 @@ function BookingCard({ booking, index, onCompletePayment, onDownloadReceipt, pay
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45, ease: EASE, delay: Math.min(index * 0.06, 0.3) }}
-      className="overflow-hidden rounded-[1.5rem] border border-brand-border/60 bg-white shadow-[0_10px_36px_-20px_rgba(28,43,38,0.22)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_16px_44px_-18px_rgba(28,43,38,0.28)]"
+      className="overflow-hidden rounded-[1.5rem] border border-brand-border/60 bg-white shadow-[0_10px_36px_-20px_rgba(23,19,14,0.22)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_16px_44px_-18px_rgba(23,19,14,0.28)]"
     >
       <div className="flex flex-col sm:flex-row">
         {/* Image strip */}

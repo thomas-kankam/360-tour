@@ -5,13 +5,12 @@ import {
   createEmptyTourListing,
   DEPARTURE_SCHEDULE_DATE_RANGE,
   DEPARTURE_SCHEDULE_SPECIFIC,
-  extractPackageLineId,
   findCountryOption,
   formatTourPriceLabel,
   parseTourPriceAmount,
-  isCountryCategoryId,
-  isGhanaPackageLineId,
+  isCustomTourType,
   isUnlimitedTourSlots,
+  normalizeTourType,
   resolveCountryOption,
   TOUR_CURRENCY,
   TOUR_CURRENCY_USD,
@@ -154,9 +153,10 @@ export function mapOperatorTour(raw) {
     countryId: country.id,
     countryCode: country.dialCode,
     categories: raw.categories || [],
-    packageLineId: extractPackageLineId(raw.categories || []),
+    tourType: normalizeTourType(raw.tourType ?? raw.tour_type),
+    regions: raw.regions || [],
+    regionLabels: raw.regionLabels || [],
     status: raw.status || "draft",
-    featured: Boolean(raw.featured),
     durationDays,
     durationLabel,
     groupSizeMin: raw.groupSizeMin ?? 2,
@@ -169,8 +169,6 @@ export function mapOperatorTour(raw) {
     priceLabel: raw.priceLabel || "",
     rating: raw.rating ?? 0,
     reviewCount: raw.reviewCount ?? 0,
-    badge: raw.badge || "",
-    badgeVariant: raw.badgeVariant || "orange",
     coverImage: { uri: coverUrl, data: "", mimeType: "image/jpeg" },
     coverImageUrl: coverUrl,
     featureImages,
@@ -244,6 +242,9 @@ export function getRemainingDepartureSlots(totalSlots, departureDates) {
 }
 
 export function validateTourSlotAllocation(form) {
+  // Customized tours are enquiry-led: dates and capacity are agreed per traveller.
+  if (isCustomTourType(form?.tourType)) return "";
+
   const scheduleType = form.departureScheduleType || DEPARTURE_SCHEDULE_SPECIFIC;
 
   if (scheduleType === DEPARTURE_SCHEDULE_DATE_RANGE) {
@@ -273,15 +274,9 @@ export function buildCreateTourPayload(form) {
 export function buildTourPayload(form, { isUpdate = false } = {}) {
   const country = findCountryOption(form.countryId) || COUNTRY_OPTIONS[0];
   const locations = (form.locations || []).map((l) => String(l).trim()).filter(Boolean);
-  const themeCategories = (form.categories || []).filter(
-    (c) => !isCountryCategoryId(c) && !isGhanaPackageLineId(c),
-  );
-  const categories = [country.id];
-  if (country.id === "ghana" && form.packageLineId) {
-    categories.push(form.packageLineId);
-  }
-  categories.push(...themeCategories);
-  const uniqueCategories = [...new Set(categories)];
+  const tourType = normalizeTourType(form.tourType);
+  const isCustom = isCustomTourType(tourType);
+  const uniqueCategories = [country.id];
 
   const galleryFallbacks = form.galleryImageUrls || [];
   const featureImages = (form.featureImages || []).filter((img) => img?.uri || img?.data);
@@ -290,7 +285,9 @@ export function buildTourPayload(form, { isUpdate = false } = {}) {
     .map((img, index) => resolveImageForApiPayload(img, galleryFallbacks[index] || img?.uri || ""))
     .filter(Boolean);
 
-  const departureDates = (form.departureDates || [])
+  const departureDates = isCustom
+    ? []
+    : (form.departureDates || [])
     .filter((departure) => departure.date)
     .map((departure, index) => {
       const spotsTotal = Number(departure.spotsTotal) || 0;
@@ -313,10 +310,13 @@ export function buildTourPayload(form, { isUpdate = false } = {}) {
       };
     });
 
-  const totalSlots = resolveTourTotalSlots({
-    ...form,
-    departureDates: (form.departureDates || []).filter((departure) => departure.date || departure.endDate),
-  });
+  // Customized tours have no published capacity, so they carry unlimited slots.
+  const totalSlots = isCustom
+    ? UNLIMITED_TOUR_SLOTS
+    : resolveTourTotalSlots({
+      ...form,
+      departureDates: (form.departureDates || []).filter((departure) => departure.date || departure.endDate),
+    });
   const normalizedTotalSlots = isUnlimitedTourSlots(totalSlots) ? UNLIMITED_TOUR_SLOTS : Math.max(1, totalSlots);
   const durationDays = resolveTourDurationDays(form);
   const audienceScope = form.audienceScope || AUDIENCE_SCOPE.LOCAL;
@@ -353,8 +353,8 @@ export function buildTourPayload(form, { isUpdate = false } = {}) {
     country: country.country,
     countryCode: country.dialCode,
     categories: uniqueCategories,
+    tourType,
     status: form.status || "draft",
-    featured: Boolean(form.featured),
     durationDays,
     durationLabel: formatTourDurationLabel(durationDays),
     groupSizeMin,
@@ -369,8 +369,6 @@ export function buildTourPayload(form, { isUpdate = false } = {}) {
     priceLabel,
     rating: Number(form.rating) || 0,
     reviewCount: Number(form.reviewCount) || 0,
-    badge: form.badge || "",
-    badgeVariant: form.badgeVariant || "orange",
     coverImageUrl,
     galleryImageUrls,
     description: form.description.trim(),

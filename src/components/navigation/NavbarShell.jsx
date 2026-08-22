@@ -53,8 +53,8 @@ export default function NavbarShell({ actions, mobileActions }) {
         className={[
           "mx-auto max-w-8xl transition-all duration-300",
           scrolled
-            ? "rounded-2xl border border-brand-border/60 bg-white/90 shadow-[0_8px_40px_-12px_rgba(21,67,96,0.22)] backdrop-blur-xl"
-            : "rounded-2xl border border-brand-primary/[0.08] bg-white/70 shadow-[0_4px_24px_-8px_rgba(21,67,96,0.12)] backdrop-blur-md",
+            ? "rounded-2xl border border-brand-border/60 bg-white/90 shadow-[0_8px_40px_-12px_rgba(0,107,63,0.22)] backdrop-blur-xl"
+            : "rounded-2xl border border-brand-primary/[0.08] bg-white/70 shadow-[0_4px_24px_-8px_rgba(0,107,63,0.12)] backdrop-blur-md",
         ].join(" ")}
       >
         <Container
@@ -163,7 +163,7 @@ export default function NavbarShell({ actions, mobileActions }) {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -8, scale: 0.98 }}
               transition={{ duration: 0.3, ease: EASE }}
-              className="absolute left-4 right-4 top-[calc(100%-0.25rem)] z-50 max-h-[calc(100dvh-5rem)] overflow-y-auto overscroll-contain rounded-2xl border border-brand-border/60 bg-white shadow-[0_20px_60px_-16px_rgba(21,67,96,0.28)] lg:hidden"
+              className="absolute left-4 right-4 top-[calc(100%-0.25rem)] z-50 max-h-[calc(100dvh-5rem)] overflow-y-auto overscroll-contain rounded-2xl border border-brand-border/60 bg-white shadow-[0_20px_60px_-16px_rgba(0,107,63,0.28)] lg:hidden"
             >
               <Container className="py-5">
                 <nav className="flex flex-col gap-0.5">

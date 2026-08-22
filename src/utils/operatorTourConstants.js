@@ -1,86 +1,75 @@
-export const TOUR_CATEGORY_OPTIONS = [
-  { id: "heritage", label: "Heritage", description: "Historic sites, monuments, and UNESCO landmarks." },
-  { id: "cultural", label: "Cultural", description: "Festivals, crafts, cuisine, and living traditions." },
-  { id: "safari", label: "Safari", description: "Wildlife parks, game drives, and nature reserves." },
-  { id: "adventure", label: "Adventure", description: "Hiking, canopy walks, and active exploration." },
-  { id: "beach", label: "Beach", description: "Coastal escapes, resorts, and water activities." },
-  { id: "hotel-stay", label: "Hotel stay", description: "Comfortable hotel accommodations and premium lodging experiences." },
-  { id: "relaxation", label: "Relaxation", description: "Spa, leisure time, and unhurried rest-focused itineraries." },
-  { id: "group", label: "Groups", description: "Shared departures ideal for families and teams." },
-];
+/**
+ * Listings are split into two flows:
+ *   regular — fixed, published departures a traveller books straight away
+ *   custom  — tailor-made itineraries priced from, agreed date by date on enquiry
+ */
+export const TOUR_TYPE = {
+  REGULAR: "regular",
+  CUSTOM: "custom",
+};
 
-export const GHANA_PACKAGE_LINE_OPTIONS = [
+export const TOUR_TYPE_OPTIONS = [
   {
-    id: "accra",
-    label: "Accra",
-    iconKey: "building",
-    tagline: "Arts & city culture",
-    description: "Markets, crafts, and vibrant capital experiences — Arts Centre, Aburi, and more.",
-    photoHints: {
-      cover: "Arts Centre, Aburi Arts market, or craft stalls in Accra.",
-      gallery: "Artisans at work, market scenes, city culture, and coastal day trips.",
-    },
+    id: TOUR_TYPE.REGULAR,
+    label: "Regular tour",
+    shortLabel: "Scheduled",
+    iconKey: "calendar",
+    tagline: "Fixed departures",
+    description: "Set departure dates and slot counts. Travellers book a published date instantly.",
   },
   {
-    id: "kumasi",
-    label: "Kumasi",
-    iconKey: "crown",
-    tagline: "Ashanti heritage",
-    description: "Royal history, kente weaving, and the cultural heart of the Ashanti Kingdom.",
-    photoHints: {
-      cover: "Manhyia Palace or kente weaving at Bonwire.",
-      gallery: "Palace grounds, craft villages, traditional ceremonies, and Ashanti landmarks.",
-    },
-  },
-  {
-    id: "volta",
-    label: "Volta",
-    iconKey: "mountain",
-    tagline: "Mountains & waterfalls",
-    description: "Highland treks, Wli Falls, and nature-forward journeys in Ghana's Volta Region.",
-    photoHints: {
-      cover: "Wli Falls, Volta mountains, or waterfall hiking trails.",
-      gallery: "Forest canopy, mountain vistas, village stops, and outdoor adventure.",
-    },
-  },
-  {
-    id: "end-of-year",
-    label: "End of Year",
-    iconKey: "party",
-    tagline: "Detty December",
-    description: "Festival season energy — concerts, Afrochella vibes, and December celebrations.",
-    photoHints: {
-      cover: "Detty December crowds, festival stage, or December nightlife in Accra.",
-      gallery: "Concerts, street parties, festival fashion, and celebratory group moments.",
-    },
+    id: TOUR_TYPE.CUSTOM,
+    label: "Customized tour",
+    shortLabel: "Tailor-made",
+    iconKey: "route",
+    tagline: "Built on request",
+    description: "No fixed dates. Publish a from-price and travellers send an enquiry to agree the plan.",
   },
 ];
 
-export const GHANA_PACKAGE_LINE_IDS = GHANA_PACKAGE_LINE_OPTIONS.map((option) => option.id);
+export const TOUR_TYPE_IDS = TOUR_TYPE_OPTIONS.map((option) => option.id);
 
-export function isGhanaPackageLineId(id) {
-  return GHANA_PACKAGE_LINE_IDS.includes(id);
+export function normalizeTourType(type) {
+  const value = String(type || "").trim().toLowerCase();
+  return TOUR_TYPE_IDS.includes(value) ? value : TOUR_TYPE.REGULAR;
 }
 
-export function getGhanaPackageLineOption(id) {
-  return GHANA_PACKAGE_LINE_OPTIONS.find((option) => option.id === id) || null;
+export function isCustomTourType(type) {
+  return normalizeTourType(type) === TOUR_TYPE.CUSTOM;
 }
 
-export function extractPackageLineId(categories = []) {
-  return (categories || []).find(isGhanaPackageLineId) || "";
+export function getTourTypeOption(type) {
+  return TOUR_TYPE_OPTIONS.find((option) => option.id === normalizeTourType(type)) || TOUR_TYPE_OPTIONS[0];
 }
 
-export function getPackageLinePhotoHints(packageLineId) {
-  return getGhanaPackageLineOption(packageLineId)?.photoHints || null;
+export function getTourTypeLabel(type) {
+  return getTourTypeOption(type).shortLabel;
+}
+
+/**
+ * Category ids retired with the package-line and experience-theme editors.
+ * Kept so legacy listings do not surface stale chips on public cards.
+ */
+export const LEGACY_CATEGORY_IDS = [
+  "accra",
+  "kumasi",
+  "volta",
+  "end-of-year",
+  "heritage",
+  "cultural",
+  "safari",
+  "adventure",
+  "beach",
+  "hotel-stay",
+  "relaxation",
+  "group",
+];
+
+export function isLegacyCategoryId(id) {
+  return LEGACY_CATEGORY_IDS.includes(id);
 }
 
 export function formatTourCategoryLabel(categoryId) {
-  const packageLine = getGhanaPackageLineOption(categoryId);
-  if (packageLine) return packageLine.label;
-
-  const theme = TOUR_CATEGORY_OPTIONS.find((option) => option.id === categoryId);
-  if (theme) return theme.label;
-
   return String(categoryId || "")
     .split("-")
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
@@ -93,12 +82,6 @@ export {
   isCountryCategoryId,
   resolveCountryOption,
 } from "./countryOptions";
-
-export const BADGE_VARIANTS = [
-  { id: "orange", label: "Orange" },
-  { id: "gold", label: "Gold" },
-  { id: "green", label: "Green" },
-];
 
 export const TOUR_CURRENCY = {
   code: "GHS",
@@ -262,10 +245,9 @@ export function createEmptyTourListing() {
     country: "Ghana",
     countryId: "ghana",
     countryCode: "233",
-    packageLineId: "",
-    categories: ["ghana", "heritage", "cultural"],
+    tourType: TOUR_TYPE.REGULAR,
+    categories: ["ghana"],
     status: "draft",
-    featured: false,
     durationDays: 10,
     durationLabel: "10 days",
     groupSizeMin: 1,
@@ -279,8 +261,6 @@ export function createEmptyTourListing() {
     totalSlots: 18,
     rating: 5,
     reviewCount: 0,
-    badge: "",
-    badgeVariant: "orange",
     coverImage: { uri: "", data: "", mimeType: "image/jpeg" },
     coverImageUrl: "",
     featureImages: [],

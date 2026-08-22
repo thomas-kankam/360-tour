@@ -46,6 +46,30 @@ class PublicListingsServiceApi {
     return dedupeRequest(key, exec);
   }
 
+  async getRegionFacets() {
+    const url = `${this.baseUrl}/listings/regions`;
+    const key = buildRequestKey({ method: "GET", url });
+
+    const exec = async () => {
+      try {
+        const response = await axios.get(url, { headers: this.getHeaders() });
+        const result = parseApiEnvelope(response);
+        if (!result.ok) return { ...result, regions: [], total: 0 };
+
+        const data = result.data || {};
+        return {
+          ...result,
+          total: Number(data.total) || 0,
+          regions: Array.isArray(data.regions) ? data.regions : [],
+        };
+      } catch (error) {
+        return { ...parseApiError(error), regions: [], total: 0 };
+      }
+    };
+
+    return dedupeRequest(key, exec);
+  }
+
   async getRandomListings() {
     const url = `${this.baseUrl}/listings/random`;
     const key = buildRequestKey({ method: "GET", url });

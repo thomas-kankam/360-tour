@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router";
 import { motion } from "motion/react";
-import { Eye, Globe2, Loader2, Map, Search, Star } from "lucide-react";
+import { Eye, Globe2, Loader2, Map, Search } from "lucide-react";
 import { toast } from "react-toastify";
 import adminListingsServiceApi from "../../apis/AdminListingsServiceApi";
 import AdminPagination from "../../components/admin/AdminPagination";
@@ -21,7 +21,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { useDebouncedValue, useServerAdminPagination } from "../../hooks/useAdminPagination";
 import { buildListQueryParams } from "../../utils/adminPaginationHelpers";
 import { formatListingDate, LISTING_STATUS_STYLES } from "../../utils/adminListingHelpers";
-import { formatTourSlotsLabel, isUnlimitedTourSlots } from "../../utils/operatorTourConstants";
+import { formatTourSlotsLabel, getTourTypeLabel, isCustomTourType, isUnlimitedTourSlots } from "../../utils/operatorTourConstants";
 
 const EASE = [0.22, 1, 0.36, 1];
 
@@ -116,9 +116,9 @@ export default function AdminListingsPage() {
 
   const summary = useMemo(() => {
     const published = listings.filter((item) => item.status === "published").length;
-    const featured = listings.filter((item) => item.featured).length;
+    const custom = listings.filter((item) => isCustomTourType(item.tourType)).length;
     const bookings = listings.reduce((sum, item) => sum + (Number(item.bookingCount) || 0), 0);
-    return { published, featured, bookings };
+    return { published, custom, bookings };
   }, [listings]);
 
   const isEmpty = !loading && listings.length === 0;
@@ -142,7 +142,7 @@ export default function AdminListingsPage() {
         <div className="rounded-2xl border border-black/8 bg-white px-4 py-4 shadow-sm">
           <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-brand-muted">Published</p>
           <p className="mt-1 text-2xl font-bold text-emerald-700">{summary.published}</p>
-          <p className="mt-1 text-xs text-brand-muted">{summary.featured} featured</p>
+          <p className="mt-1 text-xs text-brand-muted">{summary.custom} customized</p>
         </div>
         <div className="rounded-2xl border border-black/8 bg-white px-4 py-4 shadow-sm">
           <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-brand-muted">Bookings (page)</p>
@@ -218,12 +218,9 @@ export default function AdminListingsPage() {
                       trailing={
                         <div className="flex flex-wrap items-center gap-1.5">
                           <StatusBadge status={listing.status} />
-                          {listing.featured ? (
-                            <span className="inline-flex items-center gap-1 rounded-full bg-brand-accent/20 px-2 py-0.5 text-[10px] font-bold text-brand-primary">
-                              <Star className="h-3 w-3 fill-brand-accent text-brand-accent" strokeWidth={2.5} aria-hidden />
-                              Featured
-                            </span>
-                          ) : null}
+                          <span className="rounded-full bg-brand-accent/25 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand-primary">
+                            {getTourTypeLabel(listing.tourType)}
+                          </span>
                         </div>
                       }
                     />
@@ -274,12 +271,9 @@ export default function AdminListingsPage() {
                           <div className="min-w-0">
                             <p className="line-clamp-1 font-semibold text-brand-ink">{listing.name}</p>
                             <div className="mt-1 flex flex-wrap items-center gap-1.5">
-                              {listing.featured ? (
-                                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-brand-primary">
-                                  <Star className="h-3 w-3 fill-brand-accent text-brand-accent" strokeWidth={2.5} aria-hidden />
-                                  Featured
-                                </span>
-                              ) : null}
+                              <span className="rounded-full bg-brand-accent/25 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand-primary">
+                                {getTourTypeLabel(listing.tourType)}
+                              </span>
                               <span className="text-[10px] text-brand-muted">{listing.durationLabel}</span>
                             </div>
                           </div>

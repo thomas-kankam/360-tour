@@ -1,13 +1,14 @@
 import { buildCreateTourPayload } from "./operatorTourMapper";
 import {
-  BADGE_VARIANTS,
   COUNTRY_OPTIONS,
-  TOUR_CATEGORY_OPTIONS,
-  GHANA_PACKAGE_LINE_OPTIONS,
+  TOUR_TYPE,
+  TOUR_TYPE_OPTIONS,
   createEmptyTourListing,
-  getPackageLinePhotoHints,
-  isGhanaPackageLineId,
+  getTourTypeLabel,
+  getTourTypeOption,
+  isCustomTourType,
   isCountryCategoryId,
+  normalizeTourType,
   resolveCountryOption,
   findCountryOption,
 } from "./operatorTourConstants";
@@ -81,14 +82,15 @@ export function deleteOperatorTour(id) {
 }
 
 export {
-  TOUR_CATEGORY_OPTIONS,
-  GHANA_PACKAGE_LINE_OPTIONS,
   COUNTRY_OPTIONS,
-  BADGE_VARIANTS,
+  TOUR_TYPE,
+  TOUR_TYPE_OPTIONS,
   createEmptyTourListing,
-  getPackageLinePhotoHints,
-  isGhanaPackageLineId,
+  getTourTypeLabel,
+  getTourTypeOption,
+  isCustomTourType,
   isCountryCategoryId,
+  normalizeTourType,
   findCountryOption,
 };
 

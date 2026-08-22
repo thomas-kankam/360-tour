@@ -59,20 +59,8 @@ export default function HomePartners() {
 
   return (
     <section className="relative overflow-hidden border-y border-brand-border bg-white py-14 sm:py-16">
-      {/* Subtle background texture */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-[0.35]"
-        style={{
-          backgroundImage:
-            "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Ccircle cx='2' cy='2' r='1' fill='%232D5A47' fill-opacity='0.06'/%3E%3C/svg%3E\")",
-          backgroundSize: "24px 24px",
-        }}
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand-gold/40 to-transparent"
-      />
+      <div aria-hidden className="adinkra-field pointer-events-none absolute inset-0 opacity-40" />
+      <div aria-hidden className="kente-rule-wide absolute inset-x-0 top-0" />
 
       <Container className="relative">
         <motion.div

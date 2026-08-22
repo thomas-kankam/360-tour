@@ -13,7 +13,7 @@ export default function InvoicePreview({ invoice, company = loadCompanySettings(
   const totals = calculateInvoiceTotals(invoice);
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-brand-border/60 bg-white shadow-[0_20px_60px_-30px_rgba(21,67,96,0.35)]">
+    <div className="overflow-hidden rounded-2xl border border-brand-border/60 bg-white shadow-[0_20px_60px_-30px_rgba(0,107,63,0.35)]">
       <div className="h-2 bg-brand-primary" />
       <div className="p-6 sm:p-8">
         <div className="flex flex-wrap items-start justify-between gap-6 border-b border-brand-border/40 pb-6">

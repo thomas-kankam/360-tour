@@ -25,7 +25,7 @@ function WhatsAppIcon({ className }) {
 
 function QuickActionButton({ href, onClick, label, icon: Icon, accent = false, delay = 0, external = false }) {
   const className = [
-    "group relative flex h-12 w-12 items-center justify-center rounded-2xl border shadow-[0_12px_32px_-12px_rgba(21,67,96,0.45)] backdrop-blur-md transition-colors sm:h-[3.25rem] sm:w-[3.25rem]",
+    "group relative flex h-12 w-12 items-center justify-center rounded-2xl border shadow-[0_12px_32px_-12px_rgba(0,107,63,0.45)] backdrop-blur-md transition-colors sm:h-[3.25rem] sm:w-[3.25rem]",
     accent
       ? "border-brand-accent/80 bg-brand-accent text-brand-primary hover:bg-brand-accent-dark"
       : "border-white/70 bg-white/95 text-brand-primary hover:border-brand-accent/60 hover:bg-white",

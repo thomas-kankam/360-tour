@@ -1,4 +1,5 @@
 import { USER_ROLES } from "../constants/roles";
+import { resolveProfileImageSrc } from "./profileImage";
 
 export function mapOperatorUser(operator) {
   if (!operator) return null;
@@ -21,7 +22,7 @@ export function mapOperatorUser(operator) {
     isVerified: Boolean(operator.is_verified ?? operator.isVerified),
     verifiedAt: operator.verified_at ?? operator.verifiedAt ?? null,
     status: operator.status ?? "inactive",
-    profileImage: operator.profile_image ?? operator.profileImage ?? null,
+    profileImage: resolveProfileImageSrc(operator.profile_image ?? operator.profileImage),
     role: USER_ROLES.SITE_OPERATOR,
   };
 }

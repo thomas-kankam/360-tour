@@ -124,7 +124,7 @@ export default function StoriesPage() {
       {featured && (
         <div className="bg-brand-cream py-10">
           <Container>
-            <motion.div {...rise()} className="overflow-hidden rounded-[1.75rem] border border-brand-border/60 bg-white shadow-[0_16px_48px_-20px_rgba(28,43,38,0.3)]">
+            <motion.div {...rise()} className="overflow-hidden rounded-[1.75rem] border border-brand-border/60 bg-white shadow-[0_16px_48px_-20px_rgba(23,19,14,0.3)]">
               <Link to={ROUTES.storyDetail(featured.slug)} className="group grid lg:grid-cols-[1.4fr_1fr] focus:outline-none">
                 <div className="relative aspect-[16/9] overflow-hidden lg:aspect-auto">
                   <img src={featured.image} alt={featured.title} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />

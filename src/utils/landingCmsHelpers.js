@@ -1,12 +1,18 @@
+import { dataUrlToFile, isTrustedMediaUrl, optimizeImageFile } from "./imageOptimize";
+import uploadServiceApi from "../apis/UploadServiceApi";
 import { LANDING_CMS_DEFAULTS } from "./landingCmsStorage";
 import { mergeCmsItems } from "./landingCmsItems";
+
+function isStaleGalleryDestinationImage(image) {
+  return /\/images\/gallery\/optimized\/(?!hero\b)/i.test(String(image || ""));
+}
 
 function sanitizeBrokenRemoteImages(content) {
   ["regions", "destinations"].forEach((sectionId) => {
     const items = content?.[sectionId]?.items;
     if (!Array.isArray(items)) return;
     items.forEach((item) => {
-      if (/^https?:\/\//i.test(String(item?.image || ""))) {
+      if (!isTrustedMediaUrl(item?.image) || isStaleGalleryDestinationImage(item?.image)) {
         item.image = "";
       }
     });
@@ -85,4 +91,37 @@ export function mapApiLandingCmsMeta(raw) {
       meta.has_unpublished_changes ?? meta.hasUnpublishedChanges ?? false,
     ),
   };
+}
+
+async function persistCmsImageValue(value, token, variant) {
+  if (!value || typeof value !== "string") return value || "";
+  if (!value.startsWith("data:")) return value;
+
+  const file = dataUrlToFile(value);
+  if (!file) return "";
+
+  const optimized = await optimizeImageFile(file, variant);
+  const result = await uploadServiceApi.uploadImage(token, optimized, { variant, role: "admin" });
+  return result.ok ? result.url : "";
+}
+
+export async function persistLandingCmsMedia(content, token) {
+  const next = structuredClone(content);
+
+  if (next.hero) {
+    next.hero.backgroundImage = await persistCmsImageValue(next.hero.backgroundImage, token, "hero");
+  }
+  if (next.cta) {
+    next.cta.image = await persistCmsImageValue(next.cta.image, token, "destination");
+  }
+
+  for (const sectionId of ["destinations", "regions"]) {
+    const items = next[sectionId]?.items;
+    if (!Array.isArray(items)) continue;
+    for (const item of items) {
+      item.image = await persistCmsImageValue(item.image, token, "destination");
+    }
+  }
+
+  return next;
 }

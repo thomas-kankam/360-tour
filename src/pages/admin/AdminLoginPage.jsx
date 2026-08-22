@@ -196,7 +196,7 @@ export default function AdminLoginPage() {
               </span>
             </div>
 
-            <div className="overflow-hidden rounded-[1.75rem] border border-brand-border/70 bg-white shadow-[0_18px_60px_-28px_rgba(28,43,38,0.35)]">
+            <div className="overflow-hidden rounded-[1.75rem] border border-brand-border/70 bg-white shadow-[0_18px_60px_-28px_rgba(23,19,14,0.35)]">
               <div className="border-b border-brand-border/60 bg-brand-cream/45 px-6 py-5">
                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-primary">
                   {step === "identity" ? "Sign in" : "OTP verification"}

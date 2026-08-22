@@ -116,7 +116,7 @@ function TourSummary({ tour, travelers, subtotal, selectedDate, currency, unitPr
   const resolvedCurrency = currency ?? tour.priceCurrency ?? "GHS";
 
   return (
-    <div className="overflow-hidden rounded-[1.5rem] border border-brand-border/60 bg-white shadow-[0_12px_40px_-24px_rgba(28,43,38,0.28)]">
+    <div className="overflow-hidden rounded-[1.5rem] border border-brand-border/60 bg-white shadow-[0_12px_40px_-24px_rgba(23,19,14,0.28)]">
       <div className="relative aspect-[16/10] overflow-hidden">
         <img src={tour.image} alt={tour.name} className="h-full w-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-brand-ink/60 to-transparent" />

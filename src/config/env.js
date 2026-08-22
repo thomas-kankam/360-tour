@@ -14,7 +14,7 @@ const env = {
     (process.env.NODE_ENV === "development"
       ? "/api"
       : "https://api.360toursghana.com/api"),
-  contactEmail: (process.env.REACT_APP_CONTACT_EMAIL || "360tours.gh@gmail.com").replace(/^\./, ""),
+  contactEmail: (process.env.REACT_APP_CONTACT_EMAIL || "360toursghana@gmail.com").replace(/^\./, ""),
   contactPhone: process.env.REACT_APP_CONTACT_PHONE_US || "+(31) 0684724905",
   whatsappNumber: normalizeWhatsAppNumber(
     process.env.REACT_APP_WHATSAPP_NUMBER || "233500404151",

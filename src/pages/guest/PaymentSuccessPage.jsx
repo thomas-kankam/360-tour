@@ -21,12 +21,6 @@ import { mapVerifiedPaymentToReceipt, downloadPaymentReceiptPdf } from "../../ut
 
 const EASE = [0.22, 1, 0.36, 1];
 
-const HEADER_PATTERN = {
-  backgroundImage:
-    "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cg fill='none' transform='rotate(45 14 14)'%3E%3Crect width='14' height='14' fill='%23ffffff' fill-opacity='0.05'/%3E%3Crect x='14' y='14' width='14' height='14' fill='%23E3A020' fill-opacity='0.04'/%3E%3C/g%3E%3C/svg%3E\")",
-  backgroundSize: "28px 28px",
-};
-
 function resolveBookingRef(searchParams) {
   return (
     searchParams.get("ref") ||
@@ -195,10 +189,10 @@ function CompactStatusCard({ phase, isSuccess, bookingRef, errorMessage, childre
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: EASE }}
-        className="w-full max-w-lg overflow-hidden rounded-[1.75rem] border border-brand-border/60 bg-white shadow-[0_20px_60px_-24px_rgba(28,43,38,0.22)]"
+        className="w-full max-w-lg overflow-hidden rounded-[1.75rem] border border-brand-border/60 bg-white shadow-[0_20px_60px_-24px_rgba(23,19,14,0.22)]"
       >
         <div className={`relative px-6 py-8 text-center text-white sm:px-8 ${headerClass}`}>
-          <div aria-hidden className="pointer-events-none absolute inset-0 opacity-25" style={HEADER_PATTERN} />
+          <div aria-hidden className="adinkra-field-dark pointer-events-none absolute inset-0" />
           <div className="relative mx-auto max-w-sm">
             <AnimatePresence mode="wait">
               <div className="flex justify-center">
@@ -347,11 +341,11 @@ export default function PaymentSuccessPage() {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: EASE }}
-        className="mx-auto w-full max-w-5xl overflow-hidden rounded-[1.75rem] border border-brand-border/60 bg-white shadow-[0_24px_64px_-28px_rgba(28,43,38,0.24)]"
+        className="mx-auto w-full max-w-5xl overflow-hidden rounded-[1.75rem] border border-brand-border/60 bg-white shadow-[0_24px_64px_-28px_rgba(23,19,14,0.24)]"
       >
         <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
           <div className="relative flex flex-col bg-gradient-to-br from-brand-green via-brand-green to-brand-green-dark px-6 py-8 text-white sm:px-8 sm:py-10 lg:min-h-[560px]">
-            <div aria-hidden className="pointer-events-none absolute inset-0 opacity-25" style={HEADER_PATTERN} />
+            <div aria-hidden className="adinkra-field-dark pointer-events-none absolute inset-0" />
 
             <div className="relative flex flex-1 flex-col">
               <AnimatePresence mode="wait">

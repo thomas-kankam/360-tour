@@ -25,7 +25,7 @@ function ItineraryDayCard({ day, index, total }) {
       <div className="relative flex flex-col items-center">
         <div
           className={[
-            "relative z-10 flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-2xl shadow-[0_8px_20px_-10px_rgba(21,67,96,0.55)] ring-4 ring-white sm:h-14 sm:w-14",
+            "relative z-10 flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-2xl shadow-[0_8px_20px_-10px_rgba(0,107,63,0.55)] ring-4 ring-white sm:h-14 sm:w-14",
             isFirst
               ? "bg-brand-accent text-brand-primary"
               : isLast
@@ -52,7 +52,7 @@ function ItineraryDayCard({ day, index, total }) {
 
       <article
         className={[
-          "group overflow-hidden rounded-2xl border bg-gradient-to-br shadow-sm transition-shadow duration-300 hover:shadow-[0_12px_32px_-20px_rgba(21,67,96,0.28)]",
+          "group overflow-hidden rounded-2xl border bg-gradient-to-br shadow-sm transition-shadow duration-300 hover:shadow-[0_12px_32px_-20px_rgba(0,107,63,0.28)]",
           cardAccent,
         ].join(" ")}
       >

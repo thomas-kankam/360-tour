@@ -4,7 +4,9 @@ import { Camera, CheckCircle2, Loader2, Save, ShieldCheck, Trash2 } from "lucide
 import { toast } from "react-toastify";
 import adminAuthServiceApi from "../../apis/AdminAuthServiceApi";
 import { useAuth } from "../../hooks/useAuth";
-import { getImagePreviewSrc, readImageFile } from "../../utils/tourImageUtils";
+import { resolveProfileImageSrc, uploadProfilePhoto } from "../../utils/profileImage";
+import { optimizeImageFile } from "../../utils/imageOptimize";
+import uploadServiceApi from "../../apis/UploadServiceApi";
 import {
   loadCompanySettings,
   mergeCompanySettingsFromProfile,
@@ -73,7 +75,7 @@ export default function AdminProfilePage() {
   const [form, setForm] = useState(() => getInitialForm(user));
   const [errors, setErrors] = useState({});
   const [profileImage, setProfileImage] = useState(null);
-  const [profilePreview, setProfilePreview] = useState(user?.profileImage || "");
+  const [profilePreview, setProfilePreview] = useState(() => resolveProfileImageSrc(user?.profileImage));
   const [profileError, setProfileError] = useState("");
   const [saving, setSaving] = useState(false);
   const [imageRemoved, setImageRemoved] = useState(false);
@@ -83,7 +85,7 @@ export default function AdminProfilePage() {
 
   useEffect(() => {
     setForm(getInitialForm(user));
-    setProfilePreview(user?.profileImage || "");
+    setProfilePreview(resolveProfileImageSrc(user?.profileImage));
     setProfileImage(null);
     setImageRemoved(false);
     setErrors({});
@@ -115,9 +117,17 @@ export default function AdminProfilePage() {
     }
 
     try {
-      const image = await readImageFile(file);
-      setProfileImage(image);
-      setProfilePreview(getImagePreviewSrc(image));
+      if (!token) {
+        setProfileError("Sign in again to upload a photo.");
+        return;
+      }
+      const result = await uploadProfilePhoto(token, file, "admin");
+      if (!result.ok || !result.url) {
+        setProfileError(result.reason || "Could not upload photo.");
+        return;
+      }
+      setProfileImage(result.url);
+      setProfilePreview(result.url);
       setProfileError("");
       setImageRemoved(false);
     } catch (err) {
@@ -146,8 +156,13 @@ export default function AdminProfilePage() {
       return;
     }
     try {
-      const image = await readImageFile(file);
-      setCompanyForm((prev) => ({ ...prev, invoiceLogo: getImagePreviewSrc(image) }));
+      const optimized = await optimizeImageFile(file, "logo");
+      const result = await uploadServiceApi.uploadImage(token, optimized, { variant: "logo", role: "admin" });
+      if (!result.ok || !result.url) {
+        toast.error(result.reason || "Could not upload logo.");
+        return;
+      }
+      setCompanyForm((prev) => ({ ...prev, invoiceLogo: result.url }));
     } catch (err) {
       toast.error(err.message || "Could not read logo.");
     }
@@ -180,7 +195,7 @@ export default function AdminProfilePage() {
     };
 
     if (profileImage) {
-      payload.profile_image = getImagePreviewSrc(profileImage);
+      payload.profile_image = profileImage;
     } else if (imageRemoved) {
       payload.profile_image = "";
     }

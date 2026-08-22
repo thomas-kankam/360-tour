@@ -91,7 +91,7 @@ export default function WhyUsPage() {
                 {company.motto}, that is the promise behind every tour, transfer, and reservation we handle.
               </p>
             </motion.div>
-            <motion.div {...rise(0.1)} className="overflow-hidden rounded-3xl shadow-[0_20px_60px_-24px_rgba(21,67,96,0.28)]">
+            <motion.div {...rise(0.1)} className="overflow-hidden rounded-3xl shadow-[0_20px_60px_-24px_rgba(0,107,63,0.28)]">
               <img
                 src={images.tour_sites.arts_and_craft}
                 alt="Authentic Ghana travel experience"

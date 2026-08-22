@@ -30,7 +30,7 @@ function PillarCard({ pillar, index }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
       transition={{ duration: 0.55, ease: EASE, delay: index * 0.08 }}
-      className="group relative overflow-hidden rounded-2xl border border-brand-border/60 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-brand-primary/20 hover:shadow-[0_16px_40px_-16px_rgba(21,67,96,0.2)]"
+      className="group relative overflow-hidden rounded-2xl border border-brand-border/60 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-brand-primary/20 hover:shadow-[0_16px_40px_-16px_rgba(0,107,63,0.2)]"
     >
       <div className="absolute left-0 top-0 h-1 w-full bg-gradient-to-r from-brand-primary via-brand-accent to-brand-primary opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
       <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-accent/30 text-brand-primary transition-colors group-hover:bg-brand-accent/50">

@@ -1,6 +1,7 @@
 import { parsePaginatedList } from "./adminPaginationHelpers";
 import { formatTourCategoryLabel } from "./operatorTourConstants";
 import { buildLocationsLabel, mapOperatorTour } from "./operatorTourMapper";
+import { resolveProfileImageSrc } from "./profileImage";
 
 export const LISTING_STATUS_STYLES = {
   published: "bg-emerald-100 text-emerald-700",
@@ -27,7 +28,7 @@ export function mapAdminOperator(raw) {
     isVerified: Boolean(raw.isVerified ?? raw.is_verified),
     verifiedAt: raw.verifiedAt || raw.verified_at || "",
     status: raw.status || "",
-    profileImage: raw.profileImage || raw.profile_image || "",
+    profileImage: resolveProfileImageSrc(raw.profileImage || raw.profile_image),
     createdAt: raw.createdAt || raw.created_at || "",
     updatedAt: raw.updatedAt || raw.updated_at || "",
   };

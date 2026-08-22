@@ -199,18 +199,10 @@ export default function LoginPage() {
     <div className="flex h-full min-h-0">
       <div className="relative hidden h-full overflow-hidden lg:flex lg:w-[44%] xl:w-[46%]">
         <AuthPanelBackground variant="login" />
-        <div className="absolute inset-0 bg-[#1C2B26]/45" />
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1C2B26]/50 via-[#2D5A47]/35 to-[#1C2B26]/50" />
+        <div className="absolute inset-0 bg-[#17130E]/45" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#17130E]/50 via-[#006B3F]/35 to-[#17130E]/50" />
 
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 opacity-20"
-          style={{
-            backgroundImage:
-              "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cg fill='none' transform='rotate(45 14 14)'%3E%3Crect width='14' height='14' fill='%232D5A47' fill-opacity='0.08'/%3E%3Crect x='14' y='14' width='14' height='14' fill='%23E3A020' fill-opacity='0.06'/%3E%3C/g%3E%3C/svg%3E\")",
-            backgroundSize: "28px 28px",
-          }}
-        />
+        <div aria-hidden className="adinkra-field-dark pointer-events-none absolute inset-0 opacity-70" />
 
         <div className="relative z-10 flex flex-col justify-between p-10 xl:p-14">
           <div className="space-y-6">
@@ -220,7 +212,7 @@ export default function LoginPage() {
               </svg>
               Back to home
             </Link>
-            <img src={images.general_logo} alt="360 Tours and Investment Limited" className="h-12 w-auto drop-shadow-[0_4px_16px_rgba(227,160,32,0.4)]" />
+            <img src={images.general_logo} alt="360 Tours and Investment Limited" className="h-12 w-auto drop-shadow-[0_4px_16px_rgba(252,209,22,0.4)]" />
           </div>
 
           <div>
@@ -326,7 +318,7 @@ export default function LoginPage() {
                     <button
                       type="submit"
                       disabled={loading}
-                      className="group flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green py-3.5 text-sm font-semibold text-white shadow-[0_8px_24px_-8px_rgba(45,90,71,0.6)] transition-all hover:bg-brand-green-dark disabled:opacity-70"
+                      className="group flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green py-3.5 text-sm font-semibold text-white shadow-[0_8px_24px_-8px_rgba(0,107,63,0.6)] transition-all hover:bg-brand-green-dark disabled:opacity-70"
                     >
                       {loading ? (
                         <>
@@ -424,7 +416,7 @@ export default function LoginPage() {
                     <button
                       type="submit"
                       disabled={otp.length < 6 || loading}
-                      className="group flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green py-3.5 text-sm font-semibold text-white shadow-[0_8px_24px_-8px_rgba(45,90,71,0.6)] transition-all hover:bg-brand-green-dark disabled:cursor-not-allowed disabled:opacity-50"
+                      className="group flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green py-3.5 text-sm font-semibold text-white shadow-[0_8px_24px_-8px_rgba(0,107,63,0.6)] transition-all hover:bg-brand-green-dark disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       {loading ? (
                         <>

@@ -366,7 +366,7 @@ export const ghanaRegions = [
     desc: "Explore Independence Square, W.E.B. Du Bois Centre, bustling markets, and the creative energy of Ghana's capital.",
     highlights: ["City tours", "Arts & crafts", "Nightlife"],
     imageKey: "accraCityTour",
-    packageId: "accra",
+    regionId: "greater-accra",
   },
   {
     id: "cape-coast",
@@ -376,7 +376,7 @@ export const ghanaRegions = [
     desc: "Walk through Cape Coast Castle, Elmina Castle, and UNESCO World Heritage sites that tell Ghana's powerful story.",
     highlights: ["Slave castles", "Museums", "Coastal tours"],
     imageKey: "capeCoastCastle",
-    packageId: null,
+    regionId: "central",
   },
   {
     id: "kumasi",
@@ -386,7 +386,7 @@ export const ghanaRegions = [
     desc: "Visit Manhyia Palace, kente weaving villages, and the living traditions of the Ashanti Kingdom.",
     highlights: ["Palace tours", "Kente villages", "Cultural immersion"],
     imageKey: "kumasiCulturalTour",
-    packageId: "kumasi",
+    regionId: "ashanti",
   },
   {
     id: "volta",
@@ -396,7 +396,7 @@ export const ghanaRegions = [
     desc: "Trek to Wli Falls, explore Boti Falls, canopy walks, and the lush highlands of eastern Ghana.",
     highlights: ["Wli Falls", "Eco tours", "Hiking"],
     imageKey: "wliWaterfalls",
-    packageId: "volta",
+    regionId: "volta",
   },
   {
     id: "akosombo",
@@ -406,7 +406,7 @@ export const ghanaRegions = [
     desc: "Enjoy scenic boat cruises on the Volta River, mountain views, and relaxing resort experiences.",
     highlights: ["Boat cruises", "Lake views", "Resort stays"],
     imageKey: "akosomboBoatCruise",
-    packageId: null,
+    regionId: "eastern",
   },
   {
     id: "northern",
@@ -416,7 +416,7 @@ export const ghanaRegions = [
     desc: "Discover Mole National Park, savanna landscapes, and unforgettable wildlife adventures in northern Ghana.",
     highlights: ["Safari", "Wildlife", "Nature parks"],
     imageKey: "moleNationalPark",
-    packageId: null,
+    regionId: "northern",
   },
 ];
 

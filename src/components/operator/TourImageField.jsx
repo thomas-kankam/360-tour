@@ -1,7 +1,11 @@
 import { useRef, useState } from "react";
-import { ImagePlus, Trash2, Upload, ZoomIn } from "lucide-react";
+import { ImagePlus, Loader2, Trash2, Upload, ZoomIn } from "lucide-react";
 import ImageLightbox from "../misc/ImageLightbox";
-import { getImagePreviewSrc, readImageFile } from "../../utils/tourImageUtils";
+import { useAuth } from "../../hooks/useAuth";
+import uploadServiceApi from "../../apis/UploadServiceApi";
+import { isAdminRole, isOperatorRole } from "../../constants/roles";
+import { optimizeImageFile } from "../../utils/imageOptimize";
+import { getImagePreviewSrc } from "../../utils/tourImageUtils";
 
 export default function TourImageField({
   label,
@@ -11,11 +15,15 @@ export default function TourImageField({
   uriPlaceholder = "tours/cover.jpg",
   beforeUpload,
   showUriField = true,
+  variant = "tour",
 }) {
   const inputRef = useRef(null);
+  const { token, role } = useAuth();
   const [error, setError] = useState("");
+  const [uploading, setUploading] = useState(false);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const preview = getImagePreviewSrc(value);
+  const uploadRole = isAdminRole(role) || isOperatorRole(role) ? "admin" : "client";
 
   async function handleFileChange(e) {
     const file = e.target.files?.[0];
@@ -31,15 +39,28 @@ export default function TourImageField({
           return;
         }
       }
-      const next = await readImageFile(file);
+      if (!token) {
+        setError("Sign in again to upload images.");
+        return;
+      }
+
+      setUploading(true);
+      const optimized = await optimizeImageFile(file, variant);
+      const result = await uploadServiceApi.uploadImage(token, optimized, { variant, role: uploadRole });
+      if (!result.ok || !result.url) {
+        setError(result.reason || "Upload failed.");
+        return;
+      }
+
       onChange({
-        ...value,
-        uri: value?.uri || next.uri,
-        data: next.data,
-        mimeType: next.mimeType,
+        uri: result.url,
+        data: "",
+        mimeType: optimized.type || "image/jpeg",
       });
     } catch (err) {
       setError(err.message || "Upload failed.");
+    } finally {
+      setUploading(false);
     }
   }
 
@@ -97,10 +118,11 @@ export default function TourImageField({
             <button
               type="button"
               onClick={() => inputRef.current?.click()}
-              className="inline-flex items-center gap-2 rounded-xl bg-brand-green px-4 py-2.5 text-xs font-semibold text-white transition-all hover:bg-brand-green-dark"
+              disabled={uploading}
+              className="inline-flex items-center gap-2 rounded-xl bg-brand-green px-4 py-2.5 text-xs font-semibold text-white transition-all hover:bg-brand-green-dark disabled:opacity-60"
             >
               <Upload className="h-4 w-4" strokeWidth={2} />
-              Upload image
+              {uploading ? "Uploading…" : "Upload image"}
             </button>
             {(preview || value?.uri || value?.data) && (
               <button
@@ -114,12 +136,13 @@ export default function TourImageField({
             )}
           </div>
 
-          {value?.data ? (
-            <p className="text-[11px] text-brand-muted">
-              Base64 attached ({Math.round((value.data.length * 3) / 4 / 1024)} KB est.)
+          {uploading ? (
+            <p className="inline-flex items-center gap-1.5 text-[11px] text-brand-muted">
+              <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden />
+              Optimizing and uploading image…
             </p>
           ) : value?.uri ? (
-            <p className="text-[11px] text-brand-muted">URI only — upload a file to attach base64 for the API payload.</p>
+            <p className="text-[11px] text-brand-muted">Saved as a file URL — the listing payload will not include base64.</p>
           ) : null}
 
           {error ? <p className="text-xs font-medium text-red-500">{error}</p> : null}

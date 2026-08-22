@@ -170,7 +170,7 @@ export default function AboutPage() {
                 360
               </div>
 
-              <div className="relative z-10 overflow-hidden rounded-3xl border-4 border-brand-accent/40 shadow-[0_24px_64px_-28px_rgba(21,67,96,0.3)]">
+              <div className="relative z-10 overflow-hidden rounded-3xl border-4 border-brand-accent/40 shadow-[0_24px_64px_-28px_rgba(0,107,63,0.3)]">
                 <img
                   src={images.home.hero_img}
                   alt="Travel experiences with 360 Tours"
@@ -218,7 +218,7 @@ export default function AboutPage() {
               <img
                 src={images.tour_sites.manhyia_palace}
                 alt="Cultural heritage in Ghana"
-                className="aspect-[4/3] w-full rounded-3xl object-cover shadow-[0_20px_60px_-24px_rgba(21,67,96,0.3)]"
+                className="aspect-[4/3] w-full rounded-3xl object-cover shadow-[0_20px_60px_-24px_rgba(0,107,63,0.3)]"
               />
               <div className="absolute -bottom-5 -left-4 rounded-2xl border border-brand-border/60 bg-white px-5 py-4 shadow-lg">
                 <p className="text-sm font-bold text-brand-primary">{company.location}</p>

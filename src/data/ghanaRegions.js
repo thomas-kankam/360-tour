@@ -38,6 +38,34 @@ export const GHANA_TOURIST_CITIES = {
 
 export const CUSTOM_CITY_VALUE = "__custom__";
 
+export const GHANA_REGION_IDS = GHANA_REGIONS.map((region) => region.id);
+
+export function isGhanaRegionId(id) {
+  return GHANA_REGION_IDS.includes(id);
+}
+
+/**
+ * Resolves the region a tour location belongs to. Locations are captured as
+ * "City, Region", so match on the region label first and fall back to the
+ * known-city lookup for legacy city-only values.
+ */
+export function resolveRegionIdFromLocation(location) {
+  const value = String(location || "").trim().toLowerCase();
+  if (!value) return null;
+
+  const byRegion = GHANA_REGIONS.find((region) => value.includes(region.label.toLowerCase()));
+  if (byRegion) return byRegion.id;
+
+  const entry = Object.entries(GHANA_TOURIST_CITIES).find(([, cities]) =>
+    cities.some((city) => value.includes(city.toLowerCase())),
+  );
+  return entry ? entry[0] : null;
+}
+
+export function resolveRegionIdsFromLocations(locations = []) {
+  return [...new Set((locations || []).map(resolveRegionIdFromLocation).filter(Boolean))];
+}
+
 export function getCitiesForRegion(regionId) {
   if (!regionId) return [];
   return GHANA_TOURIST_CITIES[regionId] || [];

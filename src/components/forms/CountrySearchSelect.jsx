@@ -145,7 +145,7 @@ export default function CountrySearchSelect({
       </button>
 
       {open ? (
-        <div className="absolute z-50 mt-2 w-full overflow-hidden rounded-2xl border border-brand-border/70 bg-white shadow-[0_20px_50px_-24px_rgba(21,67,96,0.35)]">
+        <div className="absolute z-50 mt-2 w-full overflow-hidden rounded-2xl border border-brand-border/70 bg-white shadow-[0_20px_50px_-24px_rgba(0,107,63,0.35)]">
           <div className="border-b border-brand-border/50 p-2">
             <div className="relative">
               <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-brand-muted" strokeWidth={2} aria-hidden />

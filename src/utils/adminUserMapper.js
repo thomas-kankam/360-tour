@@ -1,4 +1,5 @@
 import { USER_ROLES } from "../constants/roles";
+import { resolveProfileImageSrc } from "./profileImage";
 
 export function mapAdminUser(admin) {
   if (!admin) return null;
@@ -22,7 +23,7 @@ export function mapAdminUser(admin) {
     phone,
     email,
     status: admin.status ?? "active",
-    profileImage: admin.profile_image ?? admin.profileImage ?? null,
+    profileImage: resolveProfileImageSrc(admin.profile_image ?? admin.profileImage),
     roleSlug: admin.role_slug ?? roleObj.roleSlug ?? "",
     roleLabel: roleObj.name ?? "",
     permissions,

@@ -10,6 +10,7 @@ import {
   MapPin,
   Plus,
   Search,
+  Sparkles,
   Star,
   Trash2,
   Users,
@@ -22,7 +23,16 @@ import { useAuth } from "../../hooks/useAuth";
 import { useDebouncedValue, useServerAdminPagination } from "../../hooks/useAdminPagination";
 import { buildListQueryParams } from "../../utils/adminPaginationHelpers";
 import { buildLocationsLabel } from "../../utils/operatorTourMapper";
-import { formatTourSlotsLabel } from "../../utils/operatorTourConstants";
+import { formatTourSlotsLabel, isCustomTourType, TOUR_TYPE } from "../../utils/operatorTourConstants";
+
+/** Admin lands on a short "latest listings" view; the full paginated catalog is one click away. */
+const LATEST_LIMIT = 4;
+
+const TYPE_FILTERS = [
+  { id: "all", label: "All types" },
+  { id: TOUR_TYPE.REGULAR, label: "Regular" },
+  { id: TOUR_TYPE.CUSTOM, label: "Customized" },
+];
 
 const EASE = [0.22, 1, 0.36, 1];
 
@@ -35,17 +45,9 @@ function statusPill(status) {
   return map[status] || map.draft;
 }
 
-function badgeVariantClass(variant) {
-  const map = {
-    orange: "bg-brand-accent text-brand-primary",
-    gold: "bg-brand-gold text-brand-ink",
-    green: "bg-brand-green text-white",
-  };
-  return map[variant] || map.orange;
-}
-
 function TourCard({ tour, index, onDeleteRequest }) {
   const routeLabel = buildLocationsLabel(tour.locations);
+  const isCustom = isCustomTourType(tour.tourType);
   const nextDeparture = tour.departureDates?.find((d) => d.date)?.dateLabel;
   const detailPath = tour.slug ? ROUTES.operator.tourDetail(tour.slug) : null;
 
@@ -72,15 +74,15 @@ function TourCard({ tour, index, onDeleteRequest }) {
         <span className={`absolute left-2 top-2 rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide ring-1 ${statusPill(tour.status)}`}>
           {tour.status}
         </span>
-        {tour.featured ? (
-          <span className="absolute right-2 top-2 inline-flex items-center gap-0.5 rounded-full bg-white/95 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-brand-primary shadow-sm">
-            <Star className="h-2.5 w-2.5 fill-brand-accent text-brand-accent" strokeWidth={2.5} aria-hidden />
-            Featured
+        {isCustom ? (
+          <span className="absolute right-2 top-2 inline-flex items-center gap-0.5 rounded-full bg-brand-accent px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-brand-charcoal shadow-sm">
+            <Sparkles className="h-2.5 w-2.5" strokeWidth={2.5} aria-hidden />
+            Customized
           </span>
         ) : null}
-        {tour.badge ? (
-          <span className={`absolute bottom-2 left-2 rounded-full px-2 py-0.5 text-[9px] font-bold ${badgeVariantClass(tour.badgeVariant)}`}>
-            {tour.badge}
+        {tour.regionLabels?.length ? (
+          <span className="absolute bottom-2 left-2 rounded-full bg-white/90 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-brand-primary">
+            {tour.regionLabels[0]}
           </span>
         ) : null}
       </div>
@@ -115,7 +117,11 @@ function TourCard({ tour, index, onDeleteRequest }) {
         <div className="mt-2.5 flex items-end justify-between gap-2 border-t border-brand-border/50 pt-2.5">
           <div className="min-w-0">
             <p className="truncate text-sm font-bold text-brand-green">{tour.priceLabel || `$${tour.priceAmount}`}</p>
-            {nextDeparture ? <p className="truncate text-[10px] text-brand-muted">Next: {nextDeparture}</p> : null}
+            {isCustom ? (
+              <p className="truncate text-[10px] text-brand-muted">Dates on request</p>
+            ) : nextDeparture ? (
+              <p className="truncate text-[10px] text-brand-muted">Next: {nextDeparture}</p>
+            ) : null}
           </div>
           <div className="flex shrink-0 items-center gap-1.5">
             <button
@@ -154,12 +160,14 @@ export default function OperatorToursPage() {
   const [tours, setTours] = useState([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState("all");
+  const [typeFilter, setTypeFilter] = useState("all");
+  const [showAll, setShowAll] = useState(false);
   const [search, setSearch] = useState("");
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleting, setDeleting] = useState(false);
   const debouncedSearch = useDebouncedValue(search);
   const { page, setPage, syncFromResponse, totalItems, totalPages, rangeStart, rangeEnd } = useServerAdminPagination({
-    resetKey: debouncedSearch,
+    resetKey: `${debouncedSearch}|${typeFilter}`,
   });
 
   const loadTours = useCallback(async () => {
@@ -167,6 +175,7 @@ export default function OperatorToursPage() {
     setLoading(true);
 
     const params = buildListQueryParams({ page, per_page: 15, search: debouncedSearch });
+    if (typeFilter !== "all") params.tour_type = typeFilter;
     const result = await operatorToursServiceApi.listTours(token, params);
     setLoading(false);
 
@@ -177,16 +186,21 @@ export default function OperatorToursPage() {
 
     const sync = syncFromResponse({ items: result.items, pagination: result.pagination }, page);
     setTours(sync.items);
-  }, [token, page, debouncedSearch, syncFromResponse]);
+  }, [token, page, debouncedSearch, typeFilter, syncFromResponse]);
 
   useEffect(() => {
     loadTours();
   }, [loadTours]);
 
-  const visible = useMemo(() => {
+  const filtered = useMemo(() => {
     if (statusFilter === "all") return tours;
     return tours.filter((t) => t.status === statusFilter);
   }, [tours, statusFilter]);
+
+  /** Search, pagination, or an explicit "view all" all mean the operator wants the full catalog. */
+  const expanded = showAll || Boolean(debouncedSearch.trim()) || page > 1;
+  const visible = expanded ? filtered : filtered.slice(0, LATEST_LIMIT);
+  const hiddenCount = Math.max((totalItems || filtered.length) - visible.length, 0);
 
   const publishedCount = useMemo(() => tours.filter((t) => t.status === "published").length, [tours]);
 
@@ -252,11 +266,29 @@ export default function OperatorToursPage() {
           />
         </div>
         <div className="flex flex-wrap gap-2">
+          {TYPE_FILTERS.map((f) => (
+            <button
+              key={f.id}
+              type="button"
+              onClick={() => setTypeFilter(f.id)}
+              aria-pressed={typeFilter === f.id}
+              className={[
+                "rounded-full px-4 py-2 text-xs font-semibold transition-all",
+                typeFilter === f.id
+                  ? "bg-brand-accent text-brand-charcoal shadow-sm"
+                  : "bg-brand-cream text-brand-muted ring-1 ring-brand-border hover:text-brand-ink",
+              ].join(" ")}
+            >
+              {f.label}
+            </button>
+          ))}
+          <span className="hidden w-px self-stretch bg-brand-border/70 sm:block" aria-hidden />
           {["all", "published", "draft", "archived"].map((f) => (
             <button
               key={f}
               type="button"
               onClick={() => setStatusFilter(f)}
+              aria-pressed={statusFilter === f}
               className={[
                 "rounded-full px-4 py-2 text-xs font-semibold capitalize transition-all",
                 statusFilter === f ? "bg-brand-green text-white shadow-sm" : "bg-brand-cream text-brand-muted ring-1 ring-brand-border hover:text-brand-ink",
@@ -286,6 +318,39 @@ export default function OperatorToursPage() {
         </div>
       ) : (
         <>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h2 className="font-heading text-lg font-bold text-brand-ink">
+                {expanded ? "All listings" : "Latest listings"}
+              </h2>
+              <p className="mt-0.5 text-xs text-brand-muted">
+                {expanded
+                  ? `Showing ${visible.length} of ${totalItems || visible.length}`
+                  : `The ${visible.length} most recent listings`}
+              </p>
+            </div>
+            {expanded ? (
+              !debouncedSearch.trim() && page === 1 ? (
+                <button
+                  type="button"
+                  onClick={() => setShowAll(false)}
+                  className="inline-flex items-center gap-1 rounded-full border border-brand-border bg-white px-4 py-2 text-xs font-semibold text-brand-ink transition-colors hover:border-brand-green/40 hover:text-brand-green"
+                >
+                  Show latest only
+                </button>
+              ) : null
+            ) : hiddenCount > 0 ? (
+              <button
+                type="button"
+                onClick={() => setShowAll(true)}
+                className="inline-flex items-center gap-1 rounded-full bg-brand-green px-4 py-2 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-brand-green-dark"
+              >
+                View all {totalItems || filtered.length} listings
+                <ChevronRight className="h-3.5 w-3.5" strokeWidth={2.5} aria-hidden />
+              </button>
+            ) : null}
+          </div>
+
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {visible.map((tour, index) => (
               <TourCard
@@ -297,14 +362,16 @@ export default function OperatorToursPage() {
             ))}
           </div>
 
-          <AdminPagination
-            page={page}
-            totalPages={totalPages}
-            totalItems={totalItems}
-            rangeStart={rangeStart}
-            rangeEnd={rangeEnd}
-            onPageChange={setPage}
-          />
+          {expanded ? (
+            <AdminPagination
+              page={page}
+              totalPages={totalPages}
+              totalItems={totalItems}
+              rangeStart={rangeStart}
+              rangeEnd={rangeEnd}
+              onPageChange={setPage}
+            />
+          ) : null}
         </>
       )}
 

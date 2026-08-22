@@ -12,7 +12,6 @@ import {
   Mail,
   MapPin,
   Phone,
-  Star,
   Users,
 } from "lucide-react";
 import { toast } from "react-toastify";
@@ -21,7 +20,7 @@ import ImageLightbox from "../../components/misc/ImageLightbox";
 import { ROUTES } from "../../constants/routes";
 import { useAuth } from "../../hooks/useAuth";
 import { formatListingDate, LISTING_STATUS_STYLES } from "../../utils/adminListingHelpers";
-import { formatTourCategoryLabel } from "../../utils/operatorTourConstants";
+import { formatTourCategoryLabel, getTourTypeLabel } from "../../utils/operatorTourConstants";
 
 const EASE = [0.22, 1, 0.36, 1];
 
@@ -121,17 +120,17 @@ export default function AdminListingDetailPage() {
             <div>
               <div className="flex flex-wrap items-center gap-2">
                 <StatusBadge status={listing.status} />
-                {listing.featured ? (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-brand-accent/30 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-brand-primary">
-                    <Star className="h-3 w-3 fill-brand-accent text-brand-accent" strokeWidth={2.5} aria-hidden />
-                    Featured
+                <span className="inline-flex items-center gap-1 rounded-full bg-brand-accent px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-brand-charcoal">
+                  {getTourTypeLabel(listing.tourType)}
+                </span>
+                {(listing.regionLabels || []).map((label) => (
+                  <span
+                    key={label}
+                    className="rounded-full bg-white/15 px-3 py-1 text-[11px] font-bold text-white backdrop-blur-sm"
+                  >
+                    {label}
                   </span>
-                ) : null}
-                {listing.badge ? (
-                  <span className="rounded-full bg-white/15 px-3 py-1 text-[11px] font-bold text-white backdrop-blur-sm">
-                    {listing.badge}
-                  </span>
-                ) : null}
+                ))}
               </div>
 
               <h1 className="mt-4 font-heading text-3xl font-bold sm:text-4xl">{listing.name}</h1>

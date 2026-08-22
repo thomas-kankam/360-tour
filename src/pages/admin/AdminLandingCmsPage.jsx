@@ -7,6 +7,8 @@ import HomeHero from "../../components/home/HomeHero";
 import HomeFeaturedTours from "../../components/home/HomeFeaturedTours";
 import HomeDestinations from "../../components/home/HomeDestinations";
 import HomeHubs from "../../components/home/HomeHubs";
+import HomeAdventureGallery from "../../components/home/HomeAdventureGallery";
+import HomeTestimonial from "../../components/home/HomeTestimonial";
 import HomeExploreLinks from "../../components/home/HomeExploreLinks";
 import HomeCta from "../../components/home/HomeCta";
 import { useAuth } from "../../hooks/useAuth";
@@ -15,7 +17,9 @@ import {
   LANDING_CMS_DEFAULTS,
   LANDING_CMS_SECTIONS,
 } from "../../utils/landingCmsStorage";
-import { getImagePreviewSrc, readImageFile } from "../../utils/tourImageUtils";
+import { persistLandingCmsMedia } from "../../utils/landingCmsHelpers";
+import { optimizeImageFile } from "../../utils/imageOptimize";
+import uploadServiceApi from "../../apis/UploadServiceApi";
 
 const MAX_IMAGE_BYTES = 2 * 1024 * 1024;
 
@@ -35,8 +39,10 @@ function Field({ label, value, onChange, multiline = false }) {
   );
 }
 
-function ImageField({ label, value, onChange }) {
+function ImageField({ label, value, onChange, variant = "destination" }) {
   const inputRef = useRef(null);
+  const { token } = useAuth();
+  const [uploading, setUploading] = useState(false);
 
   async function handleFileChange(e) {
     const file = e.target.files?.[0];
@@ -46,11 +52,23 @@ function ImageField({ label, value, onChange }) {
       toast.error("Image must be under 2 MB.");
       return;
     }
+    if (!token) {
+      toast.error("Sign in again to upload images.");
+      return;
+    }
     try {
-      const image = await readImageFile(file);
-      onChange(getImagePreviewSrc(image));
+      setUploading(true);
+      const optimized = await optimizeImageFile(file, variant);
+      const result = await uploadServiceApi.uploadImage(token, optimized, { variant, role: "admin" });
+      if (!result.ok || !result.url) {
+        toast.error(result.reason || "Could not upload image.");
+        return;
+      }
+      onChange(result.url);
     } catch (err) {
       toast.error(err.message || "Could not read image.");
+    } finally {
+      setUploading(false);
     }
   }
 
@@ -77,6 +95,7 @@ function ImageField({ label, value, onChange }) {
             className="block rounded-xl border border-brand-border/70 px-3 py-1.5 text-xs font-semibold text-brand-ink hover:bg-brand-cream"
           >
             Upload image
+            {uploading ? <Loader2 className="ml-2 inline h-3.5 w-3.5 animate-spin" aria-hidden /> : null}
           </button>
           {value ? (
             <button
@@ -166,7 +185,8 @@ export default function AdminLandingCmsPage() {
     }
 
     setSavingDraft(true);
-    const result = await adminLandingCmsServiceApi.saveDraft(token, cms);
+    const prepared = await persistLandingCmsMedia(cms, token);
+    const result = await adminLandingCmsServiceApi.saveDraft(token, prepared);
     setSavingDraft(false);
 
     if (!result.ok) {
@@ -187,7 +207,8 @@ export default function AdminLandingCmsPage() {
     }
 
     setPublishing(true);
-    const result = await adminLandingCmsServiceApi.publish(token, cms);
+    const prepared = await persistLandingCmsMedia(cms, token);
+    const result = await adminLandingCmsServiceApi.publish(token, prepared);
     setPublishing(false);
 
     if (!result.ok) {
@@ -313,6 +334,7 @@ export default function AdminLandingCmsPage() {
                     key={key}
                     label={formatFieldLabel(key)}
                     value={value}
+                    variant={key === "backgroundImage" ? "hero" : "destination"}
                     onChange={(next) => updateField(key, next)}
                   />
                 ) : (
@@ -347,6 +369,8 @@ export default function AdminLandingCmsPage() {
             <HomeFeaturedTours cmsOverride={cms.tours} />
             <HomeHubs cmsOverride={cms.regions} />
             <HomeDestinations cmsOverride={cms.destinations} />
+            <HomeAdventureGallery cmsOverride={cms.gallery} />
+            <HomeTestimonial cmsOverride={cms.testimonials} />
             <HomeExploreLinks cmsOverride={cms.explore} />
             <HomeCta cmsOverride={cms.cta} />
           </div>

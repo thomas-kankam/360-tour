@@ -1,5 +1,6 @@
 import {
   Building2,
+  CalendarDays,
   Crown,
   Globe,
   GraduationCap,
@@ -19,6 +20,7 @@ import {
   Binoculars,
   Compass,
   Luggage,
+  Route,
 } from "lucide-react";
 
 export const GUEST_ICON_MAP = {
@@ -42,6 +44,8 @@ export const GUEST_ICON_MAP = {
   check: CheckCircle2,
   compass: Compass,
   luggage: Luggage,
+  calendar: CalendarDays,
+  route: Route,
 };
 
 export function GuestIcon({ name, className = "h-4 w-4", ...props }) {

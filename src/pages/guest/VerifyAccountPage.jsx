@@ -109,7 +109,7 @@ export default function VerifyAccountPage() {
     <div className="flex h-full min-h-0">
       <div className="relative hidden h-full overflow-hidden lg:flex lg:w-[44%] xl:w-[46%]">
         <AuthPanelBackground variant="verify" />
-        <div className="absolute inset-0 bg-[#1C2B26]/50" />
+        <div className="absolute inset-0 bg-[#17130E]/50" />
         <div className="relative z-10 flex h-full flex-col justify-between p-10 xl:p-14">
           <Link to={ROUTES.home} className="text-sm font-medium text-white/70 hover:text-white">
             ← Back to home

@@ -10,6 +10,7 @@ import {
   Loader2,
   MapPin,
   Plane,
+  Sparkles,
   Star,
   Users,
   UtensilsCrossed,
@@ -23,7 +24,7 @@ import TourReviewsSection from "../../components/tours/TourReviewsSection";
 import TourPriceDisplay from "../../components/tours/TourPriceDisplay";
 import { ROUTES } from "../../constants/routes";
 import { usePaymentRegion } from "../../hooks/usePaymentRegion";
-import { formatTourCategoryLabel, isUnlimitedTourSlots } from "../../utils/operatorTourConstants";
+import { isUnlimitedTourSlots } from "../../utils/operatorTourConstants";
 import { formatTourDurationLabel, formatDepartureDateLabel, formatDepartureRangeLabel, resolveTourDurationDays } from "../../utils/operatorTourMapper";
 import { buildListingsPayloadFromCountry } from "../../utils/publicListingsHelpers";
 import { parseInclusionItemText } from "../../utils/inclusionItemText";
@@ -278,7 +279,7 @@ function TourGalleryCollage({ images, badge, alt, onImageClick, departDay, depar
   }
 
   return (
-    <div className="overflow-hidden rounded-3xl bg-white p-1.5 shadow-[0_20px_50px_-24px_rgba(21,67,96,0.35)] ring-1 ring-brand-border/40">
+    <div className="overflow-hidden rounded-3xl bg-white p-1.5 shadow-[0_20px_50px_-24px_rgba(0,107,63,0.35)] ring-1 ring-brand-border/40">
       <div className="grid gap-1.5 lg:grid-cols-[1.15fr_1fr]">
         <button
           type="button"
@@ -303,7 +304,7 @@ function TourGalleryCollage({ images, badge, alt, onImageClick, departDay, depar
           ) : null}
 
           {badge ? (
-            <span className="absolute bottom-3 left-3 rounded-full bg-brand-accent px-3 py-1.5 text-[10px] font-bold uppercase tracking-wide text-brand-primary shadow-md sm:bottom-4 sm:left-4 sm:text-[11px]">
+            <span className="absolute bottom-3 left-3 rounded-full bg-brand-accent px-3 py-1.5 text-[10px] font-bold uppercase tracking-wide text-brand-charcoal shadow-md sm:bottom-4 sm:left-4 sm:text-[11px]">
               {badge}
             </span>
           ) : null}
@@ -351,7 +352,7 @@ function BookingCard({ tour, paymentRegion }) {
   const showSpotsBar = !isUnlimited && tour.totalSpots;
 
   return (
-    <div className="overflow-hidden rounded-3xl border border-brand-border/50 bg-white shadow-[0_16px_40px_-24px_rgba(21,67,96,0.2)]">
+    <div className="overflow-hidden rounded-3xl border border-brand-border/50 bg-white shadow-[0_16px_40px_-24px_rgba(0,107,63,0.2)]">
       <div className="border-b border-brand-border/40 bg-gradient-to-br from-brand-cream/60 to-white p-6">
         <div className="flex items-end justify-between gap-4">
           <div>
@@ -501,10 +502,6 @@ export default function TourDetailPage() {
 
   if (notFound || !tour) return <Navigate to={ROUTES.tours} replace />;
 
-  const categoryTags = (tour.categoryLabels?.length ? tour.categoryLabels : tour.categories
-    .filter((cat) => !["ghana", "kenya", "southafrica"].includes(cat))
-    .map(formatTourCategoryLabel));
-
   return (
     <div className="bg-brand-cream/30 pb-24 lg:pb-16">
       <div className="border-b border-brand-border/40 bg-white/90 px-4 py-3 backdrop-blur-sm sm:px-6 lg:px-8">
@@ -528,7 +525,7 @@ export default function TourDetailPage() {
           >
             <TourGalleryCollage
               images={gallery}
-              badge={tour.badge}
+              badge={tour.isCustom ? "Tailor-made journey" : tour.regionLabels?.[0] || ""}
               alt={tour.name}
               onImageClick={setLightboxIndex}
               departDay={tour.departDay}
@@ -548,23 +545,18 @@ export default function TourDetailPage() {
                   <span className="rounded-full bg-brand-primary/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-brand-primary">
                     {tour.country}
                   </span>
-                  {tour.packageLineLabel ? (
-                    <span className="rounded-full bg-brand-accent/30 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-brand-primary">
-                      {tour.packageLineLabel}
+                  {tour.isCustom ? (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-brand-accent px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-brand-charcoal">
+                      <Sparkles className="h-3 w-3" strokeWidth={2.5} aria-hidden />
+                      Tailor-made
                     </span>
                   ) : null}
-                  {tour.featured ? (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-brand-accent px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-brand-primary">
-                      <Star className="h-3 w-3 fill-brand-accent text-brand-accent" strokeWidth={2.5} aria-hidden />
-                      Featured
-                    </span>
-                  ) : null}
-                  {categoryTags.slice(0, 3).map((cat) => (
+                  {(tour.regionLabels || []).slice(0, 3).map((label) => (
                     <span
-                      key={cat}
-                      className="rounded-full bg-brand-cream px-3 py-1 text-[11px] font-bold capitalize text-brand-ink ring-1 ring-brand-border/60"
+                      key={label}
+                      className="rounded-full bg-brand-accent/25 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-brand-primary"
                     >
-                      {cat}
+                      {label}
                     </span>
                   ))}
                 </div>
@@ -679,7 +671,7 @@ export default function TourDetailPage() {
                 <Link
                   key={t.slug}
                   to={ROUTES.tourDetail(t.slug)}
-                  className="group overflow-hidden rounded-2xl border border-brand-border/50 bg-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-brand-primary/25 hover:shadow-[0_16px_40px_-20px_rgba(21,67,96,0.25)]"
+                  className="group overflow-hidden rounded-2xl border border-brand-border/50 bg-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-brand-primary/25 hover:shadow-[0_16px_40px_-20px_rgba(0,107,63,0.25)]"
                 >
                   <div className="relative aspect-[5/4] overflow-hidden">
                     <img
@@ -706,7 +698,7 @@ export default function TourDetailPage() {
         </section>
       ) : null}
 
-      <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-brand-border/60 bg-white/95 px-4 py-3 shadow-[0_-8px_24px_-8px_rgba(21,67,96,0.12)] backdrop-blur-xl lg:hidden">
+      <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-brand-border/60 bg-white/95 px-4 py-3 shadow-[0_-8px_24px_-8px_rgba(0,107,63,0.12)] backdrop-blur-xl lg:hidden">
         <div className="flex items-center justify-between gap-4">
           <div>
             <p className="text-xs text-brand-muted">From</p>

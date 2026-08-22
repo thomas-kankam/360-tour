@@ -50,7 +50,7 @@ function SpotlightNavButton({ direction, onClick, disabled, label }) {
       disabled={disabled}
       aria-label={label}
       className={[
-        "absolute top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-white/80 bg-white/95 text-brand-primary shadow-[0_8px_24px_-8px_rgba(21,67,96,0.45)] backdrop-blur-sm transition-all duration-200 sm:h-12 sm:w-12",
+        "absolute top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-white/80 bg-white/95 text-brand-primary shadow-[0_8px_24px_-8px_rgba(0,107,63,0.45)] backdrop-blur-sm transition-all duration-200 sm:h-12 sm:w-12",
         direction === "prev" ? "left-2 sm:left-3" : "right-2 sm:right-3",
         disabled
           ? "pointer-events-none opacity-30"
@@ -91,7 +91,7 @@ function DestinationSpotlight({ destination, onPrev, onNext, canGoPrev, canGoNex
       />
       {/* Decorative frame */}
       <div className="absolute -inset-3 rounded-[1.75rem] bg-gradient-to-br from-brand-accent/40 via-brand-accent/10 to-brand-primary/10 sm:-inset-4" aria-hidden />
-      <div className="relative overflow-hidden rounded-2xl border border-brand-border/40 bg-white shadow-[0_32px_80px_-24px_rgba(21,67,96,0.35)] sm:rounded-3xl">
+      <div className="relative overflow-hidden rounded-2xl border border-brand-border/40 bg-white shadow-[0_32px_80px_-24px_rgba(0,107,63,0.35)] sm:rounded-3xl">
         {failed ? (
           <div className="flex min-h-[220px] items-center justify-center bg-brand-cream sm:min-h-[320px]">
             <MapPin className="h-12 w-12 text-brand-primary/40" aria-hidden />
@@ -241,7 +241,7 @@ export default function HomeDestinations({ cmsOverride }) {
         </ScrollReveal>
 
         {/* Explorer panel */}
-        <ScrollReveal variant="scale" delay={0.08} className="mt-12 overflow-hidden rounded-3xl border border-brand-border/50 shadow-[0_32px_100px_-32px_rgba(21,67,96,0.28)] lg:mt-14">
+        <ScrollReveal variant="scale" delay={0.08} className="mt-12 overflow-hidden rounded-3xl border border-brand-border/50 shadow-[0_32px_100px_-32px_rgba(0,107,63,0.28)] lg:mt-14">
           <div className="grid lg:grid-cols-[minmax(260px,340px)_1fr]">
             {/* Left, destination index */}
             <div className="relative flex flex-col bg-brand-primary">
@@ -290,17 +290,7 @@ export default function HomeDestinations({ cmsOverride }) {
             </div>
 
             {/* Right, spotlight stage */}
-            <div className="relative flex flex-col bg-[#f4f7fa]">
-              {/* Subtle map-dot texture */}
-              <div
-                aria-hidden
-                className="pointer-events-none absolute inset-0 opacity-[0.35]"
-                style={{
-                  backgroundImage:
-                    "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='1' fill='%23154360' fill-opacity='0.08'/%3E%3C/svg%3E\")",
-                  backgroundSize: "32px 32px",
-                }}
-              />
+            <div className="adinkra-field relative flex flex-col bg-brand-cream">
 
               <div className="relative flex flex-1 flex-col p-5 sm:p-8 lg:p-10">
                 <div className="mb-6 flex items-center justify-between gap-4">

@@ -8,8 +8,8 @@ const TRACK_COLOR = "#E8E2D6";
 const EASE = [0.22, 1, 0.36, 1];
 
 const BOOKING_SEGMENTS = [
-  { key: "confirmed", label: "Confirmed", color: "#2D5A47", dotClass: "bg-brand-green" },
-  { key: "pending", label: "Pending payment", color: "#D4611A", dotClass: "bg-brand-orange" },
+  { key: "confirmed", label: "Confirmed", color: "#006B3F", dotClass: "bg-brand-green" },
+  { key: "pending", label: "Pending payment", color: "#CE1126", dotClass: "bg-brand-orange" },
   { key: "cancelled", label: "Cancelled", color: "#C53030", dotClass: "bg-red-500" },
 ];
 

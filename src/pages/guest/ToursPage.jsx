@@ -13,13 +13,15 @@ import {
   buildListingsPayload,
   COUNTRY_FILTER_OPTIONS,
   formatDepartureDateLabel,
-  getPackageLineLabel,
+  getRegionFilterLabel,
   LISTING_SORT_OPTIONS,
-  PACKAGE_FILTER_OPTIONS,
+  REGION_FILTER_OPTIONS,
   resolveCountryFilterFromParams,
-  resolvePackageFilterFromParams,
+  resolveRegionFilterFromParams,
+  resolveTourTypeFilterFromParams,
+  TOUR_TYPE_FILTER_OPTIONS,
   tourHasDepartureOnDate,
-  tourMatchesPackageLine,
+  tourMatchesRegion,
 } from "../../utils/publicListingsHelpers";
 
 const EASE = [0.16, 1, 0.3, 1];
@@ -94,7 +96,7 @@ function TourCard({ tour, index }) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 8 }}
       transition={{ duration: 0.4, ease: EASE, delay: Math.min(index * 0.04, 0.28) }}
-      className="group relative flex min-w-0 flex-col overflow-hidden rounded-2xl border border-brand-border/50 bg-white shadow-sm transition-all duration-300 hover:border-brand-primary/25 hover:shadow-[0_16px_40px_-20px_rgba(21,67,96,0.25)]"
+      className="group relative flex min-w-0 flex-col overflow-hidden rounded-2xl border border-brand-border/50 bg-white shadow-sm transition-all duration-300 hover:border-brand-primary/25 hover:shadow-[0_16px_40px_-20px_rgba(0,107,63,0.25)]"
     >
       <Link
         to={ROUTES.tourDetail(tour.slug)}
@@ -129,17 +131,12 @@ function TourCard({ tour, index }) {
           ) : null}
 
           <div className="absolute right-3 top-3 flex flex-col items-end gap-1.5">
-            {tour.featured ? (
-              <span className="rounded-full bg-brand-accent px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-brand-primary shadow-md">
-                Featured
+            {tour.isCustom ? (
+              <span className="rounded-full bg-brand-accent px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-brand-charcoal shadow-md">
+                Tailor-made
               </span>
             ) : null}
-            {tour.badge ? (
-              <span className={`rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide ${tour.badgeColor ?? "bg-white/90 text-brand-ink"}`}>
-                {tour.badge}
-              </span>
-            ) : null}
-            {isFilling ? (
+            {!tour.isCustom && isFilling ? (
               <span className="flex items-center gap-1 rounded-full bg-red-500/95 px-2 py-0.5 text-[10px] font-bold text-white shadow-md">
                 <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-white" />
                 Filling fast
@@ -152,9 +149,9 @@ function TourCard({ tour, index }) {
           </div>
 
           <div className="absolute bottom-3 left-3 right-3">
-            {tour.packageLineLabel ? (
-              <span className="inline-flex rounded-full bg-brand-accent/90 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand-primary">
-                {tour.packageLineLabel}
+            {tour.regionLabels?.length ? (
+              <span className="inline-flex rounded-full bg-brand-accent/90 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand-charcoal">
+                {tour.regionLabels[0]}
               </span>
             ) : (
               <p className="text-[10px] font-semibold uppercase tracking-widest text-white/75">{tour.country}</p>
@@ -171,9 +168,9 @@ function TourCard({ tour, index }) {
             </p>
           ) : null}
 
-          {tour.categoryLabels?.length ? (
+          {tour.regionLabels?.length > 1 ? (
             <div className="mt-2.5 flex flex-wrap gap-1.5">
-              {tour.categoryLabels.map((label) => (
+              {tour.regionLabels.slice(0, 3).map((label) => (
                 <span
                   key={label}
                   className="rounded-full bg-brand-accent/20 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-brand-primary"
@@ -205,12 +202,18 @@ function TourCard({ tour, index }) {
             </span>
           </div>
 
-          <SpotsBar spotsLeft={tour.spotsLeft} totalSpots={tour.totalSpots} />
+          {tour.isCustom ? (
+            <p className="mt-3 rounded-lg bg-brand-accent/15 px-2.5 py-1.5 text-[11px] font-semibold text-brand-primary">
+              Built around your dates and group
+            </p>
+          ) : (
+            <SpotsBar spotsLeft={tour.spotsLeft} totalSpots={tour.totalSpots} />
+          )}
 
           <div className="mt-auto flex items-end justify-between gap-3 border-t border-brand-border/50 pt-4">
             <TourPriceDisplay tour={tour} variant="card" perPerson primaryClassName="text-brand-primary" />
             <span className="inline-flex shrink-0 items-center gap-1 text-xs font-semibold text-brand-primary transition-all group-hover:gap-1.5">
-              View tour
+              {tour.isCustom ? "Plan trip" : "View tour"}
               <ArrowRight className="h-3.5 w-3.5" aria-hidden />
             </span>
           </div>
@@ -234,6 +237,16 @@ function FilterChip({ option, active, onClick }) {
     >
       <GuestIcon name={option.iconKey || "globe"} className="h-3.5 w-3.5 shrink-0" />
       <span className="whitespace-nowrap">{option.label}</span>
+      {option.count ? (
+        <span
+          className={[
+            "rounded-full px-1.5 text-[10px] font-bold tabular-nums",
+            active ? "bg-white/20 text-white" : "bg-brand-accent/25 text-brand-primary",
+          ].join(" ")}
+        >
+          {option.count}
+        </span>
+      ) : null}
     </button>
   );
 }
@@ -304,13 +317,17 @@ function SortDropdown({ value, onChange, compact = false }) {
   );
 }
 
-function describeActiveFilters(countryFilter, sort, departureDate, packageFilter) {
+function describeActiveFilters({ countryFilter, regionFilter, tourTypeFilter, sort, departureDate }) {
   const parts = [];
   const country = COUNTRY_FILTER_OPTIONS.find((option) => option.id === countryFilter);
   if (country?.apiCountry) parts.push(country.label);
 
-  if (packageFilter) {
-    parts.push(getPackageLineLabel(packageFilter));
+  if (regionFilter && regionFilter !== "all") {
+    parts.push(`${getRegionFilterLabel(regionFilter)} Region`);
+  }
+
+  if (tourTypeFilter && tourTypeFilter !== "all") {
+    parts.push(TOUR_TYPE_FILTER_OPTIONS.find((option) => option.id === tourTypeFilter)?.label || "");
   }
 
   if (departureDate) {
@@ -320,13 +337,14 @@ function describeActiveFilters(countryFilter, sort, departureDate, packageFilter
   const sortOption = LISTING_SORT_OPTIONS.find((option) => option.value === sort);
   if (sort !== "default" && sortOption) parts.push(sortOption.label);
 
-  return parts.length ? parts.join(" · ") : "All published tours";
+  return parts.filter(Boolean).join(" · ") || "All published tours";
 }
 
-function buildToursSearchParams({ country, date, package: packageId }) {
+function buildToursSearchParams({ country, date, region, type }) {
   const params = new URLSearchParams();
   if (country && country !== "all") params.set("country", country);
-  if (packageId) params.set("package", packageId);
+  if (region && region !== "all") params.set("region", region);
+  if (type && type !== "all") params.set("type", type);
   if (date) params.set("date", date);
   return params;
 }
@@ -334,29 +352,41 @@ function buildToursSearchParams({ country, date, package: packageId }) {
 export default function ToursPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const countryParam = searchParams.get("country");
-  const packageParam = searchParams.get("package");
+  const regionParam = searchParams.get("region");
+  const typeParam = searchParams.get("type");
   const dateParam = searchParams.get("date") || "";
   const [activeFilter, setActiveFilter] = useState(() => {
-    const resolvedPackage = resolvePackageFilterFromParams(packageParam);
-    if (resolvedPackage && !countryParam) return "ghana";
+    const resolvedRegion = resolveRegionFilterFromParams(regionParam);
+    if (resolvedRegion !== "all" && !countryParam) return "ghana";
     return resolveCountryFilterFromParams(countryParam);
   });
-  const [activePackage, setActivePackage] = useState(() => resolvePackageFilterFromParams(packageParam));
+  const [activeRegion, setActiveRegion] = useState(() => resolveRegionFilterFromParams(regionParam));
+  const [activeType, setActiveType] = useState(() => resolveTourTypeFilterFromParams(typeParam));
   const [activeDate, setActiveDate] = useState(dateParam);
   const [sort, setSort] = useState("default");
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [tours, setTours] = useState([]);
   const [pagination, setPagination] = useState(null);
+  const [regionFacets, setRegionFacets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [filterScrolled, setFilterScrolled] = useState(false);
   const [navOffset, setNavOffset] = useState(64);
   const filterRef = useRef(null);
   const scrollContainerRef = useRef(null);
-  const packageScrollContainerRef = useRef(null);
+  const regionScrollContainerRef = useRef(null);
 
-  const showPackageFilters = activeFilter === "ghana" || activeFilter === "all";
+  const showRegionFilters = activeFilter === "ghana" || activeFilter === "all";
+
+  /** Only surface regions that actually have published tours, plus whatever is currently selected. */
+  const regionOptions = useMemo(() => {
+    if (!regionFacets.length) return REGION_FILTER_OPTIONS;
+    const counts = new Map(regionFacets.map((facet) => [facet.id, facet.count]));
+    return REGION_FILTER_OPTIONS.filter(
+      (option) => option.id === "all" || counts.has(option.id) || option.id === activeRegion,
+    ).map((option) => ({ ...option, count: counts.get(option.id) }));
+  }, [regionFacets, activeRegion]);
 
   const paginationMeta = useMemo(
     () => mapServerPagination(pagination, { page }),
@@ -368,10 +398,11 @@ export default function ToursPage() {
     setError("");
 
     const payload = buildListingsPayload({
-      countryFilter: activePackage ? "ghana" : activeFilter,
+      countryFilter: activeRegion !== "all" ? "ghana" : activeFilter,
+      regionFilter: activeRegion,
+      tourTypeFilter: activeType,
       sort,
       departureDate: activeDate,
-      packageFilter: activePackage,
     });
     const result = await publicListingsServiceApi.listListings(payload, { page, per_page: 15 });
 
@@ -386,17 +417,28 @@ export default function ToursPage() {
 
     setTours(result.items);
     setPagination(result.pagination);
-  }, [activeFilter, activePackage, sort, page, activeDate]);
+  }, [activeFilter, activeRegion, activeType, sort, page, activeDate]);
 
   useEffect(() => {
-    const resolvedPackage = resolvePackageFilterFromParams(packageParam);
-    setActivePackage(resolvedPackage);
-    if (resolvedPackage && !countryParam) {
+    let cancelled = false;
+    publicListingsServiceApi.getRegionFacets().then((result) => {
+      if (!cancelled && result.ok) setRegionFacets(result.regions);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    const resolvedRegion = resolveRegionFilterFromParams(regionParam);
+    setActiveRegion(resolvedRegion);
+    setActiveType(resolveTourTypeFilterFromParams(typeParam));
+    if (resolvedRegion !== "all" && !countryParam) {
       setActiveFilter("ghana");
       return;
     }
     setActiveFilter(resolveCountryFilterFromParams(countryParam));
-  }, [countryParam, packageParam]);
+  }, [countryParam, regionParam, typeParam]);
 
   useEffect(() => {
     setActiveDate(dateParam);
@@ -441,8 +483,8 @@ export default function ToursPage() {
   const visibleTours = useMemo(() => {
     let list = tours;
 
-    if (activePackage) {
-      list = list.filter((tour) => tourMatchesPackageLine(tour, activePackage));
+    if (activeRegion !== "all") {
+      list = list.filter((tour) => tourMatchesRegion(tour, activeRegion));
     }
 
     if (activeDate) {
@@ -457,56 +499,64 @@ export default function ToursPage() {
         tour.name.toLowerCase().includes(query) ||
         tour.location.toLowerCase().includes(query) ||
         tour.country.toLowerCase().includes(query) ||
-        tour.categories.some((category) => category.includes(query)),
+        (tour.regionLabels || []).some((label) => label.toLowerCase().includes(query)),
     );
-  }, [tours, search, activeDate, activePackage]);
+  }, [tours, search, activeDate, activeRegion]);
 
-  const applySearchParams = useCallback(({ country, date, package: packageId }) => {
-    const params = buildToursSearchParams({ country, date, package: packageId });
-    setSearchParams(params, { replace: true });
+  const applySearchParams = useCallback(({ country, date, region, type }) => {
+    setSearchParams(buildToursSearchParams({ country, date, region, type }), { replace: true });
   }, [setSearchParams]);
 
   const handleFilter = useCallback((id) => {
     setPage(1);
     setActiveFilter(id);
-    const keepPackage = id === "ghana" || id === "all";
-    const nextPackage = keepPackage ? activePackage : "";
-    if (!keepPackage) {
-      setActivePackage("");
-    }
+    const keepRegion = id === "ghana" || id === "all";
+    const nextRegion = keepRegion ? activeRegion : "all";
+    if (!keepRegion) setActiveRegion("all");
     applySearchParams({
       country: id === "all" ? undefined : id,
       date: activeDate || undefined,
-      package: nextPackage || undefined,
+      region: nextRegion,
+      type: activeType,
     });
     if (scrollContainerRef.current) {
       const button = scrollContainerRef.current.querySelector(`[data-country="${id}"]`);
       button?.scrollIntoView({ block: "nearest", inline: "center", behavior: "smooth" });
     }
-  }, [applySearchParams, activeDate, activePackage]);
+  }, [applySearchParams, activeDate, activeRegion, activeType]);
 
-  const handlePackageFilter = useCallback((packageId) => {
+  const handleRegionFilter = useCallback((regionId) => {
     setPage(1);
-    const nextPackage = activePackage === packageId ? "" : packageId;
-    setActivePackage(nextPackage);
-    const nextCountry = nextPackage
+    const nextRegion = activeRegion === regionId ? "all" : regionId;
+    setActiveRegion(nextRegion);
+    const nextCountry = nextRegion !== "all"
       ? "ghana"
       : activeFilter === "all"
         ? undefined
         : activeFilter;
-    if (nextPackage && activeFilter === "all") {
-      setActiveFilter("ghana");
-    }
+    if (nextRegion !== "all" && activeFilter === "all") setActiveFilter("ghana");
     applySearchParams({
       country: nextCountry,
       date: activeDate || undefined,
-      package: nextPackage || undefined,
+      region: nextRegion,
+      type: activeType,
     });
-    if (packageScrollContainerRef.current) {
-      const button = packageScrollContainerRef.current.querySelector(`[data-package="${packageId}"]`);
+    if (regionScrollContainerRef.current) {
+      const button = regionScrollContainerRef.current.querySelector(`[data-region="${regionId}"]`);
       button?.scrollIntoView({ block: "nearest", inline: "center", behavior: "smooth" });
     }
-  }, [activePackage, activeFilter, activeDate, applySearchParams]);
+  }, [activeRegion, activeFilter, activeDate, activeType, applySearchParams]);
+
+  const handleTypeFilter = useCallback((typeId) => {
+    setPage(1);
+    setActiveType(typeId);
+    applySearchParams({
+      country: activeFilter === "all" ? undefined : activeFilter,
+      date: activeDate || undefined,
+      region: activeRegion,
+      type: typeId,
+    });
+  }, [activeFilter, activeDate, activeRegion, applySearchParams]);
 
   function handleSortChange(value) {
     setPage(1);
@@ -516,7 +566,8 @@ export default function ToursPage() {
   function clearAll() {
     setPage(1);
     setActiveFilter("all");
-    setActivePackage("");
+    setActiveRegion("all");
+    setActiveType("all");
     setActiveDate("");
     setSort("default");
     setSearch("");
@@ -529,23 +580,26 @@ export default function ToursPage() {
     applySearchParams({
       country: activeFilter === "all" ? undefined : activeFilter,
       date: undefined,
-      package: activePackage || undefined,
+      region: activeRegion,
+      type: activeType,
     });
   }
 
-  function clearPackageFilter() {
+  function clearRegionFilter() {
     setPage(1);
-    setActivePackage("");
+    setActiveRegion("all");
     applySearchParams({
       country: activeFilter === "all" ? undefined : activeFilter,
       date: activeDate || undefined,
-      package: undefined,
+      region: "all",
+      type: activeType,
     });
   }
 
   const hasActiveFilters =
     activeFilter !== "all" ||
-    Boolean(activePackage) ||
+    activeRegion !== "all" ||
+    activeType !== "all" ||
     sort !== "default" ||
     search.trim() !== "" ||
     Boolean(activeDate);
@@ -590,23 +644,12 @@ export default function ToursPage() {
         className={[
           "sticky z-40 w-full max-w-full overflow-x-hidden border-b transition-all duration-300",
           filterScrolled
-            ? "border-brand-border/60 bg-white/95 shadow-[0_4px_20px_-8px_rgba(21,67,96,0.12)] backdrop-blur-xl"
+            ? "border-brand-border/60 bg-white/95 shadow-[0_4px_20px_-8px_rgba(0,107,63,0.12)] backdrop-blur-xl"
             : "border-brand-border/40 bg-white/90",
         ].join(" ")}
       >
-        <div
-          aria-hidden
-          className="h-0.5 bg-gradient-to-r from-brand-primary via-brand-accent to-brand-primary"
-        />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 opacity-30"
-          style={{
-            backgroundImage:
-              "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='1' fill='%23154360' fill-opacity='0.06'/%3E%3C/svg%3E\")",
-            backgroundSize: "32px 32px",
-          }}
-        />
+        <div aria-hidden className="kente-rule-wide" />
+        <div aria-hidden className="adinkra-field pointer-events-none absolute inset-0 opacity-40" />
 
         <div className="relative max-w-full">
           <Container className="py-2.5 sm:py-3">
@@ -678,26 +721,49 @@ export default function ToursPage() {
                 ))}
               </div>
 
-              {showPackageFilters ? (
-                <>
-                  <span className="h-3.5 w-px shrink-0 bg-brand-border/60" aria-hidden />
-                  <div
-                    ref={packageScrollContainerRef}
-                    className="flex min-w-0 flex-1 items-center gap-1 overflow-x-auto overscroll-x-contain [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+              <span className="h-3.5 w-px shrink-0 bg-brand-border/60" aria-hidden />
+
+              <div className="flex shrink-0 items-center gap-1">
+                {TOUR_TYPE_FILTER_OPTIONS.map((option) => (
+                  <button
+                    key={option.id}
+                    type="button"
+                    onClick={() => handleTypeFilter(option.id)}
+                    aria-pressed={activeType === option.id}
+                    className={[
+                      "shrink-0 rounded-full border px-2.5 py-1 text-xs font-semibold transition-all duration-200",
+                      activeType === option.id
+                        ? "border-brand-accent bg-brand-accent text-brand-charcoal shadow-sm"
+                        : "border-brand-border/70 bg-white text-brand-muted hover:border-brand-accent hover:text-brand-primary",
+                    ].join(" ")}
                   >
-                    {PACKAGE_FILTER_OPTIONS.map((option) => (
-                      <div key={option.id} data-package={option.id}>
-                        <FilterChip
-                          option={option}
-                          active={activePackage === option.id}
-                          onClick={handlePackageFilter}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </>
-              ) : null}
+                    {option.label}
+                  </button>
+                ))}
+              </div>
             </div>
+
+            {showRegionFilters ? (
+              <div className="mt-2 flex w-full max-w-full min-w-0 items-center gap-2 overflow-hidden border-t border-brand-border/35 pt-2">
+                <span className="hidden shrink-0 text-[10px] font-bold uppercase tracking-[0.14em] text-brand-muted sm:inline">
+                  Region
+                </span>
+                <div
+                  ref={regionScrollContainerRef}
+                  className="flex min-w-0 flex-1 items-center gap-1 overflow-x-auto overscroll-x-contain [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                >
+                  {regionOptions.map((option) => (
+                    <div key={option.id} data-region={option.id}>
+                      <FilterChip
+                        option={option}
+                        active={activeRegion === option.id}
+                        onClick={handleRegionFilter}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : null}
 
             <AnimatePresence>
               {hasActiveFilters ? (
@@ -716,7 +782,13 @@ export default function ToursPage() {
                     </span>
                     <span className="shrink-0 text-brand-border">·</span>
                     <span className="min-w-0 flex-1 truncate text-xs font-medium text-brand-primary">
-                      {describeActiveFilters(activeFilter, sort, activeDate, activePackage)}
+                      {describeActiveFilters({
+                        countryFilter: activeFilter,
+                        regionFilter: activeRegion,
+                        tourTypeFilter: activeType,
+                        sort,
+                        departureDate: activeDate,
+                      })}
                     </span>
                     {search.trim() ? (
                       <>
@@ -735,13 +807,13 @@ export default function ToursPage() {
                         Clear date ×
                       </button>
                     ) : null}
-                    {activePackage ? (
+                    {activeRegion !== "all" ? (
                       <button
                         type="button"
-                        onClick={clearPackageFilter}
+                        onClick={clearRegionFilter}
                         className="rounded-full bg-brand-accent/25 px-2 py-0.5 text-[10px] font-semibold text-brand-primary hover:bg-brand-accent/40"
                       >
-                        Clear package ×
+                        Clear region ×
                       </button>
                     ) : null}
                     <button
@@ -780,7 +852,7 @@ export default function ToursPage() {
               </motion.div>
             ) : visibleTours.length > 0 ? (
               <motion.div
-                key={`grid-${activeFilter}-${sort}-${page}`}
+                key={`grid-${activeFilter}-${activeRegion}-${activeType}-${sort}-${page}`}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -803,8 +875,8 @@ export default function ToursPage() {
                 <p className="mt-4 text-lg font-semibold text-brand-ink">No tours found</p>
                 <p className="mt-1.5 text-sm text-brand-muted">
                   {activeDate
-                    ? "Try another departure date, country, or reset your filters."
-                    : "Try another country or reset the sort filters."}
+                    ? "Try another departure date or region, or reset your filters."
+                    : "Try another region, or ask us to build the trip from scratch."}
                 </p>
                 <button
                   type="button"
@@ -847,7 +919,7 @@ export default function ToursPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, ease: EASE }}
-              className="relative mt-16 overflow-hidden rounded-3xl border border-brand-border/50 bg-white shadow-[0_24px_64px_-32px_rgba(21,67,96,0.18)]"
+              className="relative mt-16 overflow-hidden rounded-3xl border border-brand-border/50 bg-white shadow-[0_24px_64px_-32px_rgba(0,107,63,0.18)]"
             >
               <div className="grid items-center gap-6 px-6 py-8 sm:px-10 sm:py-10 lg:grid-cols-[1fr_auto] lg:gap-10">
                 <div>

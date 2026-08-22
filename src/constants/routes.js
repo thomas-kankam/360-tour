@@ -5,10 +5,11 @@ export const ROUTES = {
   tours: "/tours",
   toursWithCountry: (countryId) =>
     countryId && countryId !== "all" ? `/tours?country=${countryId}` : "/tours",
-  toursSearch: ({ country, date, package: packageId } = {}) => {
+  toursSearch: ({ country, date, region, tourType } = {}) => {
     const params = new URLSearchParams();
     if (country && country !== "all") params.set("country", country);
-    if (packageId) params.set("package", packageId);
+    if (region && region !== "all") params.set("region", region);
+    if (tourType && tourType !== "all") params.set("type", tourType);
     if (date) params.set("date", date);
     const query = params.toString();
     return query ? `/tours?${query}` : "/tours";

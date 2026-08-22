@@ -54,7 +54,7 @@ export default function PaymentFailurePage() {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: EASE }}
-        className="w-full max-w-lg overflow-hidden rounded-[1.75rem] border border-brand-border/60 bg-white shadow-[0_20px_60px_-24px_rgba(28,43,38,0.22)]"
+        className="w-full max-w-lg overflow-hidden rounded-[1.75rem] border border-brand-border/60 bg-white shadow-[0_20px_60px_-24px_rgba(23,19,14,0.22)]"
       >
         <div className="border-b border-brand-border/40 bg-gradient-to-r from-red-600 to-red-700 px-6 py-8 text-center text-white sm:px-8">
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-white/15 ring-4 ring-white/20">
