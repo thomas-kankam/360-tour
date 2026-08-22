@@ -1,10 +1,12 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import { toast } from "react-toastify";
 import {
   CalendarDays,
+  ChevronDown,
   ChevronRight,
+  Filter,
   Globe2,
   Loader2,
   MapPin,
@@ -14,6 +16,7 @@ import {
   Star,
   Trash2,
   Users,
+  X,
 } from "lucide-react";
 import operatorToursServiceApi from "../../apis/OperatorToursServiceApi";
 import AdminConfirmModal from "../../components/admin/AdminConfirmModal";
@@ -26,16 +29,200 @@ import { buildLocationsLabel } from "../../utils/operatorTourMapper";
 import { formatTourSlotsLabel, isCustomTourType, TOUR_TYPE } from "../../utils/operatorTourConstants";
 import { GHANA_REGIONS } from "../../data/ghanaRegions";
 
-/** Admin lands on a short "latest listings" view; the full paginated catalog is one click away. */
-const LATEST_LIMIT = 4;
-
 const TYPE_FILTERS = [
   { id: "all", label: "All types" },
   { id: TOUR_TYPE.REGULAR, label: "Regular" },
   { id: TOUR_TYPE.CUSTOM, label: "Customized" },
 ];
 
+const STATUS_FILTERS = [
+  { id: "all", label: "All statuses" },
+  { id: "published", label: "Published" },
+  { id: "draft", label: "Draft" },
+  { id: "archived", label: "Archived" },
+];
+
+const REGION_OPTIONS = [{ id: "all", label: "All regions" }, ...GHANA_REGIONS];
+
 const EASE = [0.22, 1, 0.36, 1];
+
+function FilterDropdown({ label, value, options, onChange }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+  const current = options.find((option) => option.id === value) || options[0];
+  const active = value !== "all";
+
+  useEffect(() => {
+    function handleClick(event) {
+      if (ref.current && !ref.current.contains(event.target)) setOpen(false);
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((prev) => !prev)}
+        className={[
+          "inline-flex min-w-[9.5rem] items-center justify-between gap-2 rounded-xl border px-3 py-2 text-xs font-semibold transition-all",
+          active
+            ? "border-brand-green/40 bg-brand-green/5 text-brand-green"
+            : "border-brand-border/70 bg-white text-brand-ink hover:border-brand-green/30",
+        ].join(" ")}
+      >
+        <span className="truncate">
+          <span className="text-[10px] font-bold uppercase tracking-[0.1em] text-brand-muted">{label}</span>
+          <span className="mt-0.5 block truncate text-left">{current.label}</span>
+        </span>
+        <ChevronDown className={`h-3.5 w-3.5 shrink-0 text-brand-muted transition-transform ${open ? "rotate-180" : ""}`} aria-hidden />
+      </button>
+
+      <AnimatePresence>
+        {open ? (
+          <motion.ul
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 4 }}
+            transition={{ duration: 0.15 }}
+            className="absolute right-0 top-full z-50 mt-2 min-w-full overflow-hidden rounded-xl border border-brand-border/60 bg-white py-1 shadow-xl"
+          >
+            {options.map((option) => (
+              <li key={option.id}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    onChange(option.id);
+                    setOpen(false);
+                  }}
+                  className={[
+                    "flex w-full px-3 py-2 text-left text-xs font-semibold transition-colors hover:bg-brand-cream",
+                    option.id === value ? "bg-brand-green/10 text-brand-green" : "text-brand-ink",
+                  ].join(" ")}
+                >
+                  {option.label}
+                </button>
+              </li>
+            ))}
+          </motion.ul>
+        ) : null}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+function RegionFilterPanel({ value, onChange }) {
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const current = REGION_OPTIONS.find((option) => option.id === value) || REGION_OPTIONS[0];
+  const active = value !== "all";
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return REGION_OPTIONS;
+    return REGION_OPTIONS.filter((option) => option.label.toLowerCase().includes(q));
+  }, [query]);
+
+  function closePanel() {
+    setOpen(false);
+    setQuery("");
+  }
+
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className={[
+          "inline-flex min-w-[9.5rem] items-center justify-between gap-2 rounded-xl border px-3 py-2 text-xs font-semibold transition-all",
+          active
+            ? "border-brand-primary/40 bg-brand-primary/5 text-brand-primary"
+            : "border-brand-border/70 bg-white text-brand-ink hover:border-brand-primary/30",
+        ].join(" ")}
+      >
+        <span className="truncate">
+          <span className="text-[10px] font-bold uppercase tracking-[0.1em] text-brand-muted">Region</span>
+          <span className="mt-0.5 block truncate text-left">{current.label}</span>
+        </span>
+        <MapPin className="h-3.5 w-3.5 shrink-0 text-brand-muted" aria-hidden />
+      </button>
+
+      <AnimatePresence>
+        {open ? (
+          <>
+            <motion.button
+              type="button"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[60] bg-brand-ink/40 backdrop-blur-[2px]"
+              aria-label="Close region filter"
+              onClick={closePanel}
+            />
+            <motion.aside
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", stiffness: 360, damping: 34 }}
+              className="fixed inset-y-0 right-0 z-[70] flex w-full max-w-sm flex-col border-l border-brand-border/60 bg-white shadow-2xl"
+            >
+              <div className="flex items-center justify-between border-b border-brand-border/60 px-5 py-4">
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-brand-muted">Filter by region</p>
+                  <h2 className="mt-1 text-lg font-bold text-brand-ink">Ghana regions</h2>
+                </div>
+                <button
+                  type="button"
+                  onClick={closePanel}
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-brand-muted transition-colors hover:bg-brand-cream hover:text-brand-ink"
+                  aria-label="Close"
+                >
+                  <X className="h-4 w-4" aria-hidden />
+                </button>
+              </div>
+
+              <div className="border-b border-brand-border/50 px-5 py-3">
+                <div className="relative">
+                  <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-brand-muted" aria-hidden />
+                  <input
+                    type="search"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder="Search regions…"
+                    className="w-full rounded-xl border border-brand-border/70 bg-brand-cream/30 py-2.5 pl-10 pr-3 text-sm outline-none focus:border-brand-green focus:ring-2 focus:ring-brand-green/15"
+                  />
+                </div>
+              </div>
+
+              <div className="flex-1 overflow-y-auto px-3 py-2">
+                {filtered.map((option) => (
+                  <button
+                    key={option.id}
+                    type="button"
+                    onClick={() => {
+                      onChange(option.id);
+                      closePanel();
+                    }}
+                    className={[
+                      "mb-1 flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left text-sm font-semibold transition-colors",
+                      option.id === value
+                        ? "bg-brand-primary text-white"
+                        : "text-brand-ink hover:bg-brand-cream",
+                    ].join(" ")}
+                  >
+                    {option.label}
+                    {option.id === value ? <span className="text-[10px] uppercase tracking-wide text-white/80">Selected</span> : null}
+                  </button>
+                ))}
+              </div>
+            </motion.aside>
+          </>
+        ) : null}
+      </AnimatePresence>
+    </>
+  );
+}
 
 function statusPill(status) {
   const map = {
@@ -163,7 +350,6 @@ export default function OperatorToursPage() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
   const [regionFilter, setRegionFilter] = useState("all");
-  const [showAll, setShowAll] = useState(false);
   const [search, setSearch] = useState("");
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleting, setDeleting] = useState(false);
@@ -197,16 +383,16 @@ export default function OperatorToursPage() {
     loadTours();
   }, [loadTours]);
 
-  const expanded =
-    showAll ||
-    Boolean(debouncedSearch.trim()) ||
-    page > 1 ||
-    statusFilter !== "all" ||
-    regionFilter !== "all" ||
-    typeFilter !== "all";
-  const visible = expanded ? tours : tours.slice(0, LATEST_LIMIT);
-  const hiddenCount = Math.max((totalItems || tours.length) - visible.length, 0);
+  const visible = tours;
   const publishedCount = useMemo(() => tours.filter((t) => t.status === "published").length, [tours]);
+  const hasActiveFilters = statusFilter !== "all" || typeFilter !== "all" || regionFilter !== "all";
+
+  function clearFilters() {
+    setStatusFilter("all");
+    setTypeFilter("all");
+    setRegionFilter("all");
+    setPage(1);
+  }
 
   async function handleDelete() {
     if (!token || !deleteTarget?.slug) return;
@@ -258,78 +444,55 @@ export default function OperatorToursPage() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-4 rounded-2xl border border-brand-border/60 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
-        <div className="relative min-w-0 flex-1 sm:max-w-md">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-brand-muted" strokeWidth={2} aria-hidden />
-          <input
-            type="search"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search listings…"
-            className="w-full rounded-xl border-2 border-brand-border bg-white py-2.5 pl-10 pr-4 text-sm font-medium text-brand-ink outline-none transition-all focus:border-brand-green focus:ring-2 focus:ring-brand-green/15"
-          />
+      <div className="rounded-2xl border border-brand-border/60 bg-white p-4 shadow-sm">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-end">
+          <div className="relative min-w-0 flex-1">
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-brand-muted" strokeWidth={2} aria-hidden />
+            <input
+              type="search"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search listings…"
+              className="w-full rounded-xl border-2 border-brand-border bg-white py-2.5 pl-10 pr-4 text-sm font-medium text-brand-ink outline-none transition-all focus:border-brand-green focus:ring-2 focus:ring-brand-green/15"
+            />
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <Filter className="hidden h-4 w-4 text-brand-muted sm:block" aria-hidden />
+            <FilterDropdown label="Type" value={typeFilter} options={TYPE_FILTERS} onChange={(id) => { setTypeFilter(id); setPage(1); }} />
+            <FilterDropdown label="Status" value={statusFilter} options={STATUS_FILTERS} onChange={(id) => { setStatusFilter(id); setPage(1); }} />
+            <RegionFilterPanel value={regionFilter} onChange={(id) => { setRegionFilter(id); setPage(1); }} />
+            {hasActiveFilters ? (
+              <button
+                type="button"
+                onClick={clearFilters}
+                className="rounded-xl border border-brand-border/70 px-3 py-2 text-xs font-semibold text-brand-muted transition-colors hover:border-brand-green/30 hover:text-brand-green"
+              >
+                Clear filters
+              </button>
+            ) : null}
+          </div>
         </div>
-        <div className="flex flex-wrap gap-2">
-          {TYPE_FILTERS.map((f) => (
-            <button
-              key={f.id}
-              type="button"
-              onClick={() => setTypeFilter(f.id)}
-              aria-pressed={typeFilter === f.id}
-              className={[
-                "rounded-full px-4 py-2 text-xs font-semibold transition-all",
-                typeFilter === f.id
-                  ? "bg-brand-accent text-brand-charcoal shadow-sm"
-                  : "bg-brand-cream text-brand-muted ring-1 ring-brand-border hover:text-brand-ink",
-              ].join(" ")}
-            >
-              {f.label}
-            </button>
-          ))}
-          <span className="hidden w-px self-stretch bg-brand-border/70 sm:block" aria-hidden />
-          {["all", "published", "draft", "archived"].map((f) => (
-            <button
-              key={f}
-              type="button"
-              onClick={() => setStatusFilter(f)}
-              aria-pressed={statusFilter === f}
-              className={[
-                "rounded-full px-4 py-2 text-xs font-semibold capitalize transition-all",
-                statusFilter === f ? "bg-brand-green text-white shadow-sm" : "bg-brand-cream text-brand-muted ring-1 ring-brand-border hover:text-brand-ink",
-              ].join(" ")}
-            >
-              {f === "all" ? "All" : f}
-            </button>
-          ))}
-        </div>
-        <div className="flex flex-wrap gap-2 border-t border-brand-border/50 pt-3 sm:border-t-0 sm:pt-0">
-          <span className="self-center text-[10px] font-bold uppercase tracking-[0.12em] text-brand-muted">Region</span>
-          <button
-            type="button"
-            onClick={() => setRegionFilter("all")}
-            aria-pressed={regionFilter === "all"}
-            className={[
-              "rounded-full px-3 py-1.5 text-xs font-semibold transition-all",
-              regionFilter === "all" ? "bg-brand-primary text-white shadow-sm" : "bg-brand-cream text-brand-muted ring-1 ring-brand-border hover:text-brand-ink",
-            ].join(" ")}
-          >
-            All regions
-          </button>
-          {GHANA_REGIONS.map((region) => (
-            <button
-              key={region.id}
-              type="button"
-              onClick={() => setRegionFilter(region.id)}
-              aria-pressed={regionFilter === region.id}
-              className={[
-                "rounded-full px-3 py-1.5 text-xs font-semibold transition-all",
-                regionFilter === region.id ? "bg-brand-primary text-white shadow-sm" : "bg-brand-cream text-brand-muted ring-1 ring-brand-border hover:text-brand-ink",
-              ].join(" ")}
-            >
-              {region.label}
-            </button>
-          ))}
-        </div>
+
+        {hasActiveFilters ? (
+          <div className="mt-3 flex flex-wrap gap-2 border-t border-brand-border/50 pt-3">
+            {typeFilter !== "all" ? (
+              <span className="inline-flex items-center gap-1 rounded-full bg-brand-accent/25 px-2.5 py-1 text-[11px] font-semibold text-brand-ink">
+                Type: {TYPE_FILTERS.find((f) => f.id === typeFilter)?.label}
+              </span>
+            ) : null}
+            {statusFilter !== "all" ? (
+              <span className="inline-flex items-center gap-1 rounded-full bg-brand-green/10 px-2.5 py-1 text-[11px] font-semibold capitalize text-brand-green">
+                Status: {statusFilter}
+              </span>
+            ) : null}
+            {regionFilter !== "all" ? (
+              <span className="inline-flex items-center gap-1 rounded-full bg-brand-primary/10 px-2.5 py-1 text-[11px] font-semibold text-brand-primary">
+                Region: {REGION_OPTIONS.find((f) => f.id === regionFilter)?.label}
+              </span>
+            ) : null}
+          </div>
+        ) : null}
       </div>
 
       {loading ? (
@@ -352,35 +515,11 @@ export default function OperatorToursPage() {
         <>
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h2 className="font-heading text-lg font-bold text-brand-ink">
-                {expanded ? "All listings" : "Latest listings"}
-              </h2>
+              <h2 className="font-heading text-lg font-bold text-brand-ink">All listings</h2>
               <p className="mt-0.5 text-xs text-brand-muted">
-                {expanded
-                  ? `Showing ${visible.length} of ${totalItems || visible.length}`
-                  : `The ${visible.length} most recent listings`}
+                Showing {visible.length} of {totalItems || visible.length}
               </p>
             </div>
-            {expanded ? (
-              !debouncedSearch.trim() && page === 1 && statusFilter === "all" && regionFilter === "all" && typeFilter === "all" ? (
-                <button
-                  type="button"
-                  onClick={() => setShowAll(false)}
-                  className="inline-flex items-center gap-1 rounded-full border border-brand-border bg-white px-4 py-2 text-xs font-semibold text-brand-ink transition-colors hover:border-brand-green/40 hover:text-brand-green"
-                >
-                  Show latest only
-                </button>
-              ) : null
-            ) : hiddenCount > 0 ? (
-              <button
-                type="button"
-                onClick={() => setShowAll(true)}
-                className="inline-flex items-center gap-1 rounded-full bg-brand-green px-4 py-2 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-brand-green-dark"
-              >
-                View all {totalItems || tours.length} listings
-                <ChevronRight className="h-3.5 w-3.5" strokeWidth={2.5} aria-hidden />
-              </button>
-            ) : null}
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -394,16 +533,14 @@ export default function OperatorToursPage() {
             ))}
           </div>
 
-          {expanded ? (
-            <AdminPagination
-              page={page}
-              totalPages={totalPages}
-              totalItems={totalItems}
-              rangeStart={rangeStart}
-              rangeEnd={rangeEnd}
-              onPageChange={setPage}
-            />
-          ) : null}
+          <AdminPagination
+            page={page}
+            totalPages={totalPages}
+            totalItems={totalItems}
+            rangeStart={rangeStart}
+            rangeEnd={rangeEnd}
+            onPageChange={setPage}
+          />
         </>
       )}
 
