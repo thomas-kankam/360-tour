@@ -1,7 +1,8 @@
 import axios from "axios";
 import env from "../config/env";
 import { parseApiEnvelope, parseApiError } from "../utils/apiResponse";
-import { getLocalTourReviews, mapPublicReview } from "../utils/tourReviewsHelpers";
+import { parsePaginatedList, mapServerPagination } from "../utils/adminPaginationHelpers";
+import { mapPublicReview } from "../utils/tourReviewsHelpers";
 import { buildRequestKey, dedupeRequest } from "./dedupService";
 
 class PublicRatingsServiceApi {
@@ -25,30 +26,22 @@ class PublicRatingsServiceApi {
         const response = await axios.get(url, { headers: this.getHeaders() });
         const result = parseApiEnvelope(response);
         if (!result.ok) {
-          return { ...result, items: getLocalTourReviews(tourSlug), source: "local", pagination: null };
+          return { ...result, items: [], pagination: null, source: "api" };
         }
 
-        const payload = result.data;
-        const nested = payload?.data ?? payload;
-        const rawItems = Array.isArray(nested?.data)
-          ? nested.data
-          : Array.isArray(payload?.data)
-            ? payload.data
-            : Array.isArray(payload?.reviews)
-              ? payload.reviews
-              : Array.isArray(payload)
-                ? payload
-                : [];
-        const items = rawItems.map(mapPublicReview).filter((item) => item && item.status === "approved");
-        const pagination = nested?.pagination ?? payload?.pagination ?? null;
+        const { items: rawItems, pagination } = parsePaginatedList(result.data);
+        const items = rawItems
+          .map(mapPublicReview)
+          .filter((item) => item && item.status === "approved");
 
-        return { ...result, items, pagination, source: "api" };
+        return {
+          ...result,
+          items,
+          pagination: mapServerPagination(pagination, { page, pageSize: perPage }),
+          source: "api",
+        };
       } catch (error) {
-        const status = error?.response?.status;
-        if (status === 404 || status === 405 || status === 501) {
-          return { ok: true, items: getLocalTourReviews(tourSlug), source: "local", pagination: null };
-        }
-        return { ...parseApiError(error), items: getLocalTourReviews(tourSlug), source: "local", pagination: null };
+        return { ...parseApiError(error), items: [], pagination: null, source: "api" };
       }
     };
 

@@ -85,3 +85,49 @@ export function formatReviewDate(iso) {
     return "";
   }
 }
+
+const REVIEW_STATUS_LABELS = {
+  pending: "Pending approval",
+  approved: "Published",
+  rejected: "Not published",
+};
+
+export function getReviewStatusLabel(status) {
+  return REVIEW_STATUS_LABELS[status] ?? status;
+}
+
+/** Merge a signed-in traveler's own review with the public approved list. */
+export function mergeTourReviews(publicReviews, ownReview, authorName = "You") {
+  const approvedPublic = (publicReviews ?? []).filter((item) => item?.status === "approved");
+
+  if (!ownReview?.id) {
+    return approvedPublic;
+  }
+
+  const ownEntry = {
+    ...mapPublicReview({
+      ...ownReview,
+      author_name: authorName,
+    }),
+    isOwnReview: true,
+    status: ownReview.status ?? "pending",
+  };
+
+  const withoutDuplicate = approvedPublic.filter((item) => item.id !== ownReview.id);
+
+  if (ownReview.status === "approved") {
+    const alreadyListed = approvedPublic.some((item) => item.id === ownReview.id);
+    if (alreadyListed) {
+      return approvedPublic.map((item) =>
+        item.id === ownReview.id ? { ...item, isOwnReview: true, authorName } : item,
+      );
+    }
+    return [ownEntry, ...withoutDuplicate];
+  }
+
+  return [ownEntry, ...withoutDuplicate];
+}
+
+export function hasExistingTourReview(ownReview) {
+  return Boolean(ownReview?.id);
+}

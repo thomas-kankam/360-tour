@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { Link, useLocation } from "react-router";
+import { Link, useLocation, useSearchParams } from "react-router";
 import { Loader2, MessageSquare, Star } from "lucide-react";
 import { toast } from "react-toastify";
 import consumerRatingsServiceApi from "../../apis/ConsumerRatingsServiceApi";
@@ -8,6 +8,9 @@ import { ROUTES } from "../../constants/routes";
 import { useAuth } from "../../hooks/useAuth";
 import {
   formatReviewDate,
+  getReviewStatusLabel,
+  hasExistingTourReview,
+  mergeTourReviews,
   summarizeReviews,
 } from "../../utils/tourReviewsHelpers";
 
@@ -62,18 +65,47 @@ function StarDisplay({ value, size = "md" }) {
   );
 }
 
-function ReviewCard({ review }) {
+function ReviewCard({ review, highlighted = false }) {
+  const showStatus = review.isOwnReview && review.status && review.status !== "approved";
+
   return (
-    <article className="rounded-2xl border border-brand-border/60 bg-brand-cream/30 p-5">
+    <article
+      id={review.id ? `review-${review.id}` : undefined}
+      className={[
+        "rounded-2xl border bg-brand-cream/30 p-5 transition-shadow",
+        highlighted
+          ? "border-brand-accent ring-2 ring-brand-accent/40 shadow-kente"
+          : "border-brand-border/60",
+      ].join(" ")}
+    >
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="text-sm font-bold text-brand-ink">{review.authorName}</p>
+          <div className="flex flex-wrap items-center gap-2">
+            <p className="text-sm font-bold text-brand-ink">
+              {review.isOwnReview ? "Your review" : review.authorName}
+            </p>
+            {review.isOwnReview && review.status === "approved" ? (
+              <span className="rounded-full bg-brand-primary/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand-primary">
+                You
+              </span>
+            ) : null}
+            {showStatus ? (
+              <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-800">
+                {getReviewStatusLabel(review.status)}
+              </span>
+            ) : null}
+          </div>
           <p className="mt-0.5 text-xs text-brand-muted">{formatReviewDate(review.createdAt)}</p>
         </div>
         <StarDisplay value={review.rating} />
       </div>
       {review.comment ? (
         <p className="mt-3 text-sm leading-relaxed text-brand-muted">{review.comment}</p>
+      ) : null}
+      {review.isOwnReview && review.status === "pending" ? (
+        <p className="mt-3 text-xs text-brand-muted">
+          Only you can see this until an admin approves it. Others will see it here once published.
+        </p>
       ) : null}
     </article>
   );
@@ -82,6 +114,8 @@ function ReviewCard({ review }) {
 export default function TourReviewsSection({ tourSlug, tourTitle }) {
   const { token, isAuthenticated, isTourist, user } = useAuth();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const highlightReviewId = searchParams.get("review") || location.state?.highlightReviewId || "";
 
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -92,6 +126,7 @@ export default function TourReviewsSection({ tourSlug, tourTitle }) {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [ownReview, setOwnReview] = useState(null);
 
   const loadReviews = useCallback(async (nextPage = 1, append = false) => {
     if (!tourSlug) return;
@@ -100,23 +135,55 @@ export default function TourReviewsSection({ tourSlug, tourTitle }) {
 
     const result = await publicRatingsServiceApi.getTourReviews(tourSlug, { page: nextPage, perPage: 10 });
 
+    let items = result.items ?? [];
+
+    if (nextPage === 1 && token && isTourist) {
+      const mineResult = await consumerRatingsServiceApi.getMyReviewForTour(token, tourSlug);
+      const mine = mineResult.review ?? null;
+      setOwnReview(mine);
+      setSubmitted(hasExistingTourReview(mine));
+      items = mergeTourReviews(items, mine, user?.name || user?.firstName || "You");
+    } else if (nextPage === 1) {
+      setOwnReview(null);
+      setSubmitted(false);
+    }
+
     if (append) setLoadingMore(false);
     else setLoading(false);
 
-    const items = result.items ?? [];
     setReviews((prev) => (append ? [...prev, ...items.filter((item) => !prev.some((r) => r.id === item.id))] : items));
 
     const pagination = result.pagination;
     const totalPages = pagination?.totalPages ?? pagination?.last_page ?? 1;
     setPage(nextPage);
     setHasMore(nextPage < totalPages);
-  }, [tourSlug]);
+  }, [tourSlug, token, isTourist, user?.name, user?.firstName]);
 
   useEffect(() => {
     loadReviews(1, false);
   }, [loadReviews]);
 
-  const summary = summarizeReviews(reviews);
+  useEffect(() => {
+    if (loading) return undefined;
+
+    const shouldScroll = location.hash === "#tour-reviews" || Boolean(highlightReviewId);
+    if (!shouldScroll) return undefined;
+
+    const timer = window.setTimeout(() => {
+      if (highlightReviewId) {
+        const target = document.getElementById(`review-${highlightReviewId}`);
+        if (target) {
+          target.scrollIntoView({ behavior: "smooth", block: "center" });
+          return;
+        }
+      }
+      document.getElementById("tour-reviews")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 120);
+
+    return () => window.clearTimeout(timer);
+  }, [loading, location.hash, highlightReviewId, reviews.length]);
+
+  const summary = summarizeReviews(reviews.filter((review) => review.status === "approved"));
   const canSubmit = isAuthenticated && isTourist && !submitted;
 
   async function handleSubmit(e) {
@@ -151,6 +218,7 @@ export default function TourReviewsSection({ tourSlug, tourTitle }) {
 
     toast.success(result.reason || "Review submitted for approval.");
     setSubmitted(true);
+    setOwnReview(result.review ?? null);
     setRating(0);
     setComment("");
     loadReviews(1, false);
@@ -190,7 +258,11 @@ export default function TourReviewsSection({ tourSlug, tourTitle }) {
       ) : reviews.length > 0 ? (
         <div className="mt-6 space-y-4">
           {reviews.map((review) => (
-            <ReviewCard key={review.id} review={review} />
+            <ReviewCard
+              key={review.id}
+              review={review}
+              highlighted={highlightReviewId && review.id === highlightReviewId}
+            />
           ))}
           {hasMore ? (
             <div className="flex justify-center pt-2">
@@ -273,7 +345,11 @@ export default function TourReviewsSection({ tourSlug, tourTitle }) {
 
         {submitted ? (
           <div className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
-            Thank you! Your review was submitted and will appear here once approved.
+            {ownReview?.status === "pending"
+              ? "Thank you! Your review was submitted and will appear here for everyone once approved."
+              : ownReview?.status === "rejected"
+                ? "Your review was not published. Contact support if you would like to update it."
+                : "You have already reviewed this tour."}
           </div>
         ) : null}
       </div>
