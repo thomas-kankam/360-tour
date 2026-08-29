@@ -2,7 +2,7 @@ import axios from "axios";
 import env from "../config/env";
 import { parseApiEnvelope, parseApiError } from "../utils/apiResponse";
 import { resolvePublicMediaUrl } from "../utils/mediaUrl";
-import { prepareImageForUpload } from "../utils/imageOptimize";
+import { prepareImageForUpload, UPLOAD_MAX_BYTES } from "../utils/imageOptimize";
 
 class UploadServiceApi {
   constructor() {
@@ -19,7 +19,14 @@ class UploadServiceApi {
 
     if (optimize) {
       try {
-        const prepared = await prepareImageForUpload(file, variant);
+        const prepared = await prepareImageForUpload(file, variant, UPLOAD_MAX_BYTES);
+        if (prepared.file.size > UPLOAD_MAX_BYTES) {
+          return {
+            ok: false,
+            url: "",
+            reason: `Could not compress this image below 2 MB (still ${Math.round(prepared.file.size / 1024)} KB).`,
+          };
+        }
         uploadFile = prepared.file;
         optimizeMeta = prepared;
       } catch (error) {

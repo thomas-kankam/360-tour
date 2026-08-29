@@ -1,4 +1,4 @@
-import { dataUrlToFile, isTrustedMediaUrl, optimizeImageFile } from "./imageOptimize";
+import { dataUrlToFile, isTrustedMediaUrl, processImageUploadFile } from "./imageOptimize";
 import uploadServiceApi from "../apis/UploadServiceApi";
 import { LANDING_CMS_DEFAULTS } from "./landingCmsStorage";
 import { mergeCmsItems } from "./landingCmsItems";
@@ -107,8 +107,8 @@ async function persistCmsImageValue(value, token, variant) {
   const file = dataUrlToFile(value);
   if (!file) return "";
 
-  const optimized = await optimizeImageFile(file, variant);
-  const result = await uploadServiceApi.uploadImage(token, optimized, { variant, role: "admin" });
+  const prepared = await processImageUploadFile(file, variant);
+  const result = await uploadServiceApi.uploadImage(token, prepared.file, { variant, role: "admin", optimize: false });
   return result.ok ? result.url : "";
 }
 

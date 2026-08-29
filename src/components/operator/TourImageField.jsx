@@ -4,7 +4,6 @@ import ImageLightbox from "../misc/ImageLightbox";
 import { useAuth } from "../../hooks/useAuth";
 import uploadServiceApi from "../../apis/UploadServiceApi";
 import { isAdminRole, isOperatorRole } from "../../constants/roles";
-import { optimizeImageFile } from "../../utils/imageOptimize";
 import { getImagePreviewSrc } from "../../utils/tourImageUtils";
 
 export default function TourImageField({
@@ -45,8 +44,7 @@ export default function TourImageField({
       }
 
       setUploading(true);
-      const optimized = await optimizeImageFile(file, variant);
-      const result = await uploadServiceApi.uploadImage(token, optimized, { variant, role: uploadRole });
+      const result = await uploadServiceApi.uploadImage(token, file, { variant, role: uploadRole });
       if (!result.ok || !result.url) {
         setError(result.reason || "Upload failed.");
         return;
@@ -55,7 +53,7 @@ export default function TourImageField({
       onChange({
         uri: result.url,
         data: "",
-        mimeType: optimized.type || "image/jpeg",
+        mimeType: result.optimizeMeta?.file?.type || "image/jpeg",
       });
     } catch (err) {
       setError(err.message || "Upload failed.");

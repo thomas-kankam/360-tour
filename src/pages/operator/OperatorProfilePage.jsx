@@ -21,8 +21,6 @@ import { normalizePhoneForApi } from "../../utils/phoneUtils";
 import { resolveProfileImageSrc, uploadProfilePhoto } from "../../utils/profileImage";
 
 const EASE = [0.22, 1, 0.36, 1];
-const MAX_PROFILE_IMAGE_BYTES = 2 * 1024 * 1024;
-
 function getInitialForm(user) {
   return {
     first_name: user?.firstName || "",
@@ -122,11 +120,6 @@ export default function OperatorProfilePage() {
     const file = e.target.files?.[0];
     e.target.value = "";
     if (!file) return;
-
-    if (file.size > MAX_PROFILE_IMAGE_BYTES) {
-      setProfileError("Profile photo must be under 2 MB.");
-      return;
-    }
 
     try {
       if (!token) {

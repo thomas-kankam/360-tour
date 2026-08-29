@@ -5,7 +5,6 @@ import { toast } from "react-toastify";
 import adminAuthServiceApi from "../../apis/AdminAuthServiceApi";
 import { useAuth } from "../../hooks/useAuth";
 import { resolveProfileImageSrc, uploadProfilePhoto } from "../../utils/profileImage";
-import { optimizeImageFile } from "../../utils/imageOptimize";
 import uploadServiceApi from "../../apis/UploadServiceApi";
 import {
   loadCompanySettings,
@@ -14,7 +13,6 @@ import {
 import adminCompanySettingsApi from "../../apis/AdminCompanySettingsApi";
 
 const EASE = [0.22, 1, 0.36, 1];
-const MAX_PROFILE_IMAGE_BYTES = 2 * 1024 * 1024;
 
 function getInitialForm(user) {
   return {
@@ -111,11 +109,6 @@ export default function AdminProfilePage() {
     e.target.value = "";
     if (!file) return;
 
-    if (file.size > MAX_PROFILE_IMAGE_BYTES) {
-      setProfileError("Profile photo must be under 2 MB.");
-      return;
-    }
-
     try {
       if (!token) {
         setProfileError("Sign in again to upload a photo.");
@@ -151,16 +144,14 @@ export default function AdminProfilePage() {
     const file = e.target.files?.[0];
     e.target.value = "";
     if (!file) return;
-    if (file.size > MAX_PROFILE_IMAGE_BYTES) {
-      toast.error("Invoice logo must be under 2 MB.");
-      return;
-    }
     try {
-      const optimized = await optimizeImageFile(file, "logo");
-      const result = await uploadServiceApi.uploadImage(token, optimized, { variant: "logo", role: "admin" });
+      const result = await uploadServiceApi.uploadImage(token, file, { variant: "logo", role: "admin" });
       if (!result.ok || !result.url) {
         toast.error(result.reason || "Could not upload logo.");
         return;
+      }
+      if (result.optimizeMeta?.savedLabel) {
+        toast.info(result.optimizeMeta.savedLabel);
       }
       setCompanyForm((prev) => ({ ...prev, invoiceLogo: result.url }));
     } catch (err) {

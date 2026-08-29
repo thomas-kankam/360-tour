@@ -1,6 +1,11 @@
 import uploadServiceApi from "../apis/UploadServiceApi";
+import { processImageUploadFile } from "./imageOptimize";
 import { resolvePublicMediaUrl } from "./mediaUrl";
-import { optimizeImageFile } from "./imageOptimize";
+
+export async function uploadProfilePhoto(token, file, role = "client") {
+  const prepared = await processImageUploadFile(file, "profile");
+  return uploadServiceApi.uploadImage(token, prepared.file, { variant: "profile", role, optimize: false });
+}
 
 export function resolveProfileImageSrc(value) {
   if (!value) return "";
@@ -35,9 +40,4 @@ export function resolveProfileImageSrc(value) {
   }
 
   return "";
-}
-
-export async function uploadProfilePhoto(token, file, role = "client") {
-  const optimized = await optimizeImageFile(file, "profile");
-  return uploadServiceApi.uploadImage(token, optimized, { variant: "profile", role });
 }

@@ -17,10 +17,7 @@ import {
   LANDING_CMS_SECTIONS,
 } from "../../utils/landingCmsStorage";
 import { persistLandingCmsMedia } from "../../utils/landingCmsHelpers";
-import { optimizeImageFile } from "../../utils/imageOptimize";
 import uploadServiceApi from "../../apis/UploadServiceApi";
-
-const MAX_IMAGE_BYTES = 2 * 1024 * 1024;
 
 function Field({ label, value, onChange, multiline = false }) {
   const className =
@@ -47,21 +44,19 @@ function ImageField({ label, value, onChange, variant = "destination" }) {
     const file = e.target.files?.[0];
     e.target.value = "";
     if (!file) return;
-    if (file.size > MAX_IMAGE_BYTES) {
-      toast.error("Image must be under 2 MB.");
-      return;
-    }
     if (!token) {
       toast.error("Sign in again to upload images.");
       return;
     }
     try {
       setUploading(true);
-      const optimized = await optimizeImageFile(file, variant);
-      const result = await uploadServiceApi.uploadImage(token, optimized, { variant, role: "admin" });
+      const result = await uploadServiceApi.uploadImage(token, file, { variant, role: "admin" });
       if (!result.ok || !result.url) {
         toast.error(result.reason || "Could not upload image.");
         return;
+      }
+      if (result.optimizeMeta?.savedLabel) {
+        toast.info(result.optimizeMeta.savedLabel);
       }
       onChange(result.url);
     } catch (err) {
@@ -105,6 +100,7 @@ function ImageField({ label, value, onChange, variant = "destination" }) {
               <Trash2 className="h-3.5 w-3.5" aria-hidden /> Remove
             </button>
           ) : null}
+          <p className="text-[11px] text-brand-muted">Large photos are compressed automatically to under 2 MB.</p>
         </div>
       </div>
     </div>

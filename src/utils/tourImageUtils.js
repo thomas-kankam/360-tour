@@ -1,4 +1,5 @@
 import { resolvePublicMediaUrl, toStorageRelativeUrl } from "./mediaUrl";
+import { UPLOAD_MAX_BYTES } from "./imageOptimize";
 
 const DATA_URL_RE = /^data:([^;]+);base64,(.+)$/;
 const REMOTE_URL_RE = /^https?:\/\//i;
@@ -55,7 +56,8 @@ export function validateFeatureImageFile(file, images, replaceIndex = -1) {
   }
 
   const currentTotal = getFeatureImagesTotalBytes(images || [], replaceIndex, { data: "", mimeType: file.type });
-  const nextTotal = currentTotal + file.size;
+  const estimatedUploadSize = Math.min(file.size, UPLOAD_MAX_BYTES);
+  const nextTotal = currentTotal + estimatedUploadSize;
 
   if (nextTotal > MAX_FEATURE_IMAGES_TOTAL_BYTES) {
     const remaining = Math.max(0, MAX_FEATURE_IMAGES_TOTAL_BYTES - currentTotal);

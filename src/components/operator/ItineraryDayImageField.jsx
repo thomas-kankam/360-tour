@@ -9,10 +9,6 @@ export default function ItineraryDayImageField({ value, onChange, dayNumber }) {
       onChange={onChange}
       uriPlaceholder={`tours/itinerary/day-${dayNumber}.jpg`}
       showUriField={false}
-      beforeUpload={(file) => {
-        if (file.size > 2 * 1024 * 1024) return "Image must be under 2 MB.";
-        return "";
-      }}
     />
   );
 }

@@ -4,7 +4,6 @@ import ImageLightbox from "../misc/ImageLightbox";
 import { useAuth } from "../../hooks/useAuth";
 import uploadServiceApi from "../../apis/UploadServiceApi";
 import { isAdminRole, isOperatorRole } from "../../constants/roles";
-import { optimizeImageFile } from "../../utils/imageOptimize";
 import {
   MAX_FEATURE_IMAGES,
   getImagePreviewSrc,
@@ -71,14 +70,13 @@ export default function TourFeatureImagesField({ value = [], coverImage, onChang
           blocked = true;
           break;
         }
-        const optimized = await optimizeImageFile(file, "tour");
-        const result = await uploadServiceApi.uploadImage(token, optimized, { variant: "tour", role: uploadRole });
+        const result = await uploadServiceApi.uploadImage(token, file, { variant: "tour", role: uploadRole });
         if (!result.ok || !result.url) {
           onError?.(result.reason || "Could not upload one of the selected images.");
           blocked = true;
           break;
         }
-        next.push({ uri: result.url, data: "", mimeType: optimized.type || "image/jpeg" });
+        next.push({ uri: result.url, data: "", mimeType: result.optimizeMeta?.file?.type || "image/jpeg" });
       } catch (err) {
         onError?.(err.message || "Could not read one of the selected images.");
         blocked = true;

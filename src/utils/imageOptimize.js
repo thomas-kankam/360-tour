@@ -1,11 +1,14 @@
 const VARIANT_SPECS = {
   profile: { width: 512, height: 512, fit: "cover", quality: 0.84, maxBytes: 400 * 1024 },
-  destination: { width: 1280, height: 800, fit: "cover", quality: 0.82, maxBytes: 900 * 1024 },
-  tour: { width: 1600, height: 1000, fit: "cover", quality: 0.82, maxBytes: 1200 * 1024 },
-  hero: { width: 1920, height: 1080, fit: "cover", quality: 0.8, maxBytes: 1500 * 1024 },
+  destination: { width: 1280, height: 800, fit: "cover", quality: 0.82, maxBytes: 1800 * 1024 },
+  tour: { width: 1600, height: 1000, fit: "cover", quality: 0.82, maxBytes: 1900 * 1024 },
+  hero: { width: 1920, height: 1080, fit: "cover", quality: 0.8, maxBytes: 1900 * 1024 },
   logo: { width: 800, height: 800, fit: "contain", quality: 0.9, maxBytes: 600 * 1024 },
-  generic: { width: 1600, height: 1000, fit: "cover", quality: 0.82, maxBytes: 1200 * 1024 },
+  generic: { width: 1600, height: 1000, fit: "cover", quality: 0.82, maxBytes: 1900 * 1024 },
 };
+
+/** Client-side upload cap — large originals are compressed to fit this before upload. */
+export const UPLOAD_MAX_BYTES = 2 * 1024 * 1024;
 
 export function getImageVariantSpec(variant = "generic") {
   return VARIANT_SPECS[variant] || VARIANT_SPECS.generic;
@@ -137,20 +140,25 @@ function formatBytes(bytes) {
 }
 
 /** Resize/compress an image to fit upload limits before sending to the server. */
-export async function prepareImageForUpload(file, variant = "generic") {
+export async function prepareImageForUpload(file, variant = "generic", maxBytes = UPLOAD_MAX_BYTES) {
   const originalSize = file?.size ?? 0;
   const spec = getImageVariantSpec(variant);
-  const maxBytes = spec.maxBytes ?? 2 * 1024 * 1024;
+  const targetMax = Math.min(maxBytes, UPLOAD_MAX_BYTES);
 
   let optimized = await optimizeImageFile(file, variant);
   let quality = spec.quality;
   let scale = 1;
+  let attempts = 0;
 
-  while (optimized.size > maxBytes && (quality > 0.45 || scale > 0.55)) {
-    if (quality > 0.45) {
-      quality = Math.max(0.45, quality - 0.08);
+  while (optimized.size > targetMax && attempts < 28) {
+    attempts += 1;
+
+    if (quality > 0.3) {
+      quality = Math.max(0.3, quality - 0.06);
+    } else if (scale > 0.32) {
+      scale = Math.max(0.32, scale * 0.82);
     } else {
-      scale = Math.max(0.55, scale * 0.85);
+      break;
     }
 
     optimized = await optimizeImageFile(file, variant, {
@@ -170,4 +178,21 @@ export async function prepareImageForUpload(file, variant = "generic") {
         ? `Optimized ${formatBytes(originalSize)} → ${formatBytes(optimized.size)}`
         : "",
   };
+}
+
+/** Optimize first, then fail only if the result is still above the upload cap. */
+export async function processImageUploadFile(file, variant = "generic", maxBytes = UPLOAD_MAX_BYTES) {
+  if (!file?.type?.startsWith("image/")) {
+    throw new Error("Please choose an image file.");
+  }
+
+  const prepared = await prepareImageForUpload(file, variant, maxBytes);
+
+  if (prepared.file.size > maxBytes) {
+    throw new Error(
+      `Could not compress this image below 2 MB (still ${formatBytes(prepared.file.size)}). Try cropping or a smaller photo.`,
+    );
+  }
+
+  return prepared;
 }

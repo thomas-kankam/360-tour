@@ -13,7 +13,7 @@ import consumerAuthServiceApi from "../../apis/ConsumerAuthServiceApi";
 import { normalizePhoneForApi, phoneNumberHasCountryCode } from "../../utils/phoneUtils";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import { getImagePreviewSrc, readImageFile } from "../../utils/tourImageUtils";
-import { optimizeImageFile } from "../../utils/imageOptimize";
+import { processImageUploadFile } from "../../utils/imageOptimize";
 
 const EASE = [0.16, 1, 0.3, 1];
 
@@ -112,14 +112,9 @@ export default function SignupPage() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 2 * 1024 * 1024) {
-      setProfileError("Profile photo must be under 2 MB.");
-      return;
-    }
-
     try {
-      const optimized = await optimizeImageFile(file, "profile");
-      const image = await readImageFile(optimized);
+      const prepared = await processImageUploadFile(file, "profile");
+      const image = await readImageFile(prepared.file);
       const dataUri = getImagePreviewSrc(image);
       setProfilePreview(dataUri);
       setProfileImage(dataUri);

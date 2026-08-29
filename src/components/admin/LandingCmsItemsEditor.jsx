@@ -4,9 +4,6 @@ import { toast } from "react-toastify";
 import { getPopularDestinationImage } from "../../config/images";
 import { useAuth } from "../../hooks/useAuth";
 import uploadServiceApi from "../../apis/UploadServiceApi";
-import { optimizeImageFile } from "../../utils/imageOptimize";
-
-const MAX_IMAGE_BYTES = 2 * 1024 * 1024;
 
 function ItemImageField({ label, value, fallbackSrc, onChange }) {
   const inputRef = useRef(null);
@@ -18,21 +15,19 @@ function ItemImageField({ label, value, fallbackSrc, onChange }) {
     const file = e.target.files?.[0];
     e.target.value = "";
     if (!file) return;
-    if (file.size > MAX_IMAGE_BYTES) {
-      toast.error("Image must be under 2 MB.");
-      return;
-    }
     if (!token) {
       toast.error("Sign in again to upload images.");
       return;
     }
     try {
       setUploading(true);
-      const optimized = await optimizeImageFile(file, "destination");
-      const result = await uploadServiceApi.uploadImage(token, optimized, { variant: "destination", role: "admin" });
+      const result = await uploadServiceApi.uploadImage(token, file, { variant: "destination", role: "admin" });
       if (!result.ok || !result.url) {
         toast.error(result.reason || "Could not upload image.");
         return;
+      }
+      if (result.optimizeMeta?.savedLabel) {
+        toast.info(result.optimizeMeta.savedLabel);
       }
       onChange(result.url);
     } catch (err) {
@@ -74,7 +69,7 @@ function ItemImageField({ label, value, fallbackSrc, onChange }) {
         ) : null}
       </div>
       <p className="mt-1.5 text-[11px] text-brand-muted">
-        Photos are cropped to 16:10 and compressed so they fit the landing page cards.
+        Large photos are automatically compressed to under 2 MB and cropped to 16:10 for the landing page.
       </p>
     </div>
   );

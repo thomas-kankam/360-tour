@@ -1,4 +1,4 @@
-import { getImageVariantSpec, isTrustedMediaUrl } from "./imageOptimize";
+import { getImageVariantSpec, isTrustedMediaUrl, UPLOAD_MAX_BYTES } from "./imageOptimize";
 
 describe("imageOptimize helpers", () => {
   test("destination variant is 16:10 so landing cards crop cleanly", () => {
@@ -17,6 +17,10 @@ describe("imageOptimize helpers", () => {
     expect(isTrustedMediaUrl("http://127.0.0.1:8000/storage/uploads/images/a.webp")).toBe(true);
     expect(isTrustedMediaUrl("https://api.360toursghana.com/storage/uploads/images/a.webp")).toBe(true);
     expect(isTrustedMediaUrl("data:image/png;base64,abc")).toBe(true);
+  });
+
+  test("upload cap is 2 MB", () => {
+    expect(UPLOAD_MAX_BYTES).toBe(2 * 1024 * 1024);
   });
 
   test("rejects third-party stock URLs that do not match destination copy", () => {
