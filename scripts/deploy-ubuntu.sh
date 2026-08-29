@@ -42,6 +42,8 @@ NPM_CMD="${NPM_CMD:-npm}"
 SKIP_PULL="${SKIP_PULL:-0}"
 SKIP_INSTALL="${SKIP_INSTALL:-0}"
 RELOAD_APACHE="${RELOAD_APACHE:-0}"
+# Reset tracked local edits before pull (sitemap/seo from last deploy). Untracked files (e.g. google*.html) are kept.
+GIT_RESET="${GIT_RESET:-1}"
 WEBSITE_URL="${REACT_APP_WEBSITE_URL:-https://360toursghana.com}"
 API_URL="${REACT_APP_API_URL:-https://api.360toursghana.com/api}"
 
@@ -125,8 +127,16 @@ log "API URL:       ${API_URL}"
 if [[ "${SKIP_PULL}" != "1" ]]; then
   log "Fetching ${GIT_REMOTE}/${BRANCH}..."
   git fetch "${GIT_REMOTE}" "${BRANCH}"
-  git checkout "${BRANCH}"
-  git pull "${GIT_REMOTE}" "${BRANCH}"
+  git checkout "${BRANCH}" 2>/dev/null || git checkout -b "${BRANCH}" "${GIT_REMOTE}/${BRANCH}"
+
+  if [[ "${GIT_RESET}" == "1" ]]; then
+    if ! git diff-index --quiet HEAD -- 2>/dev/null || ! git diff-index --quiet --cached HEAD -- 2>/dev/null; then
+      log "Local tracked changes detected (often sitemap/seo from a previous deploy) — resetting to ${GIT_REMOTE}/${BRANCH}..."
+    fi
+    git reset --hard "${GIT_REMOTE}/${BRANCH}"
+  else
+    git pull "${GIT_REMOTE}" "${BRANCH}"
+  fi
 else
   log "Skipping git pull (SKIP_PULL=1)"
 fi
@@ -186,6 +196,14 @@ else
 fi
 
 [[ -f "${APP_DIR}/build/robots.txt" ]] || warn "build/robots.txt missing"
+
+# Server-only Search Console verification (often untracked; CRA only copies tracked public/ files)
+shopt -s nullglob
+for verify_file in "${APP_DIR}"/public/google*.html; do
+  cp "${verify_file}" "${APP_DIR}/build/$(basename "${verify_file}")"
+  log "Copied Search Console verification → build/$(basename "${verify_file}")"
+done
+shopt -u nullglob
 
 # ── Apache SPA + performance .htaccess ───────────────────────────────────────
 write_htaccess "${APP_DIR}/build"

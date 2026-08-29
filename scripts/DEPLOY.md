@@ -32,12 +32,27 @@ You do **not** need to run `generate:sitemap`, `generate:seo`, or `npm run build
 SKIP_PULL=1 SKIP_INSTALL=1 RELOAD_APACHE=1 ./scripts/deploy-ubuntu.sh
 ```
 
+Set `GIT_RESET=0` if you intentionally keep local edits to tracked files (not recommended on production).
+
 ```bash
 APP_DIR=/var/www/html/naasei/projects/360-tour \
 WEB_ROOT=/var/www/html/naasei/projects/360-tour/build \
 RELOAD_APACHE=1 \
 ./scripts/deploy-ubuntu.sh
 ```
+
+## If `git pull` failed before this fix
+
+Local changes to `public/sitemap.xml`, `public/images/seo/og-image.png`, or an old `deploy-ubuntu.sh` block the pull. One-time fix on the server:
+
+```bash
+cd /var/www/html/naasei/projects/360-tour
+git fetch origin main
+git reset --hard origin/main
+RELOAD_APACHE=1 ./scripts/deploy-ubuntu.sh
+```
+
+Untracked files (e.g. `public/google5db82589cfed6845.html` for Search Console) are **not** removed by `reset --hard`; the deploy script copies them into `build/` after each build.
 
 ## Apache vhost (once)
 
