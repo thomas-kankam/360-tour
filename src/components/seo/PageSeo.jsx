@@ -29,10 +29,14 @@ function upsertJsonLd(id, data) {
   if (existing) existing.remove();
   if (!data) return;
 
+  const payload = Array.isArray(data)
+    ? { "@context": "https://schema.org", "@graph": data }
+    : data;
+
   const script = document.createElement("script");
   script.id = id;
   script.type = "application/ld+json";
-  script.textContent = JSON.stringify(data);
+  script.textContent = JSON.stringify(payload);
   document.head.appendChild(script);
 }
 
@@ -47,13 +51,23 @@ export default function PageSeo({ override = null, jsonLd = null, jsonLdId = "pa
     upsertMeta("name", "keywords", seo.keywords);
     upsertLink("canonical", seo.canonicalUrl);
 
-    upsertMeta("property", "og:type", override ? "product" : "website");
+    const ogType = seo.ogType || "website";
+    upsertMeta("property", "og:type", ogType);
     upsertMeta("property", "og:site_name", seo.siteName);
     upsertMeta("property", "og:title", seo.title);
     upsertMeta("property", "og:description", seo.description);
     upsertMeta("property", "og:url", seo.canonicalUrl);
     upsertMeta("property", "og:image", seo.imageUrl);
     upsertMeta("property", "og:image:alt", seo.title);
+    if (seo.publishedTime) {
+      upsertMeta("property", "article:published_time", seo.publishedTime);
+    }
+    if (seo.author) {
+      upsertMeta("property", "article:author", seo.author);
+    }
+    if (seo.section) {
+      upsertMeta("property", "article:section", seo.section);
+    }
 
     upsertMeta("name", "twitter:card", "summary_large_image");
     upsertMeta("name", "twitter:title", seo.title);

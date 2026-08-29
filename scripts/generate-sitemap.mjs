@@ -46,8 +46,19 @@ async function fetchTourSlugs() {
   }
 }
 
+function readStorySlugsFromSource() {
+  try {
+    const sourcePath = path.join(ROOT, "src", "data", "storiesContent.js");
+    const source = fs.readFileSync(sourcePath, "utf8");
+    return [...source.matchAll(/slug:\s*"([^"]+)"/g)].map((match) => match[1]);
+  } catch {
+    return [];
+  }
+}
+
 async function main() {
   const tourUrls = await fetchTourSlugs();
+  const storySlugs = readStorySlugsFromSource();
 
   let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
   xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
@@ -60,11 +71,17 @@ async function main() {
     xml += urlNode(`${SITE}${item.loc}`, item.lastmod, "weekly", "0.8");
   }
 
+  for (const slug of storySlugs) {
+    xml += urlNode(`${SITE}/stories/${slug}`, null, "monthly", "0.7");
+  }
+
   xml += "</urlset>\n";
 
   const outPath = path.join(ROOT, "public", "sitemap.xml");
   await fs.promises.writeFile(outPath, xml, "utf8");
-  console.log(`Sitemap written to public/sitemap.xml (${STATIC_PATHS.length + tourUrls.length} URLs)`);
+  console.log(
+    `Sitemap written to public/sitemap.xml (${STATIC_PATHS.length + tourUrls.length + storySlugs.length} URLs)`,
+  );
 }
 
 main().catch((error) => {

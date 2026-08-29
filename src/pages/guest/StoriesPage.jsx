@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Link } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
 import { BookOpen } from "lucide-react";
 import Container from "../../components/layout/Container";
 import { ROUTES } from "../../constants/routes";
 import { stories } from "../../data/storiesContent";
+import { usePageSeo } from "../../components/seo/SeoContext";
+import { buildStoriesBlogJsonLd, buildStoriesItemListJsonLd } from "../../config/seo";
 
 const EASE = [0.16, 1, 0.3, 1];
 const rise = (delay = 0) => ({
@@ -36,6 +38,8 @@ function StoryCard({ story, index }) {
           <img
             src={story.image}
             alt={story.title}
+            loading="lazy"
+            decoding="async"
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
@@ -73,6 +77,12 @@ function StoryCard({ story, index }) {
 export default function StoriesPage() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [search, setSearch] = useState("");
+
+  const storiesJsonLd = useMemo(
+    () => [buildStoriesBlogJsonLd(stories), buildStoriesItemListJsonLd(stories)],
+    [],
+  );
+  usePageSeo(null, storiesJsonLd, "stories-index-json-ld");
 
   const featured = stories.find((s) => s.featured);
   const regular = stories.filter((s) => !s.featured);

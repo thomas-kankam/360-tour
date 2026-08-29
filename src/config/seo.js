@@ -56,8 +56,9 @@ export const ROUTE_SEO = {
       "Group travel, educational tours, corporate retreats, and volunteer experiences across Ghana with 360 Tours and Investment Limited.",
   },
   "/stories": {
-    title: `Ghana Travel Stories & Tips | ${company.shortName}`,
-    description: "Travel stories, cultural insights, and Ghana tour tips from 360 Tours Ghana.",
+    title: `Ghana Travel Stories, Blog & Tour Tips | ${company.shortName}`,
+    description:
+      "Read Ghana travel stories, safari reports, heritage reflections, and cultural guides from 360 Tours — tips for Cape Coast, Accra, Maasai Mara, and beyond.",
   },
   "/contact": {
     title: `Contact 360 Tours Ghana | Custom Quotes & WhatsApp`,
@@ -71,6 +72,11 @@ export function resolveSeoForPath(pathname) {
   const tourMatch = normalized.match(/^\/tours\/([^/]+)$/);
   if (tourMatch) {
     return resolveSeoForTourSlug(tourMatch[1]);
+  }
+
+  const storyMatch = normalized.match(/^\/stories\/([^/]+)$/);
+  if (storyMatch) {
+    return resolveSeoForStorySlug(storyMatch[1]);
   }
 
   const base = ROUTE_SEO[normalized] || DEFAULT_SEO;
@@ -129,6 +135,7 @@ export function resolveSeoForTour(tour) {
       .join(", "),
     canonicalUrl: buildWebsiteUrl(`/tours/${tour.slug}`),
     imageUrl: String(image).startsWith("http") ? image : buildWebsiteUrl(String(image).startsWith("/") ? image : DEFAULT_SEO.imagePath),
+    ogType: "product",
   };
 }
 
@@ -174,6 +181,135 @@ export function buildToursItemListJsonLd(tours = []) {
       position: index + 1,
       url: buildWebsiteUrl(`/tours/${tour.slug}`),
       name: tour.name,
+    })),
+  };
+}
+
+/** Parse display dates like "March 18, 2025" into ISO for schema.org. */
+export function parseStoryDisplayDate(value) {
+  if (!value) return undefined;
+  const parsed = Date.parse(String(value));
+  if (Number.isNaN(parsed)) return undefined;
+  return new Date(parsed).toISOString().slice(0, 10);
+}
+
+function resolveStoryImageUrl(image) {
+  if (!image) return buildWebsiteUrl(DEFAULT_SEO.imagePath);
+  const src = String(image);
+  if (src.startsWith("http")) return src;
+  return buildWebsiteUrl(src.startsWith("/") ? src : DEFAULT_SEO.imagePath);
+}
+
+export function resolveSeoForStorySlug(slug) {
+  return {
+    ...DEFAULT_SEO,
+    title: `Travel Story | ${company.shortName}`,
+    description: "Ghana and Africa travel story from 360 Tours Ghana.",
+    canonicalUrl: buildWebsiteUrl(`/stories/${slug}`),
+    imageUrl: buildWebsiteUrl(DEFAULT_SEO.imagePath),
+    ogType: "article",
+  };
+}
+
+/**
+ * SEO template for Stories/blog detail pages.
+ * Pass a story object from storiesContent.js.
+ */
+export function resolveSeoForStory(story) {
+  if (!story) return resolveSeoForPath("/stories");
+
+  const place = story.country || "Ghana";
+  const category = story.category || "Travel";
+  const keywords = [
+    story.title,
+    `${place} travel`,
+    `${category} Ghana`,
+    "360 Tours Ghana",
+    "Ghana tours blog",
+    "Africa travel stories",
+    story.country === "Ghana" ? "tours in Ghana" : `${story.country} tours`,
+  ]
+    .filter(Boolean)
+    .join(", ");
+
+  return {
+    ...DEFAULT_SEO,
+    title: `${story.title} | ${company.shortName}`,
+    description: (story.excerpt || "").slice(0, 320),
+    keywords,
+    canonicalUrl: buildWebsiteUrl(`/stories/${story.slug}`),
+    imageUrl: resolveStoryImageUrl(story.image),
+    ogType: "article",
+    publishedTime: parseStoryDisplayDate(story.date),
+    author: story.author || company.shortName,
+    section: category,
+  };
+}
+
+export function buildStoryArticleJsonLd(story) {
+  if (!story?.slug) return null;
+
+  const published = parseStoryDisplayDate(story.date);
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: story.title,
+    description: story.excerpt,
+    url: buildWebsiteUrl(`/stories/${story.slug}`),
+    image: resolveStoryImageUrl(story.image),
+    datePublished: published,
+    dateModified: published,
+    author: {
+      "@type": "Person",
+      name: story.author || company.shortName,
+      jobTitle: story.authorRole || undefined,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: company.name,
+      logo: {
+        "@type": "ImageObject",
+        url: buildWebsiteUrl("/images/logo.png"),
+      },
+    },
+    articleSection: story.category,
+    keywords: [story.category, story.country, "Ghana tours", "360 Tours"].filter(Boolean).join(", "),
+    mainEntityOfPage: buildWebsiteUrl(`/stories/${story.slug}`),
+  };
+}
+
+export function buildStoriesItemListJsonLd(storyList = []) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "360 Tours Ghana Travel Stories",
+    itemListElement: storyList.slice(0, 30).map((story, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      url: buildWebsiteUrl(`/stories/${story.slug}`),
+      name: story.title,
+    })),
+  };
+}
+
+export function buildStoriesBlogJsonLd(storyList = []) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    name: "360 Tours Ghana Travel Stories",
+    description: ROUTE_SEO["/stories"].description,
+    url: buildWebsiteUrl("/stories"),
+    publisher: {
+      "@type": "Organization",
+      name: company.name,
+      url: buildWebsiteUrl("/"),
+    },
+    blogPost: storyList.slice(0, 10).map((story) => ({
+      "@type": "BlogPosting",
+      headline: story.title,
+      url: buildWebsiteUrl(`/stories/${story.slug}`),
+      datePublished: parseStoryDisplayDate(story.date),
     })),
   };
 }

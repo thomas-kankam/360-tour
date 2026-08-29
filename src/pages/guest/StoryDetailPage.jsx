@@ -1,9 +1,12 @@
 import { Link, useParams } from "react-router";
+import { useMemo } from "react";
 import { motion } from "motion/react";
 import { BookOpen } from "lucide-react";
 import Container from "../../components/layout/Container";
 import { ROUTES } from "../../constants/routes";
 import { getStoryBySlug, stories } from "../../data/storiesContent";
+import { usePageSeo } from "../../components/seo/SeoContext";
+import { buildStoryArticleJsonLd, resolveSeoForStory } from "../../config/seo";
 
 const EASE = [0.16, 1, 0.3, 1];
 
@@ -70,6 +73,10 @@ export default function StoryDetailPage() {
   const { slug } = useParams();
   const story = getStoryBySlug(slug);
 
+  const storySeo = useMemo(() => (story ? resolveSeoForStory(story) : null), [story]);
+  const storyJsonLd = useMemo(() => (story ? buildStoryArticleJsonLd(story) : null), [story]);
+  usePageSeo(storySeo, storyJsonLd, "story-article-json-ld");
+
   if (!story) {
     return (
       <div className="min-h-[50vh] bg-white py-20 text-center">
@@ -95,7 +102,7 @@ export default function StoryDetailPage() {
 
       {/* Hero image */}
       <div className="relative h-[40vh] min-h-[280px] max-h-[480px] overflow-hidden sm:h-[45vh]">
-        <img src={story.image} alt="" className="h-full w-full object-cover" />
+        <img src={story.image} alt={story.title} fetchPriority="high" decoding="async" className="h-full w-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-brand-ink/80 via-brand-ink/30 to-brand-ink/20" />
         <Container className="absolute inset-x-0 bottom-0 pb-8 pt-16">
           <motion.div
@@ -230,7 +237,7 @@ export default function StoryDetailPage() {
                   className="group overflow-hidden rounded-xl border border-brand-border/60 bg-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
                 >
                   <div className="aspect-[16/10] overflow-hidden">
-                    <img src={s.image} alt="" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                    <img src={s.image} alt={s.title} loading="lazy" decoding="async" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
                   </div>
                   <div className="p-4">
                     <p className="text-xs font-semibold text-brand-green">{s.country}</p>
