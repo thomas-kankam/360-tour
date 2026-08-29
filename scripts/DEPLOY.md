@@ -28,6 +28,11 @@ Use `bash scripts/deploy-ubuntu.sh` if `./scripts/deploy-ubuntu.sh` says "Permis
 
 You do **not** need to run `generate:sitemap`, `generate:seo`, or `npm run build` separately.
 
+## `.env.production` on the server
+
+Values with spaces must be quoted, e.g. `REACT_APP_APP_NAME="360 Tours Ghana"`.  
+If you see `Tours: command not found`, fix line 2 in `.env.production` on the server, then re-run deploy.
+
 ## Overrides
 
 ```bash

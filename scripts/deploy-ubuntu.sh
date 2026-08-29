@@ -113,6 +113,32 @@ reload_apache() {
   sudo systemctl reload apache2
 }
 
+# Load KEY=VALUE lines from a dotenv file (safe for spaces; does not use shell source).
+load_dotenv() {
+  local file="$1"
+  local line key val
+  while IFS= read -r line || [[ -n "$line" ]]; do
+    [[ -z "${line//[[:space:]]/}" ]] && continue
+    [[ "$line" =~ ^[[:space:]]*# ]] && continue
+    [[ "$line" != *"="* ]] && continue
+
+    key="${line%%=*}"
+    val="${line#*=}"
+    key="${key#"${key%%[![:space:]]*}"}"
+    key="${key%"${key##*[![:space:]]}"}"
+    val="${val#"${val%%[![:space:]]*}"}"
+    val="${val%"${val##*[![:space:]]}"}"
+
+    if [[ "$val" =~ ^\"(.*)\"$ ]]; then
+      val="${BASH_REMATCH[1]}"
+    elif [[ "$val" =~ ^\'(.*)\'$ ]]; then
+      val="${BASH_REMATCH[1]}"
+    fi
+
+    export "${key}=${val}"
+  done < "$file"
+}
+
 # ── Preflight ────────────────────────────────────────────────────────────────
 command -v git >/dev/null 2>&1 || fail "git is not installed"
 command -v "${NPM_CMD}" >/dev/null 2>&1 || fail "${NPM_CMD} is not installed"
@@ -148,8 +174,7 @@ fi
 if [[ -f "${APP_DIR}/.env.production" ]]; then
   log "Using .env.production for build"
   set -a
-  # shellcheck disable=SC1091
-  source "${APP_DIR}/.env.production"
+  load_dotenv "${APP_DIR}/.env.production"
   set +a
 else
   warn ".env.production missing — build uses defaults / shell env"
