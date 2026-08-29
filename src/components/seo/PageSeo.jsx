@@ -24,24 +24,36 @@ function upsertLink(rel, href) {
   el.setAttribute("href", href);
 }
 
-export default function PageSeo() {
+function upsertJsonLd(id, data) {
+  const existing = document.getElementById(id);
+  if (existing) existing.remove();
+  if (!data) return;
+
+  const script = document.createElement("script");
+  script.id = id;
+  script.type = "application/ld+json";
+  script.textContent = JSON.stringify(data);
+  document.head.appendChild(script);
+}
+
+export default function PageSeo({ override = null, jsonLd = null, jsonLdId = "page-json-ld" }) {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    const seo = resolveSeoForPath(pathname);
+    const seo = override || resolveSeoForPath(pathname);
     document.title = seo.title;
 
     upsertMeta("name", "description", seo.description);
     upsertMeta("name", "keywords", seo.keywords);
     upsertLink("canonical", seo.canonicalUrl);
 
-    upsertMeta("property", "og:type", "website");
+    upsertMeta("property", "og:type", override ? "product" : "website");
     upsertMeta("property", "og:site_name", seo.siteName);
     upsertMeta("property", "og:title", seo.title);
     upsertMeta("property", "og:description", seo.description);
     upsertMeta("property", "og:url", seo.canonicalUrl);
     upsertMeta("property", "og:image", seo.imageUrl);
-    upsertMeta("property", "og:image:alt", `${seo.siteName} logo`);
+    upsertMeta("property", "og:image:alt", seo.title);
 
     upsertMeta("name", "twitter:card", "summary_large_image");
     upsertMeta("name", "twitter:title", seo.title);
@@ -50,7 +62,14 @@ export default function PageSeo() {
     if (seo.twitterHandle) {
       upsertMeta("name", "twitter:site", seo.twitterHandle);
     }
-  }, [pathname]);
+
+    upsertJsonLd(jsonLdId, jsonLd);
+
+    return () => {
+      const node = document.getElementById(jsonLdId);
+      if (node) node.remove();
+    };
+  }, [pathname, override, jsonLd, jsonLdId]);
 
   return null;
 }

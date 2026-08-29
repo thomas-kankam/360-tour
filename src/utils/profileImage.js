@@ -1,4 +1,5 @@
 import uploadServiceApi from "../apis/UploadServiceApi";
+import { resolvePublicMediaUrl } from "./mediaUrl";
 import { optimizeImageFile } from "./imageOptimize";
 
 export function resolveProfileImageSrc(value) {
@@ -18,10 +19,10 @@ export function resolveProfileImageSrc(value) {
       try {
         return resolveProfileImageSrc(JSON.parse(trimmed));
       } catch {
-        return trimmed;
+        return resolvePublicMediaUrl(trimmed);
       }
     }
-    return trimmed;
+    return resolvePublicMediaUrl(trimmed);
   }
 
   if (typeof value === "object") {
@@ -30,7 +31,7 @@ export function resolveProfileImageSrc(value) {
       if (data.startsWith("data:")) return data;
       if (value.mimeType) return `data:${value.mimeType};base64,${data}`;
     }
-    return value.url || value.uri || value.src || value.profileImage || "";
+    return resolvePublicMediaUrl(value.url || value.uri || value.src || value.profileImage || "");
   }
 
   return "";

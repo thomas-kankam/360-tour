@@ -2,6 +2,7 @@ import { formatBookingCurrency } from "./bookingHelpers";
 import { parsePaginatedList } from "./adminPaginationHelpers";
 import { mapApiPayment } from "./paymentHelpers";
 import { mapOperatorBooking } from "./operatorBookingHelpers";
+import { resolvePublicMediaUrl } from "./mediaUrl";
 
 export const OPERATOR_PAYMENT_METHOD = {
   online: { label: "Online", className: "bg-brand-green/10 text-brand-green ring-brand-green/20" },
@@ -30,7 +31,7 @@ export function mapOperatorPayment(raw) {
     amount: resolvedAmount,
     amountLabel: formatBookingCurrency(resolvedAmount, payment.currency),
     tourName: booking?.tour?.name || raw.booking?.tour?.name || "Tour booking",
-    tourImage: booking?.tour?.image || raw.booking?.tour?.coverImageUrl || "",
+    tourImage: resolvePublicMediaUrl(booking?.tour?.image || raw.booking?.tour?.coverImageUrl || ""),
     travelerName: `${traveler.firstName || ""} ${traveler.lastName || ""}`.trim(),
     booking,
   };

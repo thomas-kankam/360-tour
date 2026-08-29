@@ -3,58 +3,177 @@ import { company } from "../data/aboutContent";
 
 export const DEFAULT_SEO = {
   siteName: company.shortName,
-  title: `${company.shortName} | Tours, Stays & Transport Across Ghana`,
+  title: `${company.shortName} | 360 Tours, Ghana Travel & Africa Adventures`,
   description:
-    "360 Tours and Investment Limited — guided tours, accommodation, and transportation across Ghana and beyond. Book heritage tours, adventure trips, and tailor-made travel from Accra to Cape Coast, Kumasi, and the Volta Region.",
-  keywords:
-    "360 Tours Ghana, Ghana tours, Accra tours, Cape Coast tours, Kumasi travel, Ghana heritage tours, Africa travel, tour operator Ghana",
+    "360 Tours Ghana — book guided tours in Ghana and Africa. Heritage trips, Cape Coast castles, Kumasi culture, Volta waterfalls, tailor-made group travel, stays and transport. Accra-based tour operator.",
+  keywords: [
+    "360 Tours Ghana",
+    "360 tour",
+    "360 tours",
+    "Ghana tours",
+    "tours in Ghana",
+    "Ghana travel",
+    "Accra tours",
+    "Cape Coast tours",
+    "Kumasi tours",
+    "Volta Region tours",
+    "Ghana heritage tours",
+    "Africa tours",
+    "West Africa travel",
+    "Ghana tour operator",
+    "group tours Ghana",
+    "custom Ghana itinerary",
+    "Ghana vacation packages",
+    "tour packages Ghana",
+  ].join(", "),
   imagePath: "/images/seo/og-image.png",
   twitterHandle: "",
 };
 
 export const ROUTE_SEO = {
   "/": {
-    title: `${company.shortName} | Discover Africa. Travel Without Limits.`,
+    title: `${company.shortName} | 360 Tours — Discover Africa. Travel Without Limits.`,
     description: DEFAULT_SEO.description,
   },
   "/about": {
-    title: `Our Story | ${company.shortName}`,
+    title: `About 360 Tours Ghana | Local Tour Operator`,
     description:
-      "Meet the Ghanaian team behind 360 Tours — guided tours, stays, transport, and itineraries built around the way you want to travel.",
+      "Meet the Ghanaian team behind 360 Tours — guided heritage tours, stays, transport, and custom itineraries across Ghana and Africa.",
   },
   "/tours": {
-    title: `Ghana Tours by Region | ${company.shortName}`,
+    title: `Ghana Tours & Travel Packages | ${company.shortName}`,
     description:
-      "Browse Ghana tours region by region — Greater Accra, Central, Ashanti, Volta, and beyond. Scheduled departures plus tailor-made journeys with local guides.",
+      "Browse all Ghana tours and travel packages — scheduled departures and tailor-made trips to Accra, Cape Coast, Kumasi, Takoradi, Volta, and beyond with local guides.",
   },
   "/why-us": {
-    title: `Why Travel With Us | ${company.shortName}`,
+    title: `Why Book Ghana Tours With 360 Tours | ${company.shortName}`,
     description:
-      "Eight reasons travellers choose 360 Tours for Ghana — local guides, safe transport, flexible planning, and end-to-end coordination.",
+      "Eight reasons travellers choose 360 Tours Ghana — local guides, safe transport, flexible planning, and end-to-end trip coordination.",
   },
   "/experiences": {
-    title: `Travel Experiences | ${company.shortName}`,
+    title: `Ghana Travel Experiences | Group & Educational Tours`,
     description:
       "Group travel, educational tours, corporate retreats, and volunteer experiences across Ghana with 360 Tours and Investment Limited.",
   },
   "/stories": {
-    title: `Travel Stories & Insights | ${company.shortName}`,
-    description: "Travel perspectives, cultural insights, and news from 360 Tours Ghana.",
+    title: `Ghana Travel Stories & Tips | ${company.shortName}`,
+    description: "Travel stories, cultural insights, and Ghana tour tips from 360 Tours Ghana.",
   },
   "/contact": {
-    title: `Contact & Custom Quotes | ${company.shortName}`,
+    title: `Contact 360 Tours Ghana | Custom Quotes & WhatsApp`,
     description:
-      "Plan your Ghana trip with 360 Tours — custom quotes, group travel, visa guidance, and WhatsApp support.",
+      "Plan your Ghana tour with 360 Tours — custom quotes, group travel, visa guidance, and WhatsApp support from Accra.",
   },
 };
 
 export function resolveSeoForPath(pathname) {
-  const base = ROUTE_SEO[pathname] || DEFAULT_SEO;
-  const canonicalPath = pathname === "/" ? "" : pathname;
+  const normalized = pathname.replace(/\/+$/, "") || "/";
+  const tourMatch = normalized.match(/^\/tours\/([^/]+)$/);
+  if (tourMatch) {
+    return resolveSeoForTourSlug(tourMatch[1]);
+  }
+
+  const base = ROUTE_SEO[normalized] || DEFAULT_SEO;
+  const canonicalPath = normalized === "/" ? "" : normalized;
   return {
     ...DEFAULT_SEO,
     ...base,
     canonicalUrl: buildWebsiteUrl(canonicalPath),
     imageUrl: buildWebsiteUrl(DEFAULT_SEO.imagePath),
+  };
+}
+
+export function resolveSeoForTourSlug(slug) {
+  return {
+    ...DEFAULT_SEO,
+    title: `Ghana Tour | ${company.shortName}`,
+    description: `View tour details, itinerary, prices, and departure dates for this Ghana travel package with ${company.shortName}.`,
+    canonicalUrl: buildWebsiteUrl(`/tours/${slug}`),
+    imageUrl: buildWebsiteUrl(DEFAULT_SEO.imagePath),
+  };
+}
+
+export function resolveSeoForTour(tour) {
+  if (!tour) return resolveSeoForPath("/tours");
+
+  const locations = Array.isArray(tour.locations) ? tour.locations.filter(Boolean).join(", ") : tour.location || "";
+  const regionText = (tour.regionLabels || []).slice(0, 2).join(", ");
+  const place = locations || regionText || tour.country || "Ghana";
+  const duration = tour.duration || tour.durationLabel || "";
+  const price = tour.priceLabel || "";
+
+  const descriptionParts = [
+    tour.description?.slice(0, 140),
+    place ? `Visit ${place}.` : "",
+    duration ? `${duration}.` : "",
+    price ? `From ${price}.` : "",
+    "Book with 360 Tours Ghana.",
+  ].filter(Boolean);
+
+  const image = tour.image || tour.coverImageUrl || tour.gallery?.[0] || DEFAULT_SEO.imagePath;
+
+  return {
+    ...DEFAULT_SEO,
+    title: `${tour.name} | Ghana Tour | ${company.shortName}`,
+    description: descriptionParts.join(" ").slice(0, 320),
+    keywords: [
+      tour.name,
+      "Ghana tour",
+      "360 Tours Ghana",
+      place,
+      regionText,
+      tour.country,
+      "tours in Ghana",
+    ]
+      .filter(Boolean)
+      .join(", "),
+    canonicalUrl: buildWebsiteUrl(`/tours/${tour.slug}`),
+    imageUrl: String(image).startsWith("http") ? image : buildWebsiteUrl(String(image).startsWith("/") ? image : DEFAULT_SEO.imagePath),
+  };
+}
+
+export function buildTourProductJsonLd(tour) {
+  if (!tour?.slug) return null;
+
+  const locations = Array.isArray(tour.locations) ? tour.locations.filter(Boolean) : [];
+  const price = Number(tour.priceNum || tour.priceAmount) || undefined;
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "TouristTrip",
+    name: tour.name,
+    description: tour.description || tour.descriptionSnippet || undefined,
+    url: buildWebsiteUrl(`/tours/${tour.slug}`),
+    image: tour.image || tour.coverImageUrl || buildWebsiteUrl(DEFAULT_SEO.imagePath),
+    touristType: "Leisure travelers",
+    provider: {
+      "@type": "TravelAgency",
+      name: company.name,
+      url: buildWebsiteUrl("/"),
+    },
+    itinerary: locations.length ? { "@type": "Place", name: locations.join(", ") } : undefined,
+    offers: price
+      ? {
+          "@type": "Offer",
+          price,
+          priceCurrency: tour.priceCurrency || "GHS",
+          availability: "https://schema.org/InStock",
+          url: buildWebsiteUrl(`/tours/${tour.slug}/book`),
+        }
+      : undefined,
+  };
+}
+
+export function buildToursItemListJsonLd(tours = []) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Ghana Tours by 360 Tours Ghana",
+    itemListElement: tours.slice(0, 20).map((tour, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      url: buildWebsiteUrl(`/tours/${tour.slug}`),
+      name: tour.name,
+    })),
   };
 }

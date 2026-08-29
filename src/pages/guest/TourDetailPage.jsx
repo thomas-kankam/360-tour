@@ -29,6 +29,8 @@ import { formatTourDurationLabel, formatDepartureDateLabel, formatDepartureRange
 import { buildListingsPayloadFromCountry } from "../../utils/publicListingsHelpers";
 import { parseInclusionItemText } from "../../utils/inclusionItemText";
 import { getWhatsAppUrl } from "../../config/env";
+import { usePageSeo } from "../../components/seo/SeoContext";
+import { buildTourProductJsonLd, resolveSeoForTour } from "../../config/seo";
 
 const EASE = [0.22, 1, 0.36, 1];
 
@@ -290,6 +292,8 @@ function TourGalleryCollage({ images, badge, alt, onImageClick, departDay, depar
           <img
             src={mainImage}
             alt={alt}
+            fetchPriority="high"
+            decoding="async"
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
           />
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-brand-primary/30 via-transparent to-transparent" />
@@ -334,6 +338,8 @@ function TourGalleryCollage({ images, badge, alt, onImageClick, departDay, depar
                 <img
                   src={url}
                   alt=""
+                  loading="lazy"
+                  decoding="async"
                   className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                 />
               </button>
@@ -491,6 +497,10 @@ export default function TourDetailPage() {
     if (urls.includes(cover)) return urls;
     return [cover, ...urls];
   }, [tour]);
+
+  const tourSeo = useMemo(() => (tour ? resolveSeoForTour(tour) : null), [tour]);
+  const tourJsonLd = useMemo(() => (tour ? buildTourProductJsonLd(tour) : null), [tour]);
+  usePageSeo(tourSeo, tourJsonLd, "tour-product-json-ld");
 
   if (loading) {
     return (
@@ -677,6 +687,8 @@ export default function TourDetailPage() {
                     <img
                       src={t.image}
                       alt={t.name}
+                      loading="lazy"
+                      decoding="async"
                       className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-brand-primary/75 via-brand-primary/15 to-transparent" />

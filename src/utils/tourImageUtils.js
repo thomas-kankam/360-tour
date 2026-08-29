@@ -1,3 +1,5 @@
+import { resolvePublicMediaUrl, toStorageRelativeUrl } from "./mediaUrl";
+
 const DATA_URL_RE = /^data:([^;]+);base64,(.+)$/;
 const REMOTE_URL_RE = /^https?:\/\//i;
 
@@ -97,13 +99,13 @@ export function normalizeTourImages(tour) {
 
 export function getImagePreviewSrc(image) {
   if (!image) return "";
-  if (typeof image === "string") return image;
+  if (typeof image === "string") return resolvePublicMediaUrl(image);
   if (image.data) {
     if (image.data.startsWith("data:")) return image.data;
     const mime = image.mimeType || "image/jpeg";
     return `data:${mime};base64,${image.data}`;
   }
-  return image.uri || "";
+  return resolvePublicMediaUrl(image.uri || "");
 }
 
 export function isRemoteImageUrl(value) {
@@ -116,7 +118,7 @@ export function hasUploadedImageData(image) {
   return Boolean(normalizeTourImage(image).data);
 }
 
-/** Returns an https URL for unchanged images, or a base64 data URI for new uploads. */
+/** Returns a stored `/storage` path, a local `/images` path, or a data URI for new uploads. */
 export function resolveImageForApiPayload(image, fallbackUrl = "") {
   const normalized = normalizeTourImage(image, fallbackUrl);
 
@@ -126,12 +128,13 @@ export function resolveImageForApiPayload(image, fallbackUrl = "") {
 
   const candidate = normalized.uri || fallbackUrl;
   if (isRemoteImageUrl(candidate) || candidate.startsWith("/storage/") || candidate.startsWith("/images/")) {
-    return candidate;
+    return candidate.startsWith("/images/") ? candidate : toStorageRelativeUrl(candidate);
   }
 
-  return isRemoteImageUrl(fallbackUrl) || fallbackUrl.startsWith("/storage/") || fallbackUrl.startsWith("/images/")
+  const fallback = isRemoteImageUrl(fallbackUrl) || fallbackUrl.startsWith("/storage/") || fallbackUrl.startsWith("/images/")
     ? fallbackUrl
     : fallbackUrl || "";
+  return fallback.startsWith("/images/") ? fallback : toStorageRelativeUrl(fallback);
 }
 
 export function toApiImagePayload(image) {

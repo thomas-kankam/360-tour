@@ -2,6 +2,7 @@ import { parsePaginatedList } from "./adminPaginationHelpers";
 import { formatBookingCurrency } from "./bookingHelpers";
 import { mapAdminClient } from "./adminClientHelpers";
 import { mapAdminOperator } from "./adminListingHelpers";
+import { resolvePublicMediaUrl } from "./mediaUrl";
 import {
   formatOperatorBookingDate,
   getOperatorBookingStatusConfig,
@@ -35,7 +36,7 @@ export function mapAdminBooking(raw) {
     operatorOrganization: operator?.organization || "",
     travelerName: `${traveler.firstName || ""} ${traveler.lastName || ""}`.trim(),
     tourTitle: booking.tour?.name || raw.tour?.name || "",
-    tourImage: booking.tour?.image || raw.tour?.coverImageUrl || "",
+    tourImage: resolvePublicMediaUrl(booking.tour?.image || raw.tour?.coverImageUrl || ""),
   };
 }
 

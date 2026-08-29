@@ -4,11 +4,17 @@ import GuestNavbar from "../components/navigation/GuestNavbar";
 import LandingQuickActions from "../components/layout/LandingQuickActions";
 import ScrollToTop from "../components/misc/ScrollToTop";
 import PageSeo from "../components/seo/PageSeo";
+import { SeoProvider, useSeoContext } from "../components/seo/SeoContext";
+
+function GuestSeo() {
+  const { override, jsonLd, jsonLdId } = useSeoContext();
+  return <PageSeo override={override} jsonLd={jsonLd} jsonLdId={jsonLdId} />;
+}
 
 export default function GuestLayout() {
   return (
-    <div className="flex min-h-screen flex-col">
-      <PageSeo />
+    <SeoProvider>
+      <GuestSeo />
       <ScrollToTop />
       <GuestNavbar />
       <main className="flex-1">
@@ -16,6 +22,6 @@ export default function GuestLayout() {
       </main>
       <Footer />
       <LandingQuickActions />
-    </div>
+    </SeoProvider>
   );
 }

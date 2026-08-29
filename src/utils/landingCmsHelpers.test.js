@@ -28,7 +28,9 @@ describe("landing CMS helpers", () => {
       },
     });
 
-    expect(merged.destinations.items[0].image).toBe("http://127.0.0.1:8000/storage/uploads/images/accra.webp");
+    expect(merged.destinations.items[0].image).toBe(
+      "https://api.360toursghana.com/storage/uploads/images/accra.webp",
+    );
   });
 
   test("clears unmatched remote stock photos", () => {

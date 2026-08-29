@@ -59,4 +59,20 @@ export function buildWebsiteUrl(path = "") {
   return `${base}${path.startsWith("/") ? path : `/${path}`}`;
 }
 
+/** Origin that serves Laravel `/storage` files (API host in production, CRA origin in dev). */
+export function getApiOrigin() {
+  const apiUrl = String(env.apiUrl || "").trim();
+  if (/^https?:\/\//i.test(apiUrl)) {
+    try {
+      return new URL(apiUrl).origin;
+    } catch {
+      return "";
+    }
+  }
+  if (typeof window !== "undefined" && window.location?.origin) {
+    return window.location.origin;
+  }
+  return "";
+}
+
 export default env;

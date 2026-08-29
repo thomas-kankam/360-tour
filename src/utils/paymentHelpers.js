@@ -1,4 +1,5 @@
 import { formatBookingCurrency, resolveBookingAmount, mapApiBookingToListRecord } from "./bookingHelpers";
+import { resolvePublicMediaUrl } from "./mediaUrl";
 
 export function mapApiPayment(data) {
   if (!data) return null;
@@ -32,7 +33,7 @@ export function mapApiPaymentToListRecord(raw) {
     amount: resolvedAmount,
     amountLabel: formatBookingCurrency(resolvedAmount, payment.currency),
     tourName: booking?.tour?.name || payment.booking?.tour?.name || "Tour booking",
-    tourImage: booking?.tour?.image || payment.booking?.tour?.coverImageUrl || "",
+    tourImage: resolvePublicMediaUrl(booking?.tour?.image || payment.booking?.tour?.coverImageUrl || ""),
     booking,
   };
 }

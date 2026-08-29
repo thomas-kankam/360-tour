@@ -1,6 +1,7 @@
 import env from "../config/env";
 import { formatBookingCurrency } from "./bookingHelpers";
 import { getBookingStatus } from "./bookingStorage";
+import { resolvePublicMediaUrl } from "./mediaUrl";
 import {
   PDF_COLORS,
   buildPdfFilename,
@@ -66,7 +67,7 @@ export function mapVerifiedPaymentToReceipt(paymentData) {
       name: tour.name || "Tour booking",
       location: locations,
       duration: tour.durationLabel || (tour.durationDays ? `${tour.durationDays} days` : ""),
-      image: tour.coverImageUrl || "",
+      image: resolvePublicMediaUrl(tour.coverImageUrl || ""),
     },
     selectedDate: formatDepartureDate(booking.selectedDate),
     selectedDateRaw: booking.selectedDate,

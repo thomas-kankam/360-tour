@@ -1,3 +1,5 @@
+import { resolvePublicMediaUrl } from "./mediaUrl";
+
 const STORAGE_KEY = "360tours_admin_invoices";
 
 export const INVOICE_STATUSES = ["draft", "sent", "paid", "cancelled"];
@@ -199,7 +201,7 @@ export function mapApiCompanySettings(raw) {
     addressLine1: raw.address_line_1 ?? raw.addressLine1 ?? "",
     addressLine2: raw.address_line_2 ?? raw.addressLine2 ?? "",
     taxId: raw.tax_id ?? raw.taxId ?? "",
-    invoiceLogo: raw.invoice_logo ?? raw.invoiceLogo ?? "",
+    invoiceLogo: resolvePublicMediaUrl(raw.invoice_logo ?? raw.invoiceLogo ?? ""),
     bankName: raw.bank_name ?? raw.bankName ?? "",
     bankAccount: raw.bank_account ?? raw.bankAccount ?? "",
     bankRouting: raw.bank_routing ?? raw.bankRouting ?? "",

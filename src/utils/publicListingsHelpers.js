@@ -2,6 +2,7 @@ import { mapOperatorTour } from "./operatorTourMapper";
 import { resolveTourUnitPrice } from "./bookingHelpers";
 import { buildTourPriceDisplay, inferAudienceScope, resolveTourListPriceGhs, resolveTourListPriceUsd } from "./tourPricing";
 import { GHANA_REGIONS, getRegionLabel, isGhanaRegionId } from "../data/ghanaRegions";
+import { resolvePublicMediaUrl } from "./mediaUrl";
 import {
   formatTourSlotsLabel,
   getTourTypeLabel,
@@ -218,10 +219,11 @@ export function mapPublicTourCard(tour) {
     priceNum: resolveTourUnitPrice(tour),
     rating: Number(tour.rating) || 0,
     reviews: Number(tour.reviewCount) || 0,
-    image: tour.coverImageUrl || "",
+    image: resolvePublicMediaUrl(tour.coverImageUrl || ""),
     spotsLeft,
     totalSpots,
     highlight,
+    highlights: (tour.highlights || []).filter(Boolean),
     descriptionSnippet,
     departureDates: (tour.departureDates || []).map((departure) => departure.date).filter(Boolean),
   };

@@ -18,6 +18,7 @@ import {
 } from "./operatorTourConstants";
 import { inferAudienceScope } from "./tourPricing";
 import { normalizeTourImages, resolveImageForApiPayload, normalizeTourImage } from "./tourImageUtils";
+import { resolvePublicMediaUrl } from "./mediaUrl";
 
 const POPULAR_GHANA_CITIES = [
   "Accra",
@@ -210,7 +211,7 @@ export function buildLocationsLabel(locations) {
 
 function normalizeItineraryDay(day, index) {
   if (!day) return null;
-  const imageUrl = day.imageUrl || day.image_url || day.image?.uri || "";
+  const imageUrl = resolvePublicMediaUrl(day.imageUrl || day.image_url || day.image?.uri || "");
   return {
     day: Number(day.day) || index + 1,
     title: day.title || "",

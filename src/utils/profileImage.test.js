@@ -8,7 +8,7 @@ describe("resolveProfileImageSrc", () => {
 
   test("returns a stored URL", () => {
     expect(resolveProfileImageSrc("http://127.0.0.1:8000/storage/uploads/images/a.webp")).toBe(
-      "http://127.0.0.1:8000/storage/uploads/images/a.webp",
+      "https://api.360toursghana.com/storage/uploads/images/a.webp",
     );
   });
 

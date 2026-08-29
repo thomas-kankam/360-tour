@@ -37,7 +37,8 @@
     "eject": "react-scripts eject",
     "optimize:gallery": "node scripts/optimize-gallery-images.mjs",
     "generate:seo": "node scripts/generate-seo-assets.mjs",
-    "prebuild": "node scripts/clear-eslint-cache.mjs && node scripts/generate-seo-assets.mjs",
+    "generate:sitemap": "node scripts/generate-sitemap.mjs",
+    "prebuild": "node scripts/clear-eslint-cache.mjs && node scripts/generate-seo-assets.mjs && node scripts/generate-sitemap.mjs",
     "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "eslintConfig": {

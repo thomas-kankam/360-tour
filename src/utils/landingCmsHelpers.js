@@ -2,6 +2,7 @@ import { dataUrlToFile, isTrustedMediaUrl, optimizeImageFile } from "./imageOpti
 import uploadServiceApi from "../apis/UploadServiceApi";
 import { LANDING_CMS_DEFAULTS } from "./landingCmsStorage";
 import { mergeCmsItems } from "./landingCmsItems";
+import { resolvePublicMediaUrl } from "./mediaUrl";
 
 function isStaleGalleryDestinationImage(image) {
   return /\/images\/gallery\/optimized\/(?!hero\b)/i.test(String(image || ""));
@@ -14,9 +15,18 @@ function sanitizeBrokenRemoteImages(content) {
     items.forEach((item) => {
       if (!isTrustedMediaUrl(item?.image) || isStaleGalleryDestinationImage(item?.image)) {
         item.image = "";
+        return;
       }
+      item.image = resolvePublicMediaUrl(item.image);
     });
   });
+
+  if (content?.hero?.backgroundImage) {
+    content.hero.backgroundImage = resolvePublicMediaUrl(content.hero.backgroundImage);
+  }
+  if (content?.cta?.image) {
+    content.cta.image = resolvePublicMediaUrl(content.cta.image);
+  }
 }
 
 const SECTION_IDS = ["hero", "tours", "destinations", "regions", "gallery", "testimonials", "explore", "cta"];

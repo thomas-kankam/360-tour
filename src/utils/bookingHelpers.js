@@ -1,6 +1,7 @@
 import { buildWebsiteUrl } from "../config/env";
 import { PAYMENT_REGION } from "../constants/paymentRegions";
 import { getBookingStatus } from "./bookingStorage";
+import { resolvePublicMediaUrl } from "./mediaUrl";
 import { computeChargeSubtotal, resolveTourDisplayPricing } from "./tourPricing";
 
 export const DEFAULT_MIN_GROUP_TRAVELERS = 2;
@@ -335,7 +336,7 @@ function mapTourFromApiBooking(apiTour) {
     priceAmountUsd: apiTour.priceAmountUsd,
     audienceScope: apiTour.audienceScope,
     priceCurrency: apiTour.priceCurrency,
-    image: apiTour.coverImageUrl || "",
+    image: resolvePublicMediaUrl(apiTour.coverImageUrl || ""),
     depositPercent: apiTour.bookingSettings?.depositPercent ?? 30,
   };
 }

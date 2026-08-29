@@ -4,7 +4,7 @@ describe("resolveImageForApiPayload", () => {
   test("sends stored file URLs instead of leftover filenames", () => {
     expect(
       resolveImageForApiPayload({ uri: "http://127.0.0.1:8000/storage/uploads/images/cover.webp", data: "" }),
-    ).toBe("http://127.0.0.1:8000/storage/uploads/images/cover.webp");
+    ).toBe("/storage/uploads/images/cover.webp");
   });
 
   test("accepts relative storage and local image paths", () => {

@@ -6,6 +6,7 @@ import {
   getOperatorPaymentMethodConfig,
   summarizeOperatorPayments,
 } from "./operatorPaymentHelpers";
+import { resolvePublicMediaUrl } from "./mediaUrl";
 
 export function mapAdminPayment(raw) {
   const payment = mapApiPayment(raw);
@@ -21,7 +22,7 @@ export function mapAdminPayment(raw) {
     amount: resolvedAmount,
     amountLabel: formatBookingCurrency(resolvedAmount, payment.currency),
     tourName: booking?.tourTitle || booking?.tour?.name || raw.booking?.tour?.name || "Tour booking",
-    tourImage: booking?.tourImage || booking?.tour?.image || raw.booking?.tour?.coverImageUrl || "",
+    tourImage: resolvePublicMediaUrl(booking?.tourImage || booking?.tour?.image || raw.booking?.tour?.coverImageUrl || ""),
     travelerName: booking?.travelerName || `${traveler.firstName || ""} ${traveler.lastName || ""}`.trim(),
     clientName: booking?.clientName || booking?.client?.name || "",
     operatorName: booking?.operatorOrganization || booking?.operatorName || "",

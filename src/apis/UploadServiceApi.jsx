@@ -1,6 +1,7 @@
 import axios from "axios";
 import env from "../config/env";
 import { parseApiEnvelope, parseApiError } from "../utils/apiResponse";
+import { resolvePublicMediaUrl } from "../utils/mediaUrl";
 
 class UploadServiceApi {
   constructor() {
@@ -26,7 +27,7 @@ class UploadServiceApi {
         },
       });
       const result = parseApiEnvelope(response);
-      const url = result.data?.url || "";
+      const url = resolvePublicMediaUrl(result.data?.url || "");
       return {
         ...result,
         url,
