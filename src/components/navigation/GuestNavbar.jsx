@@ -12,11 +12,8 @@ const guestActions = (
     >
       Sign in
     </Link>
-    <Link
-      to={ROUTES.signup}
-      className="btn-accent shadow-[0_6px_20px_-6px_rgba(255,219,88,0.85)]"
-    >
-      Get started
+    <Link to={ROUTES.tours} className="btn-accent shadow-gold">
+      Book a tour
     </Link>
   </>
 );
@@ -26,11 +23,8 @@ const guestMobileActions = (
     <Link to={ROUTES.login} className="btn-secondary w-full justify-center py-3">
       Sign in
     </Link>
-    <Link
-      to={ROUTES.signup}
-      className="btn-accent w-full justify-center py-3 shadow-[0_6px_20px_-6px_rgba(255,219,88,0.85)]"
-    >
-      Get started
+    <Link to={ROUTES.tours} className="btn-accent w-full justify-center py-3 shadow-gold">
+      Book a tour
     </Link>
   </>
 );

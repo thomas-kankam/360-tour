@@ -35,7 +35,7 @@ const TABS = [
 
 function PermissionBadge({ permission }) {
   return (
-    <span className="inline-flex items-center rounded-full bg-brand-green/8 px-2.5 py-1 text-[11px] font-semibold text-brand-green">
+    <span className="inline-flex items-center rounded-full bg-brand-primary/8 px-2.5 py-1 text-[11px] font-semibold text-brand-primary">
       {permission.label}
     </span>
   );
@@ -44,7 +44,7 @@ function PermissionBadge({ permission }) {
 function EmptyState({ icon: Icon, title, description, action }) {
   return (
     <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-black/12 bg-white py-16 text-center">
-      <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-cream text-brand-green">
+      <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-cream text-brand-primary">
         <Icon className="h-6 w-6" strokeWidth={1.75} aria-hidden />
       </span>
       <div>
@@ -97,7 +97,7 @@ function PermissionsPanel({ token }) {
 
       {loading ? (
         <div className="flex items-center justify-center rounded-2xl border border-black/8 bg-white py-20">
-          <Loader2 className="h-7 w-7 animate-spin text-brand-green" aria-hidden />
+          <Loader2 className="h-7 w-7 animate-spin text-brand-primary" aria-hidden />
         </div>
       ) : isEmpty ? (
         <EmptyState
@@ -329,7 +329,7 @@ function RolesPanel({ token }) {
 
       {loading ? (
         <div className="flex items-center justify-center rounded-2xl border border-black/8 bg-white py-20">
-          <Loader2 className="h-7 w-7 animate-spin text-brand-green" aria-hidden />
+          <Loader2 className="h-7 w-7 animate-spin text-brand-primary" aria-hidden />
         </div>
       ) : isEmpty ? (
         <EmptyState
@@ -370,7 +370,7 @@ function RolesPanel({ token }) {
                   <button
                     type="button"
                     onClick={() => openEditModal(role)}
-                    className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-brand-border/60 text-brand-muted transition-colors hover:border-brand-green/30 hover:bg-brand-green/5 hover:text-brand-green"
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-brand-border/60 text-brand-muted transition-colors hover:border-brand-primary/30 hover:bg-brand-primary/5 hover:text-brand-primary"
                     aria-label={`Edit ${role.name}`}
                   >
                     <Pencil className="h-4 w-4" strokeWidth={1.75} aria-hidden />
@@ -448,7 +448,7 @@ function RolesPanel({ token }) {
                 "mt-2 w-full rounded-xl border-2 bg-white px-4 py-3 text-sm font-medium text-brand-ink outline-none transition-all focus:ring-2",
                 fieldError && !name.trim()
                   ? "border-red-400 focus:border-red-400 focus:ring-red-100"
-                  : "border-brand-border focus:border-brand-green focus:ring-brand-green/15",
+                  : "border-brand-border focus:border-brand-primary focus:ring-brand-primary/15",
               ].join(" ")}
             />
           </div>
@@ -456,7 +456,7 @@ function RolesPanel({ token }) {
           <div>
             <div className="mb-3 flex items-center justify-between gap-3">
               <p className="text-xs font-semibold uppercase tracking-[0.12em] text-brand-muted">Permissions</p>
-              <span className="text-xs font-semibold text-brand-green">{selectedIds.length} selected</span>
+              <span className="text-xs font-semibold text-brand-primary">{selectedIds.length} selected</span>
             </div>
 
             {permissions.length === 0 ? (
@@ -473,7 +473,7 @@ function RolesPanel({ token }) {
                       className={[
                         "flex cursor-pointer items-center gap-3 rounded-xl border px-3 py-3 transition-colors",
                         checked
-                          ? "border-brand-green/30 bg-brand-green/8"
+                          ? "border-brand-primary/30 bg-brand-primary/8"
                           : "border-transparent bg-white hover:border-brand-border/60",
                       ].join(" ")}
                     >
@@ -486,7 +486,7 @@ function RolesPanel({ token }) {
                       <span
                         className={[
                           "flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 transition-colors",
-                          checked ? "border-brand-green bg-brand-green text-white" : "border-brand-border bg-white",
+                          checked ? "border-brand-primary bg-brand-primary text-white" : "border-brand-border bg-white",
                         ].join(" ")}
                       >
                         {checked ? <Check className="h-3 w-3" strokeWidth={3} aria-hidden /> : null}

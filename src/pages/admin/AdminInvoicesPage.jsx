@@ -37,7 +37,7 @@ export default function AdminInvoicesPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-brand-green">Billing</p>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-brand-primary">Billing</p>
           <h1 className="mt-1 text-2xl font-bold text-brand-ink sm:text-3xl">Invoices</h1>
           <p className="mt-2 max-w-2xl text-sm text-brand-muted">
             Create professional invoices, download PDFs, and send them directly to clients.
@@ -45,7 +45,7 @@ export default function AdminInvoicesPage() {
         </div>
         <Link
           to={ROUTES.admin.invoiceNew}
-          className="inline-flex items-center gap-2 rounded-xl bg-brand-green px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-brand-green/90"
+          className="inline-flex items-center gap-2 rounded-xl bg-brand-primary px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-brand-primary/90"
         >
           <Plus className="h-4 w-4" strokeWidth={2} aria-hidden />
           New invoice
@@ -60,7 +60,7 @@ export default function AdminInvoicesPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by invoice no., client, or email…"
-            className="h-10 w-full rounded-xl border border-brand-border/70 bg-white pl-10 pr-4 text-sm outline-none focus:border-brand-green/50 focus:ring-2 focus:ring-brand-green/15"
+            className="h-10 w-full rounded-xl border border-brand-border/70 bg-white pl-10 pr-4 text-sm outline-none focus:border-brand-primary/50 focus:ring-2 focus:ring-brand-primary/15"
           />
         </div>
       </div>
@@ -102,7 +102,7 @@ export default function AdminInvoicesPage() {
                     </span>
                   </td>
                   <td className="px-5 py-4 text-right">
-                    <Link to={ROUTES.admin.invoiceDetail(invoice.id)} className="text-sm font-semibold text-brand-green hover:underline">
+                    <Link to={ROUTES.admin.invoiceDetail(invoice.id)} className="text-sm font-semibold text-brand-primary hover:underline">
                       Open
                     </Link>
                   </td>

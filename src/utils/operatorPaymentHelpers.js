@@ -5,7 +5,7 @@ import { mapOperatorBooking } from "./operatorBookingHelpers";
 import { resolvePublicMediaUrl } from "./mediaUrl";
 
 export const OPERATOR_PAYMENT_METHOD = {
-  online: { label: "Online", className: "bg-brand-green/10 text-brand-green ring-brand-green/20" },
+  online: { label: "Online", className: "bg-brand-primary/10 text-brand-primary ring-brand-primary/20" },
   onsite: { label: "On site", className: "bg-brand-accent/25 text-brand-primary ring-brand-accent/30" },
 };
 

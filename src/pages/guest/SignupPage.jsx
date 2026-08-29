@@ -196,7 +196,7 @@ export default function SignupPage() {
       "placeholder:text-brand-muted/50 focus:ring-2",
       errors[field] && touched[field]
         ? "border-red-400 focus:border-red-400 focus:ring-red-100"
-        : "border-brand-border focus:border-brand-green focus:ring-brand-green/15",
+        : "border-brand-border focus:border-brand-primary focus:ring-brand-primary/15",
     ].join(" ");
   }
 
@@ -317,7 +317,7 @@ export default function SignupPage() {
                   className={[
                     "flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold transition-all duration-300",
                     stepIndex > i || step === s.id
-                      ? "bg-brand-green text-white"
+                      ? "bg-brand-primary text-white"
                       : "border-2 border-brand-border bg-white text-brand-muted",
                   ].join(" ")}
                 >
@@ -329,7 +329,7 @@ export default function SignupPage() {
                 </div>
                 <span className={`text-xs font-medium ${step === s.id ? "text-brand-ink" : "text-brand-muted"}`}>{s.label}</span>
                 {i < signupSteps.length - 1 && (
-                  <div className={`mx-1 h-px w-6 transition-all duration-300 ${stepIndex > i ? "bg-brand-green" : "bg-brand-border"}`} />
+                  <div className={`mx-1 h-px w-6 transition-all duration-300 ${stepIndex > i ? "bg-brand-primary" : "bg-brand-border"}`} />
                 )}
               </div>
             ))}
@@ -345,7 +345,7 @@ export default function SignupPage() {
                   Join 360 Tours
                 </h1>
                 {isBookingReturn ? (
-                  <p className="mt-3 rounded-xl border border-brand-green/25 bg-brand-green/5 px-4 py-3 text-sm text-brand-muted">
+                  <p className="mt-3 rounded-xl border border-brand-primary/25 bg-brand-primary/5 px-4 py-3 text-sm text-brand-muted">
                     Create an account to finish your tour booking. You&apos;ll return to checkout after email verification.
                   </p>
                 ) : null}
@@ -358,12 +358,12 @@ export default function SignupPage() {
                       <button
                         type="button"
                         onClick={() => profileInputRef.current?.click()}
-                        className="group relative flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border-2 border-dashed border-brand-border bg-white transition-all hover:border-brand-green hover:ring-4 hover:ring-brand-green/10"
+                        className="group relative flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border-2 border-dashed border-brand-border bg-white transition-all hover:border-brand-primary hover:ring-4 hover:ring-brand-primary/10"
                       >
                         {profilePreview ? (
                           <img src={profilePreview} alt="" className="h-full w-full object-cover" />
                         ) : (
-                          <Camera className="h-8 w-8 text-brand-muted transition-colors group-hover:text-brand-green" aria-hidden />
+                          <Camera className="h-8 w-8 text-brand-muted transition-colors group-hover:text-brand-primary" aria-hidden />
                         )}
                       </button>
                       <input
@@ -517,7 +517,7 @@ export default function SignupPage() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="group flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green py-3.5 text-sm font-semibold text-white shadow-[0_8px_24px_-8px_rgba(0,107,63,0.6)] transition-all hover:bg-brand-green-dark disabled:opacity-70"
+                    className="group flex w-full items-center justify-center gap-2 rounded-xl bg-brand-primary py-3.5 text-sm font-semibold text-white shadow-[0_8px_24px_-8px_rgba(0,107,63,0.6)] transition-all hover:bg-brand-primary-dark disabled:opacity-70"
                   >
                     {loading ? (
                       <>
@@ -548,7 +548,7 @@ export default function SignupPage() {
                   <Link
                     to={ROUTES.login}
                     state={{ role: USER_ROLES.TOURIST, from: location.state?.from }}
-                    className="font-semibold text-brand-green hover:text-brand-green-dark"
+                    className="font-semibold text-brand-primary hover:text-brand-primary-dark"
                   >
                     Sign in as traveler
                   </Link>

@@ -14,7 +14,7 @@ const VARIANTS = {
   },
   primary: {
     icon: CheckCircle2,
-    iconWrap: "bg-brand-green/10 text-brand-green ring-brand-green/20",
+    iconWrap: "bg-brand-primary/10 text-brand-primary ring-brand-primary/20",
     confirmClass:
       "btn-primary inline-flex w-full items-center justify-center gap-2 px-4 py-2.5 text-sm disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto",
   },

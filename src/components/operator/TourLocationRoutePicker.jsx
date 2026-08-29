@@ -139,9 +139,9 @@ export default function TourLocationRoutePicker({ value = [], onChange, countryI
 
   return (
     <div className="space-y-4">
-      <div className="rounded-2xl border border-brand-border/70 bg-gradient-to-br from-brand-cream/80 via-white to-brand-green/5 p-5 shadow-sm">
+      <div className="rounded-2xl border border-brand-border/70 bg-gradient-to-br from-brand-cream/80 via-white to-brand-primary/5 p-5 shadow-sm">
         <div className="flex items-start gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-green/10 text-brand-green">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-primary/10 text-brand-primary">
             <MapPin className="h-5 w-5" strokeWidth={1.75} aria-hidden />
           </div>
           <div>
@@ -169,7 +169,7 @@ export default function TourLocationRoutePicker({ value = [], onChange, countryI
               {locations.map((city, index) => (
                 <div key={`preview-${city}-${index}`} className="flex items-center gap-1.5">
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-brand-ink shadow-sm ring-1 ring-brand-border/60">
-                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-brand-green/10 text-[10px] font-bold text-brand-green">
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-brand-primary/10 text-[10px] font-bold text-brand-primary">
                       {index + 1}
                     </span>
                     {city}
@@ -217,7 +217,7 @@ export default function TourLocationRoutePicker({ value = [], onChange, countryI
               ? "Type a city and press Enter — e.g. Accra"
               : "Type any city and press Enter — e.g. Nairobi"
           }
-          className="w-full rounded-xl border-2 border-brand-border bg-white py-3 pl-11 pr-4 text-sm font-medium text-brand-ink outline-none transition-all focus:border-brand-green focus:ring-2 focus:ring-brand-green/15"
+          className="w-full rounded-xl border-2 border-brand-border bg-white py-3 pl-11 pr-4 text-sm font-medium text-brand-ink outline-none transition-all focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
         />
 
         <AnimatePresence>
@@ -237,7 +237,7 @@ export default function TourLocationRoutePicker({ value = [], onChange, countryI
                     onClick={() => addCity(city)}
                     className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm font-medium text-brand-ink transition-colors hover:bg-brand-cream"
                   >
-                    <MapPin className="h-3.5 w-3.5 text-brand-green" strokeWidth={2} aria-hidden />
+                    <MapPin className="h-3.5 w-3.5 text-brand-primary" strokeWidth={2} aria-hidden />
                     {city}
                   </button>
                 </li>
@@ -269,8 +269,8 @@ export default function TourLocationRoutePicker({ value = [], onChange, countryI
                   isActive
                     ? "bg-brand-accent/20 text-brand-primary ring-1 ring-brand-accent/35"
                     : added
-                      ? "cursor-default bg-brand-green/10 text-brand-green ring-1 ring-brand-green/20"
-                      : "bg-white text-brand-muted ring-1 ring-brand-border hover:text-brand-green hover:ring-brand-green/30",
+                      ? "cursor-default bg-brand-primary/10 text-brand-primary ring-1 ring-brand-primary/20"
+                      : "bg-white text-brand-muted ring-1 ring-brand-border hover:text-brand-primary hover:ring-brand-primary/30",
                 ].join(" ")}
               >
                 {added ? null : <Plus className="h-3 w-3" strokeWidth={2.5} aria-hidden />}
@@ -305,14 +305,14 @@ export default function TourLocationRoutePicker({ value = [], onChange, countryI
                   onChange={(e) => setCustomCity(e.target.value)}
                   onKeyDown={handleCustomKeyDown}
                   placeholder={isGhana ? "e.g. Ho, Bolgatanga" : "e.g. Nairobi, Cape Town, Johannesburg"}
-                  className="min-w-0 flex-1 rounded-xl border border-brand-border bg-white px-4 py-2.5 text-sm font-medium text-brand-ink outline-none transition-all focus:border-brand-green focus:ring-2 focus:ring-brand-green/15"
+                  className="min-w-0 flex-1 rounded-xl border border-brand-border bg-white px-4 py-2.5 text-sm font-medium text-brand-ink outline-none transition-all focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
                 />
                 <div className="flex shrink-0 gap-2">
                   <button
                     type="button"
                     onClick={() => addCity(customCity)}
                     disabled={!normalizeCity(customCity)}
-                    className="rounded-xl bg-brand-green px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-brand-green-dark disabled:cursor-not-allowed disabled:opacity-50"
+                    className="rounded-xl bg-brand-primary px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-brand-primary-dark disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     Add stop
                   </button>
@@ -359,14 +359,14 @@ export default function TourLocationRoutePicker({ value = [], onChange, countryI
                 className={[
                   "flex cursor-grab items-center gap-2 rounded-xl border bg-white px-2 py-2.5 shadow-sm transition-all duration-200 active:cursor-grabbing",
                   isDragging ? "scale-[0.98] border-brand-orange/40 opacity-50" : "border-brand-border/60",
-                  isDropTarget ? "border-brand-green ring-2 ring-brand-green/25" : "",
+                  isDropTarget ? "border-brand-primary ring-2 ring-brand-primary/25" : "",
                 ].join(" ")}
                 aria-label={`Drag to reorder ${city}`}
               >
                 <div className="pointer-events-none rounded-lg p-1.5 text-brand-muted">
                   <GripVertical className="h-4 w-4" strokeWidth={2} aria-hidden />
                 </div>
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-brand-cream text-xs font-bold text-brand-green">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-brand-cream text-xs font-bold text-brand-primary">
                   {index + 1}
                 </span>
                 <span className="min-w-0 flex-1 truncate text-sm font-semibold text-brand-ink">{city}</span>

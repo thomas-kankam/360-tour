@@ -19,7 +19,7 @@ function Field({ label, children, className = "" }) {
 }
 
 const inputClass =
-  "h-10 w-full rounded-xl border border-brand-border/70 bg-white px-3 text-sm outline-none focus:border-brand-green/50 focus:ring-2 focus:ring-brand-green/15";
+  "h-10 w-full rounded-xl border border-brand-border/70 bg-white px-3 text-sm outline-none focus:border-brand-primary/50 focus:ring-2 focus:ring-brand-primary/15";
 
 export default function AdminInvoiceFormPage() {
   const { id } = useParams();
@@ -102,7 +102,7 @@ export default function AdminInvoiceFormPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-brand-green">Invoice generator</p>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-brand-primary">Invoice generator</p>
           <h1 className="mt-1 text-2xl font-bold text-brand-ink sm:text-3xl">{isEdit ? "Edit invoice" : "Create invoice"}</h1>
         </div>
         <div className="flex gap-2">
@@ -113,7 +113,7 @@ export default function AdminInvoiceFormPage() {
             type="button"
             onClick={handleSave}
             disabled={saving}
-            className="inline-flex items-center gap-2 rounded-xl bg-brand-green px-4 py-2 text-sm font-semibold text-white hover:bg-brand-green/90 disabled:opacity-60"
+            className="inline-flex items-center gap-2 rounded-xl bg-brand-primary px-4 py-2 text-sm font-semibold text-white hover:bg-brand-primary/90 disabled:opacity-60"
           >
             <Save className="h-4 w-4" aria-hidden />
             {saving ? "Saving…" : "Save invoice"}
@@ -177,7 +177,7 @@ export default function AdminInvoiceFormPage() {
               <button
                 type="button"
                 onClick={() => patch({ lineItems: [...invoice.lineItems, createEmptyLineItem()] })}
-                className="inline-flex items-center gap-1 text-xs font-semibold text-brand-green hover:underline"
+                className="inline-flex items-center gap-1 text-xs font-semibold text-brand-primary hover:underline"
               >
                 <Plus className="h-3.5 w-3.5" aria-hidden /> Add item
               </button>

@@ -251,7 +251,7 @@ export default function LoginPage() {
                     className={[
                       "flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold transition-all duration-300",
                       stepIndex > i || step === s.id
-                        ? "bg-brand-green text-white"
+                        ? "bg-brand-primary text-white"
                         : "border-2 border-brand-border bg-white text-brand-muted",
                     ].join(" ")}
                   >
@@ -265,7 +265,7 @@ export default function LoginPage() {
                   </div>
                   <span className={`text-xs font-medium ${step === s.id ? "text-brand-ink" : "text-brand-muted"}`}>{s.label}</span>
                   {i < loginSteps.length - 1 && (
-                    <div className={`mx-1 h-px w-6 transition-all duration-300 ${stepIndex > i ? "bg-brand-green" : "bg-brand-border"}`} />
+                    <div className={`mx-1 h-px w-6 transition-all duration-300 ${stepIndex > i ? "bg-brand-primary" : "bg-brand-border"}`} />
                   )}
                 </div>
               ))}
@@ -277,7 +277,7 @@ export default function LoginPage() {
                   <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-orange">Welcome back</p>
                   <h1 className="mt-2 text-2xl font-bold tracking-tight text-brand-ink sm:text-3xl">Sign in to 360 Tours</h1>
                   {isBookingReturn ? (
-                    <p className="mt-3 rounded-xl border border-brand-green/25 bg-brand-green/5 px-4 py-3 text-sm text-brand-muted">
+                    <p className="mt-3 rounded-xl border border-brand-primary/25 bg-brand-primary/5 px-4 py-3 text-sm text-brand-muted">
                       Sign in to continue your tour booking. You&apos;ll return to checkout right after verification.
                     </p>
                   ) : null}
@@ -318,7 +318,7 @@ export default function LoginPage() {
                     <button
                       type="submit"
                       disabled={loading}
-                      className="group flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green py-3.5 text-sm font-semibold text-white shadow-[0_8px_24px_-8px_rgba(0,107,63,0.6)] transition-all hover:bg-brand-green-dark disabled:opacity-70"
+                      className="group flex w-full items-center justify-center gap-2 rounded-xl bg-brand-primary py-3.5 text-sm font-semibold text-white shadow-[0_8px_24px_-8px_rgba(0,107,63,0.6)] transition-all hover:bg-brand-primary-dark disabled:opacity-70"
                     >
                       {loading ? (
                         <>
@@ -344,7 +344,7 @@ export default function LoginPage() {
                     <Link
                       to={ROUTES.signup}
                       state={{ role: USER_ROLES.TOURIST, from: location.state?.from }}
-                      className="font-semibold text-brand-green hover:text-brand-green-dark"
+                      className="font-semibold text-brand-primary hover:text-brand-primary-dark"
                     >
                       Create a traveler account
                     </Link>
@@ -374,9 +374,9 @@ export default function LoginPage() {
                       <motion.div
                         initial={{ opacity: 0, scale: 0.96 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="mb-6 flex items-center gap-3 rounded-xl border border-brand-green/20 bg-brand-green/5 px-4 py-3"
+                        className="mb-6 flex items-center gap-3 rounded-xl border border-brand-primary/20 bg-brand-primary/5 px-4 py-3"
                       >
-                        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-green text-white">
+                        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-primary text-white">
                           <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" aria-hidden>
                             <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
                           </svg>
@@ -416,7 +416,7 @@ export default function LoginPage() {
                     <button
                       type="submit"
                       disabled={otp.length < 6 || loading}
-                      className="group flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green py-3.5 text-sm font-semibold text-white shadow-[0_8px_24px_-8px_rgba(0,107,63,0.6)] transition-all hover:bg-brand-green-dark disabled:cursor-not-allowed disabled:opacity-50"
+                      className="group flex w-full items-center justify-center gap-2 rounded-xl bg-brand-primary py-3.5 text-sm font-semibold text-white shadow-[0_8px_24px_-8px_rgba(0,107,63,0.6)] transition-all hover:bg-brand-primary-dark disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       {loading ? (
                         <>
@@ -443,14 +443,14 @@ export default function LoginPage() {
                       type="button"
                       onClick={handleResend}
                       disabled={resendCooldown > 0 || loading}
-                      className="font-semibold text-brand-green hover:text-brand-green-dark disabled:cursor-not-allowed disabled:opacity-50"
+                      className="font-semibold text-brand-primary hover:text-brand-primary-dark disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       {resendCooldown > 0 ? `Resend in ${resendCooldown}s` : "Resend OTP"}
                     </button>
                   </p>
 
                   <div className="mt-8 flex items-start gap-2.5 rounded-xl border border-brand-border/60 bg-white px-4 py-3">
-                    <svg className="mt-0.5 h-4 w-4 shrink-0 text-brand-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                    <svg className="mt-0.5 h-4 w-4 shrink-0 text-brand-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                       <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                     </svg>
                     <p className="text-[11px] leading-relaxed text-brand-muted">

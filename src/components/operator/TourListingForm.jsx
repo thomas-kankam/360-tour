@@ -49,7 +49,7 @@ import {
 } from "../../utils/tourImageUtils";
 
 const inputClass =
-  "w-full rounded-xl border-2 border-brand-border bg-white px-4 py-2.5 text-sm font-medium text-brand-ink outline-none transition-all focus:border-brand-green focus:ring-2 focus:ring-brand-green/15";
+  "w-full rounded-xl border-2 border-brand-border bg-white px-4 py-2.5 text-sm font-medium text-brand-ink outline-none transition-all focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15";
 const labelClass = "block text-xs font-semibold uppercase tracking-[0.12em] text-brand-muted";
 const sectionClass = "rounded-2xl border border-brand-border/70 bg-white p-6 shadow-sm";
 
@@ -80,7 +80,7 @@ function ListingStepProgress({ currentIndex, tourTypeLabel }) {
             <span className="rounded-full bg-brand-primary/10 px-3 py-1 text-xs font-bold text-brand-primary">
               {tourTypeLabel}
             </span>
-            <span className="rounded-full bg-brand-cream px-3 py-1 text-xs font-bold text-brand-green">
+            <span className="rounded-full bg-brand-cream px-3 py-1 text-xs font-bold text-brand-primary">
               {Math.round(((currentIndex + 1) / STEPS.length) * 100)}%
             </span>
           </div>
@@ -96,7 +96,7 @@ function ListingStepProgress({ currentIndex, tourTypeLabel }) {
                     className={[
                       "flex h-9 w-9 items-center justify-center rounded-full text-[11px] font-bold transition-all duration-300",
                       done
-                        ? "bg-brand-green text-white"
+                        ? "bg-brand-primary text-white"
                         : active
                           ? "bg-brand-primary text-white ring-4 ring-brand-accent/40"
                           : "bg-brand-border/40 text-brand-muted",
@@ -115,7 +115,7 @@ function ListingStepProgress({ currentIndex, tourTypeLabel }) {
                   </span>
                 </div>
                 {i < STEPS.length - 1 && (
-                  <div className={`mb-5 h-0.5 flex-1 rounded-full transition-colors duration-300 ${done ? "bg-brand-green" : "bg-brand-border/50"}`} />
+                  <div className={`mb-5 h-0.5 flex-1 rounded-full transition-colors duration-300 ${done ? "bg-brand-primary" : "bg-brand-border/50"}`} />
                 )}
               </div>
             );
@@ -616,7 +616,7 @@ export default function TourListingForm({ initial, onSubmit, submitLabel = "Save
                   ) : null}
                 </div>
               ))}
-              <button type="button" onClick={() => patch({ highlights: [...form.highlights, ""] })} className="text-xs font-semibold text-brand-green hover:underline">+ Add highlight</button>
+              <button type="button" onClick={() => patch({ highlights: [...form.highlights, ""] })} className="text-xs font-semibold text-brand-primary hover:underline">+ Add highlight</button>
             </div>
           </div>
           <div className="grid gap-5 sm:grid-cols-2">
@@ -643,7 +643,7 @@ export default function TourListingForm({ initial, onSubmit, submitLabel = "Save
                     ) : null}
                   </div>
                 ))}
-                <button type="button" onClick={() => patch({ included: [...form.included, ""] })} className="text-xs font-semibold text-brand-green hover:underline">+ Add item</button>
+                <button type="button" onClick={() => patch({ included: [...form.included, ""] })} className="text-xs font-semibold text-brand-primary hover:underline">+ Add item</button>
                 </div>
               </Field>
             </div>
@@ -670,7 +670,7 @@ export default function TourListingForm({ initial, onSubmit, submitLabel = "Save
                     ) : null}
                   </div>
                 ))}
-                <button type="button" onClick={() => patch({ notIncluded: [...form.notIncluded, ""] })} className="text-xs font-semibold text-brand-green hover:underline">+ Add item</button>
+                <button type="button" onClick={() => patch({ notIncluded: [...form.notIncluded, ""] })} className="text-xs font-semibold text-brand-primary hover:underline">+ Add item</button>
                 </div>
               </Field>
             </div>
@@ -772,7 +772,7 @@ export default function TourListingForm({ initial, onSubmit, submitLabel = "Save
                 ],
               })
             }
-            className="text-sm font-semibold text-brand-green hover:underline"
+            className="text-sm font-semibold text-brand-primary hover:underline"
           >
             + Add day
           </button>
@@ -792,8 +792,8 @@ export default function TourListingForm({ initial, onSubmit, submitLabel = "Save
             </p>
           </div>
 
-          <div className="flex items-start gap-3 rounded-xl border border-brand-green/20 bg-brand-green/5 px-4 py-3">
-            <Info className="mt-0.5 h-4 w-4 shrink-0 text-brand-green" strokeWidth={2} aria-hidden />
+          <div className="flex items-start gap-3 rounded-xl border border-brand-primary/20 bg-brand-primary/5 px-4 py-3">
+            <Info className="mt-0.5 h-4 w-4 shrink-0 text-brand-primary" strokeWidth={2} aria-hidden />
             {isCustomTour ? (
               <p className="text-xs leading-relaxed text-brand-muted">
                 <span className="font-semibold text-brand-ink">How this works:</span> customized tours publish without
@@ -826,8 +826,8 @@ export default function TourListingForm({ initial, onSubmit, submitLabel = "Save
                     className={[
                       "rounded-xl border px-4 py-4 text-left transition-all",
                       active
-                        ? "border-brand-green bg-brand-green/5 ring-2 ring-brand-green/20"
-                        : "border-brand-border bg-white hover:border-brand-green/30",
+                        ? "border-brand-primary bg-brand-primary/5 ring-2 ring-brand-primary/20"
+                        : "border-brand-border bg-white hover:border-brand-primary/30",
                     ].join(" ")}
                   >
                     <p className="text-sm font-bold text-brand-ink">{option.label}</p>
@@ -937,8 +937,8 @@ export default function TourListingForm({ initial, onSubmit, submitLabel = "Save
                     className={[
                       "rounded-xl border px-4 py-4 text-left transition-all",
                       active
-                        ? "border-brand-green bg-brand-green/5 ring-2 ring-brand-green/20"
-                        : "border-brand-border bg-white hover:border-brand-green/30",
+                        ? "border-brand-primary bg-brand-primary/5 ring-2 ring-brand-primary/20"
+                        : "border-brand-border bg-white hover:border-brand-primary/30",
                     ].join(" ")}
                   >
                     <p className="text-sm font-bold text-brand-ink">{option.label}</p>
@@ -1007,7 +1007,7 @@ export default function TourListingForm({ initial, onSubmit, submitLabel = "Save
                   type="checkbox"
                   checked={isDateRangeUnlimited}
                   onChange={(e) => handleDateRangeUnlimitedToggle(e.target.checked)}
-                  className="h-4 w-4 rounded border-brand-border text-brand-green focus:ring-brand-green/30"
+                  className="h-4 w-4 rounded border-brand-border text-brand-primary focus:ring-brand-primary/30"
                 />
                 <span>
                   <span className="font-semibold">Unlimited capacity</span>
@@ -1080,7 +1080,7 @@ export default function TourListingForm({ initial, onSubmit, submitLabel = "Save
                 <button
                   type="button"
                   onClick={handleAddDeparture}
-                  className="text-sm font-semibold text-brand-green hover:underline"
+                  className="text-sm font-semibold text-brand-primary hover:underline"
                 >
                   + Add another departure date
                 </button>
@@ -1101,11 +1101,11 @@ export default function TourListingForm({ initial, onSubmit, submitLabel = "Save
           </Field>
           <div className="flex flex-col gap-3 sm:col-span-2">
             <label className="flex items-center gap-2 text-sm font-medium text-brand-ink">
-              <input type="checkbox" checked={form.bookingSettings.onlinePaymentAllowed} onChange={(e) => patch({ bookingSettings: { ...form.bookingSettings, onlinePaymentAllowed: e.target.checked } })} className="h-4 w-4 rounded border-brand-border text-brand-green" />
+              <input type="checkbox" checked={form.bookingSettings.onlinePaymentAllowed} onChange={(e) => patch({ bookingSettings: { ...form.bookingSettings, onlinePaymentAllowed: e.target.checked } })} className="h-4 w-4 rounded border-brand-border text-brand-primary" />
               Allow online payment (gateway redirect)
             </label>
             <label className="flex items-center gap-2 text-sm font-medium text-brand-ink">
-              <input type="checkbox" checked={form.bookingSettings.payOnSiteAllowed} onChange={(e) => patch({ bookingSettings: { ...form.bookingSettings, payOnSiteAllowed: e.target.checked } })} className="h-4 w-4 rounded border-brand-border text-brand-green" />
+              <input type="checkbox" checked={form.bookingSettings.payOnSiteAllowed} onChange={(e) => patch({ bookingSettings: { ...form.bookingSettings, payOnSiteAllowed: e.target.checked } })} className="h-4 w-4 rounded border-brand-border text-brand-primary" />
               Allow pay on-site reservation
             </label>
           </div>

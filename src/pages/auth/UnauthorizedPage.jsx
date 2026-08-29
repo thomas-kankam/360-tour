@@ -8,7 +8,7 @@ export default function UnauthorizedPage() {
   return (
     <section className="flex min-h-[60vh] items-center justify-center px-4 py-16">
       <div className="max-w-md text-center">
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-cream text-brand-green">
+        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-cream text-brand-primary">
           <AppIcon name="lock" className="h-8 w-8" strokeWidth={1.5} />
         </div>
         <h1 className="mt-4 font-heading text-3xl text-brand-ink">Access restricted</h1>

@@ -60,7 +60,7 @@ function MethodBadge({ payment }) {
 
 function StatCard({ icon: Icon, label, value, hint, accent = "green" }) {
   const accents = {
-    green: "bg-brand-green/10 text-brand-green",
+    green: "bg-brand-primary/10 text-brand-primary",
     gold: "bg-brand-accent/25 text-brand-primary",
     orange: "bg-brand-accent/20 text-brand-primary",
     blue: "bg-sky-50 text-sky-700",
@@ -86,7 +86,7 @@ function PaymentRow({ payment }) {
     <tr className="border-b border-brand-border/40 transition-colors last:border-0 hover:bg-brand-cream/40">
       <td className="w-[7.5rem] max-w-[7.5rem] px-4 py-3.5">
         <p
-          className="truncate font-mono text-xs font-bold text-brand-green"
+          className="truncate font-mono text-xs font-bold text-brand-primary"
           title={referenceTitle}
         >
           {referenceLabel}
@@ -125,7 +125,7 @@ function PaymentRow({ payment }) {
       <td className="whitespace-nowrap px-4 py-3.5 text-right">
         <Link
           to={ROUTES.operator.paymentDetail(payment.paymentSlug)}
-          className="inline-flex items-center gap-1 text-xs font-semibold text-brand-green hover:text-brand-green-dark"
+          className="inline-flex items-center gap-1 text-xs font-semibold text-brand-primary hover:text-brand-primary-dark"
         >
           View
           <ExternalLink className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />
@@ -151,7 +151,7 @@ function PaymentMobileCard({ payment }) {
           </div>
           <div className="min-w-0">
             <p className="line-clamp-2 text-sm font-bold text-brand-ink">{payment.tourName}</p>
-            <p className="mt-0.5 font-mono text-[10px] font-bold text-brand-green">{payment.bookingCode}</p>
+            <p className="mt-0.5 font-mono text-[10px] font-bold text-brand-primary">{payment.bookingCode}</p>
             <p className="mt-1 text-xs text-brand-muted">{payment.travelerName}</p>
           </div>
         </div>
@@ -164,7 +164,7 @@ function PaymentMobileCard({ payment }) {
       </div>
       <Link
         to={ROUTES.operator.paymentDetail(payment.paymentSlug)}
-        className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-brand-green"
+        className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-brand-primary"
       >
         View payment details
         <ExternalLink className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />
@@ -312,7 +312,7 @@ export default function OperatorPaymentsPage() {
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
                 placeholder="Search booking code, reference, tour, traveler…"
-                className="w-full rounded-xl border border-brand-border/70 bg-brand-cream/30 py-2.5 pl-10 pr-3 text-sm outline-none transition-shadow focus:border-brand-green focus:ring-2 focus:ring-brand-green/15"
+                className="w-full rounded-xl border border-brand-border/70 bg-brand-cream/30 py-2.5 pl-10 pr-3 text-sm outline-none transition-shadow focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
               />
             </div>
             <div className="flex flex-wrap gap-2">
@@ -342,7 +342,7 @@ export default function OperatorPaymentsPage() {
                 className={[
                   "rounded-full px-3 py-1.5 text-xs font-semibold transition-colors",
                   methodFilter === filter.id
-                    ? "bg-brand-green/10 text-brand-green ring-1 ring-brand-green/25"
+                    ? "bg-brand-primary/10 text-brand-primary ring-1 ring-brand-primary/25"
                     : "bg-white text-brand-muted ring-1 ring-brand-border/60 hover:text-brand-ink",
                 ].join(" ")}
               >
@@ -354,7 +354,7 @@ export default function OperatorPaymentsPage() {
 
         {loading ? (
           <div className="flex min-h-[280px] items-center justify-center">
-            <Loader2 className="h-8 w-8 animate-spin text-brand-green" strokeWidth={2} aria-hidden />
+            <Loader2 className="h-8 w-8 animate-spin text-brand-primary" strokeWidth={2} aria-hidden />
           </div>
         ) : error ? (
           <div className="px-5 py-12 text-center text-sm text-brand-muted">{error}</div>

@@ -1,10 +1,9 @@
 import HomeHero from "../../components/home/HomeHero";
-import HomeFeaturedTours from "../../components/home/HomeFeaturedTours";
+import HomeTrustBar from "../../components/home/HomeTrustBar";
+import HomePopularTours from "../../components/home/HomePopularTours";
 import HomeDestinations from "../../components/home/HomeDestinations";
-import HomeHubs from "../../components/home/HomeHubs";
 import HomeAdventureGallery from "../../components/home/HomeAdventureGallery";
 import HomeTestimonial from "../../components/home/HomeTestimonial";
-import HomeExploreLinks from "../../components/home/HomeExploreLinks";
 import HomeCta from "../../components/home/HomeCta";
 import { useLandingCms } from "../../hooks/useLandingCms";
 
@@ -14,12 +13,11 @@ export default function HomePage() {
   return (
     <>
       <HomeHero cmsOverride={cms.hero} />
-      <HomeFeaturedTours cmsOverride={cms.tours} />
-      <HomeHubs cmsOverride={cms.regions} />
+      <HomeTrustBar />
+      <HomePopularTours cmsOverride={cms.tours} />
       <HomeDestinations cmsOverride={cms.destinations} />
       <HomeAdventureGallery cmsOverride={cms.gallery} />
       <HomeTestimonial cmsOverride={cms.testimonials} />
-      <HomeExploreLinks cmsOverride={cms.explore} />
       <HomeCta cmsOverride={cms.cta} />
     </>
   );

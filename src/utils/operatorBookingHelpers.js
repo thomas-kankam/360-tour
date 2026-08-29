@@ -2,13 +2,13 @@ import { mapApiBookingToListRecord, formatBookingCurrency } from "./bookingHelpe
 import { parsePaginatedList } from "./adminPaginationHelpers";
 
 export const OPERATOR_BOOKING_STATUS = {
-  confirmed: { label: "Confirmed", className: "bg-brand-green/10 text-brand-green ring-brand-green/20" },
+  confirmed: { label: "Confirmed", className: "bg-brand-primary/10 text-brand-primary ring-brand-primary/20" },
   pending: { label: "Pending", className: "bg-brand-accent/20 text-brand-primary ring-brand-accent/30" },
   cancelled: { label: "Cancelled", className: "bg-red-50 text-red-600 ring-red-200" },
 };
 
 export const OPERATOR_PAYMENT_STATUS = {
-  paid: { label: "Paid", className: "bg-brand-green/10 text-brand-green ring-brand-green/20" },
+  paid: { label: "Paid", className: "bg-brand-primary/10 text-brand-primary ring-brand-primary/20" },
   pending: { label: "Pending", className: "bg-brand-accent/20 text-brand-primary ring-brand-accent/30" },
   failed: { label: "Failed", className: "bg-red-50 text-red-600 ring-red-200" },
 };
@@ -28,7 +28,7 @@ export function getOperatorPaymentStatusConfig(booking) {
 }
 
 export const OPERATOR_PAYMENT_MODE = {
-  online: { label: "Online", className: "bg-brand-green/10 text-brand-green ring-brand-green/20" },
+  online: { label: "Online", className: "bg-brand-primary/10 text-brand-primary ring-brand-primary/20" },
   onsite: { label: "On site", className: "bg-brand-accent/25 text-brand-primary ring-brand-accent/30" },
 };
 

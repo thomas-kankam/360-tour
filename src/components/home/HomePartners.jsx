@@ -45,8 +45,8 @@ const stats = [
 
 function PartnerPill({ label }) {
   return (
-    <span className="inline-flex shrink-0 items-center gap-2.5 rounded-full border border-brand-border/70 bg-white/90 px-5 py-2.5 text-sm font-semibold text-brand-green shadow-sm ring-1 ring-white/80 transition-all duration-300 hover:-translate-y-0.5 hover:border-brand-green/25 hover:shadow-md">
-      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-green/10 text-brand-green">
+    <span className="inline-flex shrink-0 items-center gap-2.5 rounded-full border border-brand-border/70 bg-white/90 px-5 py-2.5 text-sm font-semibold text-brand-primary shadow-sm ring-1 ring-white/80 transition-all duration-300 hover:-translate-y-0.5 hover:border-brand-primary/25 hover:shadow-md">
+      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-primary/10 text-brand-primary">
         {partnerIcons[label]}
       </span>
       {label}
@@ -106,7 +106,7 @@ export default function HomePartners() {
         >
           {stats.map((stat) => (
             <div key={stat.label} className="text-center">
-              <p className="text-2xl font-bold text-brand-green sm:text-3xl">{stat.value}</p>
+              <p className="text-2xl font-bold text-brand-primary sm:text-3xl">{stat.value}</p>
               <p className="mt-1 text-xs text-brand-muted sm:text-sm">{stat.label}</p>
             </div>
           ))}

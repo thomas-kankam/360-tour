@@ -44,7 +44,7 @@ function PaymentTableRow({ payment, onRetry, retryingSlug }) {
     <tr className="border-b border-brand-border/40 last:border-0 transition-colors hover:bg-brand-cream/40">
       <td className="w-[7.5rem] max-w-[7.5rem] px-4 py-4 sm:px-5">
         <p
-          className="truncate font-mono text-xs font-bold text-brand-green"
+          className="truncate font-mono text-xs font-bold text-brand-primary"
           title={referenceTitle}
         >
           {referenceLabel}
@@ -68,7 +68,7 @@ function PaymentTableRow({ payment, onRetry, retryingSlug }) {
         {payment.bookingCode ? (
           <Link
             to={ROUTES.myBookingDetail(payment.bookingCode)}
-            className="font-mono text-xs font-semibold text-brand-ink transition-colors hover:text-brand-green"
+            className="font-mono text-xs font-semibold text-brand-ink transition-colors hover:text-brand-primary"
           >
             {payment.bookingCode}
           </Link>
@@ -103,7 +103,7 @@ function PaymentTableRow({ payment, onRetry, retryingSlug }) {
           {payment.bookingCode ? (
             <Link
               to={ROUTES.myBookingDetail(payment.bookingCode)}
-              className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-brand-border/70 text-brand-muted transition-colors hover:border-brand-green/30 hover:text-brand-green"
+              className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-brand-border/70 text-brand-muted transition-colors hover:border-brand-primary/30 hover:text-brand-primary"
               aria-label={`View booking ${payment.bookingCode}`}
             >
               <ExternalLink className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />
@@ -136,7 +136,7 @@ function PaymentMobileCard({ payment, onRetry, retryingSlug }) {
           </div>
           <div className="min-w-0">
             <p
-              className="truncate font-mono text-[11px] font-bold text-brand-green"
+              className="truncate font-mono text-[11px] font-bold text-brand-primary"
               title={referenceTitle}
             >
               {referenceLabel}
@@ -145,7 +145,7 @@ function PaymentMobileCard({ payment, onRetry, retryingSlug }) {
             {payment.bookingCode ? (
               <Link
                 to={ROUTES.myBookingDetail(payment.bookingCode)}
-                className="mt-1 inline-block font-mono text-xs text-brand-muted hover:text-brand-green"
+                className="mt-1 inline-block font-mono text-xs text-brand-muted hover:text-brand-primary"
               >
                 {payment.bookingCode}
               </Link>
@@ -185,7 +185,7 @@ function PaymentMobileCard({ payment, onRetry, retryingSlug }) {
           {payment.bookingCode ? (
             <Link
               to={ROUTES.myBookingDetail(payment.bookingCode)}
-              className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-brand-border px-4 py-2 text-xs font-semibold text-brand-ink hover:border-brand-green/30 hover:text-brand-green"
+              className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-brand-border px-4 py-2 text-xs font-semibold text-brand-ink hover:border-brand-primary/30 hover:text-brand-primary"
             >
               View booking
               <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />
@@ -282,7 +282,7 @@ export default function MyPaymentsPage() {
 
   return (
     <div className="min-h-screen bg-brand-cream">
-      <section className="border-b border-brand-green/15 bg-brand-green">
+      <section className="border-b border-brand-primary/15 bg-brand-primary">
         <Container className="py-5 sm:py-6">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <motion.div
@@ -338,8 +338,8 @@ export default function MyPaymentsPage() {
                   className={[
                     "rounded-full px-4 py-1.5 text-sm font-semibold transition-all",
                     filter === f.id
-                      ? "bg-brand-green text-white shadow-sm"
-                      : "border border-brand-border/70 bg-white text-brand-muted hover:border-brand-green/30 hover:text-brand-green",
+                      ? "bg-brand-primary text-white shadow-sm"
+                      : "border border-brand-border/70 bg-white text-brand-muted hover:border-brand-primary/30 hover:text-brand-primary",
                   ].join(" ")}
                 >
                   {f.label}
@@ -353,7 +353,7 @@ export default function MyPaymentsPage() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search reference, booking, tour…"
-                className="h-10 w-full rounded-full border border-brand-border/70 bg-white pl-10 pr-4 text-sm outline-none focus:border-brand-green/50 focus:ring-2 focus:ring-brand-green/15"
+                className="h-10 w-full rounded-full border border-brand-border/70 bg-white pl-10 pr-4 text-sm outline-none focus:border-brand-primary/50 focus:ring-2 focus:ring-brand-primary/15"
               />
             </div>
           </div>
@@ -378,7 +378,7 @@ export default function MyPaymentsPage() {
 
           {loading ? (
             <div className="mt-16 flex flex-col items-center gap-3 text-brand-muted">
-              <Loader2 className="h-8 w-8 animate-spin text-brand-green" strokeWidth={2} aria-hidden />
+              <Loader2 className="h-8 w-8 animate-spin text-brand-primary" strokeWidth={2} aria-hidden />
               <p className="text-sm">Loading payments…</p>
             </div>
           ) : null}
@@ -442,7 +442,7 @@ export default function MyPaymentsPage() {
                   ? "Online payments for your bookings will appear here once checkout is initiated."
                   : "Try adjusting your search or filter to find a payment."}
               </p>
-              <Link to={ROUTES.myBookings} className="mt-6 text-sm font-semibold text-brand-green hover:underline">
+              <Link to={ROUTES.myBookings} className="mt-6 text-sm font-semibold text-brand-primary hover:underline">
                 View my bookings
               </Link>
             </div>
@@ -454,7 +454,7 @@ export default function MyPaymentsPage() {
                 type="button"
                 disabled={page <= 1}
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
-                className="rounded-xl border border-brand-border bg-white px-4 py-2 text-sm font-semibold text-brand-ink transition-all enabled:hover:border-brand-green/30 enabled:hover:text-brand-green disabled:cursor-not-allowed disabled:opacity-40"
+                className="rounded-xl border border-brand-border bg-white px-4 py-2 text-sm font-semibold text-brand-ink transition-all enabled:hover:border-brand-primary/30 enabled:hover:text-brand-primary disabled:cursor-not-allowed disabled:opacity-40"
               >
                 Previous
               </button>
@@ -465,7 +465,7 @@ export default function MyPaymentsPage() {
                 type="button"
                 disabled={page >= paginationMeta.totalPages}
                 onClick={() => setPage((p) => p + 1)}
-                className="rounded-xl border border-brand-border bg-white px-4 py-2 text-sm font-semibold text-brand-ink transition-all enabled:hover:border-brand-green/30 enabled:hover:text-brand-green disabled:cursor-not-allowed disabled:opacity-40"
+                className="rounded-xl border border-brand-border bg-white px-4 py-2 text-sm font-semibold text-brand-ink transition-all enabled:hover:border-brand-primary/30 enabled:hover:text-brand-primary disabled:cursor-not-allowed disabled:opacity-40"
               >
                 Next
               </button>

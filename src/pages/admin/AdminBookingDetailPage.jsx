@@ -93,7 +93,7 @@ function PartyCard({ title, party, type = "client" }) {
           <div className="flex items-start gap-2">
             <Mail className="mt-0.5 h-4 w-4 shrink-0 text-brand-muted" strokeWidth={2} aria-hidden />
             <dd>
-              <a href={`mailto:${party.email}`} className="font-medium text-brand-ink hover:text-brand-green">
+              <a href={`mailto:${party.email}`} className="font-medium text-brand-ink hover:text-brand-primary">
                 {party.email}
               </a>
             </dd>
@@ -165,7 +165,7 @@ export default function AdminBookingDetailPage() {
   if (loading) {
     return (
       <div className="flex min-h-[320px] items-center justify-center rounded-2xl border border-black/8 bg-white">
-        <Loader2 className="h-8 w-8 animate-spin text-brand-green" strokeWidth={2} aria-hidden />
+        <Loader2 className="h-8 w-8 animate-spin text-brand-primary" strokeWidth={2} aria-hidden />
       </div>
     );
   }
@@ -277,13 +277,13 @@ export default function AdminBookingDetailPage() {
                   ) : null}
                   <div className="mt-3 flex flex-wrap gap-3 text-sm text-brand-muted">
                     {tour.duration ? <span>{tour.duration}</span> : null}
-                    {tour.priceLabel ? <span className="font-semibold text-brand-green">{tour.priceLabel}</span> : null}
+                    {tour.priceLabel ? <span className="font-semibold text-brand-primary">{tour.priceLabel}</span> : null}
                   </div>
                   {tour.slug ? (
                     <div className="mt-4 flex flex-wrap gap-3">
                       <Link
                         to={ROUTES.admin.listingDetail(tour.slug)}
-                        className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-green hover:underline"
+                        className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-primary hover:underline"
                       >
                         Admin listing
                       </Link>
@@ -321,7 +321,7 @@ export default function AdminBookingDetailPage() {
                 <dt className="text-xs font-bold uppercase tracking-[0.12em] text-brand-muted">Email</dt>
                 <dd className="mt-1 text-sm font-medium text-brand-ink">
                   {traveler.email ? (
-                    <a href={`mailto:${traveler.email}`} className="hover:text-brand-green">{traveler.email}</a>
+                    <a href={`mailto:${traveler.email}`} className="hover:text-brand-primary">{traveler.email}</a>
                   ) : (
                     "—"
                   )}
@@ -425,7 +425,7 @@ export default function AdminBookingDetailPage() {
                     href={booking.paymentUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-sm font-semibold text-brand-green hover:underline"
+                    className="inline-flex items-center gap-2 text-sm font-semibold text-brand-primary hover:underline"
                   >
                     <CreditCard className="h-4 w-4" strokeWidth={2} aria-hidden />
                     Open checkout link

@@ -99,7 +99,7 @@ export default function AdminInvoiceDetailPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-brand-green">Invoice</p>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-brand-primary">Invoice</p>
           <h1 className="mt-1 text-2xl font-bold text-brand-ink sm:text-3xl">{invoice.invoiceNumber}</h1>
           <p className="mt-2 text-sm text-brand-muted">{invoice.billedTo?.name || "No client assigned"}</p>
         </div>
@@ -131,7 +131,7 @@ export default function AdminInvoiceDetailPage() {
             value={clientQuery}
             onChange={(e) => setClientQuery(e.target.value)}
             placeholder="Search clients…"
-            className="h-10 w-full rounded-xl border border-brand-border/70 px-3 text-sm outline-none focus:border-brand-green/50 focus:ring-2 focus:ring-brand-green/15"
+            className="h-10 w-full rounded-xl border border-brand-border/70 px-3 text-sm outline-none focus:border-brand-primary/50 focus:ring-2 focus:ring-brand-primary/15"
           />
 
           {clientResults.length > 0 ? (
@@ -169,7 +169,7 @@ export default function AdminInvoiceDetailPage() {
               type="email"
               value={selectedClientEmail}
               onChange={(e) => setSelectedClientEmail(e.target.value)}
-              className="mt-1.5 h-10 w-full rounded-xl border border-brand-border/70 px-3 text-sm outline-none focus:border-brand-green/50 focus:ring-2 focus:ring-brand-green/15"
+              className="mt-1.5 h-10 w-full rounded-xl border border-brand-border/70 px-3 text-sm outline-none focus:border-brand-primary/50 focus:ring-2 focus:ring-brand-primary/15"
             />
           </label>
 
@@ -177,7 +177,7 @@ export default function AdminInvoiceDetailPage() {
             type="button"
             onClick={handleSend}
             disabled={sending}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-green/90 disabled:opacity-60"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-brand-primary px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-primary/90 disabled:opacity-60"
           >
             <Mail className="h-4 w-4" aria-hidden />
             {sending ? "Sending…" : "Send invoice"}

@@ -65,7 +65,7 @@ function getListingSlots(listing) {
 function ListingSlotsDisplay({ slots }) {
   if (isUnlimitedTourSlots(slots)) {
     return (
-      <span className="inline-flex rounded-full bg-brand-green/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand-green ring-1 ring-brand-green/20">
+      <span className="inline-flex rounded-full bg-brand-primary/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand-primary ring-1 ring-brand-primary/20">
         Unlimited
       </span>
     );
@@ -161,7 +161,7 @@ export default function AdminListingsPage() {
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
                 placeholder="Search tour, operator, location…"
-                className="w-full rounded-xl border border-brand-border/70 bg-brand-cream/30 py-2.5 pl-10 pr-3 text-sm outline-none transition-shadow focus:border-brand-green focus:ring-2 focus:ring-brand-green/15"
+                className="w-full rounded-xl border border-brand-border/70 bg-brand-cream/30 py-2.5 pl-10 pr-3 text-sm outline-none transition-shadow focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
               />
             </div>
             <div className="flex flex-wrap gap-2">
@@ -186,7 +186,7 @@ export default function AdminListingsPage() {
 
         {loading ? (
           <div className="flex min-h-[280px] items-center justify-center">
-            <Loader2 className="h-8 w-8 animate-spin text-brand-green" strokeWidth={2} aria-hidden />
+            <Loader2 className="h-8 w-8 animate-spin text-brand-primary" strokeWidth={2} aria-hidden />
           </div>
         ) : isEmpty ? (
           <div className="flex flex-col items-center gap-3 py-20 text-center">

@@ -2,13 +2,11 @@ import { Link } from "react-router";
 import { motion } from "motion/react";
 import Container from "../layout/Container";
 import TourPriceDisplay from "../tours/TourPriceDisplay";
-import { images } from "../../config/images";
 import { ROUTES } from "../../constants/routes";
-import { useRandomListings } from "../../hooks/useRandomListings";
+import { usePopularListings } from "../../hooks/usePopularListings";
 
 const EASE = [0.16, 1, 0.3, 1];
 const SKELETON_COUNT = 4;
-const FEATURED_BANNER_TOUR_SLUG = "51e7d991-3c1a-4bec-bde2-8568f733b893";
 
 function SpotsBar({ spotsLeft, totalSpots }) {
   const safeTotal = Math.max(totalSpots, 1);
@@ -27,7 +25,7 @@ function SpotsBar({ spotsLeft, totalSpots }) {
         <div
           className={[
             "h-full rounded-full transition-all duration-500",
-            urgent ? "bg-brand-orange" : "bg-brand-green",
+            urgent ? "bg-brand-orange" : "bg-brand-primary",
           ].join(" ")}
           style={{ width: `${Math.min(Math.max(filled, 0), 100)}%` }}
         />
@@ -73,41 +71,6 @@ function TourCardSkeleton({ index }) {
   );
 }
 
-function FeaturedTourBannerRow({ tour }) {
-  const detailPath = ROUTES.tourDetail(tour.slug);
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-40px" }}
-      transition={{ duration: 0.65, ease: EASE }}
-      className="mt-10"
-    >
-      <Link
-        to={detailPath}
-        aria-label={tour.name ? `View details for ${tour.name}` : "View tour details"}
-        className="group relative block overflow-hidden rounded-[1.75rem] border border-brand-border/60 bg-brand-cream shadow-[0_18px_48px_-24px_rgba(23,19,14,0.45)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_24px_56px_-20px_rgba(23,19,14,0.4)]"
-      >
-        <img
-          src={images.banners.banner_one}
-          alt={tour.name ? `${tour.name} featured banner` : "Featured tour banner"}
-          className="block w-full h-auto transition-transform duration-700 group-hover:scale-[1.01]"
-        />
-
-        <div className="absolute bottom-5 left-5 sm:bottom-7 sm:left-7 lg:bottom-9 lg:left-9">
-          <span className="inline-flex items-center gap-2.5 rounded-2xl bg-brand-accent px-6 py-3.5 text-base font-bold text-brand-primary shadow-[0_10px_28px_rgba(255,219,88,0.35)] ring-2 ring-brand-primary/10 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:bg-brand-accent-dark group-hover:shadow-[0_14px_32px_rgba(255,219,88,0.42)] sm:px-7 sm:py-4 sm:text-lg">
-            View tour details
-            <svg className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-              <path d="M5 12h14M13 6l6 6-6 6" />
-            </svg>
-          </span>
-        </div>
-      </Link>
-    </motion.div>
-  );
-}
-
 function UpcomingTourCard({ tour, index }) {
   const urgent = tour.spotsLeft <= 3;
 
@@ -128,7 +91,7 @@ function UpcomingTourCard({ tour, index }) {
             className="h-full w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-105"
           />
         ) : (
-          <div className="flex h-full items-center justify-center bg-gradient-to-br from-brand-green/10 to-brand-cream text-sm font-medium text-brand-muted">
+          <div className="flex h-full items-center justify-center bg-gradient-to-br from-brand-primary/10 to-brand-cream text-sm font-medium text-brand-muted">
             Photo coming soon
           </div>
         )}
@@ -166,7 +129,7 @@ function UpcomingTourCard({ tour, index }) {
       <div className="flex flex-1 flex-col p-4">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-brand-muted">
           <span className="inline-flex items-center gap-1">
-            <svg className="h-3.5 w-3.5 text-brand-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <svg className="h-3.5 w-3.5 text-brand-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
               <rect x="3" y="4" width="18" height="18" rx="2" />
               <path d="M16 2v4M8 2v4M3 10h18" />
             </svg>
@@ -227,13 +190,8 @@ function PopularToursEmpty() {
 }
 
 export default function HomeUpcomingTours() {
-  const { data: tours = [], isLoading, isError, error, refetch, isFetching } = useRandomListings();
-  const featuredBannerTour = tours.find((tour) => tour.slug === FEATURED_BANNER_TOUR_SLUG);
-  const gridTours = featuredBannerTour
-    ? tours.filter((tour) => tour.slug !== FEATURED_BANNER_TOUR_SLUG)
-    : tours;
+  const { data: tours = [], isLoading, isError, error, refetch, isFetching } = usePopularListings();
   const tourCount = tours.length;
-  const gridCount = gridTours.length;
   const countLabel = isLoading
     ? "Loading departures…"
     : `${tourCount} tour${tourCount === 1 ? "" : "s"} departing soon`;
@@ -272,7 +230,7 @@ export default function HomeUpcomingTours() {
           >
             <span
               className={[
-                "inline-flex items-center gap-2 rounded-full border border-brand-border bg-brand-cream px-4 py-2 text-sm font-medium text-brand-green",
+                "inline-flex items-center gap-2 rounded-full border border-brand-border bg-brand-cream px-4 py-2 text-sm font-medium text-brand-primary",
                 isLoading ? "animate-pulse" : "",
               ].join(" ")}
               aria-live="polite"
@@ -314,19 +272,11 @@ export default function HomeUpcomingTours() {
 
         {!isLoading && !isError && tourCount === 0 && <PopularToursEmpty />}
 
-        {!isLoading && !isError && tourCount > 0 && featuredBannerTour ? (
-          <FeaturedTourBannerRow tour={featuredBannerTour} />
-        ) : null}
-
-        {!isLoading && !isError && gridCount > 0 && (
+        {!isLoading && !isError && tourCount > 0 && (
           <div
-            className={[
-              featuredBannerTour ? "mt-6" : "mt-10",
-              "grid gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4",
-              isFetching ? "opacity-95" : "",
-            ].join(" ")}
+            className={["mt-10 grid gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4", isFetching ? "opacity-95" : ""].join(" ")}
           >
-            {gridTours.map((tour, index) => (
+            {tours.map((tour, index) => (
               <UpcomingTourCard key={tour.slug} tour={tour} index={index} />
             ))}
           </div>

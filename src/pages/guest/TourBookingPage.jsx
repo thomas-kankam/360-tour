@@ -69,7 +69,7 @@ function StepProgress({ currentIndex }) {
               <div
                 className={[
                   "flex h-8 w-8 items-center justify-center rounded-full text-[11px] font-bold transition-all",
-                  done ? "bg-brand-green text-white" : active ? "bg-brand-primary text-white ring-4 ring-brand-primary/20" : "bg-brand-border/50 text-brand-muted",
+                  done ? "bg-brand-primary text-white" : active ? "bg-brand-primary text-white ring-4 ring-brand-primary/20" : "bg-brand-border/50 text-brand-muted",
                 ].join(" ")}
               >
                 {done ? (
@@ -82,7 +82,7 @@ function StepProgress({ currentIndex }) {
                 {step.label}
               </span>
             </div>
-            {i < STEPS.length - 1 && <div className={`mb-5 h-px flex-1 ${done ? "bg-brand-green" : "bg-brand-border/60"}`} />}
+            {i < STEPS.length - 1 && <div className={`mb-5 h-px flex-1 ${done ? "bg-brand-primary" : "bg-brand-border/60"}`} />}
           </div>
         );
       })}
@@ -105,7 +105,7 @@ function FormField({ label, id, error, hint, children, required }) {
 function inputClass(error) {
   return [
     "h-11 w-full rounded-xl border bg-white px-4 text-sm outline-none transition-all",
-    error ? "border-red-400 ring-2 ring-red-100" : "border-brand-border/70 focus:border-brand-green/50 focus:ring-2 focus:ring-brand-green/15",
+    error ? "border-red-400 ring-2 ring-red-100" : "border-brand-border/70 focus:border-brand-primary/50 focus:ring-2 focus:ring-brand-primary/15",
   ].join(" ");
 }
 
@@ -142,7 +142,7 @@ function TourSummary({ tour, travelers, subtotal, selectedDate, currency, unitPr
         </div>
         <div className="flex justify-between border-t border-brand-border/50 pt-3">
           <span className="font-semibold text-brand-ink">Estimated total</span>
-          <span className="text-lg font-bold text-brand-green">{formatBookingCurrency(subtotal, resolvedCurrency)}</span>
+          <span className="text-lg font-bold text-brand-primary">{formatBookingCurrency(subtotal, resolvedCurrency)}</span>
         </div>
         <p className="text-[11px] text-brand-muted">{formatBookingCurrency(resolvedUnitPrice, resolvedCurrency)} per person</p>
       </div>
@@ -422,7 +422,7 @@ export default function TourBookingPage() {
   if (loading) {
     return (
       <div className="flex min-h-[320px] items-center justify-center bg-brand-cream">
-        <Loader2 className="h-8 w-8 animate-spin text-brand-green" strokeWidth={2} aria-hidden />
+        <Loader2 className="h-8 w-8 animate-spin text-brand-primary" strokeWidth={2} aria-hidden />
       </div>
     );
   }
@@ -435,15 +435,15 @@ export default function TourBookingPage() {
         <Container>
           <nav className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2 text-xs text-brand-muted">
-              <Link to={ROUTES.home} className="hover:text-brand-green">Home</Link>
+              <Link to={ROUTES.home} className="hover:text-brand-primary">Home</Link>
               <span>/</span>
-              <Link to={ROUTES.tours} className="hover:text-brand-green">Tours</Link>
+              <Link to={ROUTES.tours} className="hover:text-brand-primary">Tours</Link>
               <span>/</span>
-              <Link to={ROUTES.tourDetail(slug)} className="hover:text-brand-green">{tour.name}</Link>
+              <Link to={ROUTES.tourDetail(slug)} className="hover:text-brand-primary">{tour.name}</Link>
               <span>/</span>
               <span className="font-medium text-brand-ink">Book</span>
             </div>
-            <Link to={ROUTES.tourDetail(slug)} className="text-xs font-semibold text-brand-green hover:underline">
+            <Link to={ROUTES.tourDetail(slug)} className="text-xs font-semibold text-brand-primary hover:underline">
               View full itinerary →
             </Link>
           </nav>
@@ -501,7 +501,7 @@ export default function TourBookingPage() {
                     </FormField>
 
                     <div className="flex justify-end pt-2">
-                      <button type="submit" className="rounded-xl bg-brand-green px-8 py-3 text-sm font-semibold text-white shadow-md transition-all hover:bg-brand-green-dark">
+                      <button type="submit" className="rounded-xl bg-brand-primary px-8 py-3 text-sm font-semibold text-white shadow-md transition-all hover:bg-brand-primary-dark">
                         Continue
                       </button>
                     </div>
@@ -534,13 +534,13 @@ export default function TourBookingPage() {
                           onClick={() => update("bookingType", opt.id)}
                           className={[
                             "flex flex-col items-start gap-3 rounded-2xl border-2 p-5 text-left transition-all",
-                            selected ? "border-brand-green bg-brand-green/5 ring-2 ring-brand-green/15" : "border-brand-border/70 hover:border-brand-green/40",
+                            selected ? "border-brand-primary bg-brand-primary/5 ring-2 ring-brand-primary/15" : "border-brand-border/70 hover:border-brand-primary/40",
                           ].join(" ")}
                         >
                           <span
                             className={[
                               "flex h-11 w-11 items-center justify-center rounded-xl transition-colors",
-                              selected ? "bg-brand-green/10 text-brand-green" : "bg-brand-cream text-brand-muted",
+                              selected ? "bg-brand-primary/10 text-brand-primary" : "bg-brand-cream text-brand-muted",
                             ].join(" ")}
                           >
                             <Icon className="h-5 w-5" strokeWidth={1.5} aria-hidden />
@@ -557,7 +557,7 @@ export default function TourBookingPage() {
 
                     <div className="flex justify-between pt-2">
                       <button type="button" onClick={() => setStep("info")} className="text-sm font-semibold text-brand-muted hover:text-brand-ink">← Back</button>
-                      <button type="button" onClick={handleTypeNext} className="rounded-xl bg-brand-green px-8 py-3 text-sm font-semibold text-white shadow-md hover:bg-brand-green-dark">Continue</button>
+                      <button type="button" onClick={handleTypeNext} className="rounded-xl bg-brand-primary px-8 py-3 text-sm font-semibold text-white shadow-md hover:bg-brand-primary-dark">Continue</button>
                     </div>
                   </motion.div>
                 )}
@@ -625,7 +625,7 @@ export default function TourBookingPage() {
                               type="button"
                               disabled={form.travelers <= groupLimits.min}
                               onClick={() => adjustGroupTravelers(-1)}
-                              className="flex h-10 w-10 items-center justify-center rounded-full border border-brand-border text-lg font-bold transition-all hover:border-brand-green disabled:opacity-40"
+                              className="flex h-10 w-10 items-center justify-center rounded-full border border-brand-border text-lg font-bold transition-all hover:border-brand-primary disabled:opacity-40"
                               aria-label="Decrease travelers"
                             >
                               −
@@ -639,14 +639,14 @@ export default function TourBookingPage() {
                               value={form.travelers}
                               onChange={(e) => handleGroupTravelersChange(e.target.value)}
                               onBlur={handleGroupTravelersBlur}
-                              className="h-11 w-24 rounded-xl border border-brand-border/70 bg-white px-3 text-center text-xl font-bold text-brand-ink outline-none transition-all focus:border-brand-green/50 focus:ring-2 focus:ring-brand-green/15"
+                              className="h-11 w-24 rounded-xl border border-brand-border/70 bg-white px-3 text-center text-xl font-bold text-brand-ink outline-none transition-all focus:border-brand-primary/50 focus:ring-2 focus:ring-brand-primary/15"
                               aria-label="Number of travelers"
                             />
                             <button
                               type="button"
                               disabled={form.travelers >= groupLimits.max}
                               onClick={() => adjustGroupTravelers(1)}
-                              className="flex h-10 w-10 items-center justify-center rounded-full border border-brand-border text-lg font-bold transition-all hover:border-brand-green disabled:opacity-40"
+                              className="flex h-10 w-10 items-center justify-center rounded-full border border-brand-border text-lg font-bold transition-all hover:border-brand-primary disabled:opacity-40"
                               aria-label="Increase travelers"
                             >
                               +
@@ -667,14 +667,14 @@ export default function TourBookingPage() {
                             onClick={() => update("selectedDate", dep.date)}
                             className={[
                               "flex w-full items-center justify-between rounded-xl border px-4 py-3 text-left transition-all",
-                              form.selectedDate === dep.date ? "border-brand-green bg-brand-green/5 ring-2 ring-brand-green/20" : "border-brand-border/70 hover:border-brand-green/30",
+                              form.selectedDate === dep.date ? "border-brand-primary bg-brand-primary/5 ring-2 ring-brand-primary/20" : "border-brand-border/70 hover:border-brand-primary/30",
                             ].join(" ")}
                           >
                             <div>
                               <p className="text-sm font-semibold text-brand-ink">{dep.dateLabel || dep.date}</p>
                               <p className="text-xs text-brand-muted">{dep.label}</p>
                             </div>
-                            <span className={`text-xs font-bold ${isDepartureLowAvailability(dep.spotsLeft, dep.spotsTotal) ? "text-red-500" : "text-brand-green"}`}>
+                            <span className={`text-xs font-bold ${isDepartureLowAvailability(dep.spotsLeft, dep.spotsTotal) ? "text-red-500" : "text-brand-primary"}`}>
                               {formatDepartureSpotsLeftLabel(dep.spotsLeft, dep.spotsTotal)}
                             </span>
                           </button>
@@ -711,7 +711,7 @@ export default function TourBookingPage() {
 
                     <div className="flex justify-between pt-2">
                       <button type="button" onClick={() => setStep("type")} className="text-sm font-semibold text-brand-muted hover:text-brand-ink">← Back</button>
-                      <button type="submit" className="rounded-xl bg-brand-green px-8 py-3 text-sm font-semibold text-white shadow-md hover:bg-brand-green-dark">Continue</button>
+                      <button type="submit" className="rounded-xl bg-brand-primary px-8 py-3 text-sm font-semibold text-white shadow-md hover:bg-brand-primary-dark">Continue</button>
                     </div>
                   </motion.form>
                 )}
@@ -742,17 +742,17 @@ export default function TourBookingPage() {
                     <button
                       type="button"
                       onClick={() => handlePaymentSelect("online")}
-                      className="group flex w-full items-start gap-4 rounded-2xl border-2 border-brand-border/70 p-5 text-left transition-all hover:border-brand-green hover:bg-brand-green/5"
+                      className="group flex w-full items-start gap-4 rounded-2xl border-2 border-brand-border/70 p-5 text-left transition-all hover:border-brand-primary hover:bg-brand-primary/5"
                     >
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-brand-green/10 text-brand-green">
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-brand-primary/10 text-brand-primary">
                         <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} aria-hidden><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
                       </div>
                       <div className="flex-1">
-                        <p className="font-bold text-brand-ink group-hover:text-brand-green">Pay online</p>
+                        <p className="font-bold text-brand-ink group-hover:text-brand-primary">Pay online</p>
                         <p className="mt-1 text-xs leading-relaxed text-brand-muted">Redirect to our secure payment gateway, card details handled entirely off-site.</p>
-                        <p className="mt-2 text-sm font-bold text-brand-green">{formatBookingCurrency(subtotal, chargeCurrency)}</p>
+                        <p className="mt-2 text-sm font-bold text-brand-primary">{formatBookingCurrency(subtotal, chargeCurrency)}</p>
                       </div>
-                      <svg className="mt-1 h-5 w-5 shrink-0 text-brand-muted group-hover:text-brand-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden><path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                      <svg className="mt-1 h-5 w-5 shrink-0 text-brand-muted group-hover:text-brand-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden><path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" /></svg>
                     </button>
                     </>
                     ) : null}
@@ -807,7 +807,7 @@ export default function TourBookingPage() {
                       </div>
                       <div className="flex justify-between border-t border-brand-border/50 pt-2">
                         <span className="font-semibold text-brand-ink">Total due</span>
-                        <span className="text-xl font-bold text-brand-green">{formatBookingCurrency(subtotal, chargeCurrency)}</span>
+                        <span className="text-xl font-bold text-brand-primary">{formatBookingCurrency(subtotal, chargeCurrency)}</span>
                       </div>
                     </div>
 
@@ -819,9 +819,9 @@ export default function TourBookingPage() {
                       onSelectInternational={selectInternationalRegion}
                     />
 
-                    <div className="rounded-xl border border-brand-green/25 bg-brand-green/5 p-4">
+                    <div className="rounded-xl border border-brand-primary/25 bg-brand-primary/5 p-4">
                       <div className="flex items-start gap-3">
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-green/10 text-brand-green">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-primary/10 text-brand-primary">
                           <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} aria-hidden>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                           </svg>
@@ -836,9 +836,9 @@ export default function TourBookingPage() {
                     </div>
 
                     <ul className="space-y-2 text-xs text-brand-muted">
-                      <li className="flex items-center gap-2"><span className="text-brand-green">✓</span> 256-bit encrypted checkout</li>
-                      <li className="flex items-center gap-2"><span className="text-brand-green">✓</span> Instant booking confirmation on success</li>
-                      <li className="flex items-center gap-2"><span className="text-brand-green">✓</span> Receipt available after successful payment</li>
+                      <li className="flex items-center gap-2"><span className="text-brand-primary">✓</span> 256-bit encrypted checkout</li>
+                      <li className="flex items-center gap-2"><span className="text-brand-primary">✓</span> Instant booking confirmation on success</li>
+                      <li className="flex items-center gap-2"><span className="text-brand-primary">✓</span> Receipt available after successful payment</li>
                     </ul>
 
                     <div className="flex justify-between pt-2">
@@ -853,7 +853,7 @@ export default function TourBookingPage() {
                       <button
                         type="submit"
                         disabled={processing}
-                        className="inline-flex items-center gap-2 rounded-xl bg-brand-green px-8 py-3 text-sm font-semibold text-white shadow-md transition-all hover:bg-brand-green-dark disabled:cursor-not-allowed disabled:opacity-70"
+                        className="inline-flex items-center gap-2 rounded-xl bg-brand-primary px-8 py-3 text-sm font-semibold text-white shadow-md transition-all hover:bg-brand-primary-dark disabled:cursor-not-allowed disabled:opacity-70"
                       >
                         {processing ? (
                           <>
@@ -889,9 +889,9 @@ export default function TourBookingPage() {
                     <div className="rounded-xl border border-brand-orange/30 bg-brand-orange/5 p-5">
                       <p className="font-bold text-brand-ink">What happens next</p>
                       <ul className="mt-3 space-y-2.5 text-sm text-brand-muted">
-                        <li className="flex items-start gap-2"><span className="text-brand-green">✓</span> Instant reservation confirmation emailed to {form.email || "you"}</li>
-                        <li className="flex items-start gap-2"><span className="text-brand-green">✓</span> Receipt available after payment is completed</li>
-                        <li className="flex items-start gap-2"><span className="text-brand-green">✓</span> Pay {formatBookingCurrency(subtotal, tour.priceCurrency)} at tour check-in or our office</li>
+                        <li className="flex items-start gap-2"><span className="text-brand-primary">✓</span> Instant reservation confirmation emailed to {form.email || "you"}</li>
+                        <li className="flex items-start gap-2"><span className="text-brand-primary">✓</span> Receipt available after payment is completed</li>
+                        <li className="flex items-start gap-2"><span className="text-brand-primary">✓</span> Pay {formatBookingCurrency(subtotal, tour.priceCurrency)} at tour check-in or our office</li>
                       </ul>
                     </div>
 

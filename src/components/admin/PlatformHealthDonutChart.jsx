@@ -8,7 +8,7 @@ const TRACK_COLOR = "#E8E2D6";
 const EASE = [0.22, 1, 0.36, 1];
 
 const BOOKING_SEGMENTS = [
-  { key: "confirmed", label: "Confirmed", color: "#006B3F", dotClass: "bg-brand-green" },
+  { key: "confirmed", label: "Confirmed", color: "#006B3F", dotClass: "bg-brand-primary" },
   { key: "pending", label: "Pending payment", color: "#CE1126", dotClass: "bg-brand-orange" },
   { key: "cancelled", label: "Cancelled", color: "#C53030", dotClass: "bg-red-500" },
 ];
@@ -125,7 +125,7 @@ export default function PlatformHealthDonutChart({ confirmedBookings, pendingPay
               <p className="mt-2 text-xs font-bold uppercase tracking-[0.16em] text-brand-muted">
                 Total bookings
               </p>
-              <p className="mt-2.5 text-sm font-semibold text-brand-green">{confirmedRate}% confirmed</p>
+              <p className="mt-2.5 text-sm font-semibold text-brand-primary">{confirmedRate}% confirmed</p>
             </motion.div>
           )}
         </div>

@@ -2,7 +2,7 @@ import { X } from "lucide-react";
 import { CUSTOM_CITY_VALUE } from "../../data/ghanaRegions";
 
 const inputClass =
-  "w-full rounded-xl border-2 border-brand-border bg-white px-4 py-2.5 text-sm font-medium text-brand-ink outline-none transition-all focus:border-brand-green focus:ring-2 focus:ring-brand-green/15";
+  "w-full rounded-xl border-2 border-brand-border bg-white px-4 py-2.5 text-sm font-medium text-brand-ink outline-none transition-all focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15";
 
 export default function CitySelectField({
   cities,

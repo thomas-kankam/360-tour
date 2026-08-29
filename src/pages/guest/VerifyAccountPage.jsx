@@ -144,7 +144,7 @@ export default function VerifyAccountPage() {
           </Link>
 
           <div className="mt-8 rounded-[1.75rem] border border-brand-border/60 bg-white p-8 shadow-sm">
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-green/10 text-brand-green">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-primary/10 text-brand-primary">
               <Mail className="h-7 w-7" strokeWidth={1.75} aria-hidden />
             </div>
 
@@ -177,7 +177,7 @@ export default function VerifyAccountPage() {
                   exit={{ opacity: 0, height: 0 }}
                   className="mt-4 overflow-hidden"
                 >
-                  <p className="rounded-xl bg-brand-green/10 px-4 py-3 text-xs font-medium text-brand-green">
+                  <p className="rounded-xl bg-brand-primary/10 px-4 py-3 text-xs font-medium text-brand-primary">
                     {otpHint}
                   </p>
                 </motion.div>
@@ -212,7 +212,7 @@ export default function VerifyAccountPage() {
               <button
                 type="submit"
                 disabled={otp.length < 6 || loading}
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green py-3.5 text-sm font-semibold text-white transition-all hover:bg-brand-green-dark disabled:cursor-not-allowed disabled:opacity-50"
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-primary py-3.5 text-sm font-semibold text-white transition-all hover:bg-brand-primary-dark disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {loading ? (
                   <>
@@ -236,14 +236,14 @@ export default function VerifyAccountPage() {
                 type="button"
                 onClick={handleResend}
                 disabled={resendCooldown > 0 || loading}
-                className="font-semibold text-brand-green hover:text-brand-green-dark disabled:cursor-not-allowed disabled:opacity-50"
+                className="font-semibold text-brand-primary hover:text-brand-primary-dark disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {resendCooldown > 0 ? `Resend in ${resendCooldown}s` : "Resend OTP"}
               </button>
             </p>
 
             <div className="mt-6 flex items-start gap-2.5 rounded-xl border border-brand-border/60 bg-brand-cream/50 px-4 py-3">
-              <svg className="mt-0.5 h-4 w-4 shrink-0 text-brand-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
+              <svg className="mt-0.5 h-4 w-4 shrink-0 text-brand-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
               <p className="text-[11px] leading-relaxed text-brand-muted">

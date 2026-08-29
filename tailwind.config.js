@@ -1,6 +1,6 @@
 /**
- * Palette is derived directly from the 360 Tours Ghana logo:
- * flag green (primary) · flag gold (accent) · flag red (alert/CTA highlight) · logo black (ink).
+ * 360 Tours Ghana — client brand palette (Aug 2026).
+ * Primary green dominant · Gold for CTAs · Red sparingly (~5%) · Warm white base.
  * @type {import('tailwindcss').Config}
  */
 module.exports = {
@@ -10,14 +10,19 @@ module.exports = {
       colors: {
         brand: {
           primary: {
-            DEFAULT: "#006B3F",
+            DEFAULT: "#006B3C",
             dark: "#00512F",
             light: "#0A8A54",
           },
+          secondary: {
+            DEFAULT: "#174A35",
+            dark: "#0F3324",
+            light: "#1F5C42",
+          },
           accent: {
-            DEFAULT: "#FCD116",
+            DEFAULT: "#F2C500",
             dark: "#D9B200",
-            light: "#FFE571",
+            light: "#FFD84D",
           },
           red: {
             DEFAULT: "#CE1126",
@@ -25,18 +30,18 @@ module.exports = {
             light: "#E5384B",
           },
           charcoal: {
-            DEFAULT: "#0B0B0B",
-            light: "#1C1A17",
+            DEFAULT: "#111111",
+            light: "#1C1C1C",
           },
-          cream: "#FCF8F0",
-          sand: "#F4EBDA",
-          ink: "#17130E",
-          muted: "#655C4E",
-          border: "#E6DBC6",
+          cream: "#FAF8F2",
+          sand: "#D8B98A",
+          ink: "#111111",
+          muted: "#5C5348",
+          border: "#E8DFD0",
 
-          /* legacy aliases — keep older utility names rendering on the new palette */
+          /* legacy aliases */
           green: {
-            DEFAULT: "#006B3F",
+            DEFAULT: "#006B3C",
             dark: "#00512F",
             light: "#0A8A54",
           },
@@ -45,8 +50,8 @@ module.exports = {
             dark: "#A20D1E",
           },
           gold: {
-            DEFAULT: "#FCD116",
-            light: "#FFE571",
+            DEFAULT: "#F2C500",
+            light: "#FFD84D",
           },
         },
       },
@@ -63,16 +68,16 @@ module.exports = {
       },
       backgroundImage: {
         "kente-stripe":
-          "repeating-linear-gradient(90deg, #CE1126 0 18px, #FCD116 18px 36px, #006B3F 36px 54px, #0B0B0B 54px 72px)",
+          "repeating-linear-gradient(90deg, #CE1126 0 18px, #F2C500 18px 36px, #006B3C 36px 54px, #111111 54px 72px)",
         "kente-band":
-          "linear-gradient(90deg, #CE1126 0%, #CE1126 33.33%, #FCD116 33.33%, #FCD116 66.66%, #006B3F 66.66%, #006B3F 100%)",
-        "ghana-warm": "linear-gradient(135deg, #00512F 0%, #006B3F 45%, #0B0B0B 100%)",
-        "ghana-sun": "linear-gradient(135deg, #FCD116 0%, #CE1126 100%)",
+          "linear-gradient(90deg, #CE1126 0%, #CE1126 33.33%, #F2C500 33.33%, #F2C500 66.66%, #006B3C 66.66%, #006B3C 100%)",
+        "ghana-warm": "linear-gradient(135deg, #174A35 0%, #006B3C 45%, #111111 100%)",
+        "ghana-sun": "linear-gradient(135deg, #F2C500 0%, #CE1126 100%)",
       },
       boxShadow: {
-        kente: "0 22px 60px -30px rgba(0, 107, 63, 0.45)",
-        "kente-lg": "0 34px 90px -40px rgba(11, 11, 11, 0.5)",
-        gold: "0 16px 40px -18px rgba(252, 209, 22, 0.55)",
+        kente: "0 22px 60px -30px rgba(0, 107, 60, 0.4)",
+        "kente-lg": "0 34px 90px -40px rgba(17, 17, 17, 0.45)",
+        gold: "0 16px 40px -18px rgba(242, 197, 0, 0.5)",
       },
       animation: {
         marquee: "marquee 32s linear infinite",

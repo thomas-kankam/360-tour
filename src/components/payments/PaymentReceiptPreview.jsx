@@ -19,9 +19,9 @@ export default function PaymentReceiptPreview({ receipt }) {
 
   return (
     <div className="overflow-hidden rounded-xl border border-brand-border bg-white shadow-sm">
-      <div className="h-1 bg-gradient-to-r from-brand-green via-brand-gold to-brand-orange" />
+      <div className="h-1 bg-gradient-to-r from-brand-primary via-brand-gold to-brand-orange" />
 
-      <div className="flex items-start justify-between gap-3 bg-brand-green px-5 py-4 text-white">
+      <div className="flex items-start justify-between gap-3 bg-brand-primary px-5 py-4 text-white">
         <div>
           <p className="text-lg font-bold">360 Tours and Investment Limited</p>
           <p className="mt-0.5 text-xs text-white/80">Payment receipt</p>
@@ -33,7 +33,7 @@ export default function PaymentReceiptPreview({ receipt }) {
 
       <div className="border-b border-brand-border/40 bg-[#FFF8EB] px-5 py-4">
         <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-brand-orange">Amount paid</p>
-        <p className="mt-1 text-2xl font-bold text-brand-green">{receipt.amountLabel}</p>
+        <p className="mt-1 text-2xl font-bold text-brand-primary">{receipt.amountLabel}</p>
         <p className="mt-1 text-xs text-brand-muted">{formatPaymentDate(receipt.paidAt)}</p>
       </div>
 

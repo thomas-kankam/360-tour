@@ -79,7 +79,7 @@ export default function OperatorPaymentDetailPage() {
   if (loading) {
     return (
       <div className="flex min-h-[320px] items-center justify-center rounded-2xl border border-brand-border/60 bg-white">
-        <Loader2 className="h-8 w-8 animate-spin text-brand-green" strokeWidth={2} aria-hidden />
+        <Loader2 className="h-8 w-8 animate-spin text-brand-primary" strokeWidth={2} aria-hidden />
       </div>
     );
   }
@@ -88,7 +88,7 @@ export default function OperatorPaymentDetailPage() {
     return (
       <div className="rounded-2xl border border-brand-border bg-white p-10 text-center">
         <p className="font-semibold text-brand-ink">Payment not found</p>
-        <Link to={ROUTES.operator.payments} className="mt-4 inline-block text-sm font-semibold text-brand-green hover:underline">
+        <Link to={ROUTES.operator.payments} className="mt-4 inline-block text-sm font-semibold text-brand-primary hover:underline">
           Back to payments
         </Link>
       </div>
@@ -167,7 +167,7 @@ export default function OperatorPaymentDetailPage() {
             </div>
             <div className="flex justify-between gap-4">
               <dt className="text-brand-muted">Booking code</dt>
-              <dd className="font-mono text-xs font-bold text-brand-green">{payment.bookingCode}</dd>
+              <dd className="font-mono text-xs font-bold text-brand-primary">{payment.bookingCode}</dd>
             </div>
             <div className="flex justify-between gap-4">
               <dt className="text-brand-muted">Gateway reference</dt>
@@ -187,7 +187,7 @@ export default function OperatorPaymentDetailPage() {
                   href={payment.paymentUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-sm font-semibold text-brand-green hover:underline"
+                  className="inline-flex items-center gap-2 text-sm font-semibold text-brand-primary hover:underline"
                 >
                   <CreditCard className="h-4 w-4" strokeWidth={2} aria-hidden />
                   Open checkout link
@@ -268,7 +268,7 @@ export default function OperatorPaymentDetailPage() {
             {booking.tour.slug ? (
               <Link
                 to={ROUTES.operator.tourDetail(booking.tour.slug)}
-                className="mt-4 inline-flex text-sm font-semibold text-brand-green hover:underline"
+                className="mt-4 inline-flex text-sm font-semibold text-brand-primary hover:underline"
               >
                 Open listing →
               </Link>

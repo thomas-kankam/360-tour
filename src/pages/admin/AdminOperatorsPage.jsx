@@ -180,7 +180,7 @@ export default function AdminOperatorsPage() {
         </div>
         <div className="rounded-2xl border border-black/8 bg-white px-4 py-4 shadow-sm">
           <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-brand-muted">Verified (page)</p>
-          <p className="mt-1 text-2xl font-bold text-brand-green">{pageSummary.verified}</p>
+          <p className="mt-1 text-2xl font-bold text-brand-primary">{pageSummary.verified}</p>
           <p className="mt-1 text-xs text-brand-muted">Email verified</p>
         </div>
       </div>
@@ -199,7 +199,7 @@ export default function AdminOperatorsPage() {
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
                 placeholder="Search by name, organization, email, or location…"
-                className="w-full rounded-xl border border-brand-border/70 bg-brand-cream/30 py-2.5 pl-10 pr-3 text-sm outline-none transition-shadow focus:border-brand-green focus:ring-2 focus:ring-brand-green/15"
+                className="w-full rounded-xl border border-brand-border/70 bg-brand-cream/30 py-2.5 pl-10 pr-3 text-sm outline-none transition-shadow focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
               />
             </div>
             <div className="flex flex-wrap gap-2">
@@ -233,7 +233,7 @@ export default function AdminOperatorsPage() {
                   className={[
                     "rounded-full px-3 py-1.5 text-xs font-semibold transition-colors",
                     verifiedFilter === filter.id
-                      ? "bg-brand-green text-white"
+                      ? "bg-brand-primary text-white"
                       : "bg-brand-cream text-brand-muted hover:text-brand-ink",
                   ].join(" ")}
                 >
@@ -246,7 +246,7 @@ export default function AdminOperatorsPage() {
 
         {loading ? (
           <div className="flex min-h-[280px] items-center justify-center">
-            <Loader2 className="h-8 w-8 animate-spin text-brand-green" strokeWidth={2} aria-hidden />
+            <Loader2 className="h-8 w-8 animate-spin text-brand-primary" strokeWidth={2} aria-hidden />
           </div>
         ) : isEmpty ? (
           <div className="flex flex-col items-center gap-3 py-20 text-center">

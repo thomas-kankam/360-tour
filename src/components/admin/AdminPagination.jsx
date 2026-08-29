@@ -4,8 +4,8 @@ import { getAdminPaginationPages } from "../../hooks/useAdminPagination";
 const btnClass =
   "inline-flex h-9 min-w-9 items-center justify-center rounded-xl border border-brand-border/60 text-sm font-semibold text-brand-muted transition-colors disabled:cursor-not-allowed disabled:opacity-40";
 
-const activeClass = "border-brand-green/30 bg-brand-green/10 text-brand-green";
-const hoverClass = "hover:border-brand-green/30 hover:bg-brand-green/5 hover:text-brand-green";
+const activeClass = "border-brand-primary/30 bg-brand-primary/10 text-brand-primary";
+const hoverClass = "hover:border-brand-primary/30 hover:bg-brand-primary/5 hover:text-brand-primary";
 
 export default function AdminPagination({
   page,

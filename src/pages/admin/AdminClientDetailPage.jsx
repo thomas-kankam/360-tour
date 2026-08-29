@@ -26,7 +26,7 @@ const EASE = [0.22, 1, 0.36, 1];
 function InfoRow({ icon: Icon, label, value }) {
   return (
     <div className="flex items-start gap-3 rounded-xl border border-black/8 bg-brand-cream/40 px-4 py-3.5">
-      <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white text-brand-green">
+      <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white text-brand-primary">
         <Icon className="h-4 w-4" strokeWidth={1.75} aria-hidden />
       </span>
       <div className="min-w-0">
@@ -87,7 +87,7 @@ export default function AdminClientDetailPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center rounded-2xl border border-black/8 bg-white py-24">
-        <Loader2 className="h-7 w-7 animate-spin text-brand-green" aria-hidden />
+        <Loader2 className="h-7 w-7 animate-spin text-brand-primary" aria-hidden />
       </div>
     );
   }

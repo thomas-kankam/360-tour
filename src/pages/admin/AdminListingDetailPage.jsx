@@ -84,7 +84,7 @@ export default function AdminListingDetailPage() {
   if (loading) {
     return (
       <div className="flex min-h-[320px] items-center justify-center rounded-2xl border border-black/8 bg-white">
-        <Loader2 className="h-8 w-8 animate-spin text-brand-green" strokeWidth={2} aria-hidden />
+        <Loader2 className="h-8 w-8 animate-spin text-brand-primary" strokeWidth={2} aria-hidden />
       </div>
     );
   }
@@ -188,14 +188,14 @@ export default function AdminListingDetailPage() {
                       type="button"
                       onClick={() => setLightboxIndex(index)}
                       className={[
-                        "relative h-28 w-40 shrink-0 overflow-hidden rounded-xl shadow-sm transition-all hover:ring-2 hover:ring-brand-green/40",
-                        isCover ? "border-2 border-brand-green/50" : "border border-brand-border/60",
+                        "relative h-28 w-40 shrink-0 overflow-hidden rounded-xl shadow-sm transition-all hover:ring-2 hover:ring-brand-primary/40",
+                        isCover ? "border-2 border-brand-primary/50" : "border border-brand-border/60",
                       ].join(" ")}
                       aria-label={isCover ? "View cover image" : `View gallery image ${index + 1}`}
                     >
                       <img src={url} alt="" className="h-full w-full object-cover" />
                       {isCover ? (
-                        <span className="absolute bottom-2 left-2 rounded-full bg-brand-green px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-white">
+                        <span className="absolute bottom-2 left-2 rounded-full bg-brand-primary px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-white">
                           Cover
                         </span>
                       ) : null}
@@ -217,7 +217,7 @@ export default function AdminListingDetailPage() {
               <ul className="grid gap-2 sm:grid-cols-2">
                 {listing.highlights.filter(Boolean).map((item) => (
                   <li key={item} className="flex items-start gap-2 text-sm text-brand-ink">
-                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-brand-green" strokeWidth={2} aria-hidden />
+                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-brand-primary" strokeWidth={2} aria-hidden />
                     {item}
                   </li>
                 ))}
@@ -239,7 +239,7 @@ export default function AdminListingDetailPage() {
                         <p className="text-sm font-bold text-brand-ink">{dep.dateLabel || dep.date}</p>
                         <p className="text-xs text-brand-muted">{dep.label}</p>
                       </div>
-                      <span className="text-sm font-semibold text-brand-green">
+                      <span className="text-sm font-semibold text-brand-primary">
                         {dep.spotsLeft} / {dep.spotsTotal} left
                       </span>
                     </div>

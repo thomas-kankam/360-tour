@@ -69,8 +69,8 @@ export default function OtpInput({ value = "", onChange, disabled = false, error
             error
               ? "border-red-400 bg-red-50 focus:border-red-500 focus:ring-2 focus:ring-red-200"
               : [
-                  "focus:border-brand-green focus:ring-2 focus:ring-brand-green/20",
-                  d ? "border-brand-green bg-brand-green/5" : "border-brand-border bg-white",
+                  "focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20",
+                  d ? "border-brand-primary bg-brand-primary/5" : "border-brand-border bg-white",
                 ].join(" "),
             disabled ? "opacity-50 cursor-not-allowed" : "",
           ].join(" ")}

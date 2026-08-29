@@ -75,7 +75,7 @@ function TourSummaryPanel({ receipt }) {
         <dl className="mt-4 space-y-4">
           {receipt.tour.location ? (
             <div className="flex items-start gap-3">
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-green/10 text-brand-green">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-primary/10 text-brand-primary">
                 <MapPin className="h-4 w-4" strokeWidth={2} aria-hidden />
               </span>
               <div>
@@ -108,7 +108,7 @@ function TourSummaryPanel({ receipt }) {
           </div>
 
           <div className="flex items-start gap-3">
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-green/10 text-brand-green">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-primary/10 text-brand-primary">
               <Users className="h-4 w-4" strokeWidth={2} aria-hidden />
             </span>
             <div>
@@ -178,9 +178,9 @@ function StatusIcon({ phase, isSuccess }) {
 
 function CompactStatusCard({ phase, isSuccess, bookingRef, errorMessage, children }) {
   const headerClass = isSuccess
-    ? "bg-gradient-to-br from-brand-green via-brand-green to-brand-green-dark"
+    ? "bg-gradient-to-br from-brand-primary via-brand-primary to-brand-primary-dark"
     : phase === "loading"
-      ? "bg-gradient-to-br from-brand-ink/90 to-brand-green-dark"
+      ? "bg-gradient-to-br from-brand-ink/90 to-brand-primary-dark"
       : "bg-gradient-to-br from-brand-ink to-brand-ink/90";
 
   return (
@@ -317,7 +317,7 @@ export default function PaymentSuccessPage() {
             ) : null}
             <Link
               to={ROUTES.tours}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-brand-border bg-white py-3.5 text-sm font-semibold text-brand-ink transition-all hover:border-brand-green/30 hover:bg-brand-cream"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-brand-border bg-white py-3.5 text-sm font-semibold text-brand-ink transition-all hover:border-brand-primary/30 hover:bg-brand-cream"
             >
               <Compass className="h-4 w-4" strokeWidth={2} aria-hidden />
               Explore tours
@@ -344,7 +344,7 @@ export default function PaymentSuccessPage() {
         className="mx-auto w-full max-w-5xl overflow-hidden rounded-[1.75rem] border border-brand-border/60 bg-white shadow-[0_24px_64px_-28px_rgba(23,19,14,0.24)]"
       >
         <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
-          <div className="relative flex flex-col bg-gradient-to-br from-brand-green via-brand-green to-brand-green-dark px-6 py-8 text-white sm:px-8 sm:py-10 lg:min-h-[560px]">
+          <div className="relative flex flex-col bg-gradient-to-br from-brand-primary via-brand-primary to-brand-primary-dark px-6 py-8 text-white sm:px-8 sm:py-10 lg:min-h-[560px]">
             <div aria-hidden className="adinkra-field-dark pointer-events-none absolute inset-0" />
 
             <div className="relative flex flex-1 flex-col">
@@ -385,7 +385,7 @@ export default function PaymentSuccessPage() {
                 <button
                   type="button"
                   onClick={() => setShowReceiptModal(true)}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-white py-3.5 text-sm font-semibold text-brand-green shadow-[0_8px_24px_-8px_rgba(0,0,0,0.25)] transition-all hover:bg-brand-cream"
+                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-white py-3.5 text-sm font-semibold text-brand-primary shadow-[0_8px_24px_-8px_rgba(0,0,0,0.25)] transition-all hover:bg-brand-cream"
                 >
                   <FileText className="h-4 w-4" strokeWidth={2} aria-hidden />
                   View receipt

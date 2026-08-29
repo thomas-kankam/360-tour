@@ -91,7 +91,7 @@ export default function PaymentReceiptModal({ open, receipt, onClose, onDownload
             type="button"
             onClick={handleDownload}
             disabled={downloading}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green py-3.5 text-sm font-semibold text-white shadow-[0_8px_24px_-8px_rgba(0,107,63,0.45)] transition-all hover:bg-brand-green-dark disabled:opacity-70"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-primary py-3.5 text-sm font-semibold text-white shadow-[0_8px_24px_-8px_rgba(0,107,63,0.45)] transition-all hover:bg-brand-primary-dark disabled:opacity-70"
           >
             {downloading ? (
               <Loader2 className="h-4 w-4 animate-spin" strokeWidth={2} aria-hidden />

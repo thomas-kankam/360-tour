@@ -41,7 +41,7 @@ function getGreeting() {
 function StatPill({ label, value, icon: Icon, loading = false }) {
   return (
     <div className="flex items-center gap-3 rounded-2xl border border-black/8 bg-white px-5 py-4 shadow-sm">
-      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-cream text-brand-green">
+      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-cream text-brand-primary">
         <Icon className="h-5 w-5" strokeWidth={1.75} aria-hidden />
       </span>
       <div>
@@ -64,7 +64,7 @@ function BookingStatusBadge({ status }) {
     pending: "bg-amber-100 text-amber-700",
     cancelled: "bg-red-100 text-red-700",
     "payment-processing": "bg-sky-100 text-sky-700",
-    completed: "bg-brand-green/10 text-brand-green",
+    completed: "bg-brand-primary/10 text-brand-primary",
   };
   return (
     <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-semibold capitalize ${statusMap[status] ?? "bg-brand-cream text-brand-muted"}`}>
@@ -85,7 +85,7 @@ function BookingRow({ booking, index }) {
       className="group border-b border-black/5 last:border-0 hover:bg-brand-cream/30"
     >
       <td className="px-5 py-4">
-        <p className="text-sm font-semibold text-brand-ink group-hover:text-brand-green">
+        <p className="text-sm font-semibold text-brand-ink group-hover:text-brand-primary">
           {booking.tourTitle || booking.tour?.name || "Unnamed tour"}
         </p>
         <p className="text-xs text-brand-muted">{booking.travelerName || "—"}</p>
@@ -270,7 +270,7 @@ export default function AdminDashboardPage() {
               </div>
               <div className="flex items-center justify-between text-xs">
                 <span className="text-white/50">Status</span>
-                <span className="font-semibold text-brand-green">Active</span>
+                <span className="font-semibold text-brand-primary">Active</span>
               </div>
             </div>
           </div>
@@ -289,7 +289,7 @@ export default function AdminDashboardPage() {
           {permNames.includes("booking_management") && (totalBookings ?? 0) > 0 && (
             <Link
               to={ROUTES.admin.bookings}
-              className="flex items-center gap-1 text-sm font-semibold text-brand-green hover:underline"
+              className="flex items-center gap-1 text-sm font-semibold text-brand-primary hover:underline"
             >
               View all <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.5} aria-hidden />
             </Link>
@@ -298,7 +298,7 @@ export default function AdminDashboardPage() {
 
         {loading ? (
           <div className="mt-6 flex min-h-[220px] items-center justify-center rounded-2xl border border-dashed border-black/12 bg-brand-cream/40">
-            <Loader2 className="h-7 w-7 animate-spin text-brand-green" strokeWidth={2} aria-hidden />
+            <Loader2 className="h-7 w-7 animate-spin text-brand-primary" strokeWidth={2} aria-hidden />
           </div>
         ) : recentBookings.length === 0 ? (
           <div className="mt-6 flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-black/12 bg-brand-cream/40 py-16 text-center">
@@ -362,7 +362,7 @@ export default function AdminDashboardPage() {
           {permNames.includes("contact_management") && (totalContacts ?? 0) > 0 && (
             <Link
               to={ROUTES.admin.contacts}
-              className="flex items-center gap-1 text-sm font-semibold text-brand-green hover:underline"
+              className="flex items-center gap-1 text-sm font-semibold text-brand-primary hover:underline"
             >
               View all <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.5} aria-hidden />
             </Link>
@@ -371,7 +371,7 @@ export default function AdminDashboardPage() {
 
         {loading ? (
           <div className="mt-6 flex min-h-[220px] items-center justify-center rounded-2xl border border-dashed border-black/12 bg-brand-cream/40">
-            <Loader2 className="h-7 w-7 animate-spin text-brand-green" strokeWidth={2} aria-hidden />
+            <Loader2 className="h-7 w-7 animate-spin text-brand-primary" strokeWidth={2} aria-hidden />
           </div>
         ) : recentContacts.length === 0 ? (
           <div className="mt-6 flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-black/12 bg-brand-cream/40 py-16 text-center">
@@ -428,7 +428,7 @@ export default function AdminDashboardPage() {
                       className="group border-b border-black/5 last:border-0 hover:bg-brand-cream/30"
                     >
                       <td className="px-5 py-4">
-                        <p className="text-sm font-semibold text-brand-ink group-hover:text-brand-green">
+                        <p className="text-sm font-semibold text-brand-ink group-hover:text-brand-primary">
                           {contact.fullname || "—"}
                         </p>
                         <p className="text-xs text-brand-muted">{contact.email || "—"}</p>

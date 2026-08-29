@@ -78,7 +78,7 @@ export default function MyReviewsPage() {
           transition={{ duration: 0.45, ease: EASE }}
         >
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-orange">Your feedback</p>
-          <h1 className="mt-2 font-heading text-3xl font-bold text-brand-green sm:text-4xl">My reviews</h1>
+          <h1 className="mt-2 font-heading text-3xl font-bold text-brand-primary sm:text-4xl">My reviews</h1>
           <p className="mt-3 max-w-2xl text-brand-muted">
             Ratings and comments you have submitted for completed tours.
           </p>

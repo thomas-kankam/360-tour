@@ -83,7 +83,7 @@ function StepProgress({ currentIndex }) {
               <div
                 className={[
                   "flex h-7 w-7 items-center justify-center rounded-full text-[10px] font-bold transition-all",
-                  done ? "bg-brand-green text-white" : active ? "bg-brand-primary text-white ring-4 ring-brand-primary/15" : "bg-brand-border/50 text-brand-muted",
+                  done ? "bg-brand-primary text-white" : active ? "bg-brand-primary text-white ring-4 ring-brand-primary/15" : "bg-brand-border/50 text-brand-muted",
                 ].join(" ")}
               >
                 {done ? "✓" : i + 1}
@@ -92,7 +92,7 @@ function StepProgress({ currentIndex }) {
                 {step.label}
               </span>
             </div>
-            {i < STEPS.length - 1 ? <div className={`mb-4 h-px flex-1 ${done ? "bg-brand-green" : "bg-brand-border/60"}`} /> : null}
+            {i < STEPS.length - 1 ? <div className={`mb-4 h-px flex-1 ${done ? "bg-brand-primary" : "bg-brand-border/60"}`} /> : null}
           </div>
         );
       })}
@@ -115,7 +115,7 @@ function Field({ label, id, error, required, children }) {
 function inputClass(error) {
   return [
     "h-11 w-full rounded-xl border bg-white px-4 text-sm outline-none transition-all",
-    error ? "border-red-400 ring-2 ring-red-100" : "border-brand-border/70 focus:border-brand-green/50 focus:ring-2 focus:ring-brand-green/15",
+    error ? "border-red-400 ring-2 ring-red-100" : "border-brand-border/70 focus:border-brand-primary/50 focus:ring-2 focus:ring-brand-primary/15",
   ].join(" ");
 }
 
@@ -151,7 +151,7 @@ function BookingSummary({ tour, form, subtotal, bookingRef, initialSubtotal, cur
         </div>
         <div className="flex justify-between border-t border-brand-border/50 pt-2.5">
           <span className="font-semibold text-brand-ink">Updated total</span>
-          <span className="text-lg font-bold text-brand-green">{formatBookingCurrency(subtotal, resolvedCurrency)}</span>
+          <span className="text-lg font-bold text-brand-primary">{formatBookingCurrency(subtotal, resolvedCurrency)}</span>
         </div>
         {amountChanged ? (
           <p className="text-[11px] text-brand-orange">
@@ -387,7 +387,7 @@ export default function MyBookingEditPage() {
   if (loading) {
     return (
       <div className="flex min-h-[50vh] items-center justify-center bg-brand-cream">
-        <Loader2 className="h-8 w-8 animate-spin text-brand-green" strokeWidth={2} aria-hidden />
+        <Loader2 className="h-8 w-8 animate-spin text-brand-primary" strokeWidth={2} aria-hidden />
       </div>
     );
   }
@@ -396,7 +396,7 @@ export default function MyBookingEditPage() {
     return (
       <Container className="py-16 text-center">
         <p className="text-brand-muted">This booking cannot be edited.</p>
-        <Link to={ROUTES.myBookings} className="mt-4 inline-block text-sm font-semibold text-brand-green hover:underline">
+        <Link to={ROUTES.myBookings} className="mt-4 inline-block text-sm font-semibold text-brand-primary hover:underline">
           Back to my bookings
         </Link>
       </Container>
@@ -405,7 +405,7 @@ export default function MyBookingEditPage() {
 
   return (
     <div className="min-h-screen bg-brand-cream pb-16">
-      <section className="border-b border-brand-green/15 bg-brand-green py-4">
+      <section className="border-b border-brand-primary/15 bg-brand-primary py-4">
         <Container>
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
@@ -465,13 +465,13 @@ export default function MyBookingEditPage() {
                             className={[
                               "flex items-start gap-3 rounded-2xl border-2 p-4 text-left transition-all",
                               active
-                                ? "border-brand-green bg-brand-green/5 ring-2 ring-brand-green/10"
-                                : "border-brand-border/70 hover:border-brand-green/35 hover:bg-brand-cream/50",
+                                ? "border-brand-primary bg-brand-primary/5 ring-2 ring-brand-primary/10"
+                                : "border-brand-border/70 hover:border-brand-primary/35 hover:bg-brand-cream/50",
                             ].join(" ")}
                           >
                             <div className={[
                               "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl",
-                              active ? "bg-brand-green text-white" : "bg-brand-cream text-brand-green",
+                              active ? "bg-brand-primary text-white" : "bg-brand-cream text-brand-primary",
                             ].join(" ")}>
                               <Icon className="h-5 w-5" strokeWidth={1.75} aria-hidden />
                             </div>
@@ -518,18 +518,18 @@ export default function MyBookingEditPage() {
                       </Field>
                       <Field label="Travelers" id="travelers" error={showError("travelers")} required>
                         <div className="flex items-center gap-3">
-                          <button type="button" onClick={() => update("travelers", clampGroupTravelers(form.travelers - 1, tour))} className="flex h-10 w-10 items-center justify-center rounded-xl border border-brand-border bg-white text-brand-ink hover:border-brand-green/40">
+                          <button type="button" onClick={() => update("travelers", clampGroupTravelers(form.travelers - 1, tour))} className="flex h-10 w-10 items-center justify-center rounded-xl border border-brand-border bg-white text-brand-ink hover:border-brand-primary/40">
                             <Minus className="h-4 w-4" strokeWidth={2} aria-hidden />
                           </button>
                           <input id="travelers" readOnly value={travelerCount} className="h-10 w-16 rounded-xl border border-brand-border bg-brand-cream/50 text-center text-sm font-bold" />
-                          <button type="button" onClick={() => update("travelers", clampGroupTravelers(form.travelers + 1, tour))} className="flex h-10 w-10 items-center justify-center rounded-xl border border-brand-border bg-white text-brand-ink hover:border-brand-green/40">
+                          <button type="button" onClick={() => update("travelers", clampGroupTravelers(form.travelers + 1, tour))} className="flex h-10 w-10 items-center justify-center rounded-xl border border-brand-border bg-white text-brand-ink hover:border-brand-primary/40">
                             <Plus className="h-4 w-4" strokeWidth={2} aria-hidden />
                           </button>
                           <span className="text-xs text-brand-muted">{groupLimits.min} to {groupLimits.max} travelers</span>
                         </div>
                         <p className="mt-2 text-[11px] text-brand-muted">
                           {formatBookingCurrency(resolveTourUnitPrice(tour), tour.priceCurrency)} × {travelerCount} ={" "}
-                          <span className="font-semibold text-brand-green">{formatBookingCurrency(subtotal, tour.priceCurrency)}</span>
+                          <span className="font-semibold text-brand-primary">{formatBookingCurrency(subtotal, tour.priceCurrency)}</span>
                         </p>
                       </Field>
                       <Field label="Organisation" id="organization">
@@ -556,7 +556,7 @@ export default function MyBookingEditPage() {
                   </Field>
 
                   <div className="flex justify-end pt-1">
-                    <button type="submit" className="rounded-xl bg-brand-green px-6 py-2.5 text-sm font-semibold text-white hover:bg-brand-green-dark">
+                    <button type="submit" className="rounded-xl bg-brand-primary px-6 py-2.5 text-sm font-semibold text-white hover:bg-brand-primary-dark">
                       Continue
                     </button>
                   </div>
@@ -598,7 +598,7 @@ export default function MyBookingEditPage() {
 
                   <div className="flex justify-between pt-1">
                     <button type="button" onClick={() => setStep("trip")} className="text-sm font-semibold text-brand-muted hover:text-brand-ink">← Back</button>
-                    <button type="submit" className="rounded-xl bg-brand-green px-6 py-2.5 text-sm font-semibold text-white hover:bg-brand-green-dark">Continue</button>
+                    <button type="submit" className="rounded-xl bg-brand-primary px-6 py-2.5 text-sm font-semibold text-white hover:bg-brand-primary-dark">Continue</button>
                   </div>
                 </motion.form>
               )}
@@ -629,15 +629,15 @@ export default function MyBookingEditPage() {
                       <button
                       type="button"
                       onClick={() => handlePaymentSelect("online")}
-                      className="group flex w-full items-start gap-4 rounded-2xl border-2 border-brand-border/70 p-5 text-left transition-all hover:border-brand-green hover:bg-brand-green/5"
+                      className="group flex w-full items-start gap-4 rounded-2xl border-2 border-brand-border/70 p-5 text-left transition-all hover:border-brand-primary hover:bg-brand-primary/5"
                     >
-                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-green/10 text-brand-green">
+                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-primary/10 text-brand-primary">
                         <CreditCard className="h-5 w-5" strokeWidth={1.75} aria-hidden />
                       </div>
                       <div className="flex-1">
-                        <p className="font-bold text-brand-ink group-hover:text-brand-green">Pay online now</p>
+                        <p className="font-bold text-brand-ink group-hover:text-brand-primary">Pay online now</p>
                         <p className="mt-1 text-xs text-brand-muted">Redirect to Paystack, instant confirmation and receipt.</p>
-                        <p className="mt-2 text-sm font-bold text-brand-green">{formatBookingCurrency(subtotal, chargeCurrency)}</p>
+                        <p className="mt-2 text-sm font-bold text-brand-primary">{formatBookingCurrency(subtotal, chargeCurrency)}</p>
                       </div>
                     </button>
                     </>
@@ -682,7 +682,7 @@ export default function MyBookingEditPage() {
                   </div>
 
                   {(bookingTypeChanged || amountChanged) ? (
-                    <div className="rounded-xl border border-brand-green/30 bg-brand-green/5 px-4 py-3 text-sm text-brand-muted">
+                    <div className="rounded-xl border border-brand-primary/30 bg-brand-primary/5 px-4 py-3 text-sm text-brand-muted">
                       {bookingTypeChanged ? (
                         <p>
                           Booking type changed from <strong className="capitalize text-brand-ink">{initialBookingType}</strong> to{" "}
@@ -693,7 +693,7 @@ export default function MyBookingEditPage() {
                         <p className={bookingTypeChanged ? "mt-1" : ""}>
                           Total updated from{" "}
                           <strong className="text-brand-ink">{formatBookingCurrency(initialSubtotal, chargeCurrency)}</strong> to{" "}
-                          <strong className="text-brand-green">{formatBookingCurrency(subtotal, chargeCurrency)}</strong>{" "}
+                          <strong className="text-brand-primary">{formatBookingCurrency(subtotal, chargeCurrency)}</strong>{" "}
                           ({travelerCount} {travelerCount === 1 ? "traveler" : "travelers"}).
                         </p>
                       ) : null}
@@ -712,7 +712,7 @@ export default function MyBookingEditPage() {
 
                   <dl className="grid gap-3 rounded-xl border border-brand-border/50 bg-brand-cream/30 p-4 text-sm sm:grid-cols-2">
                     <div className="flex items-start gap-2">
-                      <CalendarDays className="mt-0.5 h-4 w-4 shrink-0 text-brand-green" strokeWidth={2} aria-hidden />
+                      <CalendarDays className="mt-0.5 h-4 w-4 shrink-0 text-brand-primary" strokeWidth={2} aria-hidden />
                       <div>
                         <dt className="text-xs text-brand-muted">Departure</dt>
                         <dd className="font-semibold text-brand-ink">
@@ -721,7 +721,7 @@ export default function MyBookingEditPage() {
                       </div>
                     </div>
                     <div className="flex items-start gap-2">
-                      <Users className="mt-0.5 h-4 w-4 shrink-0 text-brand-green" strokeWidth={2} aria-hidden />
+                      <Users className="mt-0.5 h-4 w-4 shrink-0 text-brand-primary" strokeWidth={2} aria-hidden />
                       <div>
                         <dt className="text-xs text-brand-muted">Travelers</dt>
                         <dd className="font-semibold text-brand-ink">
@@ -731,7 +731,7 @@ export default function MyBookingEditPage() {
                       </div>
                     </div>
                     <div className="flex items-start gap-2">
-                      <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-brand-green" strokeWidth={2} aria-hidden />
+                      <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-brand-primary" strokeWidth={2} aria-hidden />
                       <div>
                         <dt className="text-xs text-brand-muted">Payment</dt>
                         <dd className="font-semibold text-brand-ink">{form.paymentMode === "online" ? "Pay online" : "Pay on site"}</dd>
@@ -740,7 +740,7 @@ export default function MyBookingEditPage() {
                     <div className="sm:col-span-2 flex items-center justify-between border-t border-brand-border/40 pt-3">
                       <div>
                         <dt className="text-xs text-brand-muted">Total</dt>
-                        <dd className="text-lg font-bold text-brand-green">{formatBookingCurrency(subtotal, chargeCurrency)}</dd>
+                        <dd className="text-lg font-bold text-brand-primary">{formatBookingCurrency(subtotal, chargeCurrency)}</dd>
                       </div>
                       {amountChanged ? (
                         <p className="text-xs text-brand-muted line-through">{formatBookingCurrency(initialSubtotal, chargeCurrency)}</p>
@@ -762,9 +762,9 @@ export default function MyBookingEditPage() {
                         onSelectDomestic={selectDomesticRegion}
                         onSelectInternational={selectInternationalRegion}
                       />
-                      <div className="rounded-xl border border-brand-green/25 bg-brand-green/5 p-4">
+                      <div className="rounded-xl border border-brand-primary/25 bg-brand-primary/5 p-4">
                       <div className="flex items-start gap-3">
-                        <ShieldCheck className="h-5 w-5 shrink-0 text-brand-green" strokeWidth={2} aria-hidden />
+                        <ShieldCheck className="h-5 w-5 shrink-0 text-brand-primary" strokeWidth={2} aria-hidden />
                         <p className="text-xs leading-relaxed text-brand-muted">
                           Saving will update your booking and redirect you to our secure payment partner for {formatBookingCurrency(subtotal, chargeCurrency)}.
                         </p>
@@ -780,7 +780,7 @@ export default function MyBookingEditPage() {
                     <button
                       type="submit"
                       disabled={processing}
-                      className="inline-flex items-center gap-2 rounded-xl bg-brand-green px-6 py-2.5 text-sm font-semibold text-white hover:bg-brand-green-dark disabled:opacity-70"
+                      className="inline-flex items-center gap-2 rounded-xl bg-brand-primary px-6 py-2.5 text-sm font-semibold text-white hover:bg-brand-primary-dark disabled:opacity-70"
                     >
                       {processing ? (
                         <>

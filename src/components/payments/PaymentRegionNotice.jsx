@@ -50,7 +50,7 @@ export default function PaymentRegionNotice({
     <div
       className={[
         "rounded-xl border p-4",
-        isDomestic ? "border-brand-green/25 bg-brand-green/5" : "border-brand-border/60 bg-brand-cream/40",
+        isDomestic ? "border-brand-primary/25 bg-brand-primary/5" : "border-brand-border/60 bg-brand-cream/40",
         className,
       ]
         .filter(Boolean)
@@ -60,7 +60,7 @@ export default function PaymentRegionNotice({
         <div
           className={[
             "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg",
-            isDomestic ? "bg-brand-green/10 text-brand-green" : "bg-brand-border/30 text-brand-muted",
+            isDomestic ? "bg-brand-primary/10 text-brand-primary" : "bg-brand-border/30 text-brand-muted",
           ].join(" ")}
         >
           <Icon className="h-4 w-4" strokeWidth={1.75} aria-hidden />
@@ -85,7 +85,7 @@ export default function PaymentRegionNotice({
             <button
               type="button"
               onClick={onSelectInternational}
-              className="text-left text-xs font-semibold text-brand-green hover:underline"
+              className="text-left text-xs font-semibold text-brand-primary hover:underline"
             >
               Paying from outside Ghana? Switch to international checkout
             </button>
@@ -93,7 +93,7 @@ export default function PaymentRegionNotice({
             <button
               type="button"
               onClick={onSelectDomestic}
-              className="text-left text-xs font-semibold text-brand-green hover:underline"
+              className="text-left text-xs font-semibold text-brand-primary hover:underline"
             >
               I&apos;m in Ghana, use local payment methods
             </button>

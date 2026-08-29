@@ -72,10 +72,10 @@ export default function PaymentFailurePage() {
             {bookingRef ? (
               <div className="rounded-2xl border border-brand-border/50 bg-brand-cream/40 p-5">
                 <p className="text-xs font-semibold uppercase tracking-[0.12em] text-brand-muted">Booking reference</p>
-                <p className="mt-1 font-mono text-lg font-bold text-brand-green">{bookingRef}</p>
+                <p className="mt-1 font-mono text-lg font-bold text-brand-primary">{bookingRef}</p>
                 <Link
                   to={ROUTES.myBookingDetail(bookingRef)}
-                  className="mt-3 inline-flex text-sm font-semibold text-brand-green hover:text-brand-green-dark"
+                  className="mt-3 inline-flex text-sm font-semibold text-brand-primary hover:text-brand-primary-dark"
                 >
                   View booking details →
                 </Link>
@@ -96,7 +96,7 @@ export default function PaymentFailurePage() {
               ) : null}
               <Link
                 to={ROUTES.myBookings}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-brand-border bg-white py-3.5 text-sm font-semibold text-brand-ink transition-all hover:border-brand-green/30 hover:bg-brand-cream"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-brand-border bg-white py-3.5 text-sm font-semibold text-brand-ink transition-all hover:border-brand-primary/30 hover:bg-brand-cream"
               >
                 <CreditCard className="h-4 w-4" strokeWidth={2} aria-hidden />
                 My bookings
@@ -105,7 +105,7 @@ export default function PaymentFailurePage() {
 
             <Link
               to={ROUTES.tours}
-              className="flex w-full items-center justify-center gap-2 rounded-xl border border-brand-green/25 bg-brand-green/5 py-3 text-sm font-semibold text-brand-green transition-all hover:bg-brand-green/10"
+              className="flex w-full items-center justify-center gap-2 rounded-xl border border-brand-primary/25 bg-brand-primary/5 py-3 text-sm font-semibold text-brand-primary transition-all hover:bg-brand-primary/10"
             >
               <Compass className="h-4 w-4" strokeWidth={2} aria-hidden />
               Browse other tours

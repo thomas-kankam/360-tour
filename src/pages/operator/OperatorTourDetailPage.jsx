@@ -41,7 +41,7 @@ function Section({ title, subtitle, children }) {
 
 function statusClass(status) {
   const map = {
-    published: "bg-brand-green/10 text-brand-green",
+    published: "bg-brand-primary/10 text-brand-primary",
     draft: "bg-brand-gold/15 text-brand-ink",
     archived: "bg-brand-muted/10 text-brand-muted",
   };
@@ -68,13 +68,13 @@ function OperatorTourPriceCard({ tour, variant = "hero" }) {
             <dt className="text-brand-muted">
               {display.isDual ? "Local price (GHS)" : display.audienceScope === "foreign" ? "Price (USD)" : "Price (GHS)"}
             </dt>
-            <dd className="font-semibold text-brand-green">{primaryAmount}</dd>
+            <dd className="font-semibold text-brand-primary">{primaryAmount}</dd>
           </div>
         ) : null}
         {secondaryAmount ? (
           <div className="flex justify-between gap-4">
             <dt className="text-brand-muted">International price (USD)</dt>
-            <dd className="font-semibold text-brand-green">{secondaryAmount}</dd>
+            <dd className="font-semibold text-brand-primary">{secondaryAmount}</dd>
           </div>
         ) : null}
         {audienceOption?.description ? (
@@ -182,12 +182,12 @@ function InclusionList({ items, variant = "included" }) {
           className={[
             "flex items-start gap-3 rounded-xl border px-4 py-3 text-sm",
             isIncluded
-              ? "border-brand-green/15 bg-white text-brand-ink shadow-sm"
+              ? "border-brand-primary/15 bg-white text-brand-ink shadow-sm"
               : "border-brand-border/60 bg-brand-cream/30 text-brand-muted",
           ].join(" ")}
         >
           {isIncluded ? (
-            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-brand-green" strokeWidth={2} aria-hidden />
+            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-brand-primary" strokeWidth={2} aria-hidden />
           ) : (
             <XCircle className="mt-0.5 h-4 w-4 shrink-0 text-brand-orange/70" strokeWidth={2} aria-hidden />
           )}
@@ -282,7 +282,7 @@ export default function OperatorTourDetailPage() {
   if (loading) {
     return (
       <div className="flex min-h-[320px] items-center justify-center rounded-2xl border border-brand-border/60 bg-white">
-        <Loader2 className="h-8 w-8 animate-spin text-brand-green" strokeWidth={2} aria-hidden />
+        <Loader2 className="h-8 w-8 animate-spin text-brand-primary" strokeWidth={2} aria-hidden />
       </div>
     );
   }
@@ -421,16 +421,16 @@ export default function OperatorTourDetailPage() {
                   type="button"
                   onClick={() => setLightboxIndex(index)}
                   className={[
-                    "group relative h-28 w-40 shrink-0 cursor-zoom-in overflow-hidden rounded-xl shadow-sm transition-all hover:ring-2 hover:ring-brand-green/40",
+                    "group relative h-28 w-40 shrink-0 cursor-zoom-in overflow-hidden rounded-xl shadow-sm transition-all hover:ring-2 hover:ring-brand-primary/40",
                     isCover
-                      ? "border-2 border-brand-green/50 ring-1 ring-brand-green/20"
+                      ? "border-2 border-brand-primary/50 ring-1 ring-brand-primary/20"
                       : "border border-brand-border/60",
                   ].join(" ")}
                   aria-label={isCover ? "View cover image full size" : `View gallery image ${index + 1} full size`}
                 >
                   <img src={url} alt="" className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
                   {isCover ? (
-                    <span className="absolute bottom-2 left-2 rounded-full bg-brand-green px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-white">
+                    <span className="absolute bottom-2 left-2 rounded-full bg-brand-primary px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-white">
                       Cover
                     </span>
                   ) : null}
@@ -449,7 +449,7 @@ export default function OperatorTourDetailPage() {
               <ul className="mt-5 grid grid-cols-1 gap-2.5">
                 {tour.highlights.map((item) => (
                   <li key={item} className="flex items-start gap-2.5 rounded-xl border border-brand-border/50 bg-brand-cream/30 px-4 py-3 text-sm text-brand-ink">
-                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-brand-green" strokeWidth={2} aria-hidden />
+                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-brand-primary" strokeWidth={2} aria-hidden />
                     {item}
                   </li>
                 ))}
@@ -462,7 +462,7 @@ export default function OperatorTourDetailPage() {
             <div className="space-y-4">
               {tour.itinerary.map((day) => (
                 <div key={`${day.day}-${day.title}`} className="flex gap-4 rounded-xl border border-brand-border/50 bg-brand-cream/40 p-4">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-green/10 text-sm font-bold text-brand-green">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-primary/10 text-sm font-bold text-brand-primary">
                     {day.day}
                   </div>
                   <div>
@@ -476,9 +476,9 @@ export default function OperatorTourDetailPage() {
           ) : null}
 
           <div className="grid gap-6 lg:grid-cols-2">
-            <section className="rounded-2xl border border-brand-green/20 bg-gradient-to-br from-brand-green/5 to-white p-6 shadow-sm">
+            <section className="rounded-2xl border border-brand-primary/20 bg-gradient-to-br from-brand-primary/5 to-white p-6 shadow-sm">
               <div className="mb-5 flex items-center gap-2.5">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-green/10 text-brand-green">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-primary/10 text-brand-primary">
                   <CheckCircle2 className="h-5 w-5" strokeWidth={2} aria-hidden />
                 </div>
                 <div>
@@ -513,7 +513,7 @@ export default function OperatorTourDetailPage() {
                       <p className="font-semibold text-brand-ink">{dep.dateLabel || dep.date}</p>
                       <p className="mt-0.5 text-xs text-brand-muted">{dep.label}</p>
                     </div>
-                    <span className="rounded-full bg-brand-green/10 px-2.5 py-1 text-[11px] font-bold text-brand-green">
+                    <span className="rounded-full bg-brand-primary/10 px-2.5 py-1 text-[11px] font-bold text-brand-primary">
                       {formatDepartureAvailability(dep.spotsLeft, dep.spotsTotal)}
                     </span>
                   </div>

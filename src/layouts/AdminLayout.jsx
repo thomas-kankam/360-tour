@@ -96,7 +96,7 @@ function AdminSidebarContent({ user, collapsed, onNavigate }) {
             to={ROUTES.admin.tourNew}
             onClick={onNavigate}
             className={[
-              "group flex items-center gap-3 rounded-xl bg-brand-green px-3 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-brand-green/90",
+              "group flex items-center gap-3 rounded-xl bg-brand-primary px-3 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-brand-primary-dark",
               collapsed ? "justify-center px-2" : "",
             ].join(" ")}
           >
@@ -142,7 +142,7 @@ export default function AdminLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-brand-cream via-white to-brand-accent/10">
+    <div className="min-h-screen bg-gradient-to-br from-brand-cream via-white to-brand-sand/20">
       <ScrollToTop />
 
       <aside className={["fixed inset-y-0 left-0 z-40 hidden transition-all duration-300 lg:block", sidebarWidth].join(" ")}>

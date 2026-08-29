@@ -63,7 +63,7 @@ function inputClass(hasError) {
     "mt-2 w-full rounded-xl border-2 bg-white px-4 py-3 text-sm font-medium text-brand-ink outline-none transition-all focus:ring-2",
     hasError
       ? "border-red-400 focus:border-red-400 focus:ring-red-100"
-      : "border-brand-border focus:border-brand-green focus:ring-brand-green/15",
+      : "border-brand-border focus:border-brand-primary focus:ring-brand-primary/15",
   ].join(" ");
 }
 
@@ -242,12 +242,12 @@ export default function AdminProfilePage() {
               <button
                 type="button"
                 onClick={() => profileInputRef.current?.click()}
-                className="group relative flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-2xl border-2 border-dashed border-brand-border bg-brand-cream/40 transition-all hover:border-brand-green hover:ring-4 hover:ring-brand-green/10"
+                className="group relative flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-2xl border-2 border-dashed border-brand-border bg-brand-cream/40 transition-all hover:border-brand-primary hover:ring-4 hover:ring-brand-primary/10"
               >
                 {profilePreview ? (
                   <img src={profilePreview} alt="" className="h-full w-full object-cover" />
                 ) : (
-                  <Camera className="h-8 w-8 text-brand-muted transition-colors group-hover:text-brand-green" aria-hidden />
+                  <Camera className="h-8 w-8 text-brand-muted transition-colors group-hover:text-brand-primary" aria-hidden />
                 )}
               </button>
               <input
@@ -264,7 +264,7 @@ export default function AdminProfilePage() {
                   <button
                     type="button"
                     onClick={() => profileInputRef.current?.click()}
-                    className="rounded-xl border border-brand-border px-3 py-1.5 text-xs font-semibold text-brand-ink transition-colors hover:border-brand-green/30 hover:bg-brand-green/5"
+                    className="rounded-xl border border-brand-border px-3 py-1.5 text-xs font-semibold text-brand-ink transition-colors hover:border-brand-primary/30 hover:bg-brand-primary/5"
                   >
                     Upload photo
                   </button>
@@ -567,7 +567,7 @@ export default function AdminProfilePage() {
             <div className="mt-4 space-y-2">
               {permissions.map((p) => (
                 <div key={p.name} className="flex items-center gap-2.5 rounded-xl bg-white/5 px-3 py-2.5">
-                  <CheckCircle2 className="h-4 w-4 shrink-0 text-brand-green" strokeWidth={2} aria-hidden />
+                  <CheckCircle2 className="h-4 w-4 shrink-0 text-brand-primary" strokeWidth={2} aria-hidden />
                   <p className="text-sm text-white/80">{p.label}</p>
                 </div>
               ))}

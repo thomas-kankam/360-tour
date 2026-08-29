@@ -29,8 +29,8 @@ export default function SocialLinks({
 }) {
   const baseLinkClass =
     variant === "footer"
-      ? "flex h-10 w-10 items-center justify-center rounded-xl border border-brand-border/60 bg-white text-brand-primary shadow-sm transition-all hover:border-brand-primary/30 hover:bg-brand-cream hover:text-brand-green"
-      : "flex h-10 w-10 items-center justify-center rounded-xl bg-brand-green/10 text-brand-green transition-colors hover:bg-brand-green/20";
+      ? "flex h-10 w-10 items-center justify-center rounded-xl border border-brand-border/60 bg-white text-brand-primary shadow-sm transition-all hover:border-brand-primary/30 hover:bg-brand-cream hover:text-brand-primary"
+      : "flex h-10 w-10 items-center justify-center rounded-xl bg-brand-primary/10 text-brand-primary transition-colors hover:bg-brand-primary/20";
 
   return (
     <div className={["flex items-center gap-2.5", className].join(" ")}>

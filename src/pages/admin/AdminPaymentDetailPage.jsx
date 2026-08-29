@@ -47,7 +47,7 @@ function DetailSection({ title, children }) {
 
 function RelatedLink({ to, label }) {
   return (
-    <Link to={to} className="inline-flex text-sm font-semibold text-brand-green hover:underline">
+    <Link to={to} className="inline-flex text-sm font-semibold text-brand-primary hover:underline">
       {label}
     </Link>
   );
@@ -81,7 +81,7 @@ export default function AdminPaymentDetailPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center rounded-2xl border border-black/8 bg-white py-24">
-        <Loader2 className="h-7 w-7 animate-spin text-brand-green" aria-hidden />
+        <Loader2 className="h-7 w-7 animate-spin text-brand-primary" aria-hidden />
       </div>
     );
   }
@@ -189,7 +189,7 @@ export default function AdminPaymentDetailPage() {
                   href={payment.paymentUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-sm font-semibold text-brand-green hover:underline"
+                  className="inline-flex items-center gap-2 text-sm font-semibold text-brand-primary hover:underline"
                 >
                   <CreditCard className="h-4 w-4" strokeWidth={2} aria-hidden />
                   Open checkout link

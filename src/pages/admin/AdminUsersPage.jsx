@@ -123,18 +123,18 @@ export default function AdminUsersPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by name, email, phone, or role..."
-            className="w-full rounded-xl border-2 border-brand-border bg-white py-3 pl-10 pr-4 text-sm font-medium text-brand-ink outline-none transition-all focus:border-brand-green focus:ring-2 focus:ring-brand-green/15"
+            className="w-full rounded-xl border-2 border-brand-border bg-white py-3 pl-10 pr-4 text-sm font-medium text-brand-ink outline-none transition-all focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
           />
         </div>
       </div>
 
       {loading ? (
         <div className="flex items-center justify-center rounded-2xl border border-black/8 bg-white py-24">
-          <Loader2 className="h-7 w-7 animate-spin text-brand-green" aria-hidden />
+          <Loader2 className="h-7 w-7 animate-spin text-brand-primary" aria-hidden />
         </div>
       ) : isEmpty ? (
         <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-black/12 bg-white py-20 text-center">
-          <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-cream text-brand-green">
+          <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-cream text-brand-primary">
             <Users className="h-6 w-6" strokeWidth={1.75} aria-hidden />
           </span>
           <p className="font-bold text-brand-ink">{hasSearch ? "No admins match your search" : "No admin accounts yet"}</p>
@@ -175,7 +175,7 @@ export default function AdminUsersPage() {
                     <AdminMobileCardRow
                       label="Role"
                       value={
-                        <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-green/8 px-2.5 py-1 text-[11px] font-semibold text-brand-green">
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-primary/8 px-2.5 py-1 text-[11px] font-semibold text-brand-primary">
                           <UserCog className="h-3 w-3" strokeWidth={2} aria-hidden />
                           {admin.role?.name || "—"}
                         </span>
@@ -247,7 +247,7 @@ export default function AdminUsersPage() {
                       <p className="text-xs text-brand-muted">{admin.phone_number || "—"}</p>
                     </td>
                     <td className="px-5 py-4">
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-green/8 px-2.5 py-1 text-[11px] font-semibold text-brand-green">
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-primary/8 px-2.5 py-1 text-[11px] font-semibold text-brand-primary">
                         <UserCog className="h-3 w-3" strokeWidth={2} aria-hidden />
                         {admin.role?.name || "—"}
                       </span>

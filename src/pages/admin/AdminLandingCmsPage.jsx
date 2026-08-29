@@ -4,12 +4,11 @@ import { toast } from "react-toastify";
 import adminLandingCmsServiceApi from "../../apis/AdminLandingCmsServiceApi";
 import LandingCmsItemsEditor from "../../components/admin/LandingCmsItemsEditor";
 import HomeHero from "../../components/home/HomeHero";
-import HomeFeaturedTours from "../../components/home/HomeFeaturedTours";
+import HomeTrustBar from "../../components/home/HomeTrustBar";
+import HomePopularTours from "../../components/home/HomePopularTours";
 import HomeDestinations from "../../components/home/HomeDestinations";
-import HomeHubs from "../../components/home/HomeHubs";
 import HomeAdventureGallery from "../../components/home/HomeAdventureGallery";
 import HomeTestimonial from "../../components/home/HomeTestimonial";
-import HomeExploreLinks from "../../components/home/HomeExploreLinks";
 import HomeCta from "../../components/home/HomeCta";
 import { useAuth } from "../../hooks/useAuth";
 import {
@@ -25,7 +24,7 @@ const MAX_IMAGE_BYTES = 2 * 1024 * 1024;
 
 function Field({ label, value, onChange, multiline = false }) {
   const className =
-    "mt-1.5 w-full rounded-xl border border-brand-border/70 bg-white px-3 py-2 text-sm outline-none focus:border-brand-green/50 focus:ring-2 focus:ring-brand-green/15";
+    "mt-1.5 w-full rounded-xl border border-brand-border/70 bg-white px-3 py-2 text-sm outline-none focus:border-brand-primary/50 focus:ring-2 focus:ring-brand-primary/15";
 
   return (
     <label className="block">
@@ -79,12 +78,12 @@ function ImageField({ label, value, onChange, variant = "destination" }) {
         <button
           type="button"
           onClick={() => inputRef.current?.click()}
-          className="group relative flex h-28 w-40 items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-brand-border bg-brand-cream/40 transition-colors hover:border-brand-green/40"
+          className="group relative flex h-28 w-40 items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-brand-border bg-brand-cream/40 transition-colors hover:border-brand-primary/40"
         >
           {value ? (
             <img src={value} alt="" className="h-full w-full object-cover" />
           ) : (
-            <ImagePlus className="h-7 w-7 text-brand-muted group-hover:text-brand-green" aria-hidden />
+            <ImagePlus className="h-7 w-7 text-brand-muted group-hover:text-brand-primary" aria-hidden />
           )}
         </button>
         <input ref={inputRef} type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
@@ -120,7 +119,7 @@ function formatFieldLabel(key) {
 }
 
 const MULTILINE_KEYS = new Set(["subtitle", "aboutText", "whyText", "contactText", "whatsappMessage", "footerNote"]);
-const ITEMS_SECTIONS = new Set(["regions", "destinations", "gallery", "testimonials"]);
+const ITEMS_SECTIONS = new Set(["destinations", "gallery", "testimonials"]);
 
 export default function AdminLandingCmsPage() {
   const { token } = useAuth();
@@ -247,10 +246,10 @@ export default function AdminLandingCmsPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-brand-green">Content</p>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-brand-primary">Content</p>
           <h1 className="mt-1 text-2xl font-bold text-brand-ink sm:text-3xl">Landing page CMS</h1>
           <p className="mt-2 max-w-2xl text-sm text-brand-muted">
-            Six editable sections: hero, featured tours, Ghana regions, popular destinations, adventure gallery, guest stories, explore links, and a final call to action.
+            Six editable sections: hero, popular tours, destinations, gallery, testimonials, and final call to action.
           </p>
           {meta?.publishedAt ? (
             <p className="mt-2 text-xs text-brand-muted">
@@ -281,7 +280,7 @@ export default function AdminLandingCmsPage() {
             type="button"
             onClick={handleSaveDraft}
             disabled={loading || isBusy}
-            className="inline-flex items-center gap-2 rounded-xl border border-brand-green/30 bg-white px-4 py-2 text-sm font-semibold text-brand-green hover:bg-brand-green/5 disabled:opacity-60"
+            className="inline-flex items-center gap-2 rounded-xl border border-brand-primary/30 bg-white px-4 py-2 text-sm font-semibold text-brand-primary hover:bg-brand-primary/5 disabled:opacity-60"
           >
             {savingDraft ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : <Save className="h-4 w-4" aria-hidden />}
             Save draft
@@ -290,7 +289,7 @@ export default function AdminLandingCmsPage() {
             type="button"
             onClick={handlePublish}
             disabled={loading || isBusy}
-            className="inline-flex items-center gap-2 rounded-xl bg-brand-green px-4 py-2 text-sm font-semibold text-white hover:bg-brand-green/90 disabled:opacity-60"
+            className="inline-flex items-center gap-2 rounded-xl bg-brand-primary px-4 py-2 text-sm font-semibold text-white hover:bg-brand-primary/90 disabled:opacity-60"
           >
             {publishing ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : <UploadCloud className="h-4 w-4" aria-hidden />}
             Publish changes
@@ -313,7 +312,7 @@ export default function AdminLandingCmsPage() {
                 onClick={() => setActiveSection(section.id)}
                 className={[
                   "mb-1 w-full rounded-xl px-3 py-2.5 text-left text-sm font-semibold transition-colors",
-                  activeSection === section.id ? "bg-brand-green text-white" : "text-brand-ink hover:bg-brand-cream",
+                  activeSection === section.id ? "bg-brand-primary text-white" : "text-brand-ink hover:bg-brand-cream",
                 ].join(" ")}
               >
                 {section.label}
@@ -366,12 +365,11 @@ export default function AdminLandingCmsPage() {
           </div>
           <div className="pointer-events-none select-none">
             <HomeHero cmsOverride={cms.hero} />
-            <HomeFeaturedTours cmsOverride={cms.tours} />
-            <HomeHubs cmsOverride={cms.regions} />
+            <HomeTrustBar />
+            <HomePopularTours cmsOverride={cms.tours} />
             <HomeDestinations cmsOverride={cms.destinations} />
             <HomeAdventureGallery cmsOverride={cms.gallery} />
             <HomeTestimonial cmsOverride={cms.testimonials} />
-            <HomeExploreLinks cmsOverride={cms.explore} />
             <HomeCta cmsOverride={cms.cta} />
           </div>
         </div>

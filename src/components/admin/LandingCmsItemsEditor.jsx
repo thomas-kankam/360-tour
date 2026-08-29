@@ -62,7 +62,7 @@ function ItemImageField({ label, value, fallbackSrc, onChange }) {
         </button>
         <input ref={inputRef} type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
         <input
-          className="min-w-[200px] flex-1 rounded-xl border border-brand-border/70 bg-white px-3 py-2 text-xs outline-none focus:border-brand-green/50"
+          className="min-w-[200px] flex-1 rounded-xl border border-brand-border/70 bg-white px-3 py-2 text-xs outline-none focus:border-brand-primary/50"
           placeholder="Or paste image URL"
           value={value}
           onChange={(e) => onChange(e.target.value)}
@@ -82,7 +82,7 @@ function ItemImageField({ label, value, fallbackSrc, onChange }) {
 
 function ItemField({ label, value, onChange, multiline = false }) {
   const className =
-    "mt-1 w-full rounded-xl border border-brand-border/70 bg-white px-3 py-2 text-sm outline-none focus:border-brand-green/50 focus:ring-2 focus:ring-brand-green/15";
+    "mt-1 w-full rounded-xl border border-brand-border/70 bg-white px-3 py-2 text-sm outline-none focus:border-brand-primary/50 focus:ring-2 focus:ring-brand-primary/15";
 
   return (
     <label className="block">

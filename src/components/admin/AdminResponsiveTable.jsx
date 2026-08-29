@@ -67,7 +67,7 @@ export const adminIconBtnClass =
   "inline-flex h-9 w-9 items-center justify-center rounded-xl border border-brand-border/60 text-brand-muted transition-colors";
 
 export const adminIconBtnViewClass =
-  "hover:border-brand-green/30 hover:bg-brand-green/5 hover:text-brand-green";
+  "hover:border-brand-primary/30 hover:bg-brand-primary/5 hover:text-brand-primary";
 
 export const adminIconBtnDangerClass =
   "hover:border-red-200 hover:bg-red-50 hover:text-red-600";

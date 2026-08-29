@@ -38,7 +38,7 @@ function inputClass(hasError) {
     "mt-2 w-full rounded-xl border-2 bg-white px-4 py-3 text-sm font-medium text-brand-ink outline-none transition-all focus:ring-2",
     hasError
       ? "border-red-400 focus:border-red-400 focus:ring-red-100"
-      : "border-brand-border focus:border-brand-green focus:ring-brand-green/15",
+      : "border-brand-border focus:border-brand-primary focus:ring-brand-primary/15",
   ].join(" ");
 }
 
@@ -177,7 +177,7 @@ export default function AdminUserFormPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center rounded-2xl border border-black/8 bg-white py-24">
-        <Loader2 className="h-7 w-7 animate-spin text-brand-green" aria-hidden />
+        <Loader2 className="h-7 w-7 animate-spin text-brand-primary" aria-hidden />
       </div>
     );
   }

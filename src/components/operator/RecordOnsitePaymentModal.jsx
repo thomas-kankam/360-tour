@@ -129,7 +129,7 @@ export default function RecordOnsitePaymentModal({
                       name="bookingCode"
                       placeholder="AFQ_XZ1769"
                       disabled={lockBookingCode || submitting}
-                      className="mt-1.5 w-full rounded-xl border border-brand-border/70 px-3 py-2.5 font-mono text-sm outline-none ring-brand-green/20 transition-shadow focus:border-brand-green focus:ring-2 disabled:bg-brand-cream/60 disabled:text-brand-muted"
+                      className="mt-1.5 w-full rounded-xl border border-brand-border/70 px-3 py-2.5 font-mono text-sm outline-none ring-brand-primary/20 transition-shadow focus:border-brand-primary focus:ring-2 disabled:bg-brand-cream/60 disabled:text-brand-muted"
                     />
                     {touched.bookingCode && errors.bookingCode ? (
                       <p className="mt-1 text-xs text-red-600">{errors.bookingCode}</p>
@@ -147,7 +147,7 @@ export default function RecordOnsitePaymentModal({
                       step="0.01"
                       placeholder="0.10"
                       disabled={submitting}
-                      className="mt-1.5 w-full rounded-xl border border-brand-border/70 px-3 py-2.5 text-sm outline-none ring-brand-green/20 transition-shadow focus:border-brand-green focus:ring-2"
+                      className="mt-1.5 w-full rounded-xl border border-brand-border/70 px-3 py-2.5 text-sm outline-none ring-brand-primary/20 transition-shadow focus:border-brand-primary focus:ring-2"
                     />
                     {touched.amount && errors.amount ? (
                       <p className="mt-1 text-xs text-red-600">{errors.amount}</p>

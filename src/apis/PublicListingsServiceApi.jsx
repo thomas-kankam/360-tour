@@ -70,8 +70,8 @@ class PublicListingsServiceApi {
     return dedupeRequest(key, exec);
   }
 
-  async getRandomListings() {
-    const url = `${this.baseUrl}/listings/random`;
+  async getPopularListings() {
+    const url = `${this.baseUrl}/listings/popular`;
     const key = buildRequestKey({ method: "GET", url });
 
     const exec = async () => {
@@ -91,6 +91,11 @@ class PublicListingsServiceApi {
     };
 
     return dedupeRequest(key, exec);
+  }
+
+  /** @deprecated use getPopularListings */
+  async getRandomListings() {
+    return this.getPopularListings();
   }
 
   async getListing(slug) {

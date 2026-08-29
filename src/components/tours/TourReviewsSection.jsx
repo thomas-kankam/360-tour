@@ -198,7 +198,7 @@ export default function TourReviewsSection({ tourSlug, tourTitle }) {
                 type="button"
                 onClick={() => loadReviews(page + 1, true)}
                 disabled={loadingMore}
-                className="inline-flex items-center gap-2 rounded-xl border border-brand-border/70 px-4 py-2 text-sm font-semibold text-brand-ink transition-colors hover:border-brand-green/40 hover:text-brand-green disabled:opacity-60"
+                className="inline-flex items-center gap-2 rounded-xl border border-brand-border/70 px-4 py-2 text-sm font-semibold text-brand-ink transition-colors hover:border-brand-primary/40 hover:text-brand-primary disabled:opacity-60"
               >
                 {loadingMore ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : null}
                 Load more reviews
@@ -256,7 +256,7 @@ export default function TourReviewsSection({ tourSlug, tourTitle }) {
                 onChange={(e) => setComment(e.target.value)}
                 disabled={submitting}
                 placeholder="What did you enjoy most? Would you recommend this tour?"
-                className="mt-2 w-full rounded-xl border border-brand-border/70 bg-white px-4 py-3 text-sm outline-none focus:border-brand-green/50 focus:ring-2 focus:ring-brand-green/15 disabled:opacity-60"
+                className="mt-2 w-full rounded-xl border border-brand-border/70 bg-white px-4 py-3 text-sm outline-none focus:border-brand-primary/50 focus:ring-2 focus:ring-brand-primary/15 disabled:opacity-60"
               />
             </label>
             <button

@@ -68,8 +68,8 @@ function FilterDropdown({ label, value, options, onChange }) {
         className={[
           "inline-flex min-w-[9.5rem] items-center justify-between gap-2 rounded-xl border px-3 py-2 text-xs font-semibold transition-all",
           active
-            ? "border-brand-green/40 bg-brand-green/5 text-brand-green"
-            : "border-brand-border/70 bg-white text-brand-ink hover:border-brand-green/30",
+            ? "border-brand-primary/40 bg-brand-primary/5 text-brand-primary"
+            : "border-brand-border/70 bg-white text-brand-ink hover:border-brand-primary/30",
         ].join(" ")}
       >
         <span className="truncate">
@@ -98,7 +98,7 @@ function FilterDropdown({ label, value, options, onChange }) {
                   }}
                   className={[
                     "flex w-full px-3 py-2 text-left text-xs font-semibold transition-colors hover:bg-brand-cream",
-                    option.id === value ? "bg-brand-green/10 text-brand-green" : "text-brand-ink",
+                    option.id === value ? "bg-brand-primary/10 text-brand-primary" : "text-brand-ink",
                   ].join(" ")}
                 >
                   {option.label}
@@ -190,7 +190,7 @@ function RegionFilterPanel({ value, onChange }) {
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     placeholder="Search regions…"
-                    className="w-full rounded-xl border border-brand-border/70 bg-brand-cream/30 py-2.5 pl-10 pr-3 text-sm outline-none focus:border-brand-green focus:ring-2 focus:ring-brand-green/15"
+                    className="w-full rounded-xl border border-brand-border/70 bg-brand-cream/30 py-2.5 pl-10 pr-3 text-sm outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
                   />
                 </div>
               </div>
@@ -226,7 +226,7 @@ function RegionFilterPanel({ value, onChange }) {
 
 function statusPill(status) {
   const map = {
-    published: "bg-brand-green/10 text-brand-green ring-brand-green/20",
+    published: "bg-brand-primary/10 text-brand-primary ring-brand-primary/20",
     draft: "bg-brand-gold/15 text-brand-ink ring-brand-gold/25",
     archived: "bg-brand-muted/10 text-brand-muted ring-brand-border",
   };
@@ -280,7 +280,7 @@ function TourCard({ tour, index, onDeleteRequest }) {
 
         {routeLabel ? (
           <p className="mt-1.5 flex items-start gap-1 text-[11px] text-brand-muted">
-            <MapPin className="mt-0.5 h-3 w-3 shrink-0 text-brand-green" strokeWidth={2} aria-hidden />
+            <MapPin className="mt-0.5 h-3 w-3 shrink-0 text-brand-primary" strokeWidth={2} aria-hidden />
             <span className="line-clamp-1">{routeLabel}</span>
           </p>
         ) : null}
@@ -304,7 +304,7 @@ function TourCard({ tour, index, onDeleteRequest }) {
 
         <div className="mt-2.5 flex items-end justify-between gap-2 border-t border-brand-border/50 pt-2.5">
           <div className="min-w-0">
-            <p className="truncate text-sm font-bold text-brand-green">{tour.priceLabel || `$${tour.priceAmount}`}</p>
+            <p className="truncate text-sm font-bold text-brand-primary">{tour.priceLabel || `$${tour.priceAmount}`}</p>
             {isCustom ? (
               <p className="truncate text-[10px] text-brand-muted">Dates on request</p>
             ) : nextDeparture ? (
@@ -324,7 +324,7 @@ function TourCard({ tour, index, onDeleteRequest }) {
             >
               <Trash2 className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />
             </button>
-            <span className="inline-flex items-center gap-0.5 text-[11px] font-semibold text-brand-green transition-colors group-hover:text-brand-green-dark">
+            <span className="inline-flex items-center gap-0.5 text-[11px] font-semibold text-brand-primary transition-colors group-hover:text-brand-primary-dark">
               View details
               <ChevronRight className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />
             </span>
@@ -337,7 +337,7 @@ function TourCard({ tour, index, onDeleteRequest }) {
   if (!detailPath) return card;
 
   return (
-    <Link to={detailPath} className="block rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-green/40">
+    <Link to={detailPath} className="block rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary/40">
       {card}
     </Link>
   );
@@ -413,7 +413,7 @@ export default function OperatorToursPage() {
 
   return (
     <div className="space-y-6">
-      <div className="relative overflow-hidden rounded-[1.75rem] border border-brand-border/60 bg-gradient-to-br from-brand-ink via-[#243832] to-brand-green p-6 text-white shadow-lg sm:p-8">
+      <div className="relative overflow-hidden rounded-[1.75rem] border border-brand-border/60 bg-gradient-to-br from-brand-ink via-[#243832] to-brand-primary p-6 text-white shadow-lg sm:p-8">
         <div className="pointer-events-none absolute -right-8 -top-8 h-40 w-40 rounded-full bg-brand-orange/20 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-10 left-1/3 h-32 w-32 rounded-full bg-brand-gold/10 blur-3xl" />
         <div className="relative flex flex-wrap items-end justify-between gap-6">
@@ -453,7 +453,7 @@ export default function OperatorToursPage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search listings…"
-              className="w-full rounded-xl border-2 border-brand-border bg-white py-2.5 pl-10 pr-4 text-sm font-medium text-brand-ink outline-none transition-all focus:border-brand-green focus:ring-2 focus:ring-brand-green/15"
+              className="w-full rounded-xl border-2 border-brand-border bg-white py-2.5 pl-10 pr-4 text-sm font-medium text-brand-ink outline-none transition-all focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
             />
           </div>
 
@@ -466,7 +466,7 @@ export default function OperatorToursPage() {
               <button
                 type="button"
                 onClick={clearFilters}
-                className="rounded-xl border border-brand-border/70 px-3 py-2 text-xs font-semibold text-brand-muted transition-colors hover:border-brand-green/30 hover:text-brand-green"
+                className="rounded-xl border border-brand-border/70 px-3 py-2 text-xs font-semibold text-brand-muted transition-colors hover:border-brand-primary/30 hover:text-brand-primary"
               >
                 Clear filters
               </button>
@@ -482,7 +482,7 @@ export default function OperatorToursPage() {
               </span>
             ) : null}
             {statusFilter !== "all" ? (
-              <span className="inline-flex items-center gap-1 rounded-full bg-brand-green/10 px-2.5 py-1 text-[11px] font-semibold capitalize text-brand-green">
+              <span className="inline-flex items-center gap-1 rounded-full bg-brand-primary/10 px-2.5 py-1 text-[11px] font-semibold capitalize text-brand-primary">
                 Status: {statusFilter}
               </span>
             ) : null}
@@ -497,7 +497,7 @@ export default function OperatorToursPage() {
 
       {loading ? (
         <div className="flex min-h-[280px] items-center justify-center rounded-2xl border border-brand-border/60 bg-white">
-          <Loader2 className="h-8 w-8 animate-spin text-brand-green" strokeWidth={2} aria-hidden />
+          <Loader2 className="h-8 w-8 animate-spin text-brand-primary" strokeWidth={2} aria-hidden />
         </div>
       ) : visible.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-brand-border bg-white px-6 py-16 text-center">

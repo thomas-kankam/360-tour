@@ -176,7 +176,7 @@ export default function AdminPaymentsPage() {
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <div className="rounded-2xl border border-black/8 bg-white px-4 py-4 shadow-sm">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-green/10 text-brand-green">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-primary/10 text-brand-primary">
             <Wallet className="h-4 w-4" strokeWidth={2} aria-hidden />
           </div>
           <p className="mt-3 text-[10px] font-bold uppercase tracking-[0.14em] text-brand-muted">Collected GHS (page)</p>
@@ -223,7 +223,7 @@ export default function AdminPaymentsPage() {
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
                 placeholder="Search booking code, reference, tour, client, operator…"
-                className="w-full rounded-xl border border-brand-border/70 bg-brand-cream/30 py-2.5 pl-10 pr-3 text-sm outline-none transition-shadow focus:border-brand-green focus:ring-2 focus:ring-brand-green/15"
+                className="w-full rounded-xl border border-brand-border/70 bg-brand-cream/30 py-2.5 pl-10 pr-3 text-sm outline-none transition-shadow focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
               />
             </div>
             <div className="flex flex-wrap gap-2">
@@ -257,7 +257,7 @@ export default function AdminPaymentsPage() {
                   className={[
                     "rounded-full px-3 py-1.5 text-xs font-semibold transition-colors",
                     methodFilter === filter.id
-                      ? "bg-brand-green text-white"
+                      ? "bg-brand-primary text-white"
                       : "bg-brand-cream text-brand-muted hover:text-brand-ink",
                   ].join(" ")}
                 >
@@ -270,11 +270,11 @@ export default function AdminPaymentsPage() {
 
         {loading ? (
           <div className="flex min-h-[280px] items-center justify-center">
-            <Loader2 className="h-8 w-8 animate-spin text-brand-green" strokeWidth={2} aria-hidden />
+            <Loader2 className="h-8 w-8 animate-spin text-brand-primary" strokeWidth={2} aria-hidden />
           </div>
         ) : isEmpty ? (
           <div className="flex flex-col items-center gap-3 py-20 text-center">
-            <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-green/10 text-brand-green">
+            <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-primary/10 text-brand-primary">
               <CreditCard className="h-6 w-6" strokeWidth={1.75} aria-hidden />
             </span>
             <p className="text-base font-bold text-brand-ink">No payments found</p>
@@ -310,7 +310,7 @@ export default function AdminPaymentsPage() {
                       <AdminMobileCardRow
                         label="Booking code"
                         value={
-                          <span className="font-mono text-xs font-bold text-brand-green">{payment.bookingCode || "—"}</span>
+                          <span className="font-mono text-xs font-bold text-brand-primary">{payment.bookingCode || "—"}</span>
                         }
                       />
                       <AdminMobileCardRow
@@ -371,7 +371,7 @@ export default function AdminPaymentsPage() {
                       className="border-b border-black/5 last:border-0 hover:bg-brand-cream/30"
                     >
                       <td className="w-[7.5rem] max-w-[7.5rem] px-5 py-3.5">
-                        <p className="truncate font-mono text-xs font-bold text-brand-green">{payment.bookingCode || "—"}</p>
+                        <p className="truncate font-mono text-xs font-bold text-brand-primary">{payment.bookingCode || "—"}</p>
                         <p className="mt-1 truncate font-mono text-[10px] text-brand-muted">
                           {payment.reference ? (
                             <PaymentReference reference={payment.reference} />

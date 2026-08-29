@@ -106,7 +106,7 @@ export default function TourImageField({
             <div>
               <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.1em] text-brand-muted">Image URL</label>
               <input
-                className="w-full rounded-xl border-2 border-brand-border bg-white px-4 py-2.5 text-sm font-medium text-brand-ink outline-none transition-all focus:border-brand-green focus:ring-2 focus:ring-brand-green/15"
+                className="w-full rounded-xl border-2 border-brand-border bg-white px-4 py-2.5 text-sm font-medium text-brand-ink outline-none transition-all focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
                 value={value?.uri || ""}
                 onChange={(e) => onChange({ ...value, uri: e.target.value })}
                 placeholder={uriPlaceholder}
@@ -119,7 +119,7 @@ export default function TourImageField({
               type="button"
               onClick={() => inputRef.current?.click()}
               disabled={uploading}
-              className="inline-flex items-center gap-2 rounded-xl bg-brand-green px-4 py-2.5 text-xs font-semibold text-white transition-all hover:bg-brand-green-dark disabled:opacity-60"
+              className="inline-flex items-center gap-2 rounded-xl bg-brand-primary px-4 py-2.5 text-xs font-semibold text-white transition-all hover:bg-brand-primary-dark disabled:opacity-60"
             >
               <Upload className="h-4 w-4" strokeWidth={2} />
               {uploading ? "Uploading…" : "Upload image"}

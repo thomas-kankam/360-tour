@@ -68,7 +68,7 @@ function inputClass(hasError, readOnly = false) {
       ? "cursor-not-allowed border-brand-border/60 bg-brand-cream/60 text-brand-muted"
       : hasError
         ? "border-red-400 bg-white text-brand-ink focus:border-red-400 focus:ring-red-100"
-        : "border-brand-border bg-white text-brand-ink focus:border-brand-green focus:ring-brand-green/15",
+        : "border-brand-border bg-white text-brand-ink focus:border-brand-primary focus:ring-brand-primary/15",
   ].join(" ");
 }
 
@@ -76,7 +76,7 @@ function ReadOnlyContactField({ icon: Icon, label, value }) {
   return (
     <div className="rounded-xl border border-brand-border/60 bg-brand-cream/40 px-4 py-3.5">
       <div className="flex items-start gap-3">
-        <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white text-brand-green shadow-sm">
+        <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white text-brand-primary shadow-sm">
           <Icon className="h-4 w-4" strokeWidth={1.75} aria-hidden />
         </span>
         <div className="min-w-0 flex-1">
@@ -207,7 +207,7 @@ export default function ProfilePage() {
           transition={{ duration: 0.45, ease: EASE }}
         >
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-orange">Your account</p>
-          <h1 className="mt-2 font-heading text-3xl text-brand-green sm:text-4xl">Profile settings</h1>
+          <h1 className="mt-2 font-heading text-3xl text-brand-primary sm:text-4xl">Profile settings</h1>
           <p className="mt-3 max-w-2xl text-brand-muted">
             Update your personal details and photo. Email and phone changes require our support team.
           </p>
@@ -226,12 +226,12 @@ export default function ProfilePage() {
                 <button
                   type="button"
                   onClick={() => profileInputRef.current?.click()}
-                  className="group relative flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-2xl border-2 border-dashed border-brand-border bg-brand-cream/40 transition-all hover:border-brand-green hover:ring-4 hover:ring-brand-green/10"
+                  className="group relative flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-2xl border-2 border-dashed border-brand-border bg-brand-cream/40 transition-all hover:border-brand-primary hover:ring-4 hover:ring-brand-primary/10"
                 >
                   {profilePreview ? (
                     <img src={profilePreview} alt="" className="h-full w-full object-cover" />
                   ) : (
-                    <Camera className="h-8 w-8 text-brand-muted transition-colors group-hover:text-brand-green" aria-hidden />
+                    <Camera className="h-8 w-8 text-brand-muted transition-colors group-hover:text-brand-primary" aria-hidden />
                   )}
                 </button>
                 <input
@@ -248,7 +248,7 @@ export default function ProfilePage() {
                     <button
                       type="button"
                       onClick={() => profileInputRef.current?.click()}
-                      className="rounded-xl border border-brand-border px-3 py-1.5 text-xs font-semibold text-brand-ink transition-colors hover:border-brand-green/30 hover:bg-brand-green/5"
+                      className="rounded-xl border border-brand-border px-3 py-1.5 text-xs font-semibold text-brand-ink transition-colors hover:border-brand-primary/30 hover:bg-brand-primary/5"
                     >
                       Upload photo
                     </button>
@@ -311,7 +311,7 @@ export default function ProfilePage() {
                 <ReadOnlyContactField icon={Phone} label="Phone" value={user?.phone} />
                 <p className="text-xs leading-relaxed text-brand-muted">
                   To update your email or phone,{" "}
-                  <Link to={ROUTES.contact} className="font-semibold text-brand-green hover:underline">
+                  <Link to={ROUTES.contact} className="font-semibold text-brand-primary hover:underline">
                     contact our support team
                   </Link>
                   .
@@ -341,7 +341,7 @@ export default function ProfilePage() {
           >
             <div className="rounded-2xl border border-brand-border/60 bg-white p-6 shadow-sm">
               <div className="flex items-center gap-3">
-                <span className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-full bg-brand-green text-lg font-bold text-white">
+                <span className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-full bg-brand-primary text-lg font-bold text-white">
                   {resolveProfileImageSrc(user?.profileImage) ? (
                     <img src={resolveProfileImageSrc(user.profileImage)} alt="" className="h-full w-full object-cover" />
                   ) : (
@@ -368,7 +368,7 @@ export default function ProfilePage() {
               </dl>
 
               {user?.isVerified ? (
-                <div className="mt-4 flex items-center gap-2 rounded-xl bg-brand-green/10 px-4 py-3 text-sm font-semibold text-brand-green">
+                <div className="mt-4 flex items-center gap-2 rounded-xl bg-brand-primary/10 px-4 py-3 text-sm font-semibold text-brand-primary">
                   <BadgeCheck className="h-4 w-4 shrink-0" strokeWidth={2} aria-hidden />
                   Account verified
                 </div>
@@ -387,7 +387,7 @@ export default function ProfilePage() {
                   </p>
                   <Link
                     to={ROUTES.contact}
-                    className="mt-3 inline-flex text-sm font-semibold text-brand-green hover:underline"
+                    className="mt-3 inline-flex text-sm font-semibold text-brand-primary hover:underline"
                   >
                     Go to contact page
                   </Link>

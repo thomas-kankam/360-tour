@@ -190,7 +190,7 @@ export function buildPaymentReceiptHtml(data) {
       border-radius: 12px;
       overflow: hidden;
     }
-    .accent { height: 3px; background: linear-gradient(90deg, #006B3F, #FCD116, #CE1126); }
+    .accent { height: 3px; background: linear-gradient(90deg, #006B3C, #F2C500, #CE1126); }
     .header {
       background: #006B3F;
       color: #fff;
@@ -231,7 +231,7 @@ export function buildPaymentReceiptHtml(data) {
       font-weight: 700;
     }
     .amount-value { font-size: 24px; font-weight: 700; color: #006B3F; margin-top: 2px; }
-    .amount-meta { font-size: 11px; color: #655C4E; margin-top: 2px; }
+    .amount-meta { font-size: 11px; color: #5C5348; margin-top: 2px; }
     .body { padding: 18px 22px 20px; }
     .grid {
       display: grid;

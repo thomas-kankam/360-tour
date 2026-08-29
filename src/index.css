@@ -7,9 +7,12 @@
 @layer base {
   :root {
     --kente-red: #ce1126;
-    --kente-gold: #fcd116;
-    --kente-green: #006b3f;
-    --kente-black: #0b0b0b;
+    --kente-gold: #f2c500;
+    --kente-green: #006b3c;
+    --kente-forest: #174a35;
+    --kente-black: #111111;
+    --kente-cream: #faf8f2;
+    --kente-sand: #d8b98a;
   }
 
   body {
@@ -49,11 +52,15 @@
 
 @layer components {
   .btn-primary {
-    @apply inline-flex cursor-pointer items-center justify-center rounded-xl bg-brand-primary px-5 py-2.5 text-sm font-semibold text-white shadow-[0_10px_28px_-14px_rgba(0,107,63,0.7)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-brand-primary-dark hover:shadow-[0_16px_36px_-14px_rgba(0,107,63,0.6)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-primary active:translate-y-0;
+    @apply inline-flex cursor-pointer items-center justify-center rounded-xl bg-brand-primary px-5 py-2.5 text-sm font-semibold text-white shadow-[0_10px_28px_-14px_rgba(0,107,60,0.65)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-brand-primary-dark hover:shadow-[0_16px_36px_-14px_rgba(0,107,60,0.55)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-primary active:translate-y-0;
   }
 
   .btn-accent {
-    @apply inline-flex cursor-pointer items-center justify-center rounded-xl bg-brand-accent px-5 py-2.5 text-sm font-bold text-brand-charcoal shadow-[0_10px_28px_-14px_rgba(252,209,22,0.9)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-brand-accent-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-accent active:translate-y-0;
+    @apply inline-flex cursor-pointer items-center justify-center rounded-xl bg-brand-accent px-5 py-2.5 text-sm font-bold text-brand-charcoal shadow-gold transition-all duration-200 hover:-translate-y-0.5 hover:bg-brand-accent-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-accent active:translate-y-0;
+  }
+
+  .btn-highlight {
+    @apply inline-flex cursor-pointer items-center justify-center rounded-xl bg-brand-red px-5 py-2.5 text-sm font-semibold text-white shadow-[0_10px_28px_-14px_rgba(206,17,38,0.45)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-brand-red-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-red active:translate-y-0;
   }
 
   .btn-secondary {
@@ -103,13 +110,13 @@
 
   /* Adinkra-inspired dotted field for section backgrounds. */
   .adinkra-field {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cg fill='none' stroke='%23006B3F' stroke-opacity='0.09'%3E%3Ccircle cx='24' cy='24' r='7'/%3E%3Cpath d='M24 10v-6M24 44v-6M10 24H4M44 24h-6'/%3E%3C/g%3E%3Ccircle cx='24' cy='24' r='2' fill='%23FCD116' fill-opacity='0.16'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cg fill='none' stroke='%23006B3C' stroke-opacity='0.09'%3E%3Ccircle cx='24' cy='24' r='7'/%3E%3Cpath d='M24 10v-6M24 44v-6M10 24H4M44 24h-6'/%3E%3C/g%3E%3Ccircle cx='24' cy='24' r='2' fill='%23F2C500' fill-opacity='0.16'/%3E%3C/svg%3E");
     background-size: 48px 48px;
   }
 
   /* Same motif, tuned for dark green / charcoal surfaces. */
   .adinkra-field-dark {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cg fill='none' stroke='%23FCD116' stroke-opacity='0.14'%3E%3Ccircle cx='24' cy='24' r='7'/%3E%3Cpath d='M24 10v-6M24 44v-6M10 24H4M44 24h-6'/%3E%3C/g%3E%3Ccircle cx='24' cy='24' r='2' fill='%23FFFFFF' fill-opacity='0.12'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cg fill='none' stroke='%23F2C500' stroke-opacity='0.14'%3E%3Ccircle cx='24' cy='24' r='7'/%3E%3Cpath d='M24 10v-6M24 44v-6M10 24H4M44 24h-6'/%3E%3C/g%3E%3Ccircle cx='24' cy='24' r='2' fill='%23FFFFFF' fill-opacity='0.12'/%3E%3C/svg%3E");
     background-size: 48px 48px;
   }
 

@@ -61,7 +61,7 @@ function ContactStatusSelect({ contact, updating, onUpdate, compact = false }) {
       }}
       aria-label={`Update status for ${contact.fullname}`}
       className={[
-        "shrink-0 rounded-lg border border-brand-border bg-white font-semibold text-brand-ink outline-none transition-all focus:border-brand-green focus:ring-2 focus:ring-brand-green/15 disabled:cursor-not-allowed disabled:opacity-60",
+        "shrink-0 rounded-lg border border-brand-border bg-white font-semibold text-brand-ink outline-none transition-all focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15 disabled:cursor-not-allowed disabled:opacity-60",
         compact
           ? "h-9 min-w-[6.75rem] max-w-[7.5rem] px-2 py-0 text-[11px]"
           : "max-w-[9.5rem] rounded-xl border-2 px-2.5 py-2 text-xs",
@@ -208,14 +208,14 @@ export default function AdminContactsPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by name, email, message, or status..."
-            className="w-full rounded-xl border-2 border-brand-border bg-white py-3 pl-10 pr-4 text-sm font-medium text-brand-ink outline-none transition-all focus:border-brand-green focus:ring-2 focus:ring-brand-green/15"
+            className="w-full rounded-xl border-2 border-brand-border bg-white py-3 pl-10 pr-4 text-sm font-medium text-brand-ink outline-none transition-all focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
           />
         </div>
       </div>
 
       {loading ? (
         <div className="flex items-center justify-center rounded-2xl border border-black/8 bg-white py-24">
-          <Loader2 className="h-7 w-7 animate-spin text-brand-green" aria-hidden />
+          <Loader2 className="h-7 w-7 animate-spin text-brand-primary" aria-hidden />
         </div>
       ) : isEmpty ? (
         <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-black/12 bg-white py-20 text-center">

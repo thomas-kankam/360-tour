@@ -63,7 +63,7 @@ describe("landing CMS helpers", () => {
     expect(merged.destinations.items[0].image).toBe("");
   });
 
-  test("featured tours keep a single view-all label", () => {
+  test("popular tours keep a single view-all label", () => {
     expect(LANDING_CMS_DEFAULTS.tours.viewAllLabel).toBe("View all tours");
   });
 });

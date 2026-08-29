@@ -25,15 +25,15 @@ export const LANDING_CMS_DEFAULTS = {
     badge: heroContent.badge,
     title: heroContent.title,
     titleHighlight: heroContent.titleHighlight,
-    subtitle: "Tours, stays, and transport across Ghana and beyond, planned for you.",
+    subtitle: heroContent.subtitle,
     tagline: heroContent.tagline,
     primaryCtaLabel: heroContent.primaryCta.label,
     secondaryCtaLabel: heroContent.secondaryCta.label,
     backgroundImage: images.home.heroBanner.webp,
   },
   tours: {
-    eyebrow: "Featured journeys",
-    title: "Start with these four",
+    eyebrow: "Discover tours",
+    title: "Popular tours",
     subtitle: toursPageSection.subtitle,
     viewAllLabel: "View all tours",
   },
@@ -54,11 +54,11 @@ export const LANDING_CMS_DEFAULTS = {
     items: buildDefaultRegionItems(),
   },
   gallery: {
-    eyebrow: "From the road",
-    title: "Places we have already taken travellers",
+    eyebrow: "Gallery",
+    title: "Moments from the road",
     subtitle:
-      "Real stops from real departures — castles on the coast, waterfalls in the Volta hills, palaces in Kumasi, and savanna at sunrise.",
-    ctaLabel: "Browse tours by region",
+      "Castles on the coast, waterfalls in the Volta hills, palaces in Kumasi, and savanna at sunrise.",
+    ctaLabel: "Browse all tours",
     items: buildDefaultGalleryItems(),
   },
   testimonials: {
@@ -153,11 +153,9 @@ function deepMerge(base, patch) {
 
 export const LANDING_CMS_SECTIONS = [
   { id: "hero", label: "Hero banner" },
-  { id: "tours", label: "Featured tours" },
+  { id: "tours", label: "Popular tours" },
   { id: "destinations", label: "Popular destinations" },
-  { id: "regions", label: "Ghana regions" },
-  { id: "gallery", label: "Adventure gallery" },
-  { id: "testimonials", label: "Guest stories" },
-  { id: "explore", label: "Explore links" },
+  { id: "gallery", label: "Photo gallery" },
+  { id: "testimonials", label: "Testimonials" },
   { id: "cta", label: "Final call to action" },
 ];

@@ -168,7 +168,7 @@ export default function AdminRatingsPage() {
   return (
     <div className="space-y-6">
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, ease: EASE }}>
-        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-brand-green">Moderation</p>
+        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-brand-primary">Moderation</p>
         <h1 className="mt-1 text-2xl font-bold text-brand-ink sm:text-3xl">Ratings & reviews</h1>
         <p className="mt-2 max-w-2xl text-sm text-brand-muted">
           Review traveler feedback on tours. Approve comments to publish them on tour pages, or reject entries that do not meet your standards.
@@ -200,7 +200,7 @@ export default function AdminRatingsPage() {
                 setPage(1);
               }}
               placeholder="Search by tour, client, or comment…"
-              className="h-10 w-full rounded-xl border border-brand-border/70 bg-white pl-10 pr-4 text-sm outline-none transition-all focus:border-brand-green/50 focus:ring-2 focus:ring-brand-green/15"
+              className="h-10 w-full rounded-xl border border-brand-border/70 bg-white pl-10 pr-4 text-sm outline-none transition-all focus:border-brand-primary/50 focus:ring-2 focus:ring-brand-primary/15"
             />
           </div>
           <div className="flex flex-wrap gap-2">
@@ -215,7 +215,7 @@ export default function AdminRatingsPage() {
                 className={[
                   "rounded-full px-3.5 py-1.5 text-xs font-semibold transition-colors",
                   statusFilter === filter.id
-                    ? "bg-brand-green text-white"
+                    ? "bg-brand-primary text-white"
                     : "bg-brand-cream text-brand-muted hover:text-brand-ink",
                 ].join(" ")}
               >

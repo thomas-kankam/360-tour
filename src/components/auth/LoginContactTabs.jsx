@@ -113,7 +113,7 @@ export default function LoginContactTabs({
                     "placeholder:text-brand-muted/50 focus:ring-2",
                     error
                       ? "border-red-400 focus:border-red-400 focus:ring-red-100"
-                      : "border-brand-border focus:border-brand-green focus:ring-brand-green/15",
+                      : "border-brand-border focus:border-brand-primary focus:ring-brand-primary/15",
                   ].join(" ")}
                 />
               </div>

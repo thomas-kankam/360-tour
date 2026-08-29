@@ -27,7 +27,7 @@ const FILTERS = [
 ];
 
 const STATUS_CONFIG = {
-  paid: { label: "Paid in full", className: "bg-brand-green/10 text-brand-green ring-brand-green/20" },
+  paid: { label: "Paid in full", className: "bg-brand-primary/10 text-brand-primary ring-brand-primary/20" },
   deposit_paid: { label: "Deposit paid", className: "bg-emerald-100 text-emerald-700 ring-emerald-200" },
   pay_onsite: { label: "Pay on site", className: "bg-brand-gold/15 text-brand-orange ring-brand-gold/30" },
   reserved: { label: "Pending payment", className: "bg-brand-orange/10 text-brand-orange ring-brand-orange/20" },
@@ -87,7 +87,7 @@ function BookingCard({ booking, index, onCompletePayment, onDownloadReceipt, pay
         {/* Content */}
         <div className="flex flex-1 flex-col p-4 sm:p-6">
           <div className="flex items-start justify-between gap-2">
-            <p className="font-mono text-[11px] font-bold text-brand-green sm:text-xs">{booking.bookingRef}</p>
+            <p className="font-mono text-[11px] font-bold text-brand-primary sm:text-xs">{booking.bookingRef}</p>
             <span className={`shrink-0 rounded-full px-2.5 py-1 text-[10px] font-bold ring-1 sm:px-3 sm:text-[11px] ${status.className}`}>
               {status.label}
             </span>
@@ -161,7 +161,7 @@ function BookingCard({ booking, index, onCompletePayment, onDownloadReceipt, pay
             {detailCode ? (
               <Link
                 to={ROUTES.myBookingDetail(detailCode)}
-                className="inline-flex items-center gap-1.5 rounded-xl border border-brand-border bg-white px-4 py-2 text-xs font-semibold text-brand-ink transition-all hover:border-brand-green/30 hover:text-brand-green"
+                className="inline-flex items-center gap-1.5 rounded-xl border border-brand-border bg-white px-4 py-2 text-xs font-semibold text-brand-ink transition-all hover:border-brand-primary/30 hover:text-brand-primary"
               >
                 View details
               </Link>
@@ -171,7 +171,7 @@ function BookingCard({ booking, index, onCompletePayment, onDownloadReceipt, pay
                 type="button"
                 onClick={() => onDownloadReceipt(booking)}
                 disabled={isDownloading}
-                className="inline-flex items-center gap-1.5 rounded-xl bg-brand-green px-4 py-2 text-xs font-semibold text-white shadow-sm transition-all hover:bg-brand-green-dark disabled:opacity-60"
+                className="inline-flex items-center gap-1.5 rounded-xl bg-brand-primary px-4 py-2 text-xs font-semibold text-white shadow-sm transition-all hover:bg-brand-primary-dark disabled:opacity-60"
               >
                 <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -182,7 +182,7 @@ function BookingCard({ booking, index, onCompletePayment, onDownloadReceipt, pay
             {slug && (
               <Link
                 to={ROUTES.tourDetail(slug)}
-                className="inline-flex items-center gap-1.5 rounded-xl border border-brand-border bg-white px-4 py-2 text-xs font-semibold text-brand-ink transition-all hover:border-brand-green/30 hover:text-brand-green"
+                className="inline-flex items-center gap-1.5 rounded-xl border border-brand-border bg-white px-4 py-2 text-xs font-semibold text-brand-ink transition-all hover:border-brand-primary/30 hover:text-brand-primary"
               >
                 View tour
               </Link>
@@ -191,7 +191,7 @@ function BookingCard({ booking, index, onCompletePayment, onDownloadReceipt, pay
               href={getWhatsAppUrl(`Hi 360 Tours, I need help with booking ${booking.bookingRef}.`)}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 rounded-xl border border-brand-border bg-white px-4 py-2 text-xs font-semibold text-brand-muted transition-all hover:border-brand-green/30 hover:text-brand-green"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-brand-border bg-white px-4 py-2 text-xs font-semibold text-brand-muted transition-all hover:border-brand-primary/30 hover:text-brand-primary"
             >
               Get support
             </a>
@@ -302,7 +302,7 @@ export default function MyBookingsPage() {
     <div className="min-h-screen bg-brand-cream">
 
       {/* Header */}
-      <section className="border-b border-brand-green/15 bg-brand-green">
+      <section className="border-b border-brand-primary/15 bg-brand-primary">
         <Container className="py-5 sm:py-6">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <motion.div
@@ -364,16 +364,16 @@ export default function MyBookingsPage() {
                 initial={{ opacity: 0, y: -8 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
-                className="mb-6 flex flex-col gap-3 rounded-2xl border border-brand-green/30 bg-brand-green/5 p-5 sm:flex-row sm:items-center sm:justify-between"
+                className="mb-6 flex flex-col gap-3 rounded-2xl border border-brand-primary/30 bg-brand-primary/5 p-5 sm:flex-row sm:items-center sm:justify-between"
               >
                 <div className="flex items-start gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-green/15 text-brand-green">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-primary/15 text-brand-primary">
                     <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5} aria-hidden><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
                   </div>
                   <div>
                     <p className="font-bold text-brand-ink">Booking confirmed!</p>
                     <p className="mt-0.5 text-sm text-brand-muted">
-                      Reference <span className="font-mono font-semibold text-brand-green">{welcomeRef}</span>
+                      Reference <span className="font-mono font-semibold text-brand-primary">{welcomeRef}</span>
                       {welcomeHasReceipt
                         ? ", your receipt is ready. Present it on arrival."
                         : ", complete payment to download your receipt."}
@@ -385,7 +385,7 @@ export default function MyBookingsPage() {
                     type="button"
                     onClick={() => welcomeBooking && handleDownloadReceipt(welcomeBooking)}
                     disabled={downloadingRef === welcomeRef}
-                    className="shrink-0 rounded-xl bg-brand-green px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-brand-green-dark disabled:opacity-60"
+                    className="shrink-0 rounded-xl bg-brand-primary px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-brand-primary-dark disabled:opacity-60"
                   >
                     {downloadingRef === welcomeRef ? "Preparing PDF…" : "Download receipt again"}
                   </button>
@@ -406,8 +406,8 @@ export default function MyBookingsPage() {
                   className={[
                     "rounded-full px-4 py-1.5 text-sm font-semibold transition-all",
                     filter === f.id
-                      ? "bg-brand-green text-white shadow-sm"
-                      : "border border-brand-border/70 bg-white text-brand-muted hover:border-brand-green/30 hover:text-brand-green",
+                      ? "bg-brand-primary text-white shadow-sm"
+                      : "border border-brand-border/70 bg-white text-brand-muted hover:border-brand-primary/30 hover:text-brand-primary",
                   ].join(" ")}
                 >
                   {f.label}
@@ -423,7 +423,7 @@ export default function MyBookingsPage() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search by ref, tour, country…"
-                className="h-10 w-full rounded-full border border-brand-border/70 bg-white pl-9 pr-4 text-sm outline-none focus:border-brand-green/50 focus:ring-2 focus:ring-brand-green/15"
+                className="h-10 w-full rounded-full border border-brand-border/70 bg-white pl-9 pr-4 text-sm outline-none focus:border-brand-primary/50 focus:ring-2 focus:ring-brand-primary/15"
               />
             </div>
           </div>
@@ -452,7 +452,7 @@ export default function MyBookingsPage() {
 
           {loading ? (
             <div className="mt-16 flex flex-col items-center justify-center gap-3 text-brand-muted">
-              <Loader2 className="h-8 w-8 animate-spin text-brand-green" strokeWidth={2} aria-hidden />
+              <Loader2 className="h-8 w-8 animate-spin text-brand-primary" strokeWidth={2} aria-hidden />
               <p className="text-sm">Loading your bookings…</p>
             </div>
           ) : null}
@@ -486,8 +486,8 @@ export default function MyBookingsPage() {
                 exit={{ opacity: 0 }}
                 className="mt-12 flex flex-col items-center rounded-[1.75rem] border border-brand-border/60 bg-white px-8 py-16 text-center shadow-sm"
               >
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-brand-green/10">
-                  <GuestIcon name="luggage" className="h-8 w-8 text-brand-green" />
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-brand-primary/10">
+                  <GuestIcon name="luggage" className="h-8 w-8 text-brand-primary" />
                 </div>
                 <h2 className="mt-5 text-xl font-bold text-brand-ink">
                   {bookings.length === 0 ? "No bookings yet" : "No matching bookings"}
@@ -499,7 +499,7 @@ export default function MyBookingsPage() {
                 </p>
                 <Link
                   to={ROUTES.tours}
-                  className="mt-6 inline-flex items-center gap-2 rounded-xl bg-brand-green px-6 py-3 text-sm font-semibold text-white shadow-md transition-all hover:bg-brand-green-dark"
+                  className="mt-6 inline-flex items-center gap-2 rounded-xl bg-brand-primary px-6 py-3 text-sm font-semibold text-white shadow-md transition-all hover:bg-brand-primary-dark"
                 >
                   Browse tours
                   <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M5 12h14M13 6l6 6-6 6" /></svg>
@@ -514,7 +514,7 @@ export default function MyBookingsPage() {
                 type="button"
                 disabled={page <= 1}
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
-                className="rounded-xl border border-brand-border bg-white px-4 py-2 text-sm font-semibold text-brand-ink transition-all enabled:hover:border-brand-green/30 enabled:hover:text-brand-green disabled:cursor-not-allowed disabled:opacity-40"
+                className="rounded-xl border border-brand-border bg-white px-4 py-2 text-sm font-semibold text-brand-ink transition-all enabled:hover:border-brand-primary/30 enabled:hover:text-brand-primary disabled:cursor-not-allowed disabled:opacity-40"
               >
                 Previous
               </button>
@@ -525,7 +525,7 @@ export default function MyBookingsPage() {
                 type="button"
                 disabled={page >= paginationMeta.totalPages}
                 onClick={() => setPage((p) => p + 1)}
-                className="rounded-xl border border-brand-border bg-white px-4 py-2 text-sm font-semibold text-brand-ink transition-all enabled:hover:border-brand-green/30 enabled:hover:text-brand-green disabled:cursor-not-allowed disabled:opacity-40"
+                className="rounded-xl border border-brand-border bg-white px-4 py-2 text-sm font-semibold text-brand-ink transition-all enabled:hover:border-brand-primary/30 enabled:hover:text-brand-primary disabled:cursor-not-allowed disabled:opacity-40"
               >
                 Next
               </button>

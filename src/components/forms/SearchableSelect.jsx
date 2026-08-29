@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { ChevronDown, Search, X } from "lucide-react";
 
 const inputClass =
-  "w-full rounded-xl border-2 border-brand-border bg-white px-4 py-2.5 text-sm font-medium text-brand-ink outline-none transition-all focus:border-brand-green focus:ring-2 focus:ring-brand-green/15";
+  "w-full rounded-xl border-2 border-brand-border bg-white px-4 py-2.5 text-sm font-medium text-brand-ink outline-none transition-all focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15";
 
 export default function SearchableSelect({
   options,
@@ -74,7 +74,7 @@ export default function SearchableSelect({
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder={searchPlaceholder}
-                className="w-full rounded-lg border border-brand-border py-2 pl-9 pr-8 text-sm outline-none focus:border-brand-green"
+                className="w-full rounded-lg border border-brand-border py-2 pl-9 pr-8 text-sm outline-none focus:border-brand-primary"
               />
               {query ? (
                 <button
@@ -103,7 +103,7 @@ export default function SearchableSelect({
                       onClick={() => handleSelect(opt.value)}
                       className={[
                         "flex w-full items-center px-4 py-2.5 text-left text-sm transition-colors",
-                        active ? "bg-brand-green/10 font-semibold text-brand-green" : "text-brand-ink hover:bg-brand-cream",
+                        active ? "bg-brand-primary/10 font-semibold text-brand-primary" : "text-brand-ink hover:bg-brand-cream",
                       ].join(" ")}
                     >
                       {opt.label}

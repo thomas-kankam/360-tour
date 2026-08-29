@@ -34,7 +34,7 @@ export default function AppIcon({ name, className = "h-5 w-5", strokeWidth = 1.7
   return <Icon className={className} strokeWidth={strokeWidth} aria-hidden />;
 }
 
-export function RoleIcon({ role, className = "h-6 w-6 text-brand-green" }) {
+export function RoleIcon({ role, className = "h-6 w-6 text-brand-primary" }) {
   const name = role === "administrator" ? "shield" : role === "site_operator" ? "landmark" : "luggage";
   return <AppIcon name={name} className={className} strokeWidth={1.75} />;
 }

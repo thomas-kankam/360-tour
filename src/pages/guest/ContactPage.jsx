@@ -122,7 +122,7 @@ function MessageField({ label, id, required, placeholder, value, onChange, error
           "mt-1.5 box-border block h-36 w-full max-w-full resize-none overflow-x-hidden overflow-y-auto rounded-xl border bg-white px-4 py-3 text-sm leading-relaxed text-brand-ink placeholder:text-brand-muted/60 shadow-sm outline-none transition-[border-color,box-shadow] focus:ring-2 [overflow-wrap:anywhere]",
           error
             ? "border-red-400 focus:border-red-400 focus:ring-red-100"
-            : "border-brand-border/70 focus:border-brand-green/50 focus:ring-brand-green/15",
+            : "border-brand-border/70 focus:border-brand-primary/50 focus:ring-brand-primary/15",
         ].join(" ")}
       />
       {error ? <p className="mt-1.5 text-xs font-medium text-red-500">{error}</p> : null}
@@ -147,7 +147,7 @@ function InputField({ label, id, type = "text", required, placeholder, value, on
           "h-11 w-full rounded-xl border bg-white px-4 text-sm text-brand-ink placeholder:text-brand-muted/60 shadow-sm outline-none transition-all focus:ring-2",
           error
             ? "border-red-400 focus:border-red-400 focus:ring-red-100"
-            : "border-brand-border/70 focus:border-brand-green/50 focus:ring-brand-green/15",
+            : "border-brand-border/70 focus:border-brand-primary/50 focus:ring-brand-primary/15",
         ].join(" ")}
       />
       {error ? <p className="text-xs font-medium text-red-500">{error}</p> : null}
@@ -162,7 +162,7 @@ function FaqItem({ faq, index }) {
       <button
         type="button"
         onClick={() => setOpen((p) => !p)}
-        className="flex w-full items-center justify-between gap-4 py-4 text-left text-sm font-semibold text-brand-ink hover:text-brand-green"
+        className="flex w-full items-center justify-between gap-4 py-4 text-left text-sm font-semibold text-brand-ink hover:text-brand-primary"
       >
         {faq.q}
         <svg
@@ -250,7 +250,7 @@ export default function ContactPage() {
     <div className="min-w-0">
 
       {/* ── Hero banner ── */}
-      <section className="relative overflow-hidden bg-brand-green py-14 sm:py-16">
+      <section className="relative overflow-hidden bg-brand-primary py-14 sm:py-16">
         <div aria-hidden className="adinkra-field-dark pointer-events-none absolute inset-0" />
         <div aria-hidden className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-brand-gold/10 blur-3xl" />
 
@@ -293,8 +293,8 @@ export default function ContactPage() {
                     transition={{ duration: 0.4, ease: EASE }}
                     className="flex flex-col items-center justify-center px-7 py-16 text-center"
                   >
-                    <div className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-green/10">
-                      <svg className="h-7 w-7 text-brand-green" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden>
+                    <div className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-primary/10">
+                      <svg className="h-7 w-7 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                       </svg>
                     </div>
@@ -305,7 +305,7 @@ export default function ContactPage() {
                     <button
                       type="button"
                       onClick={resetForm}
-                      className="mt-6 text-sm font-semibold text-brand-green underline underline-offset-2"
+                      className="mt-6 text-sm font-semibold text-brand-primary underline underline-offset-2"
                     >
                       Send another message
                     </button>
@@ -331,7 +331,7 @@ export default function ContactPage() {
                             "h-11 w-full rounded-xl border bg-white px-4 text-sm text-brand-ink shadow-sm outline-none transition-all focus:ring-2",
                             errors.inquiry
                               ? "border-red-400 focus:border-red-400 focus:ring-red-100"
-                              : "border-brand-border/70 focus:border-brand-green/50 focus:ring-brand-green/15",
+                              : "border-brand-border/70 focus:border-brand-primary/50 focus:ring-brand-primary/15",
                           ].join(" ")}
                         >
                           <option value="" disabled>Select type…</option>
@@ -354,7 +354,7 @@ export default function ContactPage() {
                     <button
                       type="submit"
                       disabled={loading}
-                      className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green py-3.5 text-sm font-semibold text-white shadow-[0_8px_24px_-8px_rgba(0,107,63,0.5)] transition-all hover:bg-brand-green/90 disabled:opacity-70"
+                      className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-primary py-3.5 text-sm font-semibold text-white shadow-[0_8px_24px_-8px_rgba(0,107,63,0.5)] transition-all hover:bg-brand-primary/90 disabled:opacity-70"
                     >
                       {loading ? (
                         <>
@@ -397,7 +397,7 @@ export default function ContactPage() {
                         "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-colors",
                         item.accent
                           ? "bg-green-500/15 text-green-600"
-                          : "bg-brand-green/8 text-brand-green group-hover:bg-brand-green/15",
+                          : "bg-brand-primary/8 text-brand-primary group-hover:bg-brand-primary/15",
                       ].join(" ")}>
                         {item.icon}
                       </span>
@@ -440,12 +440,12 @@ export default function ContactPage() {
               </motion.div>
 
               {/* Response time badge */}
-              <motion.div {...rise(0.2)} className="flex items-center gap-3 rounded-2xl border border-brand-green/20 bg-brand-green/8 px-5 py-4">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-green/15 text-brand-green">
+              <motion.div {...rise(0.2)} className="flex items-center gap-3 rounded-2xl border border-brand-primary/20 bg-brand-primary/8 px-5 py-4">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-primary/15 text-brand-primary">
                   <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} aria-hidden><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-brand-green">We respond within 24 hours</p>
+                  <p className="text-sm font-bold text-brand-primary">We respond within 24 hours</p>
                   <p className="text-xs text-brand-muted">Mon, Fri · 9am, 6pm EST &amp; GMT</p>
                 </div>
               </motion.div>

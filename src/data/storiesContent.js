@@ -14,7 +14,6 @@ export const stories = [
     date: "November 2025",
     readTime: "8 min read",
     image: images.home.hero,
-    featured: true,
     body: [
       {
         type: "lead",
@@ -98,7 +97,6 @@ export const stories = [
     date: "March 18, 2025",
     readTime: "6 min read",
     image: images.home.destinations.ghana,
-    featured: false,
     body: [
       {
         type: "paragraph",
@@ -122,7 +120,6 @@ export const stories = [
     date: "April 2, 2025",
     readTime: "5 min read",
     image: images.home.destinations.kenya,
-    featured: false,
     body: [
       {
         type: "paragraph",
@@ -142,7 +139,6 @@ export const stories = [
     date: "February 10, 2025",
     readTime: "4 min read",
     image: images.home.ghana,
-    featured: false,
     body: [
       {
         type: "paragraph",
@@ -162,7 +158,6 @@ export const stories = [
     date: "May 5, 2025",
     readTime: "7 min read",
     image: images.home.destinations.southAfrica,
-    featured: false,
     body: [
       {
         type: "paragraph",
@@ -182,7 +177,6 @@ export const stories = [
     date: "January 22, 2025",
     readTime: "4 min read",
     image: images.home.southAfrica,
-    featured: false,
     body: [
       {
         type: "paragraph",
@@ -202,7 +196,6 @@ export const stories = [
     date: "March 30, 2025",
     readTime: "5 min read",
     image: images.home.hero,
-    featured: false,
     body: [
       {
         type: "paragraph",
@@ -222,7 +215,6 @@ export const stories = [
     date: "April 15, 2025",
     readTime: "6 min read",
     image: images.home.kenya,
-    featured: false,
     body: [
       {
         type: "paragraph",
@@ -242,7 +234,6 @@ export const stories = [
     date: "February 28, 2025",
     readTime: "5 min read",
     image: images.home.destinations.kenya,
-    featured: false,
     body: [
       {
         type: "paragraph",
@@ -262,7 +253,6 @@ export const stories = [
     date: "May 12, 2025",
     readTime: "4 min read",
     image: images.home.destinations.southAfrica,
-    featured: false,
     body: [
       {
         type: "paragraph",

@@ -74,7 +74,7 @@ function StepIndicator({ currentStep }) {
               <div
                 className={[
                   "flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold transition-all",
-                  done ? "bg-brand-green text-white" : active ? "bg-brand-primary text-white ring-4 ring-brand-primary/20" : "bg-brand-border/40 text-brand-muted",
+                  done ? "bg-brand-primary text-white" : active ? "bg-brand-primary text-white ring-4 ring-brand-primary/20" : "bg-brand-border/40 text-brand-muted",
                 ].join(" ")}
               >
                 {done ? (
@@ -86,7 +86,7 @@ function StepIndicator({ currentStep }) {
               <span className={`text-[10px] font-semibold ${active ? "text-brand-ink" : "text-brand-muted"}`}>{step.label}</span>
             </div>
             {i < STEPS.length - 1 && (
-              <div className={`mb-4 h-px flex-1 ${done ? "bg-brand-green" : "bg-brand-border/60"}`} />
+              <div className={`mb-4 h-px flex-1 ${done ? "bg-brand-primary" : "bg-brand-border/60"}`} />
             )}
           </div>
         );
@@ -108,7 +108,7 @@ function Field({ label, id, type = "text", required, placeholder, value, onChang
         placeholder={placeholder}
         value={value}
         onChange={onChange}
-        className="h-11 rounded-xl border border-brand-border/70 bg-white px-4 text-sm outline-none transition-all focus:border-brand-green/50 focus:ring-2 focus:ring-brand-green/15"
+        className="h-11 rounded-xl border border-brand-border/70 bg-white px-4 text-sm outline-none transition-all focus:border-brand-primary/50 focus:ring-2 focus:ring-brand-primary/15"
       />
     </div>
   );
@@ -121,7 +121,7 @@ function TravelerStepper({ value, min, max, onChange }) {
         type="button"
         disabled={value <= min}
         onClick={() => onChange(value - 1)}
-        className="flex h-10 w-10 items-center justify-center rounded-full border border-brand-border bg-white text-lg font-bold text-brand-ink transition-all hover:border-brand-green disabled:opacity-40"
+        className="flex h-10 w-10 items-center justify-center rounded-full border border-brand-border bg-white text-lg font-bold text-brand-ink transition-all hover:border-brand-primary disabled:opacity-40"
         aria-label="Decrease travelers"
       >
         <Minus className="h-4 w-4" strokeWidth={2.5} aria-hidden />
@@ -134,7 +134,7 @@ function TravelerStepper({ value, min, max, onChange }) {
         type="button"
         disabled={value >= max}
         onClick={() => onChange(value + 1)}
-        className="flex h-10 w-10 items-center justify-center rounded-full border border-brand-border bg-white text-lg font-bold text-brand-ink transition-all hover:border-brand-green disabled:opacity-40"
+        className="flex h-10 w-10 items-center justify-center rounded-full border border-brand-border bg-white text-lg font-bold text-brand-ink transition-all hover:border-brand-primary disabled:opacity-40"
         aria-label="Increase travelers"
       >
         <Plus className="h-4 w-4" strokeWidth={2.5} aria-hidden />
@@ -423,15 +423,15 @@ export default function TourBookingFlow({ tour, open, onClose }) {
                         className={[
                           "flex w-full items-center justify-between rounded-xl border px-4 py-3 text-left transition-all",
                           selectedDate === dep.date
-                            ? "border-brand-green bg-brand-green/5 ring-2 ring-brand-green/20"
-                            : "border-brand-border/70 hover:border-brand-green/30",
+                            ? "border-brand-primary bg-brand-primary/5 ring-2 ring-brand-primary/20"
+                            : "border-brand-border/70 hover:border-brand-primary/30",
                         ].join(" ")}
                       >
                         <div>
                           <p className="text-sm font-semibold text-brand-ink">{dep.date}</p>
                           <p className="text-xs text-brand-muted">{dep.label}</p>
                         </div>
-                        <span className={`text-xs font-bold ${isDepartureLowAvailability(dep.spotsLeft, dep.spotsTotal) ? "text-red-500" : "text-brand-green"}`}>
+                        <span className={`text-xs font-bold ${isDepartureLowAvailability(dep.spotsLeft, dep.spotsTotal) ? "text-red-500" : "text-brand-primary"}`}>
                           {formatDepartureSpotsLeftLabel(dep.spotsLeft, dep.spotsTotal)}
                         </span>
                       </button>
@@ -445,7 +445,7 @@ export default function TourBookingFlow({ tour, open, onClose }) {
                     <TravelerStepper value={travelers} min={1} max={maxTravelers} onChange={setTravelers} />
                     <div className="text-right">
                       <p className="text-xs text-brand-muted">Per person</p>
-                      <p className="text-lg font-bold text-brand-green">{formatCurrency(unitPrice, currency)}</p>
+                      <p className="text-lg font-bold text-brand-primary">{formatCurrency(unitPrice, currency)}</p>
                     </div>
                   </div>
                   {travelers > 1 && (
@@ -515,17 +515,17 @@ export default function TourBookingFlow({ tour, open, onClose }) {
                 <button
                   type="button"
                   onClick={() => { setPaymentMode("now"); setStep("pay-now"); }}
-                  className="group flex w-full items-start gap-4 rounded-xl border-2 border-brand-border/70 p-5 text-left transition-all hover:border-brand-green hover:bg-brand-green/5"
+                  className="group flex w-full items-start gap-4 rounded-xl border-2 border-brand-border/70 p-5 text-left transition-all hover:border-brand-primary hover:bg-brand-primary/5"
                 >
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-green/10 text-brand-green">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-primary/10 text-brand-primary">
                     <CreditCard className="h-5 w-5" strokeWidth={1.5} aria-hidden />
                   </div>
                   <div>
-                    <p className="font-bold text-brand-ink group-hover:text-brand-green">Pay now</p>
+                    <p className="font-bold text-brand-ink group-hover:text-brand-primary">Pay now</p>
                     <p className="mt-1 text-xs leading-relaxed text-brand-muted">
                       Secure all {travelers} {travelers === 1 ? "spot" : "spots"} instantly. Pay in full or a {tour.depositPercent}% deposit today.
                     </p>
-                    <p className="mt-2 text-sm font-bold text-brand-green">{formatCurrency(subtotal, currency)} total</p>
+                    <p className="mt-2 text-sm font-bold text-brand-primary">{formatCurrency(subtotal, currency)} total</p>
                   </div>
                 </button>
 
@@ -576,11 +576,11 @@ export default function TourBookingFlow({ tour, open, onClose }) {
                       onClick={() => setPayType(opt.id)}
                       className={[
                         "rounded-xl border-2 px-3 py-3 text-left transition-all",
-                        payType === opt.id ? "border-brand-green bg-brand-green/5" : "border-brand-border/60 hover:border-brand-green/30",
+                        payType === opt.id ? "border-brand-primary bg-brand-primary/5" : "border-brand-border/60 hover:border-brand-primary/30",
                       ].join(" ")}
                     >
                       <p className="text-xs font-semibold text-brand-ink">{opt.label}</p>
-                      <p className="mt-0.5 text-sm font-bold text-brand-green">{formatCurrency(opt.amount, currency)}</p>
+                      <p className="mt-0.5 text-sm font-bold text-brand-primary">{formatCurrency(opt.amount, currency)}</p>
                     </button>
                   ))}
                 </div>
@@ -593,9 +593,9 @@ export default function TourBookingFlow({ tour, open, onClose }) {
                   onSelectInternational={selectInternationalRegion}
                 />
 
-                <div className="rounded-xl border border-brand-green/25 bg-brand-green/5 p-4">
+                <div className="rounded-xl border border-brand-primary/25 bg-brand-primary/5 p-4">
                   <div className="flex items-start gap-3">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-green/10 text-brand-green">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-primary/10 text-brand-primary">
                       <Lock className="h-5 w-5" strokeWidth={1.5} aria-hidden />
                     </div>
                     <div>
@@ -610,7 +610,7 @@ export default function TourBookingFlow({ tour, open, onClose }) {
                 <button
                   type="submit"
                   disabled={processing}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green py-3.5 text-sm font-semibold text-white shadow-lg transition-all hover:bg-brand-green-dark disabled:opacity-70"
+                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-primary py-3.5 text-sm font-semibold text-white shadow-lg transition-all hover:bg-brand-primary-dark disabled:opacity-70"
                 >
                   {processing ? (
                     <>
@@ -659,9 +659,9 @@ export default function TourBookingFlow({ tour, open, onClose }) {
                 </div>
 
                 <ul className="space-y-2 text-xs text-brand-muted">
-                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 shrink-0 text-brand-green" strokeWidth={2.5} aria-hidden /> Confirmation email sent immediately</li>
-                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 shrink-0 text-brand-green" strokeWidth={2.5} aria-hidden /> Flexible, pay deposit or full amount later</li>
-                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 shrink-0 text-brand-green" strokeWidth={2.5} aria-hidden /> Spots released if deposit not received in time</li>
+                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 shrink-0 text-brand-primary" strokeWidth={2.5} aria-hidden /> Confirmation email sent immediately</li>
+                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 shrink-0 text-brand-primary" strokeWidth={2.5} aria-hidden /> Flexible, pay deposit or full amount later</li>
+                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 shrink-0 text-brand-primary" strokeWidth={2.5} aria-hidden /> Spots released if deposit not received in time</li>
                 </ul>
 
                 <button
@@ -676,8 +676,8 @@ export default function TourBookingFlow({ tour, open, onClose }) {
 
             {step === "success" && (
               <motion.div key="success" initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4, ease: EASE }} className="py-4 text-center">
-                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-brand-green/10">
-                  <CheckCircle2 className="h-8 w-8 text-brand-green" strokeWidth={2} aria-hidden />
+                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-brand-primary/10">
+                  <CheckCircle2 className="h-8 w-8 text-brand-primary" strokeWidth={2} aria-hidden />
                 </div>
                 <h3 className="mt-5 text-xl font-bold text-brand-ink">
                   {paymentMode === "now" ? "Booking confirmed!" : "Reservation confirmed!"}
@@ -691,7 +691,7 @@ export default function TourBookingFlow({ tour, open, onClose }) {
                 <div className="mt-6 rounded-xl border border-brand-border/60 bg-brand-cream/50 p-4 text-left text-sm space-y-2">
                   <div className="flex justify-between">
                     <span className="text-brand-muted">Booking reference</span>
-                    <span className="font-mono font-bold text-brand-green">{bookingRef}</span>
+                    <span className="font-mono font-bold text-brand-primary">{bookingRef}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-brand-muted">Tour</span>
@@ -708,7 +708,7 @@ export default function TourBookingFlow({ tour, open, onClose }) {
                   {paymentMode === "now" && (
                     <div className="flex justify-between border-t border-brand-border/40 pt-2">
                       <span className="text-brand-muted">Paid today</span>
-                      <span className="font-bold text-brand-green">{formatCurrency(payNowAmount, currency)}</span>
+                      <span className="font-bold text-brand-primary">{formatCurrency(payNowAmount, currency)}</span>
                     </div>
                   )}
                   {paymentMode === "later" && (
@@ -734,7 +734,7 @@ export default function TourBookingFlow({ tour, open, onClose }) {
                         type="button"
                         onClick={handleDownloadReceipt}
                         disabled={downloadingReceipt}
-                        className="mt-3 inline-flex items-center gap-2 rounded-lg bg-brand-green px-4 py-2 text-xs font-semibold text-white shadow-sm transition-all hover:bg-brand-green-dark disabled:opacity-60"
+                        className="mt-3 inline-flex items-center gap-2 rounded-lg bg-brand-primary px-4 py-2 text-xs font-semibold text-white shadow-sm transition-all hover:bg-brand-primary-dark disabled:opacity-60"
                       >
                         <Download className="h-4 w-4" strokeWidth={2} aria-hidden />
                         {downloadingReceipt ? "Preparing PDF…" : "Download receipt"}
@@ -748,14 +748,14 @@ export default function TourBookingFlow({ tour, open, onClose }) {
                   href={getWhatsAppUrl(`Hi 360 Tours, my booking ref is ${bookingRef}. I'd like to confirm details for ${tour.name}.`)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-brand-green hover:underline"
+                  className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-brand-primary hover:underline"
                 >
                   Questions? Chat with us on WhatsApp
                 </a>
                 <Link
                   to={ROUTES.myBookings}
                   onClick={onClose}
-                  className="mt-3 block text-xs font-semibold text-brand-muted hover:text-brand-green"
+                  className="mt-3 block text-xs font-semibold text-brand-muted hover:text-brand-primary"
                 >
                   View all my bookings →
                 </Link>
@@ -783,7 +783,7 @@ export default function TourBookingFlow({ tour, open, onClose }) {
                 type="button"
                 disabled={!canProceedTrip}
                 onClick={() => setStep("details")}
-                className="rounded-xl bg-brand-green px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-brand-green-dark disabled:opacity-50"
+                className="rounded-xl bg-brand-primary px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-brand-primary-dark disabled:opacity-50"
               >
                 Continue
               </button>
@@ -793,7 +793,7 @@ export default function TourBookingFlow({ tour, open, onClose }) {
                 type="button"
                 disabled={!canProceedDetails}
                 onClick={() => setStep("payment")}
-                className="rounded-xl bg-brand-green px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-brand-green-dark disabled:opacity-50"
+                className="rounded-xl bg-brand-primary px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-brand-primary-dark disabled:opacity-50"
               >
                 Continue
               </button>
@@ -815,12 +815,12 @@ export default function TourBookingFlow({ tour, open, onClose }) {
               type="button"
               onClick={handleDownloadReceipt}
               disabled={downloadingReceipt}
-              className="flex w-full items-center justify-center gap-2 rounded-xl border border-brand-green/30 bg-brand-green/5 py-3 text-sm font-semibold text-brand-green transition-all hover:bg-brand-green/10 disabled:opacity-60"
+              className="flex w-full items-center justify-center gap-2 rounded-xl border border-brand-primary/30 bg-brand-primary/5 py-3 text-sm font-semibold text-brand-primary transition-all hover:bg-brand-primary/10 disabled:opacity-60"
             >
               <Download className="h-4 w-4" strokeWidth={2} aria-hidden />
               {downloadingReceipt ? "Preparing PDF…" : "Download receipt"}
             </button>
-            <button type="button" onClick={onClose} className="w-full rounded-xl bg-brand-green py-3 text-sm font-semibold text-white hover:bg-brand-green-dark">
+            <button type="button" onClick={onClose} className="w-full rounded-xl bg-brand-primary py-3 text-sm font-semibold text-white hover:bg-brand-primary-dark">
               Done
             </button>
           </div>
@@ -828,7 +828,7 @@ export default function TourBookingFlow({ tour, open, onClose }) {
 
         {step === "success" && !canShowReceipt ? (
           <div className="border-t border-brand-border/50 px-6 py-4">
-            <button type="button" onClick={onClose} className="w-full rounded-xl bg-brand-green py-3 text-sm font-semibold text-white hover:bg-brand-green-dark">
+            <button type="button" onClick={onClose} className="w-full rounded-xl bg-brand-primary py-3 text-sm font-semibold text-white hover:bg-brand-primary-dark">
               Done
             </button>
           </div>

@@ -166,7 +166,7 @@ function ExperienceCard({ exp, index }) {
       <div className="p-5">
         <div className="flex flex-wrap gap-1.5 mb-3">
           {exp.countries.map((c) => (
-            <span key={c} className="rounded-full bg-brand-green/8 px-2.5 py-0.5 text-[11px] font-semibold text-brand-green">
+            <span key={c} className="rounded-full bg-brand-primary/8 px-2.5 py-0.5 text-[11px] font-semibold text-brand-primary">
               {c}
             </span>
           ))}
@@ -185,7 +185,7 @@ function ExperienceCard({ exp, index }) {
             >
               {exp.highlights.map((h) => (
                 <li key={h} className="flex items-center gap-2 text-xs text-brand-ink">
-                  <svg className="h-3.5 w-3.5 shrink-0 text-brand-green" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5} aria-hidden>
+                  <svg className="h-3.5 w-3.5 shrink-0 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5} aria-hidden>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
                   {h}
@@ -199,13 +199,13 @@ function ExperienceCard({ exp, index }) {
           <button
             type="button"
             onClick={() => setExpanded((p) => !p)}
-            className="text-xs font-semibold text-brand-green underline-offset-2 hover:underline"
+            className="text-xs font-semibold text-brand-primary underline-offset-2 hover:underline"
           >
             {expanded ? "Show less" : "See highlights"}
           </button>
           <Link
             to={ROUTES.tours}
-            className="inline-flex items-center gap-1.5 rounded-xl bg-brand-green px-4 py-2 text-xs font-semibold text-white shadow-sm transition-all hover:bg-brand-green/90"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-brand-primary px-4 py-2 text-xs font-semibold text-white shadow-sm transition-all hover:bg-brand-primary/90"
           >
             View tours
             <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M5 12h14M13 6l6 6-6 6" /></svg>
@@ -298,8 +298,8 @@ export default function ExperiencesPage() {
                 className={[
                   "rounded-full px-4 py-1.5 text-sm font-semibold transition-all duration-200",
                   country === c
-                    ? "bg-brand-green text-white shadow-sm"
-                    : "border border-brand-border/70 bg-white text-brand-muted hover:border-brand-green/30 hover:text-brand-green",
+                    ? "bg-brand-primary text-white shadow-sm"
+                    : "border border-brand-border/70 bg-white text-brand-muted hover:border-brand-primary/30 hover:text-brand-primary",
                 ].join(" ")}
               >
                 {c}
@@ -344,8 +344,8 @@ export default function ExperiencesPage() {
             ].map((step, i) => (
               <motion.div key={step.n} {...rise(i * 0.1)} className="relative flex flex-col items-center text-center">
                 <div className="relative flex h-12 w-12 items-center justify-center rounded-full border-2 border-brand-border bg-white shadow-sm">
-                  <GuestIcon name={step.iconKey} className="h-5 w-5 text-brand-green" />
-                  <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-brand-green text-[9px] font-bold text-white">{step.n}</span>
+                  <GuestIcon name={step.iconKey} className="h-5 w-5 text-brand-primary" />
+                  <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-brand-primary text-[9px] font-bold text-white">{step.n}</span>
                 </div>
                 <h3 className="mt-4 text-sm font-bold text-brand-ink">{step.t}</h3>
                 <p className="mt-1.5 text-xs leading-relaxed text-brand-muted">{step.d}</p>
@@ -356,7 +356,7 @@ export default function ExperiencesPage() {
       </section>
 
       {/* ── CTA ── */}
-      <section className="relative overflow-hidden bg-brand-green py-14">
+      <section className="relative overflow-hidden bg-brand-primary py-14">
         <KentePattern />
         <div aria-hidden className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full bg-brand-gold/15 blur-3xl" />
         <Container className="relative text-center">
@@ -366,7 +366,7 @@ export default function ExperiencesPage() {
               Chat with our team, we&apos;ll match you to the perfect journey in minutes.
             </p>
             <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <Link to={ROUTES.contact} className="inline-flex items-center gap-2 rounded-xl bg-white px-7 py-3 text-sm font-semibold text-brand-green shadow-lg hover:bg-brand-cream">
+              <Link to={ROUTES.contact} className="inline-flex items-center gap-2 rounded-xl bg-white px-7 py-3 text-sm font-semibold text-brand-primary shadow-lg hover:bg-brand-cream">
                 Get in touch
                 <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M5 12h14M13 6l6 6-6 6" /></svg>
               </Link>

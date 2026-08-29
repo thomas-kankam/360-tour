@@ -2,13 +2,13 @@ import { images } from "../config/images";
 import { ROUTES } from "../constants/routes";
 
 export const heroContent = {
-  badge: "360 Tours and Investment Limited",
-  title: "Discover Africa.",
-  titleHighlight: "Travel Without Limits.",
+  badge: "360 Tours Ghana",
+  title: "Experience Ghana in",
+  titleHighlight: "360°",
   subtitle:
-    "Your trusted partner for tours, accommodation, and transportation across Ghana and beyond. We create exciting, safe, and memorable journeys, making every leisure, business, cultural, or adventure trip seamless from start to finish.",
-  tagline: "Explore More. Travel Better. Experience Africa with 360 Tours.",
-  primaryCta: { label: "Explore our tours", to: ROUTES.tours },
+    "Cultural heritage, pristine nature, and unforgettable adventures — tours, stays, and transport planned for you across Ghana.",
+  tagline: "Explore More. Travel Better. Experience Ghana with 360 Tours.",
+  primaryCta: { label: "Book a tour", to: ROUTES.tours },
   secondaryCta: { label: "Plan your trip", to: ROUTES.contact },
 };
 
@@ -33,7 +33,7 @@ export const toursPageSection = {
   },
 };
 
-export const featuredTours = [
+export const sampleTours = [
   {
     slug: "ghana-heritage-2025",
     name: "Ghana Heritage Tour",
@@ -345,7 +345,7 @@ export const operatingHubs = [
     tagline: "Vibrant Cities",
     desc: "Table Mountain, Johannesburg townships, and Cape Town's vibrant urban culture.",
     image: images.home.southAfrica,
-    badge: "bg-brand-green/15 text-brand-green",
+    badge: "bg-brand-primary/15 text-brand-primary",
   },
 ];
 
@@ -447,7 +447,7 @@ export const ghanaPackageHubs = [
     tagline: "Mountains & waterfalls",
     desc: "Wli Falls, highland treks, and nature-forward journeys in the Volta Region.",
     image: images.tour_sites.volta,
-    badge: "bg-brand-green/15 text-brand-green",
+    badge: "bg-brand-primary/15 text-brand-primary",
   },
   {
     packageId: "end-of-year",

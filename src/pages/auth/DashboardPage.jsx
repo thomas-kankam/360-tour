@@ -10,7 +10,7 @@ const EASE = [0.16, 1, 0.3, 1];
 
 function statusLabel(status) {
   const map = {
-    paid: { text: "Paid", className: "bg-brand-green/10 text-brand-green" },
+    paid: { text: "Paid", className: "bg-brand-primary/10 text-brand-primary" },
     deposit_paid: { text: "Deposit paid", className: "bg-brand-gold/15 text-brand-ink" },
     pay_onsite: { text: "Pay on-site", className: "bg-brand-orange/10 text-brand-orange" },
     reserved: { text: "Reserved", className: "bg-brand-muted/10 text-brand-muted" },
@@ -39,7 +39,7 @@ export default function DashboardPage() {
       <Container>
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, ease: EASE }}>
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-orange">Traveler hub</p>
-          <h1 className="mt-2 font-heading text-3xl text-brand-green sm:text-4xl">
+          <h1 className="mt-2 font-heading text-3xl text-brand-primary sm:text-4xl">
             Welcome{user?.name ? `, ${user.name.split(" ")[0]}` : ""}
           </h1>
           <p className="mt-3 max-w-2xl text-brand-muted">
@@ -71,7 +71,7 @@ export default function DashboardPage() {
           <section className="lg:col-span-3 rounded-2xl border border-brand-border/60 bg-white p-6 shadow-sm">
             <div className="flex items-center justify-between gap-3">
               <h2 className="text-lg font-bold text-brand-ink">Recent bookings</h2>
-              <Link to={ROUTES.myBookings} className="text-sm font-semibold text-brand-green hover:underline">View all</Link>
+              <Link to={ROUTES.myBookings} className="text-sm font-semibold text-brand-primary hover:underline">View all</Link>
             </div>
             {recent.length === 0 ? (
               <div className="mt-8 rounded-xl border border-dashed border-brand-border bg-brand-cream/50 px-6 py-10 text-center">
@@ -98,7 +98,7 @@ export default function DashboardPage() {
           </section>
 
           <aside className="lg:col-span-2 space-y-4">
-            <div className="rounded-2xl bg-brand-green p-6 text-white">
+            <div className="rounded-2xl bg-brand-primary p-6 text-white">
               <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brand-gold">Quick links</p>
               <ul className="mt-4 space-y-3 text-sm font-semibold">
                 <li><Link to={ROUTES.tours} className="hover:text-brand-gold">→ Browse tours</Link></li>
@@ -110,7 +110,7 @@ export default function DashboardPage() {
             <div className="rounded-2xl border border-brand-border/60 bg-white p-5 shadow-sm">
               <p className="text-xs font-semibold uppercase tracking-[0.12em] text-brand-muted">Need help?</p>
               <p className="mt-2 text-sm text-brand-muted">Our consultants can tailor group itineraries across Ghana, Kenya, and South Africa.</p>
-              <Link to={ROUTES.contact} className="mt-4 inline-flex text-sm font-semibold text-brand-green hover:underline">Contact us →</Link>
+              <Link to={ROUTES.contact} className="mt-4 inline-flex text-sm font-semibold text-brand-primary hover:underline">Contact us →</Link>
             </div>
           </aside>
         </div>

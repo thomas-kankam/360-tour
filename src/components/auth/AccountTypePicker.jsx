@@ -20,11 +20,11 @@ export default function AccountTypePicker({ value, onChange, className = "" }) {
         className={[
           "flex w-full flex-col items-start gap-2 rounded-2xl border-2 p-4 text-left transition-all duration-200",
           active
-            ? "border-brand-green bg-brand-green/5 ring-2 ring-brand-green/15"
-            : "border-brand-border/70 bg-white hover:border-brand-green/35",
+            ? "border-brand-primary bg-brand-primary/5 ring-2 ring-brand-primary/15"
+            : "border-brand-border/70 bg-white hover:border-brand-primary/35",
         ].join(" ")}
       >
-        <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-cream text-brand-green">
+        <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-cream text-brand-primary">
           <AppIcon name={meta.icon} className="h-5 w-5" />
         </span>
         <span className="text-sm font-bold text-brand-ink">{meta.label}</span>

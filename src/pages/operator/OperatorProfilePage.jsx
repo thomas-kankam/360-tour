@@ -70,7 +70,7 @@ function inputClass(hasError) {
     "mt-2 w-full rounded-xl border-2 bg-white px-4 py-3 text-sm font-medium text-brand-ink outline-none transition-all focus:ring-2",
     hasError
       ? "border-red-400 focus:border-red-400 focus:ring-red-100"
-      : "border-brand-border focus:border-brand-green focus:ring-brand-green/15",
+      : "border-brand-border focus:border-brand-primary focus:ring-brand-primary/15",
   ].join(" ");
 }
 
@@ -78,7 +78,7 @@ function ReadOnlyContactField({ icon: Icon, label, value }) {
   return (
     <div className="rounded-xl border border-brand-border/60 bg-brand-cream/40 px-4 py-3.5">
       <div className="flex items-start gap-3">
-        <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white text-brand-green shadow-sm">
+        <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white text-brand-primary shadow-sm">
           <Icon className="h-4 w-4" strokeWidth={1.75} aria-hidden />
         </span>
         <div className="min-w-0 flex-1">
@@ -228,12 +228,12 @@ export default function OperatorProfilePage() {
               <button
                 type="button"
                 onClick={() => profileInputRef.current?.click()}
-                className="group relative flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-2xl border-2 border-dashed border-brand-border bg-brand-cream/40 transition-all hover:border-brand-green hover:ring-4 hover:ring-brand-green/10"
+                className="group relative flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-2xl border-2 border-dashed border-brand-border bg-brand-cream/40 transition-all hover:border-brand-primary hover:ring-4 hover:ring-brand-primary/10"
               >
                 {profilePreview ? (
                   <img src={profilePreview} alt="" className="h-full w-full object-cover" />
                 ) : (
-                  <Camera className="h-8 w-8 text-brand-muted transition-colors group-hover:text-brand-green" aria-hidden />
+                  <Camera className="h-8 w-8 text-brand-muted transition-colors group-hover:text-brand-primary" aria-hidden />
                 )}
               </button>
               <input
@@ -250,7 +250,7 @@ export default function OperatorProfilePage() {
                   <button
                     type="button"
                     onClick={() => profileInputRef.current?.click()}
-                    className="rounded-xl border border-brand-border px-3 py-1.5 text-xs font-semibold text-brand-ink transition-colors hover:border-brand-green/30 hover:bg-brand-green/5"
+                    className="rounded-xl border border-brand-border px-3 py-1.5 text-xs font-semibold text-brand-ink transition-colors hover:border-brand-primary/30 hover:bg-brand-primary/5"
                   >
                     Upload photo
                   </button>
@@ -326,7 +326,7 @@ export default function OperatorProfilePage() {
               <ReadOnlyContactField icon={Phone} label="Phone" value={user?.phone} />
               <p className="text-xs leading-relaxed text-brand-muted">
                 To update your email or phone,{" "}
-                <Link to={ROUTES.contact} className="font-semibold text-brand-green hover:underline">
+                <Link to={ROUTES.contact} className="font-semibold text-brand-primary hover:underline">
                   contact our support team
                 </Link>
                 .
@@ -384,7 +384,7 @@ export default function OperatorProfilePage() {
             </dl>
 
             {user?.isVerified ? (
-              <div className="mt-4 flex items-center gap-2 rounded-xl bg-brand-green/10 px-4 py-3 text-sm font-semibold text-brand-green">
+              <div className="mt-4 flex items-center gap-2 rounded-xl bg-brand-primary/10 px-4 py-3 text-sm font-semibold text-brand-primary">
                 <BadgeCheck className="h-4 w-4 shrink-0" strokeWidth={2} aria-hidden />
                 Verified operator
               </div>
@@ -403,7 +403,7 @@ export default function OperatorProfilePage() {
                 </p>
                 <Link
                   to={ROUTES.contact}
-                  className="mt-3 inline-flex text-sm font-semibold text-brand-green hover:underline"
+                  className="mt-3 inline-flex text-sm font-semibold text-brand-primary hover:underline"
                 >
                   Go to contact page
                 </Link>

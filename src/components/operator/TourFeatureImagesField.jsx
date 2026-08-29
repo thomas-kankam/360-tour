@@ -120,7 +120,7 @@ export default function TourFeatureImagesField({ value = [], coverImage, onChang
         </div>
         <div className="mt-2 h-2 overflow-hidden rounded-full bg-white">
           <div
-            className="h-full rounded-full bg-brand-green transition-all"
+            className="h-full rounded-full bg-brand-primary transition-all"
             style={{ width: `${Math.min(100, (featureCount / MAX_FEATURE_IMAGES) * 100)}%` }}
           />
         </div>
@@ -144,10 +144,10 @@ export default function TourFeatureImagesField({ value = [], coverImage, onChang
           "flex w-full flex-col items-center justify-center rounded-2xl border-2 border-dashed px-6 py-10 text-center transition-all",
           atLimit
             ? "cursor-not-allowed border-brand-border/50 bg-brand-cream/30 opacity-60"
-            : "border-brand-border bg-brand-cream/40 hover:border-brand-green/50 hover:bg-brand-green/5",
+            : "border-brand-border bg-brand-cream/40 hover:border-brand-primary/50 hover:bg-brand-primary/5",
         ].join(" ")}
       >
-        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-green/10 text-brand-green">
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-primary/10 text-brand-primary">
           {uploading ? (
             <Upload className="h-6 w-6 animate-pulse" strokeWidth={1.75} aria-hidden />
           ) : (
@@ -167,7 +167,7 @@ export default function TourFeatureImagesField({ value = [], coverImage, onChang
       {coverSrc || images.length > 0 ? (
         <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
           {coverSrc ? (
-            <div className="group relative aspect-[4/3] overflow-hidden rounded-xl border-2 border-brand-green/40 bg-white shadow-sm ring-1 ring-brand-green/20">
+            <div className="group relative aspect-[4/3] overflow-hidden rounded-xl border-2 border-brand-primary/40 bg-white shadow-sm ring-1 ring-brand-primary/20">
               <button
                 type="button"
                 onClick={() => setLightboxIndex(0)}
@@ -230,7 +230,7 @@ export default function TourFeatureImagesField({ value = [], coverImage, onChang
               type="button"
               onClick={openPicker}
               disabled={uploading}
-              className="flex aspect-[4/3] flex-col items-center justify-center rounded-xl border-2 border-dashed border-brand-border/70 bg-brand-cream/30 text-brand-muted transition-all hover:border-brand-green/40 hover:text-brand-green disabled:opacity-50"
+              className="flex aspect-[4/3] flex-col items-center justify-center rounded-xl border-2 border-dashed border-brand-border/70 bg-brand-cream/30 text-brand-muted transition-all hover:border-brand-primary/40 hover:text-brand-primary disabled:opacity-50"
             >
               <Upload className="h-5 w-5" strokeWidth={2} aria-hidden />
               <span className="mt-2 text-[11px] font-semibold">Add more</span>

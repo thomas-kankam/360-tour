@@ -52,7 +52,7 @@ function ArticleBody({ blocks }) {
             <ul key={i} className="space-y-2 rounded-xl border border-brand-border/60 bg-brand-cream/50 p-5">
               {block.items.map((item) => (
                 <li key={item} className="flex items-start gap-2 text-sm leading-relaxed text-brand-ink sm:text-base">
-                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-green" aria-hidden />
+                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-primary" aria-hidden />
                   {item}
                 </li>
               ))}
@@ -86,7 +86,7 @@ export default function StoryDetailPage() {
           <p className="mt-2 text-brand-muted">This story may have moved or no longer exists.</p>
           <Link
             to={ROUTES.stories}
-            className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-brand-green hover:underline"
+            className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-brand-primary hover:underline"
           >
             ← Back to all stories
           </Link>
@@ -139,7 +139,7 @@ export default function StoryDetailPage() {
         <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_280px] lg:gap-12 xl:grid-cols-[minmax(0,1fr)_320px]">
           <div>
             <div className="mb-8 flex items-center gap-3 border-b border-brand-border/50 pb-6 lg:hidden">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-green/10 text-sm font-bold text-brand-green">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-primary/10 text-sm font-bold text-brand-primary">
                 {story.author.split(" ").map((n) => n[0]).join("").slice(0, 2)}
               </div>
               <div>
@@ -157,7 +157,7 @@ export default function StoryDetailPage() {
             </motion.article>
 
             {story.category === "Newsletter" && (
-              <div className="mt-10 rounded-2xl border border-brand-green/20 bg-brand-green/5 p-6 sm:p-8 lg:hidden">
+              <div className="mt-10 rounded-2xl border border-brand-primary/20 bg-brand-primary/5 p-6 sm:p-8 lg:hidden">
                 <p className="text-sm font-semibold uppercase tracking-[0.14em] text-brand-orange">Join the movement</p>
                 <p className="mt-2 text-base leading-relaxed text-brand-ink">
                   Become part of the 360 Tours community, explore our cultural travel series, and plan your journey today.
@@ -165,13 +165,13 @@ export default function StoryDetailPage() {
                 <div className="mt-5 flex flex-wrap gap-3">
                   <Link
                     to={ROUTES.tours}
-                    className="inline-flex items-center gap-2 rounded-xl bg-brand-green px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-green-dark"
+                    className="inline-flex items-center gap-2 rounded-xl bg-brand-primary px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-primary-dark"
                   >
                     View 2025 tours
                   </Link>
                   <Link
                     to={ROUTES.contact}
-                    className="inline-flex items-center gap-2 rounded-xl border border-brand-border bg-white px-5 py-2.5 text-sm font-semibold text-brand-green transition-colors hover:border-brand-green/30"
+                    className="inline-flex items-center gap-2 rounded-xl border border-brand-border bg-white px-5 py-2.5 text-sm font-semibold text-brand-primary transition-colors hover:border-brand-primary/30"
                   >
                     Contact us
                   </Link>
@@ -184,7 +184,7 @@ export default function StoryDetailPage() {
             <div className="sticky top-24 space-y-6">
               <div className="rounded-2xl border border-brand-border/60 bg-white p-5 shadow-sm">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-green/10 text-sm font-bold text-brand-green">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-primary/10 text-sm font-bold text-brand-primary">
                     {story.author.split(" ").map((n) => n[0]).join("").slice(0, 2)}
                   </div>
                   <div>
@@ -200,7 +200,7 @@ export default function StoryDetailPage() {
               </div>
 
               {story.category === "Newsletter" && (
-                <div className="rounded-2xl border border-brand-green/20 bg-brand-green/5 p-5">
+                <div className="rounded-2xl border border-brand-primary/20 bg-brand-primary/5 p-5">
                   <p className="text-sm font-semibold uppercase tracking-[0.14em] text-brand-orange">Join the movement</p>
                   <p className="mt-2 text-sm leading-relaxed text-brand-ink">
                     Explore our 2025 Cultural Travel Series and plan your journey today.
@@ -208,13 +208,13 @@ export default function StoryDetailPage() {
                   <div className="mt-4 flex flex-col gap-2">
                     <Link
                       to={ROUTES.tours}
-                      className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-green px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-green-dark"
+                      className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-primary px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-primary-dark"
                     >
                       View 2025 tours
                     </Link>
                     <Link
                       to={ROUTES.contact}
-                      className="inline-flex items-center justify-center gap-2 rounded-xl border border-brand-border bg-white px-4 py-2.5 text-sm font-semibold text-brand-green transition-colors hover:border-brand-green/30"
+                      className="inline-flex items-center justify-center gap-2 rounded-xl border border-brand-border bg-white px-4 py-2.5 text-sm font-semibold text-brand-primary transition-colors hover:border-brand-primary/30"
                     >
                       Contact us
                     </Link>
@@ -240,8 +240,8 @@ export default function StoryDetailPage() {
                     <img src={s.image} alt={s.title} loading="lazy" decoding="async" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
                   </div>
                   <div className="p-4">
-                    <p className="text-xs font-semibold text-brand-green">{s.country}</p>
-                    <h3 className="mt-1 text-sm font-bold leading-snug text-brand-ink line-clamp-2 group-hover:text-brand-green">
+                    <p className="text-xs font-semibold text-brand-primary">{s.country}</p>
+                    <h3 className="mt-1 text-sm font-bold leading-snug text-brand-ink line-clamp-2 group-hover:text-brand-primary">
                       {s.title}
                     </h3>
                   </div>

@@ -9,8 +9,8 @@ const linkClass = ({ isActive }) =>
   [
     "relative text-sm transition-colors duration-200",
     isActive
-      ? "font-semibold text-brand-green after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-full after:rounded-full after:bg-brand-orange"
-      : "font-medium text-brand-muted hover:text-brand-green",
+      ? "font-semibold text-brand-primary after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-full after:rounded-full after:bg-brand-orange"
+      : "font-medium text-brand-muted hover:text-brand-primary",
   ].join(" ");
 
 export default function OperatorNavbar() {
@@ -43,7 +43,7 @@ export default function OperatorNavbar() {
       <NavLink
         to={ROUTES.operator.dashboard}
         className={({ isActive }) =>
-          `flex items-center gap-3 rounded-xl px-4 py-3 text-base font-medium ${isActive ? "bg-brand-green/10 text-brand-green" : "text-brand-ink hover:bg-brand-cream"}`
+          `flex items-center gap-3 rounded-xl px-4 py-3 text-base font-medium ${isActive ? "bg-brand-primary/10 text-brand-primary" : "text-brand-ink hover:bg-brand-cream"}`
         }
       >
         <LayoutDashboard className="h-4 w-4 opacity-70" strokeWidth={1.75} aria-hidden />
@@ -52,7 +52,7 @@ export default function OperatorNavbar() {
       <NavLink
         to={ROUTES.operator.tours}
         className={({ isActive }) =>
-          `flex items-center gap-3 rounded-xl px-4 py-3 text-base font-medium ${isActive ? "bg-brand-green/10 text-brand-green" : "text-brand-ink hover:bg-brand-cream"}`
+          `flex items-center gap-3 rounded-xl px-4 py-3 text-base font-medium ${isActive ? "bg-brand-primary/10 text-brand-primary" : "text-brand-ink hover:bg-brand-cream"}`
         }
       >
         <Map className="h-4 w-4 opacity-70" strokeWidth={1.75} aria-hidden />
@@ -61,7 +61,7 @@ export default function OperatorNavbar() {
       <NavLink
         to={ROUTES.operator.bookings}
         className={({ isActive }) =>
-          `flex items-center gap-3 rounded-xl px-4 py-3 text-base font-medium ${isActive ? "bg-brand-green/10 text-brand-green" : "text-brand-ink hover:bg-brand-cream"}`
+          `flex items-center gap-3 rounded-xl px-4 py-3 text-base font-medium ${isActive ? "bg-brand-primary/10 text-brand-primary" : "text-brand-ink hover:bg-brand-cream"}`
         }
       >
         <CalendarCheck className="h-4 w-4 opacity-70" strokeWidth={1.75} aria-hidden />
@@ -77,7 +77,7 @@ export default function OperatorNavbar() {
       <NavLink
         to={ROUTES.home}
         className={({ isActive }) =>
-          `block rounded-xl px-4 py-3 text-base font-medium ${isActive ? "bg-brand-green/10 text-brand-green" : "text-brand-ink hover:bg-brand-cream"}`
+          `block rounded-xl px-4 py-3 text-base font-medium ${isActive ? "bg-brand-primary/10 text-brand-primary" : "text-brand-ink hover:bg-brand-cream"}`
         }
       >
         Public site

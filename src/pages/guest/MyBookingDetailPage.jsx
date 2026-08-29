@@ -16,7 +16,7 @@ import { downloadBookingReceipt } from "../../utils/bookingReceipt";
 const EASE = [0.16, 1, 0.3, 1];
 
 const STATUS_CONFIG = {
-  paid: { label: "Paid in full", className: "bg-brand-green/10 text-brand-green" },
+  paid: { label: "Paid in full", className: "bg-brand-primary/10 text-brand-primary" },
   pay_onsite: { label: "Pay on site", className: "bg-brand-gold/15 text-brand-orange" },
   reserved: { label: "Pending payment", className: "bg-brand-orange/10 text-brand-orange" },
 };
@@ -104,7 +104,7 @@ export default function MyBookingDetailPage() {
   if (loading) {
     return (
       <div className="flex min-h-[50vh] items-center justify-center bg-brand-cream">
-        <Loader2 className="h-8 w-8 animate-spin text-brand-green" strokeWidth={2} aria-hidden />
+        <Loader2 className="h-8 w-8 animate-spin text-brand-primary" strokeWidth={2} aria-hidden />
       </div>
     );
   }
@@ -113,7 +113,7 @@ export default function MyBookingDetailPage() {
     return (
       <Container className="py-16 text-center">
         <p className="text-brand-muted">{error || "Booking not found."}</p>
-        <Link to={ROUTES.myBookings} className="mt-4 inline-block text-sm font-semibold text-brand-green hover:underline">
+        <Link to={ROUTES.myBookings} className="mt-4 inline-block text-sm font-semibold text-brand-primary hover:underline">
           Back to my bookings
         </Link>
       </Container>
@@ -137,7 +137,7 @@ export default function MyBookingDetailPage() {
   return (
     <div className="min-h-screen bg-brand-cream pb-16 pt-8">
       <Container className="max-w-3xl">
-        <Link to={ROUTES.myBookings} className="text-sm font-semibold text-brand-muted hover:text-brand-green">
+        <Link to={ROUTES.myBookings} className="text-sm font-semibold text-brand-muted hover:text-brand-primary">
           ← Back to my bookings
         </Link>
 
@@ -158,12 +158,12 @@ export default function MyBookingDetailPage() {
                     Group
                   </span>
                 ) : (
-                  <span className="rounded-full bg-brand-green/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-brand-green">
+                  <span className="rounded-full bg-brand-primary/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-brand-primary">
                     Individual
                   </span>
                 )}
               </div>
-              <p className="shrink-0 font-mono text-[10px] font-bold text-brand-green sm:text-xs">
+              <p className="shrink-0 font-mono text-[10px] font-bold text-brand-primary sm:text-xs">
                 {booking.bookingCode || booking.bookingRef}
               </p>
             </div>
@@ -182,7 +182,7 @@ export default function MyBookingDetailPage() {
               <div className="min-w-0 flex-1">
                 <h1 className="text-lg font-bold leading-snug text-brand-ink sm:text-2xl">{booking.tour.name}</h1>
                 <p className="mt-1.5 flex items-start gap-1.5 text-sm text-brand-muted">
-                  <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand-green" strokeWidth={2} aria-hidden />
+                  <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand-primary" strokeWidth={2} aria-hidden />
                   <span className="leading-snug">{booking.tour.location}</span>
                 </p>
               </div>
@@ -192,14 +192,14 @@ export default function MyBookingDetailPage() {
           <div className="p-4 sm:p-8">
             <dl className="grid gap-4 sm:grid-cols-2">
               <div className="flex items-start gap-2.5">
-                <CalendarDays className="mt-0.5 h-4 w-4 text-brand-green" strokeWidth={2} aria-hidden />
+                <CalendarDays className="mt-0.5 h-4 w-4 text-brand-primary" strokeWidth={2} aria-hidden />
                 <div>
                   <dt className="text-xs text-brand-muted">Departure</dt>
                   <dd className="font-semibold text-brand-ink">{booking.selectedDate}</dd>
                 </div>
               </div>
               <div className="flex items-start gap-2.5">
-                <Users className="mt-0.5 h-4 w-4 text-brand-green" strokeWidth={2} aria-hidden />
+                <Users className="mt-0.5 h-4 w-4 text-brand-primary" strokeWidth={2} aria-hidden />
                 <div>
                   <dt className="text-xs text-brand-muted">Travelers</dt>
                   <dd className="font-semibold text-brand-ink">
@@ -215,7 +215,7 @@ export default function MyBookingDetailPage() {
               </div>
               <div>
                 <dt className="text-xs text-brand-muted">Total</dt>
-                <dd className="font-bold text-brand-green">{amountLabel}</dd>
+                <dd className="font-bold text-brand-primary">{amountLabel}</dd>
               </div>
             </dl>
 
@@ -225,7 +225,7 @@ export default function MyBookingDetailPage() {
                 <dl className="mt-3 grid gap-3 sm:grid-cols-2">
                   {group.groupName ? (
                     <div className="flex items-start gap-2">
-                      <Users className="mt-0.5 h-4 w-4 shrink-0 text-brand-green" strokeWidth={2} aria-hidden />
+                      <Users className="mt-0.5 h-4 w-4 shrink-0 text-brand-primary" strokeWidth={2} aria-hidden />
                       <div>
                         <dt className="text-xs text-brand-muted">Group name</dt>
                         <dd className="text-sm font-semibold text-brand-ink">{group.groupName}</dd>
@@ -234,7 +234,7 @@ export default function MyBookingDetailPage() {
                   ) : null}
                   {group.groupType ? (
                     <div className="flex items-start gap-2">
-                      <Tags className="mt-0.5 h-4 w-4 shrink-0 text-brand-green" strokeWidth={2} aria-hidden />
+                      <Tags className="mt-0.5 h-4 w-4 shrink-0 text-brand-primary" strokeWidth={2} aria-hidden />
                       <div>
                         <dt className="text-xs text-brand-muted">Group type</dt>
                         <dd className="text-sm font-semibold text-brand-ink">{formatGroupType(group.groupType)}</dd>
@@ -243,7 +243,7 @@ export default function MyBookingDetailPage() {
                   ) : null}
                   {group.organization ? (
                     <div className="flex items-start gap-2 sm:col-span-2">
-                      <Building2 className="mt-0.5 h-4 w-4 shrink-0 text-brand-green" strokeWidth={2} aria-hidden />
+                      <Building2 className="mt-0.5 h-4 w-4 shrink-0 text-brand-primary" strokeWidth={2} aria-hidden />
                       <div>
                         <dt className="text-xs text-brand-muted">Organisation</dt>
                         <dd className="text-sm font-semibold text-brand-ink">{group.organization}</dd>
@@ -263,7 +263,7 @@ export default function MyBookingDetailPage() {
                 <dl className="mt-3 grid gap-3 sm:grid-cols-2">
                   {booking.leadTraveler.email ? (
                     <div className="flex items-start gap-2">
-                      <Mail className="mt-0.5 h-4 w-4 shrink-0 text-brand-green" strokeWidth={2} aria-hidden />
+                      <Mail className="mt-0.5 h-4 w-4 shrink-0 text-brand-primary" strokeWidth={2} aria-hidden />
                       <div className="min-w-0">
                         <dt className="text-xs text-brand-muted">Email</dt>
                         <dd className="break-all text-sm font-medium text-brand-ink">{booking.leadTraveler.email}</dd>
@@ -272,11 +272,11 @@ export default function MyBookingDetailPage() {
                   ) : null}
                   {booking.leadTraveler.phone ? (
                     <div className="flex items-start gap-2">
-                      <Phone className="mt-0.5 h-4 w-4 shrink-0 text-brand-green" strokeWidth={2} aria-hidden />
+                      <Phone className="mt-0.5 h-4 w-4 shrink-0 text-brand-primary" strokeWidth={2} aria-hidden />
                       <div className="min-w-0">
                         <dt className="text-xs text-brand-muted">Phone</dt>
                         <dd className="text-sm font-medium text-brand-ink">
-                          <a href={`tel:${booking.leadTraveler.phone}`} className="hover:text-brand-green">
+                          <a href={`tel:${booking.leadTraveler.phone}`} className="hover:text-brand-primary">
                             {booking.leadTraveler.phone}
                           </a>
                         </dd>
@@ -285,7 +285,7 @@ export default function MyBookingDetailPage() {
                   ) : null}
                   {booking.leadTraveler.nationality ? (
                     <div className="flex items-start gap-2 sm:col-span-2">
-                      <Globe2 className="mt-0.5 h-4 w-4 shrink-0 text-brand-green" strokeWidth={2} aria-hidden />
+                      <Globe2 className="mt-0.5 h-4 w-4 shrink-0 text-brand-primary" strokeWidth={2} aria-hidden />
                       <div>
                         <dt className="text-xs text-brand-muted">Nationality</dt>
                         <dd className="text-sm font-medium text-brand-ink">{booking.leadTraveler.nationality}</dd>
@@ -338,14 +338,14 @@ export default function MyBookingDetailPage() {
                   type="button"
                   onClick={handleDownloadReceipt}
                   disabled={downloading}
-                  className="inline-flex items-center gap-2 rounded-xl bg-brand-green px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-green-dark disabled:opacity-60"
+                  className="inline-flex items-center gap-2 rounded-xl bg-brand-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-primary-dark disabled:opacity-60"
                 >
                   {downloading ? "Preparing PDF…" : "Download receipt"}
                 </button>
               ) : null}
               <Link
                 to={ROUTES.myPayments}
-                className="inline-flex items-center gap-2 rounded-xl border border-brand-border px-5 py-2.5 text-sm font-semibold text-brand-ink hover:border-brand-green/30"
+                className="inline-flex items-center gap-2 rounded-xl border border-brand-border px-5 py-2.5 text-sm font-semibold text-brand-ink hover:border-brand-primary/30"
               >
                 View payments
               </Link>
@@ -353,7 +353,7 @@ export default function MyBookingDetailPage() {
                 href={getWhatsAppUrl(`Hi 360 Tours, I need help with booking ${booking.bookingCode || booking.bookingRef}.`)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-xl border border-brand-border px-5 py-2.5 text-sm font-semibold text-brand-muted hover:text-brand-green"
+                className="inline-flex items-center gap-2 rounded-xl border border-brand-border px-5 py-2.5 text-sm font-semibold text-brand-muted hover:text-brand-primary"
               >
                 Get support
               </a>

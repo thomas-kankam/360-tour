@@ -37,7 +37,7 @@ function formatDate(value) {
 function InfoRow({ icon: Icon, label, value }) {
   return (
     <div className="flex items-start gap-3 rounded-xl border border-black/8 bg-brand-cream/40 px-4 py-3.5">
-      <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white text-brand-green">
+      <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white text-brand-primary">
         <Icon className="h-4 w-4" strokeWidth={1.75} aria-hidden />
       </span>
       <div className="min-w-0">
@@ -92,7 +92,7 @@ export default function AdminUserDetailPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center rounded-2xl border border-black/8 bg-white py-24">
-        <Loader2 className="h-7 w-7 animate-spin text-brand-green" aria-hidden />
+        <Loader2 className="h-7 w-7 animate-spin text-brand-primary" aria-hidden />
       </div>
     );
   }
@@ -165,7 +165,7 @@ export default function AdminUserDetailPage() {
           <aside className="space-y-4 lg:col-span-2">
             <div className="rounded-2xl border border-black/8 bg-brand-cream/30 p-5">
               <div className="flex items-center gap-3">
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-green/10 text-brand-green">
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-primary/10 text-brand-primary">
                   <UserCog className="h-5 w-5" strokeWidth={1.75} aria-hidden />
                 </span>
                 <div>
@@ -177,7 +177,7 @@ export default function AdminUserDetailPage() {
 
             <div className="rounded-2xl border border-black/8 bg-white p-5">
               <div className="mb-3 flex items-center gap-2">
-                <Shield className="h-4 w-4 text-brand-green" strokeWidth={1.75} aria-hidden />
+                <Shield className="h-4 w-4 text-brand-primary" strokeWidth={1.75} aria-hidden />
                 <p className="text-xs font-bold uppercase tracking-[0.12em] text-brand-muted">
                   Permissions ({permissions.length})
                 </p>
@@ -189,7 +189,7 @@ export default function AdminUserDetailPage() {
                   {permissions.map((permission) => (
                     <span
                       key={permission.id}
-                      className="rounded-full bg-brand-green/8 px-2.5 py-1 text-[11px] font-semibold text-brand-green"
+                      className="rounded-full bg-brand-primary/8 px-2.5 py-1 text-[11px] font-semibold text-brand-primary"
                     >
                       {permission.label}
                     </span>

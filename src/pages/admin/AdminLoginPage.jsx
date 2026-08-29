@@ -161,7 +161,7 @@ export default function AdminLoginPage() {
     <main className="flex h-screen min-h-0 overflow-hidden bg-brand-ink">
       <section className="relative hidden w-[46%] overflow-hidden lg:block">
         <AuthPanelBackground variant="admin" className="opacity-45" />
-        <div className="absolute inset-0 bg-gradient-to-br from-brand-ink via-brand-green/80 to-brand-ink" />
+        <div className="absolute inset-0 bg-gradient-to-br from-brand-ink via-brand-primary/80 to-brand-ink" />
         <div className="relative z-10 flex h-full flex-col justify-between p-10 xl:p-14">
           <Link to={ROUTES.home} className="inline-flex text-sm font-semibold text-white/70 hover:text-white">
             ← Public site
@@ -191,7 +191,7 @@ export default function AdminLoginPage() {
           >
             <div className="mb-8 flex items-center justify-between">
               <img src={images.general_logo} alt="360 Tours and Investment Limited" className="h-10 w-auto" />
-              <span className="rounded-full border border-brand-border bg-white px-3 py-1 text-xs font-bold uppercase tracking-[0.14em] text-brand-green">
+              <span className="rounded-full border border-brand-border bg-white px-3 py-1 text-xs font-bold uppercase tracking-[0.14em] text-brand-primary">
                 Admin
               </span>
             </div>
@@ -246,7 +246,7 @@ export default function AdminLoginPage() {
                       <button
                         type="submit"
                         disabled={loading}
-                        className="flex w-full items-center justify-center rounded-xl bg-brand-ink py-3.5 text-sm font-semibold text-white transition-colors hover:bg-brand-green disabled:opacity-60"
+                        className="flex w-full items-center justify-center rounded-xl bg-brand-ink py-3.5 text-sm font-semibold text-white transition-colors hover:bg-brand-primary disabled:opacity-60"
                       >
                         {loading ? "Sending OTP..." : "Send admin OTP"}
                       </button>
@@ -262,7 +262,7 @@ export default function AdminLoginPage() {
                       className="space-y-6"
                     >
                       {hint ? (
-                        <p className="rounded-xl bg-brand-green/10 px-4 py-3 text-xs font-semibold text-brand-green">
+                        <p className="rounded-xl bg-brand-primary/10 px-4 py-3 text-xs font-semibold text-brand-primary">
                           {hint}
                         </p>
                       ) : null}
@@ -283,7 +283,7 @@ export default function AdminLoginPage() {
                       <button
                         type="submit"
                         disabled={otp.length < 6 || loading}
-                        className="flex w-full items-center justify-center rounded-xl bg-brand-ink py-3.5 text-sm font-semibold text-white transition-colors hover:bg-brand-green disabled:cursor-not-allowed disabled:opacity-50"
+                        className="flex w-full items-center justify-center rounded-xl bg-brand-ink py-3.5 text-sm font-semibold text-white transition-colors hover:bg-brand-primary disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         {loading ? "Verifying..." : "Verify & enter admin"}
                       </button>
@@ -304,7 +304,7 @@ export default function AdminLoginPage() {
                           type="button"
                           onClick={handleResend}
                           disabled={loading || resendCooldown > 0}
-                          className="font-semibold text-brand-green hover:text-brand-green-dark disabled:cursor-not-allowed disabled:opacity-50"
+                          className="font-semibold text-brand-primary hover:text-brand-primary-dark disabled:cursor-not-allowed disabled:opacity-50"
                         >
                           {resendCooldown > 0 ? `Resend in ${resendCooldown}s` : "Resend OTP"}
                         </button>

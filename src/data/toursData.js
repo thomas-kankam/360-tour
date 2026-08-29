@@ -72,7 +72,6 @@ export const allTours = [
     badge: "Most popular",
     badgeColor: "bg-brand-accent text-brand-primary",
     spotsLeft: 4,
-    featured: true,
   },
   {
     slug: "ghana-cultural-immersion",
@@ -158,7 +157,7 @@ export const allTours = [
     reviews: 8,
     image: tst,
     badge: "Festive season",
-    badgeColor: "bg-brand-green text-white",
+    badgeColor: "bg-brand-primary text-white",
     spotsLeft: 6,
   },
 
@@ -180,7 +179,6 @@ export const allTours = [
     badge: "Best seller",
     badgeColor: "bg-brand-accent text-brand-primary",
     spotsLeft: 2,
-    featured: true,
   },
   {
     slug: "maasai-mara-experience",
@@ -285,9 +283,8 @@ export const allTours = [
     reviews: 29,
     image: sa1,
     badge: "Fan favourite",
-    badgeColor: "bg-brand-green text-white",
+    badgeColor: "bg-brand-primary text-white",
     spotsLeft: 6,
-    featured: true,
   },
   {
     slug: "cape-town-johannesburg",

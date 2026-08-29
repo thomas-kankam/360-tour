@@ -17,8 +17,8 @@ function getSuccessCopy({ isPaidOnline, isOnsiteReservation, isOnlinePending }) 
       eyebrow: "Payment confirmed",
       title: "You're all set!",
       description: "Your payment was received and your booking is confirmed. A receipt has been sent to your email.",
-      accent: "text-brand-green",
-      iconWrap: "bg-brand-green/10 text-brand-green",
+      accent: "text-brand-primary",
+      iconWrap: "bg-brand-primary/10 text-brand-primary",
     };
   }
 
@@ -27,8 +27,8 @@ function getSuccessCopy({ isPaidOnline, isOnsiteReservation, isOnlinePending }) 
       eyebrow: "Reservation confirmed",
       title: "Your spots are held",
       description: "Your reservation is confirmed. Download your receipt and present it at check-in or our office.",
-      accent: "text-brand-green",
-      iconWrap: "bg-brand-green/10 text-brand-green",
+      accent: "text-brand-primary",
+      iconWrap: "bg-brand-primary/10 text-brand-primary",
     };
   }
 
@@ -46,8 +46,8 @@ function getSuccessCopy({ isPaidOnline, isOnsiteReservation, isOnlinePending }) 
     eyebrow: "Reservation confirmed",
     title: "Your spots are held",
     description: "We've sent a confirmation to your email. You can view the full booking in My bookings.",
-    accent: "text-brand-green",
-    iconWrap: "bg-brand-green/10 text-brand-green",
+    accent: "text-brand-primary",
+    iconWrap: "bg-brand-primary/10 text-brand-primary",
   };
 }
 
@@ -122,26 +122,26 @@ export default function BookingSuccessPage() {
           <div className="space-y-5 p-5 sm:p-7">
             <div className="rounded-xl border border-brand-border/50 bg-brand-cream/30 p-4 sm:p-5">
               <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-brand-muted">Booking reference</p>
-              <p className="mt-1 font-mono text-base font-bold text-brand-green sm:text-lg">{bookingRef}</p>
+              <p className="mt-1 font-mono text-base font-bold text-brand-primary sm:text-lg">{bookingRef}</p>
 
               {booking ? (
                 <dl className="mt-4 grid gap-3 border-t border-brand-border/40 pt-4 text-sm sm:grid-cols-2">
                   <div className="flex items-start gap-2.5">
-                    <Compass className="mt-0.5 h-4 w-4 shrink-0 text-brand-green" strokeWidth={2} aria-hidden />
+                    <Compass className="mt-0.5 h-4 w-4 shrink-0 text-brand-primary" strokeWidth={2} aria-hidden />
                     <div>
                       <dt className="text-xs text-brand-muted">Tour</dt>
                       <dd className="font-semibold text-brand-ink">{tourName}</dd>
                     </div>
                   </div>
                   <div className="flex items-start gap-2.5">
-                    <CalendarDays className="mt-0.5 h-4 w-4 shrink-0 text-brand-green" strokeWidth={2} aria-hidden />
+                    <CalendarDays className="mt-0.5 h-4 w-4 shrink-0 text-brand-primary" strokeWidth={2} aria-hidden />
                     <div>
                       <dt className="text-xs text-brand-muted">Departure</dt>
                       <dd className="font-semibold text-brand-ink">{booking.selectedDate}</dd>
                     </div>
                   </div>
                   <div className="flex items-start gap-2.5">
-                    <Users className="mt-0.5 h-4 w-4 shrink-0 text-brand-green" strokeWidth={2} aria-hidden />
+                    <Users className="mt-0.5 h-4 w-4 shrink-0 text-brand-primary" strokeWidth={2} aria-hidden />
                     <div>
                       <dt className="text-xs text-brand-muted">Travelers</dt>
                       <dd className="font-semibold text-brand-ink">{booking.travelers}</dd>
@@ -150,7 +150,7 @@ export default function BookingSuccessPage() {
                   {amountLabel ? (
                     <div>
                       <dt className="text-xs text-brand-muted">Total</dt>
-                      <dd className="font-bold text-brand-green">{amountLabel}</dd>
+                      <dd className="font-bold text-brand-primary">{amountLabel}</dd>
                     </div>
                   ) : null}
                 </dl>
@@ -173,14 +173,14 @@ export default function BookingSuccessPage() {
             <div className="flex flex-col gap-2.5 sm:flex-row">
               <Link
                 to={ROUTES.tours}
-                className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-brand-border bg-white py-3 text-sm font-semibold text-brand-ink transition-all hover:border-brand-green/30 hover:bg-brand-cream"
+                className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-brand-border bg-white py-3 text-sm font-semibold text-brand-ink transition-all hover:border-brand-primary/30 hover:bg-brand-cream"
               >
                 <Compass className="h-4 w-4" strokeWidth={2} aria-hidden />
                 Explore tours
               </Link>
               <Link
                 to={ROUTES.myBookings}
-                className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-brand-green py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-brand-green-dark"
+                className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-brand-primary py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-brand-primary-dark"
               >
                 <Luggage className="h-4 w-4" strokeWidth={2} aria-hidden />
                 My bookings
@@ -192,7 +192,7 @@ export default function BookingSuccessPage() {
                 type="button"
                 onClick={handleDownloadReceipt}
                 disabled={downloading}
-                className="flex w-full items-center justify-center gap-2 rounded-xl border border-brand-green/25 bg-brand-green/5 py-3 text-sm font-semibold text-brand-green transition-all hover:bg-brand-green/10 disabled:opacity-60"
+                className="flex w-full items-center justify-center gap-2 rounded-xl border border-brand-primary/25 bg-brand-primary/5 py-3 text-sm font-semibold text-brand-primary transition-all hover:bg-brand-primary/10 disabled:opacity-60"
               >
                 <Download className="h-4 w-4" strokeWidth={2} aria-hidden />
                 {downloading ? "Preparing PDF…" : "Download receipt"}

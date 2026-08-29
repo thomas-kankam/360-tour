@@ -190,7 +190,7 @@ export default function AdminBookingsPage() {
         </div>
         <div className="rounded-2xl border border-black/8 bg-white px-4 py-4 shadow-sm">
           <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-brand-muted">Paid revenue GHS (page)</p>
-          <p className="mt-1 text-2xl font-bold text-brand-green">{pageSummary.revenueLabels.GHS}</p>
+          <p className="mt-1 text-2xl font-bold text-brand-primary">{pageSummary.revenueLabels.GHS}</p>
           <p className="mt-1 text-xs text-brand-muted">{pageSummary.revenueCounts.GHS} paid on this page</p>
         </div>
         <div className="rounded-2xl border border-black/8 bg-white px-4 py-4 shadow-sm">
@@ -214,7 +214,7 @@ export default function AdminBookingsPage() {
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
                 placeholder="Search booking code, tour, client, operator…"
-                className="w-full rounded-xl border border-brand-border/70 bg-brand-cream/30 py-2.5 pl-10 pr-3 text-sm outline-none transition-shadow focus:border-brand-green focus:ring-2 focus:ring-brand-green/15"
+                className="w-full rounded-xl border border-brand-border/70 bg-brand-cream/30 py-2.5 pl-10 pr-3 text-sm outline-none transition-shadow focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
               />
             </div>
             <div className="flex flex-wrap gap-2">
@@ -248,7 +248,7 @@ export default function AdminBookingsPage() {
                   className={[
                     "rounded-full px-3 py-1.5 text-xs font-semibold transition-colors",
                     paymentFilter === filter.id
-                      ? "bg-brand-green text-white"
+                      ? "bg-brand-primary text-white"
                       : "bg-brand-cream text-brand-muted hover:text-brand-ink",
                   ].join(" ")}
                 >
@@ -261,7 +261,7 @@ export default function AdminBookingsPage() {
 
         {loading ? (
           <div className="flex min-h-[280px] items-center justify-center">
-            <Loader2 className="h-8 w-8 animate-spin text-brand-green" strokeWidth={2} aria-hidden />
+            <Loader2 className="h-8 w-8 animate-spin text-brand-primary" strokeWidth={2} aria-hidden />
           </div>
         ) : isEmpty ? (
           <div className="flex flex-col items-center gap-3 py-20 text-center">
@@ -307,7 +307,7 @@ export default function AdminBookingsPage() {
                         <AdminMobileCardRow
                           label="Booking code"
                           value={
-                            <span className="font-mono text-xs font-bold text-brand-green">{bookingCode || "—"}</span>
+                            <span className="font-mono text-xs font-bold text-brand-primary">{bookingCode || "—"}</span>
                           }
                         />
                         <AdminMobileCardRow
@@ -382,7 +382,7 @@ export default function AdminBookingsPage() {
                         className="border-b border-black/5 last:border-0 hover:bg-brand-cream/30"
                       >
                         <td className="px-5 py-3.5">
-                          <span className="font-mono text-xs font-bold text-brand-green">{bookingCode || "—"}</span>
+                          <span className="font-mono text-xs font-bold text-brand-primary">{bookingCode || "—"}</span>
                           <p className="mt-1 text-[10px] text-brand-muted">
                             {formatAdminBookingDate(booking.savedAt)}
                           </p>

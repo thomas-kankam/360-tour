@@ -77,7 +77,7 @@ export function getLatestPendingPayment(items, bookingCode) {
 }
 
 export const PAYMENT_STATUS_CONFIG = {
-  paid: { label: "Paid", className: "bg-brand-green/10 text-brand-green ring-brand-green/20" },
+  paid: { label: "Paid", className: "bg-brand-primary/10 text-brand-primary ring-brand-primary/20" },
   pending: { label: "Pending", className: "bg-brand-orange/10 text-brand-orange ring-brand-orange/20" },
   failed: { label: "Failed", className: "bg-red-50 text-red-600 ring-red-200" },
 };

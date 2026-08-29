@@ -37,7 +37,7 @@ export default function HomeAdventureGallery({ cmsOverride }) {
   const lightboxImages = useMemo(() => galleryItems.map((item) => item.sources.webp), [galleryItems]);
 
   return (
-    <section className="relative overflow-hidden bg-brand-charcoal py-16 sm:py-20 lg:py-24">
+    <section className="relative overflow-hidden bg-brand-secondary py-16 sm:py-20 lg:py-24">
       <div aria-hidden className="kente-weave absolute inset-x-0 top-0 h-1.5" />
       <div
         aria-hidden

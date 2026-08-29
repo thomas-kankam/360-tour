@@ -30,7 +30,7 @@ const EASE = [0.22, 1, 0.36, 1];
 function InfoRow({ icon: Icon, label, value }) {
   return (
     <div className="flex items-start gap-3 rounded-xl border border-black/8 bg-brand-cream/40 px-4 py-3.5">
-      <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white text-brand-green">
+      <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white text-brand-primary">
         <Icon className="h-4 w-4" strokeWidth={1.75} aria-hidden />
       </span>
       <div className="min-w-0">
@@ -112,7 +112,7 @@ export default function AdminContactDetailPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center rounded-2xl border border-black/8 bg-white py-24">
-        <Loader2 className="h-7 w-7 animate-spin text-brand-green" aria-hidden />
+        <Loader2 className="h-7 w-7 animate-spin text-brand-primary" aria-hidden />
       </div>
     );
   }
@@ -187,8 +187,8 @@ export default function AdminContactDetailPage() {
                   onClick={() => handleStatusUpdate(value)}
                   className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all disabled:cursor-not-allowed ${
                     isActive
-                      ? "bg-brand-green text-white shadow-sm"
-                      : "border border-black/10 bg-white text-brand-ink hover:border-brand-green/30 hover:bg-brand-green/5 disabled:opacity-60"
+                      ? "bg-brand-primary text-white shadow-sm"
+                      : "border border-black/10 bg-white text-brand-ink hover:border-brand-primary/30 hover:bg-brand-primary/5 disabled:opacity-60"
                   }`}
                 >
                   {isLoading ? (
@@ -224,10 +224,10 @@ export default function AdminContactDetailPage() {
             </div>
 
             <article className="relative overflow-hidden rounded-2xl border border-black/8 bg-white shadow-sm">
-              <div className="absolute left-0 top-0 h-full w-1.5 bg-brand-green" aria-hidden />
+              <div className="absolute left-0 top-0 h-full w-1.5 bg-brand-primary" aria-hidden />
               <div className="border-b border-black/6 bg-brand-cream/40 px-6 py-4 sm:px-8">
                 <div className="flex items-start gap-3">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-brand-green shadow-sm">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-brand-primary shadow-sm">
                     <MessageSquare className="h-5 w-5" strokeWidth={1.75} aria-hidden />
                   </span>
                   <div>
