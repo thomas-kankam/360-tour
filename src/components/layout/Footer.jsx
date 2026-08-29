@@ -42,7 +42,7 @@ export default function Footer() {
             <img
               src={images.logo}
               alt="360 Tours Ghana"
-              className="mx-auto h-20 w-auto brightness-0 invert sm:h-24"
+              className="mx-auto h-20 w-auto sm:h-24"
             />
           </Link>
           <p className="mt-4 max-w-md text-sm leading-relaxed text-white/70">
