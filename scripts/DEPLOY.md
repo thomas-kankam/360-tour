@@ -4,8 +4,10 @@
 
 ```bash
 cd /var/www/html/naasei/projects/360-tour
-RELOAD_APACHE=1 ./scripts/deploy-ubuntu.sh
+RELOAD_APACHE=1 bash scripts/deploy-ubuntu.sh
 ```
+
+Use `bash scripts/deploy-ubuntu.sh` if `./scripts/deploy-ubuntu.sh` says "Permission denied" (or run `chmod +x scripts/deploy-ubuntu.sh` once).
 
 ## Commands the script runs for you
 

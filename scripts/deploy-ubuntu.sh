@@ -15,8 +15,11 @@
 #   a2enmod rewrite deflate headers expires (+ optional apache reload)
 #
 # Usage (on the server, from repo root):
-#   chmod +x scripts/deploy-ubuntu.sh
-#   ./scripts/deploy-ubuntu.sh
+#   RELOAD_APACHE=1 bash scripts/deploy-ubuntu.sh
+#
+# If ./scripts/deploy-ubuntu.sh fails with "Permission denied":
+#   bash scripts/deploy-ubuntu.sh
+#   # or once: chmod +x scripts/deploy-ubuntu.sh
 #
 # Overrides:
 #   APP_DIR=/var/www/html/naasei/projects/360-tour \
