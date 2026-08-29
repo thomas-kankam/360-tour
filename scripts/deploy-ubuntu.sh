@@ -180,22 +180,24 @@ else
   warn ".env.production missing — build uses defaults / shell env"
 fi
 
-export NODE_ENV=production
 export REACT_APP_WEBSITE_URL="${REACT_APP_WEBSITE_URL:-${WEBSITE_URL}}"
 export REACT_APP_API_URL="${REACT_APP_API_URL:-${API_URL}}"
 
 # ── Install dependencies ─────────────────────────────────────────────────────
+# sharp (generate:seo) lives in devDependencies — install before NODE_ENV=production.
 if [[ "${SKIP_INSTALL}" != "1" ]]; then
   if [[ -f package-lock.json ]]; then
-    log "Installing dependencies (npm ci)..."
-    "${NPM_CMD}" ci
+    log "Installing dependencies (npm ci, including devDependencies for build scripts)..."
+    NODE_ENV=development "${NPM_CMD}" ci --include=dev
   else
     log "Installing dependencies (npm install)..."
-    "${NPM_CMD}" install
+    NODE_ENV=development "${NPM_CMD}" install --include=dev
   fi
 else
   log "Skipping npm install (SKIP_INSTALL=1)"
 fi
+
+export NODE_ENV=production
 
 # ── SEO assets & sitemap (explicit — also run again via npm prebuild on build) ─
 log "Generating SEO assets (favicons, og-image)..."

@@ -33,6 +33,13 @@ You do **not** need to run `generate:sitemap`, `generate:seo`, or `npm run build
 Values with spaces must be quoted, e.g. `REACT_APP_APP_NAME="360 Tours Ghana"`.  
 If you see `Tours: command not found`, fix line 2 in `.env.production` on the server, then re-run deploy.
 
+If `generate:seo` fails with `Cannot find package 'sharp'`, devDependencies were skipped during install. Pull the latest deploy script (installs with `--include=dev`), or run once manually:
+
+```bash
+NODE_ENV=development npm ci --include=dev
+RELOAD_APACHE=1 bash scripts/deploy-ubuntu.sh
+```
+
 ## Overrides
 
 ```bash
