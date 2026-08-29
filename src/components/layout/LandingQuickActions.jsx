@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { ArrowUp } from "lucide-react";
 import env, { getWhatsAppUrl } from "../../config/env";
-import { INSTAGRAM_URL } from "./SocialLinks";
 
 const WHATSAPP_MESSAGE = "Hello 360 Tours, I would like to plan a trip to Ghana.";
 const SHOW_AFTER_PX = 280;
@@ -103,7 +102,7 @@ export default function LandingQuickActions() {
             className="pointer-events-auto flex flex-col items-end gap-2.5"
           >
             <QuickActionButton
-              href={INSTAGRAM_URL}
+              href={env.instagramUrl}
               label={`Follow ${env.appName} on Instagram`}
               icon={InstagramIcon}
               delay={0.05}

@@ -14,17 +14,52 @@ export function mapNotification(raw) {
   };
 }
 
-export function resolveNotificationLink(actionUrl) {
+function normalizeNotificationPath(pathname) {
+  if (!pathname) return pathname;
+
+  let normalized = pathname;
+
+  // Fix links built when ADMIN_URL pointed at /admin/login.
+  normalized = normalized.replace(/^\/admin\/login\/admin\//, "/admin/");
+  normalized = normalized.replace(/^\/admin\/login(?=\/|$)/, "/admin");
+
+  return normalized;
+}
+
+export function resolveNotificationLink(actionUrl, { audience = "client" } = {}) {
   if (!actionUrl) return null;
 
   try {
     const url = new URL(actionUrl, window.location.origin);
-    if (url.origin === window.location.origin) {
-      return `${url.pathname}${url.search}${url.hash}`;
+    let pathname = normalizeNotificationPath(`${url.pathname}${url.search}${url.hash}`);
+
+    if (audience === "admin") {
+      if (pathname === "/" || pathname === "") {
+        return "/admin";
+      }
+
+      if (
+        !pathname.startsWith("/admin")
+        && !pathname.startsWith("/operator")
+        && ["/my-bookings", "/my-payments", "/my-invoices", "/my-reviews", "/notifications", "/dashboard", "/profile"].some(
+          (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
+        )
+      ) {
+        return "/admin";
+      }
     }
+
+    if (url.origin === window.location.origin) {
+      return pathname;
+    }
+
     return actionUrl;
   } catch {
-    return actionUrl.startsWith("/") ? actionUrl : null;
+    const path = actionUrl.startsWith("/") ? normalizeNotificationPath(actionUrl) : null;
+    if (path && audience === "admin" && (path === "/" || path === "")) {
+      return "/admin";
+    }
+    return path;
   }
 }
 

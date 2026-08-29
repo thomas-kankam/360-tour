@@ -5,10 +5,12 @@ import { toast } from "react-toastify";
 import Container from "../../components/layout/Container";
 import { adminNotificationsServiceApi, clientNotificationsServiceApi } from "../../apis/NotificationsServiceApi";
 import { useAuth } from "../../hooks/useAuth";
+import { audienceToAuthRole } from "../../utils/authSessionHelpers";
 import { formatNotificationTime, resolveNotificationLink } from "../../utils/notificationHelpers";
 
 export default function NotificationsPage({ audience = "client" }) {
-  const { token } = useAuth();
+  const contextRole = audienceToAuthRole(audience);
+  const { token } = useAuth({ context: contextRole });
   const navigate = useNavigate();
   const api = useMemo(
     () => (audience === "admin" ? adminNotificationsServiceApi : clientNotificationsServiceApi),
@@ -56,7 +58,7 @@ export default function NotificationsPage({ audience = "client" }) {
       setItems((current) => current.map((entry) => (entry.id === item.id ? { ...entry, isRead: true } : entry)));
     }
 
-    const link = resolveNotificationLink(item.actionUrl);
+    const link = resolveNotificationLink(item.actionUrl, { audience });
     if (link?.startsWith("http")) {
       window.location.href = link;
       return;

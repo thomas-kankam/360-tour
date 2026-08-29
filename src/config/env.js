@@ -28,10 +28,13 @@ const env = {
       ? "/api"
       : "https://api.360toursghana.com/api"),
   contactEmail: normalizeContactEmail(process.env.REACT_APP_CONTACT_EMAIL || PUBLIC_CONTACT_EMAIL).replace(/^\./, ""),
-  contactPhone: process.env.REACT_APP_CONTACT_PHONE_US || "+(31) 0684724905",
+  contactPhone: process.env.REACT_APP_CONTACT_PHONE || "+233 50 040 4105",
   whatsappNumber: normalizeWhatsAppNumber(
-    process.env.REACT_APP_WHATSAPP_NUMBER || "233500404151",
+    process.env.REACT_APP_WHATSAPP_NUMBER || "233500404105",
   ),
+  instagramUrl:
+    process.env.REACT_APP_INSTAGRAM_URL ||
+    "https://www.instagram.com/360toursghana?igsi=MTc2aDRwbm9pdHh6bA%3D%3D&utm_source=qr",
   websiteUrl: process.env.REACT_APP_WEBSITE_URL || "https://360toursghana.com",
   isDev: process.env.NODE_ENV === "development",
   isProd: process.env.NODE_ENV === "production",

@@ -128,6 +128,8 @@ export default function TourReviewsSection({ tourSlug, tourTitle }) {
   const [submitted, setSubmitted] = useState(false);
   const [ownReview, setOwnReview] = useState(null);
 
+  const [loadError, setLoadError] = useState("");
+
   const loadReviews = useCallback(async (nextPage = 1, append = false) => {
     if (!tourSlug) return;
     if (append) setLoadingMore(true);
@@ -135,7 +137,16 @@ export default function TourReviewsSection({ tourSlug, tourTitle }) {
 
     const result = await publicRatingsServiceApi.getTourReviews(tourSlug, { page: nextPage, perPage: 10 });
 
-    let items = result.items ?? [];
+    if (!result.ok) {
+      if (append) setLoadingMore(false);
+      else setLoading(false);
+      setLoadError(result.reason || "Could not load reviews.");
+      if (!append) setReviews([]);
+      return;
+    }
+
+    setLoadError("");
+    let items = (result.items ?? []).filter((review) => review.status === "approved" && !review.isOwnReview);
 
     if (nextPage === 1 && token && isTourist) {
       const mineResult = await consumerRatingsServiceApi.getMyReviewForTour(token, tourSlug);
@@ -255,6 +266,10 @@ export default function TourReviewsSection({ tourSlug, tourTitle }) {
         <div className="flex justify-center py-12 text-brand-muted">
           <Loader2 className="h-6 w-6 animate-spin" aria-hidden />
         </div>
+      ) : loadError ? (
+        <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 px-6 py-8 text-center text-sm text-red-700">
+          {loadError}
+        </div>
       ) : reviews.length > 0 ? (
         <div className="mt-6 space-y-4">
           {reviews.map((review) => (
@@ -283,7 +298,9 @@ export default function TourReviewsSection({ tourSlug, tourTitle }) {
           <MessageSquare className="mx-auto h-8 w-8 text-brand-muted/50" strokeWidth={1.5} aria-hidden />
           <p className="mt-3 text-sm font-semibold text-brand-ink">No published reviews yet</p>
           <p className="mt-1 text-sm text-brand-muted">
-            Be among the first to share feedback on this tour after your trip.
+            {isAuthenticated
+              ? "Approved reviews from other travelers appear below."
+              : "Anyone can read published reviews here — no sign-in required."}
           </p>
         </div>
       )}

@@ -11,7 +11,7 @@ export function mapPublicReview(raw) {
     "Traveler";
 
   return {
-    id: raw.id ?? raw.uuid ?? raw.slug ?? crypto.randomUUID(),
+    id: raw.id ?? raw.uuid ?? raw.rating_uuid ?? raw.slug ?? "",
     tourSlug: raw.tour_slug ?? raw.tourSlug ?? raw.tour?.slug ?? "",
     tourTitle: raw.tour_title ?? raw.tourTitle ?? raw.tour?.title ?? "",
     authorName,

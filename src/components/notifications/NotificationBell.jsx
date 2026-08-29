@@ -76,7 +76,7 @@ export default function NotificationBell({ audience = "client", compact = false 
     }
 
     setOpen(false);
-    const link = resolveNotificationLink(item.actionUrl);
+    const link = resolveNotificationLink(item.actionUrl, { audience });
     if (link?.startsWith("http")) {
       window.location.href = link;
       return;

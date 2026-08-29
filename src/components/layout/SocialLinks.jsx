@@ -1,8 +1,5 @@
 import env, { getWhatsAppUrl } from "../../config/env";
 
-const INSTAGRAM_URL =
-  "https://www.instagram.com/360tours.gh?igsh=MTc2aDRwbm9pdHh6bA%3D%3D&utm_source=qr";
-
 const iconClass = "h-5 w-5";
 
 function InstagramIcon(props) {
@@ -35,7 +32,7 @@ export default function SocialLinks({
   return (
     <div className={["flex items-center gap-2.5", className].join(" ")}>
       <a
-        href={INSTAGRAM_URL}
+        href={env.instagramUrl}
         target="_blank"
         rel="noopener noreferrer"
         className={baseLinkClass}
@@ -56,4 +53,4 @@ export default function SocialLinks({
   );
 }
 
-export { INSTAGRAM_URL };
+export const INSTAGRAM_URL = env.instagramUrl;
