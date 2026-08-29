@@ -50,7 +50,7 @@ export function isAdminRole(role) {
   return role === USER_ROLES.ADMINISTRATOR;
 }
 
-const TOURIST_ONLY_PREFIXES = ["/dashboard", "/profile", "/my-inquiries", "/my-bookings", "/my-payments", "/my-reviews"];
+const TOURIST_ONLY_PREFIXES = ["/dashboard", "/profile", "/my-inquiries", "/my-bookings", "/my-payments", "/my-reviews", "/my-invoices", "/notifications"];
 const ADMIN_PREFIX = "/admin";
 
 export function canAccessPath(pathname, role) {

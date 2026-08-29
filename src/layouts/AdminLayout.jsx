@@ -3,6 +3,7 @@ import { Outlet } from "react-router";
 import { AnimatePresence, motion } from "motion/react";
 import {
   BarChart3,
+  Bell,
   BookOpen,
   CalendarCheck,
   CreditCard,
@@ -21,7 +22,7 @@ import {
 import { Link } from "react-router";
 import ScrollToTop from "../components/misc/ScrollToTop";
 import PortalSidebar, { PortalNavItem, PortalNavSection } from "../components/layout/PortalSidebar";
-import AccountDropdown from "../components/navigation/AccountDropdown";
+import { AuthenticatedNavActions } from "../components/navigation/AccountDropdown";
 import { ADMIN_PERMISSIONS } from "../constants/adminPermissions";
 import { company } from "../data/aboutContent";
 import { ROUTES } from "../constants/routes";
@@ -57,6 +58,14 @@ function AdminSidebarContent({ user, collapsed, onNavigate }) {
         items.push({ key: `${key}-${extra.to}`, ...extra });
       });
     }
+    if (key === ADMIN_PERMISSIONS.INVOICE_MANAGEMENT) {
+      items.push({
+        key: `${key}-requests`,
+        to: ROUTES.admin.invoiceRequests,
+        label: "Invoice requests",
+        icon: MessageSquare,
+      });
+    }
     return items;
   });
 
@@ -70,6 +79,13 @@ function AdminSidebarContent({ user, collapsed, onNavigate }) {
           label="Dashboard"
           icon={BarChart3}
           end
+          collapsed={collapsed}
+          onClick={onNavigate}
+        />
+        <PortalNavItem
+          to={ROUTES.admin.notifications}
+          label="Notifications"
+          icon={Bell}
           collapsed={collapsed}
           onClick={onNavigate}
         />
@@ -194,7 +210,7 @@ export default function AdminLayout() {
                 <p className="truncate text-sm font-bold text-brand-ink">{user?.name || "Admin console"}</p>
               </div>
             </div>
-            <AccountDropdown />
+            <AuthenticatedNavActions />
           </div>
         </header>
 

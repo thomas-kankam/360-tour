@@ -14,12 +14,14 @@ import {
   AdminDashboardPage,
   AdminInvoiceDetailPage,
   AdminInvoiceFormPage,
+  AdminInvoiceRequestsPage,
   AdminInvoicesPage,
   AdminLandingCmsPage,
   AdminLayout,
   AdminListingDetailPage,
   AdminListingsPage,
   AdminLoginPage,
+  AdminNotificationsPage,
   AdminOperatorDetailPage,
   AdminOperatorsPage,
   AdminPaymentDetailPage,
@@ -88,7 +90,10 @@ const adminRoutes = (
           <Route path="invoices/new" element={<AdminInvoiceFormPage />} />
           <Route path="invoices/:id/edit" element={<AdminInvoiceFormPage />} />
           <Route path="invoices/:id" element={<AdminInvoiceDetailPage />} />
+          <Route path="invoice-requests" element={<AdminInvoiceRequestsPage />} />
         </Route>
+
+        <Route path="notifications" element={<AdminNotificationsPage />} />
 
         <Route element={<AdminPermissionRoute permission={ADMIN_PERMISSIONS.CMS_MANAGEMENT} />}>
           <Route path="landing-cms" element={<AdminLandingCmsPage />} />

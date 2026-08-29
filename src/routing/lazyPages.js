@@ -33,6 +33,9 @@ export const MyBookingDetailPage = lazyPage(() => import("../pages/guest/MyBooki
 export const MyBookingEditPage = lazyPage(() => import("../pages/guest/MyBookingEditPage"));
 export const MyPaymentsPage = lazyPage(() => import("../pages/guest/MyPaymentsPage"));
 export const MyReviewsPage = lazyPage(() => import("../pages/guest/MyReviewsPage"));
+export const NotificationsPage = lazyPage(() => import("../pages/guest/NotificationsPage"));
+export const MyInvoicesPage = lazyPage(() => import("../pages/guest/MyInvoicesPage"));
+export const ClientInvoiceDetailPage = lazyPage(() => import("../pages/guest/ClientInvoiceDetailPage"));
 
 // Auth (legacy dashboard routes)
 export const DashboardPage = lazyPage(() => import("../pages/auth/DashboardPage"));
@@ -64,6 +67,8 @@ export const AdminInvoicesPage = lazyPage(() => import("../pages/admin/AdminInvo
 export const AdminInvoiceFormPage = lazyPage(() => import("../pages/admin/AdminInvoiceFormPage"));
 export const AdminInvoiceDetailPage = lazyPage(() => import("../pages/admin/AdminInvoiceDetailPage"));
 export const AdminLandingCmsPage = lazyPage(() => import("../pages/admin/AdminLandingCmsPage"));
+export const AdminNotificationsPage = lazyPage(() => import("../pages/admin/AdminNotificationsPage"));
+export const AdminInvoiceRequestsPage = lazyPage(() => import("../pages/admin/AdminInvoiceRequestsPage"));
 export const AdminRolesPage = lazyPage(() => import("../pages/admin/AdminRolesPage"));
 
 // Operator (used inside admin console)

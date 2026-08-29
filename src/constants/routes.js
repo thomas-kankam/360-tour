@@ -31,6 +31,9 @@ export const ROUTES = {
   myBookingEdit: (bookingCode) => `/my-bookings/${bookingCode}/edit`,
   myPayments: "/my-payments",
   myReviews: "/my-reviews",
+  myInvoices: "/my-invoices",
+  myInvoiceDetail: (id) => `/my-invoices/${encodeURIComponent(id)}`,
+  notifications: "/notifications",
   bookingSuccess: "/booking/success",
   paymentSuccess: (bookingCode) => {
     if (!bookingCode) return "/payment/success";
@@ -74,6 +77,8 @@ export const ROUTES = {
     invoiceDetail: (id) => `/admin/invoices/${encodeURIComponent(id)}`,
     invoiceEdit: (id) => `/admin/invoices/${encodeURIComponent(id)}/edit`,
     landingCms: "/admin/landing-cms",
+    notifications: "/admin/notifications",
+    invoiceRequests: "/admin/invoice-requests",
     roles: "/admin/roles",
     profile: "/admin/profile",
   },

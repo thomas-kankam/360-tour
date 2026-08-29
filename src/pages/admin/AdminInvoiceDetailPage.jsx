@@ -22,6 +22,8 @@ export default function AdminInvoiceDetailPage() {
   const [clientQuery, setClientQuery] = useState("");
   const [clientResults, setClientResults] = useState([]);
   const [selectedClientEmail, setSelectedClientEmail] = useState("");
+  const [selectedClientSlug, setSelectedClientSlug] = useState("");
+  const [sendMessage, setSendMessage] = useState("");
 
   useEffect(() => {
     async function load() {
@@ -35,6 +37,7 @@ export default function AdminInvoiceDetailPage() {
       }
       setInvoice(result.invoice);
       setSelectedClientEmail(result.invoice.billedTo?.email || "");
+      setSelectedClientSlug(result.invoice.clientSlug || "");
     }
     load();
   }, [id, navigate, token]);
@@ -65,7 +68,7 @@ export default function AdminInvoiceDetailPage() {
 
   async function handleSend() {
     if (!selectedClientEmail) {
-      toast.error("Select a client email to send the invoice.");
+      toast.error("Select a client to send the invoice.");
       return;
     }
 
@@ -73,13 +76,14 @@ export default function AdminInvoiceDetailPage() {
     await downloadInvoicePdf(invoice, company);
     const result = await adminInvoicesServiceApi.sendInvoice(token, id, {
       email: selectedClientEmail,
+      client_slug: selectedClientSlug || invoice.clientSlug || "",
       attach_pdf: true,
+      message: sendMessage.trim(),
     });
     setSending(false);
 
     if (!result.ok) {
-      toast.info("PDF downloaded. Email API unavailable — use your mail client to attach the downloaded PDF.");
-      window.location.href = `mailto:${encodeURIComponent(selectedClientEmail)}?subject=${encodeURIComponent(`Invoice ${invoice.invoiceNumber}`)}&body=${encodeURIComponent("Please find your invoice attached.")}`;
+      toast.error(result.reason || "Could not send invoice.");
       return;
     }
 
@@ -142,6 +146,7 @@ export default function AdminInvoiceDetailPage() {
                     type="button"
                     onClick={() => {
                       setSelectedClientEmail(client.email || "");
+                      setSelectedClientSlug(client.slug || client.clientSlug || "");
                       setInvoice((prev) => ({
                         ...prev,
                         billedTo: {
@@ -172,6 +177,21 @@ export default function AdminInvoiceDetailPage() {
               className="mt-1.5 h-10 w-full rounded-xl border border-brand-border/70 px-3 text-sm outline-none focus:border-brand-primary/50 focus:ring-2 focus:ring-brand-primary/15"
             />
           </label>
+
+          <label className="block text-[11px] font-bold uppercase tracking-[0.12em] text-brand-muted">
+            Message (optional)
+            <textarea
+              rows={3}
+              value={sendMessage}
+              onChange={(e) => setSendMessage(e.target.value)}
+              placeholder="Add a note for the client…"
+              className="mt-1.5 w-full rounded-xl border border-brand-border/70 px-3 py-2 text-sm outline-none focus:border-brand-primary/50 focus:ring-2 focus:ring-brand-primary/15"
+            />
+          </label>
+
+          {selectedClientSlug ? (
+            <p className="text-xs text-brand-muted">Sending to registered client · they will also get an in-app notification.</p>
+          ) : null}
 
           <button
             type="button"

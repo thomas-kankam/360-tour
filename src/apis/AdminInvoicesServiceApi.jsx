@@ -134,6 +134,7 @@ class AdminInvoicesServiceApi {
       token,
       body: {
         email: payload.email,
+        client_slug: payload.client_slug || "",
         attach_pdf: payload.attach_pdf ?? true,
         message: payload.message || "",
       },

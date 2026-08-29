@@ -1,8 +1,6 @@
 import NavbarShell from "./NavbarShell";
-import AccountDropdown, { AccountMobileSection } from "./AccountDropdown";
+import { AccountMobileSection, AuthenticatedNavActions } from "./AccountDropdown";
 
 export default function AuthNavbar() {
-  const authActions = <AccountDropdown />;
-
-  return <NavbarShell actions={authActions} mobileActions={<AccountMobileSection />} />;
+  return <NavbarShell actions={<AuthenticatedNavActions />} mobileActions={<AccountMobileSection />} />;
 }

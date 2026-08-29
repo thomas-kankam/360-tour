@@ -1,18 +1,20 @@
 import { useEffect, useRef, useState } from "react";
 import { NavLink } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
-import { ChevronDown, CreditCard, LayoutDashboard, LogOut, Luggage, Map, Star, User } from "lucide-react";
+import { Bell, ChevronDown, CreditCard, FileText, LayoutDashboard, LogOut, Luggage, Map, Star, User } from "lucide-react";
 import { ADMIN_PERMISSIONS } from "../../constants/adminPermissions";
 import { ROUTES } from "../../constants/routes";
 import { USER_ROLES } from "../../constants/roles";
 import { useAuth } from "../../hooks/useAuth";
 import { resolveProfileImageSrc } from "../../utils/profileImage";
+import NotificationBell from "../notifications/NotificationBell";
 
 const EASE = [0.16, 1, 0.3, 1];
 
 function getMenuItems(role, user, hasAdminPermission) {
   if (role === USER_ROLES.ADMINISTRATOR) {
     const items = [{ to: ROUTES.admin.dashboard, label: "Dashboard", icon: LayoutDashboard }];
+    items.push({ to: ROUTES.admin.notifications, label: "Notifications", icon: Bell });
 
     if (hasAdminPermission(ADMIN_PERMISSIONS.BOOKING_MANAGEMENT)) {
       items.push({ to: ROUTES.admin.bookings, label: "Bookings", icon: Luggage });
@@ -28,8 +30,10 @@ function getMenuItems(role, user, hasAdminPermission) {
 
   return [
     { to: ROUTES.dashboard, label: "Dashboard", icon: LayoutDashboard },
+    { to: ROUTES.notifications, label: "Notifications", icon: Bell },
     { to: ROUTES.myBookings, label: "My bookings", icon: Luggage },
     { to: ROUTES.myPayments, label: "My payments", icon: CreditCard },
+    { to: ROUTES.myInvoices, label: "My invoices", icon: FileText },
     { to: ROUTES.myReviews, label: "My reviews", icon: Star },
     { to: ROUTES.profile, label: "Profile", icon: User },
   ];
@@ -81,6 +85,18 @@ export function AccountMenuLinks({ onNavigate, className = "" }) {
         <LogOut className="h-4 w-4 shrink-0 opacity-70" strokeWidth={1.75} aria-hidden />
         Sign out
       </button>
+    </div>
+  );
+}
+
+export function AuthenticatedNavActions() {
+  const { role } = useAuth();
+  const audience = role === USER_ROLES.ADMINISTRATOR ? "admin" : "client";
+
+  return (
+    <div className="flex items-center gap-2">
+      <NotificationBell audience={audience} />
+      <AccountDropdown />
     </div>
   );
 }

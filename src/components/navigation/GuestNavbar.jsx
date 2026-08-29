@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 import NavbarShell from "./NavbarShell";
-import AccountDropdown, { AccountMobileSection } from "./AccountDropdown";
+import { AccountMobileSection, AuthenticatedNavActions } from "./AccountDropdown";
 import { ROUTES } from "../../constants/routes";
 import { useAuth } from "../../hooks/useAuth";
 
@@ -35,7 +35,7 @@ export default function GuestNavbar() {
   if (isAuthenticated) {
     return (
       <NavbarShell
-        actions={<AccountDropdown />}
+        actions={<AuthenticatedNavActions />}
         mobileActions={<AccountMobileSection />}
       />
     );
