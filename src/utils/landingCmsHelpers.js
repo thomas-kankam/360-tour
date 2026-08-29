@@ -4,16 +4,13 @@ import { LANDING_CMS_DEFAULTS } from "./landingCmsStorage";
 import { mergeCmsItems } from "./landingCmsItems";
 import { resolvePublicMediaUrl } from "./mediaUrl";
 
-function isStaleGalleryDestinationImage(image) {
-  return /\/images\/gallery\/optimized\/(?!hero\b)/i.test(String(image || ""));
-}
-
 function sanitizeBrokenRemoteImages(content) {
   ["regions", "destinations", "gallery", "testimonials"].forEach((sectionId) => {
     const items = content?.[sectionId]?.items;
     if (!Array.isArray(items)) return;
     items.forEach((item) => {
-      if (!isTrustedMediaUrl(item?.image) || isStaleGalleryDestinationImage(item?.image)) {
+      if (!item?.image) return;
+      if (!isTrustedMediaUrl(item.image)) {
         item.image = "";
         return;
       }

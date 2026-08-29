@@ -9,6 +9,7 @@ import {
 import { images } from "../config/images";
 import { isTrustedMediaUrl } from "./imageOptimize";
 import { buildDefaultDestinationItems, buildDefaultGalleryItems, buildDefaultRegionItems, buildDefaultTestimonialItems, mergeCmsItems } from "./landingCmsItems";
+import { resolvePublicMediaUrl } from "./mediaUrl";
 
 const STORAGE_KEY = "360tours_landing_cms";
 
@@ -101,10 +102,14 @@ export function loadLandingCms() {
     if (!raw) return structuredClone(LANDING_CMS_DEFAULTS);
     const parsed = JSON.parse(raw);
     const merged = deepMerge(structuredClone(LANDING_CMS_DEFAULTS), parsed);
-    // Migrate old AI hero placeholder to real gallery photo
+    // Migrate old hero placeholder paths to the optimized gallery photo
     const heroBg = merged.hero?.backgroundImage;
     if (heroBg === "/images/hero_img.png" || heroBg === "/images/home/hero.jpg") {
       merged.hero.backgroundImage = LANDING_CMS_DEFAULTS.hero.backgroundImage;
+    }
+    if (merged.hero?.titleHighlight === "360°" || merged.hero?.title === "Experience Ghana in") {
+      merged.hero.title = heroContent.title;
+      merged.hero.titleHighlight = heroContent.titleHighlight;
     }
     sanitizeBrokenRemoteImages(merged);
     return merged;
@@ -118,23 +123,26 @@ export function saveLandingCms(content) {
   window.localStorage.setItem(STORAGE_KEY, JSON.stringify(content));
 }
 
-function isStaleGalleryDestinationImage(image) {
-  return /\/images\/gallery\/optimized\/(?!hero\b)/i.test(String(image || ""));
-}
-
 function sanitizeBrokenRemoteImages(content) {
   ["regions", "destinations", "gallery", "testimonials"].forEach((sectionId) => {
     const items = content?.[sectionId]?.items;
     if (!Array.isArray(items)) return;
-
     items.forEach((item) => {
-      const image = String(item?.image || "");
-      if (!image) return;
-      if (!isTrustedMediaUrl(item?.image) || isStaleGalleryDestinationImage(image)) {
+      if (!item?.image) return;
+      if (!isTrustedMediaUrl(item.image)) {
         item.image = "";
+        return;
       }
+      item.image = resolvePublicMediaUrl(item.image);
     });
   });
+
+  if (content?.hero?.backgroundImage) {
+    content.hero.backgroundImage = resolvePublicMediaUrl(content.hero.backgroundImage);
+  }
+  if (content?.cta?.image) {
+    content.cta.image = resolvePublicMediaUrl(content.cta.image);
+  }
 }
 
 function deepMerge(base, patch) {

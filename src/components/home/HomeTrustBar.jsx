@@ -5,7 +5,7 @@ import ScrollReveal, { ScrollStagger, ScrollStaggerItem } from "../motion/Scroll
 const TRUST_ITEMS = [
   { icon: MapPin, label: "Guided tours", desc: "Local experts across Ghana" },
   { icon: Leaf, label: "Eco experiences", desc: "Nature & heritage routes" },
-  { icon: Camera, label: "360° moments", desc: "Unforgettable photo stops" },
+  { icon: Camera, label: "Scenic moments", desc: "Unforgettable photo stops" },
   { icon: Users, label: "Personal guides", desc: "Small groups, big care" },
   { icon: UtensilsCrossed, label: "Meals included", desc: "Authentic local cuisine" },
 ];

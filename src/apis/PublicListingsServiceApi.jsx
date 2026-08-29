@@ -71,26 +71,32 @@ class PublicListingsServiceApi {
   }
 
   async getPopularListings() {
-    const url = `${this.baseUrl}/listings/popular`;
-    const key = buildRequestKey({ method: "GET", url });
+    const exec = async (url) => {
+      const key = buildRequestKey({ method: "GET", url });
+      return dedupeRequest(key, async () => {
+        try {
+          const response = await axios.get(url, { headers: this.getHeaders() });
+          const result = parseApiEnvelope(response);
+          if (!result.ok) return { ...result, items: [] };
 
-    const exec = async () => {
-      try {
-        const response = await axios.get(url, { headers: this.getHeaders() });
-        const result = parseApiEnvelope(response);
-        if (!result.ok) return { ...result, items: [] };
-
-        const listings = Array.isArray(result.data) ? result.data : [];
-        return {
-          ...result,
-          items: listings.map(mapPublicTourToPopularCard).filter(Boolean),
-        };
-      } catch (error) {
-        return { ...parseApiError(error), items: [] };
-      }
+          const listings = Array.isArray(result.data) ? result.data : [];
+          return {
+            ...result,
+            items: listings.map(mapPublicTourToPopularCard).filter(Boolean),
+          };
+        } catch (error) {
+          return { ...parseApiError(error), items: [] };
+        }
+      });
     };
 
-    return dedupeRequest(key, exec);
+    const popularUrl = `${this.baseUrl}/listings/popular`;
+    const popular = await exec(popularUrl);
+    if (popular.ok && popular.items.length > 0) {
+      return popular;
+    }
+
+    return exec(`${this.baseUrl}/listings/random`);
   }
 
   /** @deprecated use getPopularListings */

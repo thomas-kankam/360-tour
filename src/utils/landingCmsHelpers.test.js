@@ -48,19 +48,20 @@ describe("landing CMS helpers", () => {
     expect(merged.destinations.items[0].image).toBe("");
   });
 
-  test("clears stale Wikimedia gallery paths so previous local photos are used", () => {
+  test("keeps local gallery optimized paths for CMS items", () => {
     const merged = mergeLandingCmsWithDefaults({
-      destinations: {
+      gallery: {
         items: [
           {
             id: "accra-city-tour",
+            slug: "accra-city-tour",
             image: "/images/gallery/optimized/accra-city-tour.webp",
           },
         ],
       },
     });
 
-    expect(merged.destinations.items[0].image).toBe("");
+    expect(merged.gallery.items[0].image).toBe("/images/gallery/optimized/accra-city-tour.webp");
   });
 
   test("popular tours keep a single view-all label", () => {

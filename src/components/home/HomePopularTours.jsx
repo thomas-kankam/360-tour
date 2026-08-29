@@ -1,4 +1,5 @@
 import { Link } from "react-router";
+import { useState } from "react";
 import { motion } from "motion/react";
 import { ArrowRight, Loader2 } from "lucide-react";
 import Container from "../layout/Container";
@@ -32,6 +33,8 @@ function TourCardSkeleton() {
 }
 
 function PopularTourCard({ tour }) {
+  const [imgError, setImgError] = useState(false);
+
   return (
     <ScrollStaggerItem>
       <motion.article
@@ -40,16 +43,19 @@ function PopularTourCard({ tour }) {
         className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-brand-border bg-white shadow-[0_8px_32px_-16px_rgba(17,17,17,0.15)]"
       >
         <div className="relative aspect-[4/3] overflow-hidden bg-brand-cream">
-          {tour.image ? (
+          {tour.image && !imgError ? (
             <img
               src={tour.image}
               alt={tour.name}
               loading="lazy"
               decoding="async"
               className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              onError={() => setImgError(true)}
             />
           ) : (
-            <div className="flex h-full items-center justify-center text-sm text-brand-muted">Photo coming soon</div>
+            <div className="flex h-full items-center justify-center bg-brand-sand/30 text-sm text-brand-muted">
+              {tour.name}
+            </div>
           )}
           {tour.isCustom ? (
             <span className="absolute left-3 top-3 rounded-md bg-brand-accent px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-brand-charcoal">

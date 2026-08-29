@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { getPopularDestinationImage, getPopularDestinationSources } from "../../config/images";
 
 /**
@@ -16,21 +17,39 @@ export default function GalleryPicture({
   onError,
   pictureClassName = "",
 }) {
+  const [usePngFallback, setUsePngFallback] = useState(false);
+
   const resolved =
     sources ??
     (imageKey ? getPopularDestinationSources(imageKey) : null) ??
-    (imageKey ? { webp: getPopularDestinationImage(imageKey), png: getPopularDestinationImage(imageKey, { preferWebp: false }) } : null);
+    (imageKey
+      ? {
+          webp: getPopularDestinationImage(imageKey),
+          png: getPopularDestinationImage(imageKey, { preferWebp: false }),
+        }
+      : null);
 
   if (!resolved?.webp && !resolved?.png) return null;
 
   const isRemote = (url) => /^https?:\/\//i.test(String(url || ""));
-  const skipWebpSource = isRemote(resolved.webp) || resolved.webp === resolved.png;
+  const pngSrc = resolved.png ?? resolved.webp;
+  const webpSrc = resolved.webp;
+  const skipWebpSource = usePngFallback || isRemote(webpSrc) || !webpSrc || webpSrc === pngSrc;
+  const imgSrc = usePngFallback ? pngSrc : pngSrc ?? webpSrc;
+
+  function handleError(event) {
+    if (!usePngFallback && pngSrc && webpSrc && pngSrc !== webpSrc) {
+      setUsePngFallback(true);
+      return;
+    }
+    onError?.(event);
+  }
 
   return (
     <picture className={pictureClassName}>
-      {!skipWebpSource && resolved.webp ? <source srcSet={resolved.webp} type="image/webp" /> : null}
+      {!skipWebpSource && webpSrc ? <source srcSet={webpSrc} type="image/webp" /> : null}
       <img
-        src={resolved.png ?? resolved.webp}
+        src={imgSrc}
         alt={alt}
         width={width}
         height={height}
@@ -38,7 +57,7 @@ export default function GalleryPicture({
         fetchPriority={fetchPriority}
         decoding="async"
         className={className}
-        onError={onError}
+        onError={handleError}
       />
     </picture>
   );

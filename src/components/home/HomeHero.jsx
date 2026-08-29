@@ -6,6 +6,7 @@ import Container from "../layout/Container";
 import GalleryPicture from "./GalleryPicture";
 import { images } from "../../config/images";
 import { heroContent } from "../../data/homeContent";
+import { resolvePublicMediaUrl } from "../../utils/mediaUrl";
 
 const EASE = [0.16, 1, 0.3, 1];
 const LEGACY_HERO_IMAGES = new Set(["/images/hero_img.png", "/images/home/hero.jpg"]);
@@ -13,7 +14,10 @@ const LEGACY_HERO_IMAGES = new Set(["/images/hero_img.png", "/images/home/hero.j
 function resolveHeroSources(cmsOverride) {
   const bg = cmsOverride?.backgroundImage?.trim();
   if (bg?.startsWith("data:")) return { webp: bg, png: bg };
-  if (bg && !LEGACY_HERO_IMAGES.has(bg)) return { webp: bg, png: bg };
+  if (bg && !LEGACY_HERO_IMAGES.has(bg)) {
+    const resolved = resolvePublicMediaUrl(bg);
+    return { webp: resolved, png: resolved };
+  }
   return images.home.heroBanner;
 }
 
@@ -63,8 +67,13 @@ export default function HomeHero({ cmsOverride }) {
             </span>
 
             <h1 className="mt-5 font-display text-4xl font-bold uppercase leading-[1.05] tracking-tight text-white sm:text-5xl lg:text-6xl">
-              {hero.title}{" "}
-              <span className="text-brand-accent">{hero.titleHighlight}</span>
+              {hero.title}
+              {hero.titleHighlight ? (
+                <>
+                  {" "}
+                  <span className="text-brand-accent">{hero.titleHighlight}</span>
+                </>
+              ) : null}
             </h1>
 
             <p className="mt-5 max-w-lg text-base leading-relaxed text-white/90 sm:text-lg">

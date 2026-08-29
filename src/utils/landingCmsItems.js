@@ -1,5 +1,6 @@
 import { ghanaRegions, popularDestinations, testimonials } from "../data/homeContent";
 import { adventureGallery, getAdventureGallerySources, getPopularDestinationImage, getPopularDestinationSources } from "../config/images";
+import { resolvePublicMediaUrl } from "./mediaUrl";
 
 export function serializeHighlights(highlights) {
   if (Array.isArray(highlights)) return highlights.join(", ");
@@ -109,9 +110,21 @@ export function resolveCmsDestinationItems(cmsSection) {
 export function resolveCmsGalleryItems(cmsSection) {
   return mergeCmsItems(buildDefaultGalleryItems(), cmsSection?.items).map((item) => {
     const slug = item.slug || item.id;
-    const sources = item.image
-      ? { webp: item.image, png: item.image }
-      : getAdventureGallerySources(slug);
+    const defaults = getAdventureGallerySources(slug);
+    const custom = item.image?.trim();
+
+    let sources = defaults;
+    if (custom) {
+      if (custom.startsWith("/images/gallery/optimized/") && custom.endsWith(".webp")) {
+        sources = { webp: custom, png: custom.replace(/\.webp$/i, ".png") };
+      } else if (custom.startsWith("/") || custom.startsWith("data:")) {
+        sources = { webp: resolvePublicMediaUrl(custom), png: resolvePublicMediaUrl(custom) };
+      } else {
+        const resolved = resolvePublicMediaUrl(custom);
+        sources = { webp: resolved, png: resolved };
+      }
+    }
+
     return {
       ...item,
       slug,
@@ -131,8 +144,12 @@ export function resolveCmsTestimonialItems(cmsSection) {
 }
 
 export function resolveCmsItemImage(item) {
-  if (item?.image && !/\/images\/gallery\/optimized\/(?!hero\b)/i.test(item.image)) {
-    return { webp: item.image, png: item.image };
+  if (item?.image) {
+    const resolved = resolvePublicMediaUrl(item.image);
+    if (resolved.startsWith("/images/gallery/optimized/") && resolved.endsWith(".webp")) {
+      return { webp: resolved, png: resolved.replace(/\.webp$/i, ".png") };
+    }
+    return { webp: resolved, png: resolved };
   }
   if (item?.imageKey) {
     return getPopularDestinationSources(item.imageKey);
