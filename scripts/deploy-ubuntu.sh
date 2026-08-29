@@ -1,24 +1,22 @@
 #!/usr/bin/env bash
 #
-# Deploy 360 Tours React app on Ubuntu + Apache
+# Deploy 360 Tours React frontend on Ubuntu + Apache
 #
-# Fixes "Not Found" on direct URLs like /admin/login by ensuring
-# build/.htaccess contains SPA rewrite rules.
-#
-# Usage (on the server):
+# Usage (on the server, from repo root):
 #   chmod +x scripts/deploy-ubuntu.sh
 #   ./scripts/deploy-ubuntu.sh
 #
-# Or with overrides:
-#   APP_DIR=/var/www/360-tour WEB_ROOT=/var/www/360-tour/build BRANCH=main ./scripts/deploy-ubuntu.sh
+# Overrides:
+#   APP_DIR=/var/www/html/naasei/projects/360-tour \
+#   WEB_ROOT=/var/www/html/naasei/projects/360-tour/build \
+#   BRANCH=main \
+#   RELOAD_APACHE=1 \
+#   ./scripts/deploy-ubuntu.sh
 #
-# Apache requirement: AllowOverride All for the document root
-#   sudo a2enmod rewrite
-#   # In your vhost or site config:
-#   # <Directory /var/www/360-tour/build>
-#   #   AllowOverride All
-#   #   Require all granted
-#   # </Directory>
+# Apache vhost checklist:
+#   DocumentRoot → ${WEB_ROOT}  (usually .../360-tour/build)
+#   AllowOverride All
+#   sudo a2enmod rewrite deflate headers expires
 #   sudo systemctl reload apache2
 
 set -euo pipefail
@@ -31,14 +29,18 @@ GIT_REMOTE="${GIT_REMOTE:-origin}"
 NPM_CMD="${NPM_CMD:-npm}"
 SKIP_PULL="${SKIP_PULL:-0}"
 SKIP_INSTALL="${SKIP_INSTALL:-0}"
+RELOAD_APACHE="${RELOAD_APACHE:-0}"
+WEBSITE_URL="${REACT_APP_WEBSITE_URL:-https://360toursghana.com}"
+API_URL="${REACT_APP_API_URL:-https://api.360toursghana.com/api}"
 
 # ── Helpers ──────────────────────────────────────────────────────────────────
 log()  { echo "[deploy] $*"; }
+warn() { echo "[deploy] WARN: $*" >&2; }
 fail() { echo "[deploy] ERROR: $*" >&2; exit 1; }
 
 write_htaccess() {
   local target_dir="$1"
-  log "Writing SPA .htaccess to ${target_dir}/.htaccess"
+  log "Writing Apache .htaccess → ${target_dir}/.htaccess"
   cat > "${target_dir}/.htaccess" <<'HTACCESS'
 <IfModule mod_rewrite.c>
   RewriteEngine On
@@ -50,7 +52,48 @@ write_htaccess() {
 </IfModule>
 
 Options -Indexes
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/json image/svg+xml
+</IfModule>
+
+<IfModule mod_headers.c>
+  <FilesMatch "\.(js|css)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  <FilesMatch "\.(jpg|jpeg|png|gif|webp|svg|ico|woff2?|webmanifest)$">
+    Header set Cache-Control "public, max-age=2592000"
+  </FilesMatch>
+</IfModule>
+
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType image/jpeg "access plus 30 days"
+  ExpiresByType image/png "access plus 30 days"
+  ExpiresByType image/webp "access plus 30 days"
+</IfModule>
 HTACCESS
+}
+
+ensure_apache_modules() {
+  if ! command -v a2enmod >/dev/null 2>&1; then
+    warn "a2enmod not found — enable rewrite, deflate, headers, expires manually"
+    return 0
+  fi
+  log "Ensuring Apache modules (rewrite, deflate, headers, expires)..."
+  sudo a2enmod rewrite deflate headers expires 2>/dev/null || \
+    warn "Could not a2enmod — run: sudo a2enmod rewrite deflate headers expires"
+}
+
+reload_apache() {
+  if [[ "${RELOAD_APACHE}" != "1" ]]; then
+    log "Skipping Apache reload (set RELOAD_APACHE=1 to reload)"
+    return 0
+  fi
+  log "Reloading Apache..."
+  sudo systemctl reload apache2
 }
 
 # ── Preflight ────────────────────────────────────────────────────────────────
@@ -63,6 +106,8 @@ cd "${APP_DIR}"
 log "App directory: ${APP_DIR}"
 log "Web root:      ${WEB_ROOT}"
 log "Branch:        ${BRANCH}"
+log "Website URL:   ${WEBSITE_URL}"
+log "API URL:       ${API_URL}"
 
 # ── Pull latest code ─────────────────────────────────────────────────────────
 if [[ "${SKIP_PULL}" != "1" ]]; then
@@ -74,7 +119,22 @@ else
   log "Skipping git pull (SKIP_PULL=1)"
 fi
 
-# ── Install dependencies ───────────────────────────────────────────────────
+# ── Production env ───────────────────────────────────────────────────────────
+if [[ -f "${APP_DIR}/.env.production" ]]; then
+  log "Using .env.production for build"
+  set -a
+  # shellcheck disable=SC1091
+  source "${APP_DIR}/.env.production"
+  set +a
+else
+  warn ".env.production missing — build uses defaults / shell env"
+fi
+
+export NODE_ENV=production
+export REACT_APP_WEBSITE_URL="${REACT_APP_WEBSITE_URL:-${WEBSITE_URL}}"
+export REACT_APP_API_URL="${REACT_APP_API_URL:-${API_URL}}"
+
+# ── Install dependencies ─────────────────────────────────────────────────────
 if [[ "${SKIP_INSTALL}" != "1" ]]; then
   if [[ -f package-lock.json ]]; then
     log "Installing dependencies (npm ci)..."
@@ -87,36 +147,50 @@ else
   log "Skipping npm install (SKIP_INSTALL=1)"
 fi
 
-# ── Build ────────────────────────────────────────────────────────────────────
+# ── Build (prebuild: eslint cache, SEO assets, sitemap) ─────────────────────
 log "Building production bundle..."
-NODE_ENV=production "${NPM_CMD}" run build
+"${NPM_CMD}" run build
 
 [[ -d "${APP_DIR}/build" ]] || fail "Build folder missing after npm run build"
 [[ -f "${APP_DIR}/build/index.html" ]] || fail "build/index.html missing — build may have failed"
 
-# ── Ensure .htaccess in build (SPA routing) ──────────────────────────────────
-# public/.htaccess is copied by CRA, but we write again so deploy always works
+if [[ -f "${APP_DIR}/build/sitemap.xml" ]]; then
+  log "Sitemap present: build/sitemap.xml"
+else
+  warn "build/sitemap.xml missing — running generate:sitemap"
+  "${NPM_CMD}" run generate:sitemap
+  [[ -f "${APP_DIR}/public/sitemap.xml" ]] && cp "${APP_DIR}/public/sitemap.xml" "${APP_DIR}/build/sitemap.xml"
+fi
+
+[[ -f "${APP_DIR}/build/robots.txt" ]] || warn "build/robots.txt missing"
+
+# ── Apache SPA + performance .htaccess ───────────────────────────────────────
 write_htaccess "${APP_DIR}/build"
 
-# ── Sync to web root if different from build folder ──────────────────────────
+# ── Sync to web root if different from build folder ───────────────────────────
 if [[ "$(realpath "${WEB_ROOT}")" != "$(realpath "${APP_DIR}/build")" ]]; then
+  command -v rsync >/dev/null 2>&1 || fail "rsync required when WEB_ROOT != build/"
   log "Syncing build/ → ${WEB_ROOT}..."
   mkdir -p "${WEB_ROOT}"
   rsync -a --delete "${APP_DIR}/build/" "${WEB_ROOT}/"
   write_htaccess "${WEB_ROOT}"
 fi
 
-# ── Permissions (Apache www-data) ───────────────────────────────────────────
+# ── Permissions (Apache www-data) ────────────────────────────────────────────
 if id www-data >/dev/null 2>&1; then
   log "Setting ownership for Apache (www-data)..."
   sudo chown -R www-data:www-data "${WEB_ROOT}" 2>/dev/null || \
-    log "Could not chown (run manually if needed): sudo chown -R www-data:www-data ${WEB_ROOT}"
+    warn "Could not chown — run: sudo chown -R www-data:www-data ${WEB_ROOT}"
 fi
 
-log "Deploy complete."
-log "Verify: https://360toursghana.com/admin/login"
+ensure_apache_modules
+reload_apache
+
 log ""
-log "If URLs still 404, check Apache:"
-log "  1. sudo a2enmod rewrite && sudo systemctl reload apache2"
-log "  2. DocumentRoot points to: ${WEB_ROOT}"
-log "  3. AllowOverride All is set for that directory"
+log "Deploy complete."
+log "  DocumentRoot should be: ${WEB_ROOT}"
+log "  Verify SPA routes:      ${WEBSITE_URL}/tours"
+log "  Verify admin login:     ${WEBSITE_URL}/admin/login"
+log "  Verify sitemap:         ${WEBSITE_URL}/sitemap.xml"
+log ""
+log "If URLs 404, check Apache vhost has AllowOverride All for ${WEB_ROOT}"
