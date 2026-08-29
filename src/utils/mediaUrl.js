@@ -41,6 +41,19 @@ export function resolvePublicMediaUrl(value) {
   const storagePath = storagePathFromUrl(url);
 
   if (storagePath) {
+    // Keep absolute remote URLs in local dev — CRA proxies /storage to Laravel
+    // but uploaded tour photos usually live on the production API host only.
+    if (!url.startsWith("/")) {
+      try {
+        const parsed = new URL(url);
+        if (!LOOPBACK_HOST.test(parsed.hostname)) {
+          return url.split("?")[0];
+        }
+      } catch {
+        /* fall through to origin rewrite */
+      }
+    }
+
     return origin ? `${origin}${storagePath}` : storagePath;
   }
 

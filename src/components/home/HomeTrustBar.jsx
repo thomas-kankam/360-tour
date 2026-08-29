@@ -1,6 +1,6 @@
 import { Camera, Leaf, MapPin, UtensilsCrossed, Users } from "lucide-react";
 import Container from "../layout/Container";
-import ScrollReveal, { ScrollStagger, ScrollStaggerItem } from "../motion/ScrollReveal";
+import { ScrollStagger, ScrollStaggerItem } from "../motion/ScrollReveal";
 
 const TRUST_ITEMS = [
   { icon: MapPin, label: "Guided tours", desc: "Local experts across Ghana" },

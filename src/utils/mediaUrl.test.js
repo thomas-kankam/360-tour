@@ -13,6 +13,12 @@ describe("media URL helpers", () => {
     );
   });
 
+  test("keeps absolute remote storage URLs intact", () => {
+    expect(resolvePublicMediaUrl("https://api.360toursghana.com/storage/uploads/images/a.webp")).toBe(
+      "https://api.360toursghana.com/storage/uploads/images/a.webp",
+    );
+  });
+
   test("leaves frontend /images assets and data URIs alone", () => {
     expect(resolvePublicMediaUrl("/images/home/volta.jpg")).toBe("/images/home/volta.jpg");
     expect(resolvePublicMediaUrl("data:image/png;base64,abc")).toBe("data:image/png;base64,abc");

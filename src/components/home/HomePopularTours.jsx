@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import { useState } from "react";
 import { motion } from "motion/react";
-import { ArrowRight, Loader2 } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Container from "../layout/Container";
 import ScrollReveal, { ScrollStagger, ScrollStaggerItem } from "../motion/ScrollReveal";
 import TourPriceDisplay from "../tours/TourPriceDisplay";
