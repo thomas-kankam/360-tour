@@ -4,7 +4,6 @@ import { Loader2 } from "lucide-react";
 import { toast } from "react-toastify";
 import Container from "../../components/layout/Container";
 import { adminNotificationsServiceApi, clientNotificationsServiceApi } from "../../apis/NotificationsServiceApi";
-import { ROUTES } from "../../constants/routes";
 import { useAuth } from "../../hooks/useAuth";
 import { formatNotificationTime, resolveNotificationLink } from "../../utils/notificationHelpers";
 
