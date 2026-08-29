@@ -2,6 +2,18 @@
 #
 # Deploy 360 Tours React frontend on Ubuntu + Apache
 #
+# Runs automatically (no extra commands needed after push):
+#   git pull
+#   source .env.production
+#   npm ci
+#   npm run generate:seo
+#   npm run generate:sitemap
+#   npm run build
+#   write .htaccess (SPA + gzip + cache)
+#   rsync to WEB_ROOT (if set)
+#   chown www-data
+#   a2enmod rewrite deflate headers expires (+ optional apache reload)
+#
 # Usage (on the server, from repo root):
 #   chmod +x scripts/deploy-ubuntu.sh
 #   ./scripts/deploy-ubuntu.sh
@@ -147,19 +159,30 @@ else
   log "Skipping npm install (SKIP_INSTALL=1)"
 fi
 
-# ── Build (prebuild: eslint cache, SEO assets, sitemap) ─────────────────────
-log "Building production bundle..."
+# ── SEO assets & sitemap (explicit — also run again via npm prebuild on build) ─
+log "Generating SEO assets (favicons, og-image)..."
+"${NPM_CMD}" run generate:seo
+
+log "Generating sitemap (tours from API + stories from content)..."
+"${NPM_CMD}" run generate:sitemap
+
+# ── Production build ─────────────────────────────────────────────────────────
+log "Building production bundle (npm run build)..."
 "${NPM_CMD}" run build
 
 [[ -d "${APP_DIR}/build" ]] || fail "Build folder missing after npm run build"
 [[ -f "${APP_DIR}/build/index.html" ]] || fail "build/index.html missing — build may have failed"
 
+# CRA copies public/ → build/; ensure sitemap landed in build/
+if [[ -f "${APP_DIR}/public/sitemap.xml" ]] && [[ ! -f "${APP_DIR}/build/sitemap.xml" ]]; then
+  log "Copying public/sitemap.xml → build/sitemap.xml"
+  cp "${APP_DIR}/public/sitemap.xml" "${APP_DIR}/build/sitemap.xml"
+fi
+
 if [[ -f "${APP_DIR}/build/sitemap.xml" ]]; then
-  log "Sitemap present: build/sitemap.xml"
+  log "Sitemap OK: build/sitemap.xml"
 else
-  warn "build/sitemap.xml missing — running generate:sitemap"
-  "${NPM_CMD}" run generate:sitemap
-  [[ -f "${APP_DIR}/public/sitemap.xml" ]] && cp "${APP_DIR}/public/sitemap.xml" "${APP_DIR}/build/sitemap.xml"
+  fail "build/sitemap.xml missing after generate:sitemap + build"
 fi
 
 [[ -f "${APP_DIR}/build/robots.txt" ]] || warn "build/robots.txt missing"
