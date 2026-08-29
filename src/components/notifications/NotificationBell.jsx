@@ -3,13 +3,15 @@ import { Link, useNavigate } from "react-router";
 import { Bell } from "lucide-react";
 import { adminNotificationsServiceApi, clientNotificationsServiceApi } from "../../apis/NotificationsServiceApi";
 import { ROUTES } from "../../constants/routes";
+import { audienceToAuthRole } from "../../utils/authSessionHelpers";
 import { useAuth } from "../../hooks/useAuth";
 import { formatNotificationTime, resolveNotificationLink } from "../../utils/notificationHelpers";
 
 const POLL_MS = 60000;
 
 export default function NotificationBell({ audience = "client", compact = false }) {
-  const { token, isAuthenticated } = useAuth();
+  const contextRole = audienceToAuthRole(audience);
+  const { token, isAuthenticated } = useAuth({ context: contextRole });
   const navigate = useNavigate();
   const api = useMemo(
     () => (audience === "admin" ? adminNotificationsServiceApi : clientNotificationsServiceApi),

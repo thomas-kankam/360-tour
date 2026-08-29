@@ -1,5 +1,5 @@
-import { useCallback } from "react";
-import { useNavigate } from "react-router";
+import { useCallback, useMemo } from "react";
+import { useLocation, useNavigate } from "react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   clearCredentials,
@@ -16,29 +16,38 @@ import { hasAdminPermission as checkAdminPermission } from "../constants/adminPe
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { persistor } from "../store";
 import { clearLegacyAuth } from "../store/legacyAuthMigration";
+import { normalizeAuthRole, resolveAuthContextFromPath } from "../utils/authSessionHelpers";
 import adminAuthServiceApi from "../apis/AdminAuthServiceApi";
 import operatorAuthServiceApi from "../apis/OperatorAuthServiceApi";
 
-export function useAuth() {
+export function useAuth(options = {}) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const user = useAppSelector(selectUser);
-  const token = useAppSelector(selectToken);
-  const role = useAppSelector(selectUserRole);
-  const isAuthenticated = useAppSelector(selectIsAuthenticated);
-  const isVerified = useAppSelector(selectIsVerified);
+  const location = useLocation();
+
+  const contextRole = useMemo(
+    () => normalizeAuthRole(options.context ?? resolveAuthContextFromPath(location.pathname)),
+    [location.pathname, options.context],
+  );
+
+  const user = useAppSelector((state) => selectUser(state, contextRole));
+  const token = useAppSelector((state) => selectToken(state, contextRole));
+  const role = useAppSelector((state) => selectUserRole(state, contextRole));
+  const isAuthenticated = useAppSelector((state) => selectIsAuthenticated(state, contextRole));
+  const isVerified = useAppSelector((state) => selectIsVerified(state, contextRole));
 
   const login = useCallback(
     (nextToken, nextUser) => {
       dispatch(setCredentials({ token: nextToken, user: nextUser }));
     },
-    [dispatch]
+    [dispatch],
   );
 
   const logout = useCallback(async () => {
-    const wasAdmin = isAdminRole(role);
-    const wasOperator = isOperatorRole(role);
+    const sessionRole = normalizeAuthRole(role);
+    const wasAdmin = isAdminRole(sessionRole);
+    const wasOperator = isOperatorRole(sessionRole);
     const currentToken = token;
 
     if (wasAdmin && currentToken) {
@@ -57,7 +66,7 @@ export function useAuth() {
       }
     }
 
-    dispatch(clearCredentials());
+    dispatch(clearCredentials({ role: sessionRole }));
     clearLegacyAuth();
     queryClient.clear();
 
@@ -79,6 +88,7 @@ export function useAuth() {
     user,
     token,
     role,
+    contextRole,
     isAuthenticated,
     isVerified,
     isTourist: isTouristRole(role),

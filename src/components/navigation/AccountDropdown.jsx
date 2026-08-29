@@ -90,8 +90,8 @@ export function AccountMenuLinks({ onNavigate, className = "" }) {
 }
 
 export function AuthenticatedNavActions() {
-  const { role } = useAuth();
-  const audience = role === USER_ROLES.ADMINISTRATOR ? "admin" : "client";
+  const { contextRole } = useAuth();
+  const audience = contextRole === USER_ROLES.ADMINISTRATOR ? "admin" : "client";
 
   return (
     <div className="flex items-center gap-2">
