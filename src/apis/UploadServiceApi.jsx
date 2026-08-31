@@ -64,6 +64,36 @@ class UploadServiceApi {
       return { ...parseApiError(error), url: "" };
     }
   }
+
+  async uploadVideo(token, file, { role = "admin" } = {}) {
+    if (!file) {
+      return { ok: false, url: "", reason: "No video selected." };
+    }
+
+    const form = new FormData();
+    form.append("video", file);
+
+    const path = role === "client" ? "/client/uploads/videos" : "/admin/uploads/videos";
+
+    try {
+      const response = await axios.post(`${this.baseUrl}${path}`, form, {
+        headers: {
+          Accept: "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      });
+      const result = parseApiEnvelope(response);
+      const url = resolvePublicMediaUrl(result.data?.url || "");
+      return {
+        ...result,
+        url,
+        ok: result.ok && Boolean(url),
+        reason: result.ok && !url ? "Upload succeeded but no video URL was returned." : result.reason,
+      };
+    } catch (error) {
+      return { ...parseApiError(error), url: "" };
+    }
+  }
 }
 
 const uploadServiceApi = new UploadServiceApi();

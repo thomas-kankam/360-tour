@@ -1,36 +1,47 @@
-import GalleryPicture from "../home/GalleryPicture";
+import { resolvePublicMediaUrl } from "../../utils/mediaUrl";
+import { useLandingCms } from "../../hooks/useLandingCms";
 import { images } from "../../config/images";
 
-const PANELS = {
+const VARIANT_DEFAULTS = {
   login: {
-    imageKey: "capeCoastCastle",
+    image: images.destinations.popular.capeCoastCastle,
     alt: "Cape Coast Castle, Ghana heritage tour",
   },
   signup: {
-    imageKey: "kumasiCulturalTour",
+    image: images.destinations.popular.kumasiCulturalTour,
     alt: "Kumasi cultural tour, Ghana",
   },
   verify: {
-    imageKey: "accraCityTour",
+    image: images.destinations.popular.accraCityTour,
     alt: "Accra city tour, Ghana",
   },
   admin: {
-    sources: images.home.heroBanner,
+    image: images.home.heroBanner.webp,
     alt: "360 Tours and Investment Limited, Ghana",
   },
 };
 
+const VARIANT_CMS_KEYS = {
+  login: "loginImage",
+  signup: "signupImage",
+  verify: "verifyImage",
+  admin: "adminImage",
+};
+
 export default function AuthPanelBackground({ variant = "login", className = "" }) {
-  const panel = PANELS[variant] ?? PANELS.login;
+  const { cms } = useLandingCms();
+  const defaults = VARIANT_DEFAULTS[variant] ?? VARIANT_DEFAULTS.login;
+  const cmsKey = VARIANT_CMS_KEYS[variant] ?? VARIANT_CMS_KEYS.login;
+  const cmsImage = cms?.auth?.[cmsKey];
+  const src = resolvePublicMediaUrl(cmsImage || defaults.image);
 
   return (
-    <GalleryPicture
-      imageKey={panel.imageKey}
-      sources={panel.sources}
-      alt={panel.alt}
-      pictureClassName="absolute inset-0 block h-full w-full"
-      className={["h-full w-full object-cover", className].filter(Boolean).join(" ")}
+    <img
+      src={src}
+      alt={defaults.alt}
+      className={["absolute inset-0 h-full w-full object-cover", className].filter(Boolean).join(" ")}
       loading="eager"
+      decoding="async"
     />
   );
 }

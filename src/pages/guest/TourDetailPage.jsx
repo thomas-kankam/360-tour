@@ -214,10 +214,7 @@ function TourAboutSection({ tour }) {
 
 function TourIncludedSection({ items }) {
   const features = useMemo(() => {
-    return (items || []).filter(Boolean).map((text, index) => ({
-      ...parseFeatureText(text),
-      icon: resolveFeatureIcon(text, index),
-    }));
+    return (items || []).filter(Boolean).map((text) => parseFeatureText(text));
   }, [items]);
 
   if (!features.length) return null;
@@ -229,13 +226,12 @@ function TourIncludedSection({ items }) {
     >
       <div className="grid gap-x-10 gap-y-7 sm:grid-cols-2">
         {features.map((feature, index) => {
-          const Icon = feature.icon;
           const hasDetail = Boolean(feature.description);
 
           return (
             <div key={`${feature.title}-${index}`} className="flex gap-3">
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-accent/25">
-                <Icon className="h-4 w-4 text-brand-primary" strokeWidth={2} aria-hidden />
+                <CheckCircle2 className="h-4 w-4 text-brand-primary" strokeWidth={2} aria-hidden />
               </div>
               <div className="min-w-0">
                 {hasDetail ? (

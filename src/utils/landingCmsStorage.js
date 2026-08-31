@@ -18,6 +18,7 @@ export { STORAGE_KEY };
 const IMAGE_FIELD_KEYS = new Set(["backgroundImage", "image", "sideImage"]);
 
 export function isCmsImageField(key) {
+  if (key === "slideshowImages" || key === "mediaType" || key === "backgroundVideo") return false;
   return IMAGE_FIELD_KEYS.has(key) || key.endsWith("Image");
 }
 
@@ -30,7 +31,10 @@ export const LANDING_CMS_DEFAULTS = {
     tagline: heroContent.tagline,
     primaryCtaLabel: heroContent.primaryCta.label,
     secondaryCtaLabel: heroContent.secondaryCta.label,
+    mediaType: "image",
     backgroundImage: images.home.heroBanner.webp,
+    slideshowImages: [],
+    backgroundVideo: "",
   },
   tours: {
     eyebrow: "Discover tours",
@@ -93,6 +97,12 @@ export const LANDING_CMS_DEFAULTS = {
     whatsappMessage: homeCtaSection.whatsappMessage,
     image: images.home.hero_two,
   },
+  auth: {
+    loginImage: images.destinations.popular.capeCoastCastle,
+    signupImage: images.tour_sites.manhyia_palace,
+    verifyImage: images.tour_sites.arts_and_craft,
+    adminImage: images.home.heroBanner.webp,
+  },
 };
 
 export function loadLandingCms() {
@@ -140,6 +150,24 @@ function sanitizeBrokenRemoteImages(content) {
   if (content?.hero?.backgroundImage) {
     content.hero.backgroundImage = resolvePublicMediaUrl(content.hero.backgroundImage);
   }
+  if (content?.hero?.backgroundVideo) {
+    content.hero.backgroundVideo = resolvePublicMediaUrl(content.hero.backgroundVideo);
+  }
+  if (Array.isArray(content?.hero?.slideshowImages)) {
+    content.hero.slideshowImages = content.hero.slideshowImages
+      .map((url) => (url && isTrustedMediaUrl(url) ? resolvePublicMediaUrl(url) : ""))
+      .filter(Boolean);
+  }
+  if (content?.auth) {
+    ["loginImage", "signupImage", "verifyImage", "adminImage"].forEach((key) => {
+      if (!content.auth[key]) return;
+      if (!isTrustedMediaUrl(content.auth[key])) {
+        content.auth[key] = "";
+        return;
+      }
+      content.auth[key] = resolvePublicMediaUrl(content.auth[key]);
+    });
+  }
   if (content?.cta?.image) {
     content.cta.image = resolvePublicMediaUrl(content.cta.image);
   }
@@ -161,6 +189,7 @@ function deepMerge(base, patch) {
 
 export const LANDING_CMS_SECTIONS = [
   { id: "hero", label: "Hero banner" },
+  { id: "auth", label: "Login backgrounds" },
   { id: "tours", label: "Popular tours" },
   { id: "destinations", label: "Popular destinations" },
   { id: "gallery", label: "Photo gallery" },

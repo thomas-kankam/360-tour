@@ -21,12 +21,30 @@ function sanitizeBrokenRemoteImages(content) {
   if (content?.hero?.backgroundImage) {
     content.hero.backgroundImage = resolvePublicMediaUrl(content.hero.backgroundImage);
   }
+  if (content?.hero?.backgroundVideo) {
+    content.hero.backgroundVideo = resolvePublicMediaUrl(content.hero.backgroundVideo);
+  }
+  if (Array.isArray(content?.hero?.slideshowImages)) {
+    content.hero.slideshowImages = content.hero.slideshowImages
+      .map((url) => (url && isTrustedMediaUrl(url) ? resolvePublicMediaUrl(url) : ""))
+      .filter(Boolean);
+  }
+  if (content?.auth) {
+    ["loginImage", "signupImage", "verifyImage", "adminImage"].forEach((key) => {
+      if (!content.auth[key]) return;
+      if (!isTrustedMediaUrl(content.auth[key])) {
+        content.auth[key] = "";
+        return;
+      }
+      content.auth[key] = resolvePublicMediaUrl(content.auth[key]);
+    });
+  }
   if (content?.cta?.image) {
     content.cta.image = resolvePublicMediaUrl(content.cta.image);
   }
 }
 
-const SECTION_IDS = ["hero", "tours", "destinations", "regions", "gallery", "testimonials", "explore", "cta"];
+const SECTION_IDS = ["hero", "auth", "tours", "destinations", "regions", "gallery", "testimonials", "explore", "cta"];
 
 function snakeToCamel(key) {
   return String(key).replace(/_([a-z])/g, (_, char) => char.toUpperCase());
@@ -117,6 +135,18 @@ export async function persistLandingCmsMedia(content, token) {
 
   if (next.hero) {
     next.hero.backgroundImage = await persistCmsImageValue(next.hero.backgroundImage, token, "hero");
+    if (Array.isArray(next.hero.slideshowImages)) {
+      next.hero.slideshowImages = await Promise.all(
+        next.hero.slideshowImages.map((url) => persistCmsImageValue(url, token, "hero")),
+      );
+      next.hero.slideshowImages = next.hero.slideshowImages.filter(Boolean);
+    }
+    // Video URLs come from the upload API — no base64 persistence needed here.
+  }
+  if (next.auth) {
+    for (const key of ["loginImage", "signupImage", "verifyImage", "adminImage"]) {
+      next.auth[key] = await persistCmsImageValue(next.auth[key], token, "destination");
+    }
   }
   if (next.cta) {
     next.cta.image = await persistCmsImageValue(next.cta.image, token, "destination");

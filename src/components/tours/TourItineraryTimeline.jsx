@@ -1,5 +1,10 @@
-import { Compass, Flag, MapPin } from "lucide-react";
-import { getItineraryDayImageSrc } from "../../utils/itineraryHelpers";
+import { Compass, Flag, MapPin, BedDouble, UtensilsCrossed } from "lucide-react";
+import {
+  getItineraryDayImageSrc,
+  getItineraryAccommodationImageSrc,
+  getItineraryMealImageSrc,
+  dayHasItineraryContent,
+} from "../../utils/itineraryHelpers";
 
 function resolveDayLabel(day, index, total) {
   if (index === 0) return "Arrival";
@@ -90,6 +95,61 @@ function ItineraryDayCard({ day, index, total }) {
               {day.description}
             </p>
           ) : null}
+
+          {day.accommodation &&
+          (day.accommodation.name?.trim() ||
+            day.accommodation.location?.trim() ||
+            getItineraryAccommodationImageSrc(day.accommodation)) ? (
+            <div className="mt-5 rounded-xl border border-brand-border/40 bg-white/70 p-4">
+              <p className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.14em] text-brand-primary">
+                <BedDouble className="h-3.5 w-3.5" strokeWidth={2.25} aria-hidden />
+                Accommodation
+              </p>
+              {day.accommodation.name?.trim() ? (
+                <p className="mt-2 text-sm font-bold text-brand-ink">{day.accommodation.name}</p>
+              ) : null}
+              {day.accommodation.location?.trim() ? (
+                <p className="mt-1 inline-flex items-center gap-1.5 text-sm text-brand-muted">
+                  <MapPin className="h-3.5 w-3.5 shrink-0 text-brand-accent" strokeWidth={2.25} aria-hidden />
+                  {day.accommodation.location}
+                </p>
+              ) : null}
+              {getItineraryAccommodationImageSrc(day.accommodation) ? (
+                <div className="mt-3 overflow-hidden rounded-lg border border-brand-border/30">
+                  <img
+                    src={getItineraryAccommodationImageSrc(day.accommodation)}
+                    alt=""
+                    className="aspect-[16/9] w-full object-cover"
+                  />
+                </div>
+              ) : null}
+            </div>
+          ) : null}
+
+          {(day.meals || []).some((meal) => meal?.name?.trim() || getItineraryMealImageSrc(meal)) ? (
+            <div className="mt-5 rounded-xl border border-brand-border/40 bg-white/70 p-4">
+              <p className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.14em] text-brand-primary">
+                <UtensilsCrossed className="h-3.5 w-3.5" strokeWidth={2.25} aria-hidden />
+                Meals
+              </p>
+              <ul className="mt-3 space-y-3">
+                {(day.meals || [])
+                  .filter((meal) => meal?.name?.trim() || getItineraryMealImageSrc(meal))
+                  .map((meal, mealIndex) => (
+                    <li key={`${meal.name}-${mealIndex}`} className="rounded-lg border border-brand-border/30 bg-brand-cream/20 p-3">
+                      {meal.name?.trim() ? (
+                        <p className="text-sm font-semibold text-brand-ink">{meal.name}</p>
+                      ) : null}
+                      {getItineraryMealImageSrc(meal) ? (
+                        <div className={`overflow-hidden rounded-lg border border-brand-border/30 ${meal.name?.trim() ? "mt-2" : ""}`}>
+                          <img src={getItineraryMealImageSrc(meal)} alt="" className="aspect-[16/9] w-full object-cover" />
+                        </div>
+                      ) : null}
+                    </li>
+                  ))}
+              </ul>
+            </div>
+          ) : null}
         </div>
       </article>
     </li>
@@ -97,9 +157,7 @@ function ItineraryDayCard({ day, index, total }) {
 }
 
 export default function TourItineraryTimeline({ itinerary = [], className = "" }) {
-  const days = (itinerary || []).filter(
-    (day) => day?.title?.trim() || day?.description?.trim() || getItineraryDayImageSrc(day),
-  );
+  const days = (itinerary || []).filter(dayHasItineraryContent);
   if (!days.length) return null;
 
   const totalDays = days.length;

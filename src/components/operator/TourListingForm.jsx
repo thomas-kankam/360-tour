@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight, Info, X } from "lucide-react";
 import { ROUTES } from "../../constants/routes";
 import TourImageField from "./TourImageField";
 import ItineraryDayImageField from "./ItineraryDayImageField";
+import ItineraryDayExtrasFields from "./ItineraryDayExtrasFields";
 import TourFeatureImagesField from "./TourFeatureImagesField";
 import TourLocationRoutePicker from "./TourLocationRoutePicker";
 import CountrySearchSelect from "../forms/CountrySearchSelect";
@@ -755,6 +756,15 @@ export default function TourListingForm({ initial, onSubmit, submitLabel = "Save
                   }}
                 />
               </div>
+              <ItineraryDayExtrasFields
+                day={day}
+                dayIndex={i}
+                onChange={(nextDay) => {
+                  const next = [...form.itinerary];
+                  next[i] = nextDay;
+                  patch({ itinerary: next });
+                }}
+              />
             </div>
           ))}
           <button

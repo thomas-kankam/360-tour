@@ -24,6 +24,8 @@ import ImageLightbox from "../../components/misc/ImageLightbox";
 import { ROUTES } from "../../constants/routes";
 import { useAuth } from "../../hooks/useAuth";
 import { buildLocationsLabel, resolveTourDurationDays } from "../../utils/operatorTourMapper";
+import TourItineraryTimeline from "../../components/tours/TourItineraryTimeline";
+import { dayHasItineraryContent } from "../../utils/itineraryHelpers";
 
 const EASE = [0.22, 1, 0.36, 1];
 
@@ -297,7 +299,7 @@ export default function OperatorTourDetailPage() {
   }
 
   const routeLabel = buildLocationsLabel(tour.locations);
-  const hasItinerary = (tour.itinerary || []).some((day) => day.title?.trim() || day.description?.trim());
+  const hasItinerary = (tour.itinerary || []).some(dayHasItineraryContent);
 
   return (
     <div className="space-y-6">
@@ -457,23 +459,7 @@ export default function OperatorTourDetailPage() {
             ) : null}
           </Section>
 
-          {hasItinerary ? (
-          <Section title="Itinerary" subtitle="Day-by-day plan">
-            <div className="space-y-4">
-              {tour.itinerary.map((day) => (
-                <div key={`${day.day}-${day.title}`} className="flex gap-4 rounded-xl border border-brand-border/50 bg-brand-cream/40 p-4">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-primary/10 text-sm font-bold text-brand-primary">
-                    {day.day}
-                  </div>
-                  <div>
-                    <p className="font-semibold text-brand-ink">{day.title}</p>
-                    <p className="mt-1 text-sm leading-relaxed text-brand-muted">{day.description}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Section>
-          ) : null}
+          {hasItinerary ? <TourItineraryTimeline itinerary={tour.itinerary} /> : null}
 
           <div className="grid gap-6 lg:grid-cols-2">
             <section className="rounded-2xl border border-brand-primary/20 bg-gradient-to-br from-brand-primary/5 to-white p-6 shadow-sm">

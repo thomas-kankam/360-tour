@@ -3,6 +3,7 @@ import { Eye, ImagePlus, Loader2, RotateCcw, Save, Trash2, UploadCloud } from "l
 import { toast } from "react-toastify";
 import adminLandingCmsServiceApi from "../../apis/AdminLandingCmsServiceApi";
 import LandingCmsItemsEditor from "../../components/admin/LandingCmsItemsEditor";
+import HeroSectionEditor from "../../components/admin/HeroSectionEditor";
 import HomeHero from "../../components/home/HomeHero";
 import HomeTrustBar from "../../components/home/HomeTrustBar";
 import HomePopularTours from "../../components/home/HomePopularTours";
@@ -321,26 +322,32 @@ export default function AdminLandingCmsPage() {
               Edit {LANDING_CMS_SECTIONS.find((s) => s.id === activeSection)?.label}
             </p>
             <div className="grid gap-4 sm:grid-cols-2">
-              {Object.entries(sectionFields)
-                .filter(([key]) => key !== "items")
-                .map(([key, value]) =>
-                isCmsImageField(key) ? (
-                  <ImageField
-                    key={key}
-                    label={formatFieldLabel(key)}
-                    value={value}
-                    variant={key === "backgroundImage" ? "hero" : "destination"}
-                    onChange={(next) => updateField(key, next)}
-                  />
-                ) : (
-                  <Field
-                    key={key}
-                    label={formatFieldLabel(key)}
-                    value={value}
-                    onChange={(next) => updateField(key, next)}
-                    multiline={MULTILINE_KEYS.has(key)}
-                  />
-                ),
+              {activeSection === "hero" ? (
+                <div className="sm:col-span-2">
+                  <HeroSectionEditor hero={sectionFields} onChange={(hero) => setCms((prev) => ({ ...prev, hero }))} />
+                </div>
+              ) : (
+                Object.entries(sectionFields)
+                  .filter(([key]) => key !== "items")
+                  .map(([key, value]) =>
+                    isCmsImageField(key) ? (
+                      <ImageField
+                        key={key}
+                        label={formatFieldLabel(key)}
+                        value={value}
+                        variant={key === "backgroundImage" || key.endsWith("Image") ? "hero" : "destination"}
+                        onChange={(next) => updateField(key, next)}
+                      />
+                    ) : (
+                      <Field
+                        key={key}
+                        label={formatFieldLabel(key)}
+                        value={value}
+                        onChange={(next) => updateField(key, next)}
+                        multiline={MULTILINE_KEYS.has(key)}
+                      />
+                    ),
+                  )
               )}
             </div>
             {ITEMS_SECTIONS.has(activeSection) ? (

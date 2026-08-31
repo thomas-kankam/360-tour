@@ -17,7 +17,7 @@ import {
   UNLIMITED_TOUR_SLOTS,
 } from "./operatorTourConstants";
 import { inferAudienceScope } from "./tourPricing";
-import { normalizeTourImages, resolveImageForApiPayload, normalizeTourImage } from "./tourImageUtils";
+import { normalizeTourImages, resolveImageForApiPayload, normalizeTourImage, getImagePreviewSrc } from "./tourImageUtils";
 import { resolvePublicMediaUrl } from "./mediaUrl";
 
 const POPULAR_GHANA_CITIES = [
@@ -209,16 +209,85 @@ export function buildLocationsLabel(locations) {
   return (locations || []).filter(Boolean).join(" · ");
 }
 
+function normalizeItineraryAccommodation(accommodation) {
+  if (!accommodation || typeof accommodation !== "object") return null;
+  const name = (accommodation.name || "").trim();
+  const location = (accommodation.location || "").trim();
+  const imageUrl = resolvePublicMediaUrl(
+    accommodation.imageUrl || accommodation.image_url || getImagePreviewSrc(accommodation.image) || "",
+  );
+  if (!name && !location && !imageUrl) return null;
+  return {
+    name,
+    location,
+    imageUrl,
+    image: normalizeTourImage(accommodation.image, imageUrl),
+  };
+}
+
+function normalizeItineraryMeals(meals) {
+  if (!Array.isArray(meals)) return [];
+  return meals
+    .map((meal) => {
+      if (!meal || typeof meal !== "object") return null;
+      const name = (meal.name || "").trim();
+      const imageUrl = resolvePublicMediaUrl(
+        meal.imageUrl || meal.image_url || getImagePreviewSrc(meal.image) || "",
+      );
+      if (!name && !imageUrl) return null;
+      return {
+        name,
+        imageUrl,
+        image: normalizeTourImage(meal.image, imageUrl),
+      };
+    })
+    .filter(Boolean);
+}
+
 function normalizeItineraryDay(day, index) {
   if (!day) return null;
   const imageUrl = resolvePublicMediaUrl(day.imageUrl || day.image_url || day.image?.uri || "");
+  const accommodation = normalizeItineraryAccommodation(day.accommodation);
+  const meals = normalizeItineraryMeals(day.meals);
+
   return {
     day: Number(day.day) || index + 1,
     title: day.title || "",
     description: day.description || "",
     imageUrl,
     image: normalizeTourImage(day.image || imageUrl, imageUrl),
+    ...(accommodation ? { accommodation } : {}),
+    ...(meals.length ? { meals } : {}),
   };
+}
+
+function mapItineraryAccommodationForApi(accommodation) {
+  if (!accommodation) return null;
+  const name = (accommodation.name || "").trim();
+  const location = (accommodation.location || "").trim();
+  const imageUrl = resolveImageForApiPayload(accommodation.image, accommodation.imageUrl || "");
+  if (!name && !location && !imageUrl) return null;
+
+  const payload = {};
+  if (name) payload.name = name;
+  if (location) payload.location = location;
+  if (imageUrl) payload.imageUrl = imageUrl;
+  return payload;
+}
+
+function mapItineraryMealsForApi(meals) {
+  if (!Array.isArray(meals)) return [];
+  return meals
+    .map((meal) => {
+      const name = (meal.name || "").trim();
+      const imageUrl = resolveImageForApiPayload(meal.image, meal.imageUrl || "");
+      if (!name && !imageUrl) return null;
+      const payload = {};
+      if (name) payload.name = name;
+      if (imageUrl) payload.imageUrl = imageUrl;
+      return payload;
+    })
+    .filter(Boolean);
 }
 
 function mapItineraryForApi(day) {
@@ -229,6 +298,13 @@ function mapItineraryForApi(day) {
     description: (day.description || "").trim(),
   };
   if (imageUrl) payload.imageUrl = imageUrl;
+
+  const accommodation = mapItineraryAccommodationForApi(day.accommodation);
+  if (accommodation) payload.accommodation = accommodation;
+
+  const meals = mapItineraryMealsForApi(day.meals);
+  if (meals.length) payload.meals = meals;
+
   return payload;
 }
 
