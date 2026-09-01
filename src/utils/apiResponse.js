@@ -14,12 +14,32 @@ export function parseApiEnvelope(response) {
 }
 
 export function parseApiError(error) {
-  const envelope = error?.response?.data?.data ?? error?.response?.data ?? {};
+  const payload = error?.response?.data ?? {};
+  const envelope = payload?.data ?? payload ?? {};
+
+  // Laravel validation responses: { message, errors: { field: ["..."] } }
+  const fieldErrors = payload?.errors || envelope?.errors;
+  let validationReason = "";
+  if (fieldErrors && typeof fieldErrors === "object") {
+    const first = Object.values(fieldErrors).flat().find(Boolean);
+    if (first) validationReason = String(first);
+  }
 
   return {
     ok: false,
-    message: envelope.reason || envelope.message || error?.message || "An error occurred",
-    reason: envelope.reason || envelope.message || "",
+    message:
+      validationReason ||
+      envelope.reason ||
+      envelope.message ||
+      payload.message ||
+      error?.message ||
+      "An error occurred",
+    reason:
+      validationReason ||
+      envelope.reason ||
+      envelope.message ||
+      payload.message ||
+      "",
     data: envelope.data ?? null,
     raw: envelope,
   };

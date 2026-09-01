@@ -15,6 +15,8 @@ const STORAGE_KEY = "360tours_landing_cms";
 
 export { STORAGE_KEY };
 
+export const HERO_SLIDESHOW_MAX = 5;
+
 const IMAGE_FIELD_KEYS = new Set(["backgroundImage", "image", "sideImage"]);
 
 export function isCmsImageField(key) {
@@ -156,7 +158,8 @@ function sanitizeBrokenRemoteImages(content) {
   if (Array.isArray(content?.hero?.slideshowImages)) {
     content.hero.slideshowImages = content.hero.slideshowImages
       .map((url) => (url && isTrustedMediaUrl(url) ? resolvePublicMediaUrl(url) : ""))
-      .filter(Boolean);
+      .filter(Boolean)
+      .slice(0, HERO_SLIDESHOW_MAX);
   }
   if (content?.auth) {
     ["loginImage", "signupImage", "verifyImage", "adminImage"].forEach((key) => {

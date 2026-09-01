@@ -3,17 +3,14 @@ import { Link, useParams, Navigate } from "react-router";
 import { motion } from "motion/react";
 import {
   ArrowRight,
-  BedDouble,
   CalendarDays,
   CheckCircle2,
   Clock,
   Loader2,
   MapPin,
-  Plane,
   Sparkles,
   Star,
   Users,
-  UtensilsCrossed,
   XCircle,
 } from "lucide-react";
 import publicListingsServiceApi from "../../apis/PublicListingsServiceApi";
@@ -108,16 +105,6 @@ function parseFeatureText(text) {
   return parseInclusionItemText(text);
 }
 
-function resolveFeatureIcon(text, index) {
-  const value = text.toLowerCase();
-  if (/(stay|hotel|accommodation|resort|lodge|cabana|room|night)/.test(value)) return BedDouble;
-  if (/(flight|air|fly|airport)/.test(value)) return Plane;
-  if (/(breakfast|meal|dinner|lunch|food|dining|continental)/.test(value)) return UtensilsCrossed;
-  if (index === 0) return BedDouble;
-  if (index === 1) return Plane;
-  return CheckCircle2;
-}
-
 function resolveTourDateRangeLabel(tour) {
   const departures = tour?.departureDates || [];
   const rangeDeparture = departures.find((departure) => departure.date && departure.endDate);
@@ -168,10 +155,7 @@ function TourDurationCard({ tour }) {
 
 function TourAboutSection({ tour }) {
   const features = useMemo(() => {
-    return (tour.highlights || []).filter(Boolean).map((text, index) => ({
-      ...parseFeatureText(text),
-      icon: resolveFeatureIcon(text, index),
-    }));
+    return (tour.highlights || []).filter(Boolean).map((text) => parseFeatureText(text));
   }, [tour.highlights]);
 
   return (
@@ -190,22 +174,19 @@ function TourAboutSection({ tour }) {
 
       {features.length > 0 ? (
         <div className={tour.description || tour.highlight ? "mt-8 grid gap-x-10 gap-y-7 sm:grid-cols-2" : "grid gap-x-10 gap-y-7 sm:grid-cols-2"}>
-          {features.map((feature, index) => {
-            const Icon = feature.icon;
-            return (
-              <div key={`${feature.title}-${index}`} className="flex gap-3">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-primary/10">
-                  <Icon className="h-4 w-4 text-brand-primary" strokeWidth={2} aria-hidden />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-sm font-bold leading-snug text-brand-ink">{feature.title}</p>
-                  {feature.description ? (
-                    <p className="mt-1.5 text-sm leading-relaxed text-brand-muted">{feature.description}</p>
-                  ) : null}
-                </div>
+          {features.map((feature, index) => (
+            <div key={`${feature.title}-${index}`} className="flex gap-3">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-primary/10">
+                <CheckCircle2 className="h-4 w-4 text-brand-primary" strokeWidth={2} aria-hidden />
               </div>
-            );
-          })}
+              <div className="min-w-0">
+                <p className="text-sm font-bold leading-snug text-brand-ink">{feature.title}</p>
+                {feature.description ? (
+                  <p className="mt-1.5 text-sm leading-relaxed text-brand-muted">{feature.description}</p>
+                ) : null}
+              </div>
+            </div>
+          ))}
         </div>
       ) : null}
     </section>

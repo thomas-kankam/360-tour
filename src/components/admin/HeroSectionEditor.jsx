@@ -3,6 +3,7 @@ import { ImagePlus, Loader2, Plus, Trash2 } from "lucide-react";
 import { toast } from "react-toastify";
 import { useAuth } from "../../hooks/useAuth";
 import uploadServiceApi from "../../apis/UploadServiceApi";
+import { HERO_SLIDESHOW_MAX } from "../../utils/landingCmsStorage";
 
 function TextField({ label, value, onChange, multiline = false }) {
   const className =
@@ -171,6 +172,10 @@ export default function HeroSectionEditor({ hero, onChange }) {
   }
 
   function addSlide() {
+    if (slides.length >= HERO_SLIDESHOW_MAX) {
+      toast.info(`You can add up to ${HERO_SLIDESHOW_MAX} slides.`);
+      return;
+    }
     patch({ slideshowImages: [...slides, ""] });
   }
 
@@ -234,7 +239,9 @@ export default function HeroSectionEditor({ hero, onChange }) {
 
       {mediaType === "slideshow" ? (
         <div className="sm:col-span-2 space-y-4">
-          <p className="text-xs text-brand-muted">Add two or more images. They fade every few seconds on the home page.</p>
+          <p className="text-xs text-brand-muted">
+            Add up to {HERO_SLIDESHOW_MAX} images. They fade automatically on the home page — visitors can also use the left and right arrows.
+          </p>
           {slides.map((slide, index) => (
             <div key={index} className="rounded-xl border border-brand-border/50 bg-brand-cream/30 p-3">
               <div className="mb-2 flex items-center justify-between">
@@ -258,10 +265,11 @@ export default function HeroSectionEditor({ hero, onChange }) {
           <button
             type="button"
             onClick={addSlide}
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-primary hover:underline"
+            disabled={slides.length >= HERO_SLIDESHOW_MAX}
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-primary hover:underline disabled:cursor-not-allowed disabled:opacity-50"
           >
             <Plus className="h-3.5 w-3.5" aria-hidden />
-            Add slide
+            Add slide ({slides.length}/{HERO_SLIDESHOW_MAX})
           </button>
           <ImageUploadField
             label="Fallback image (optional)"

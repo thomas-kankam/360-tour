@@ -1,6 +1,6 @@
 import { dataUrlToFile, isTrustedMediaUrl, processImageUploadFile } from "./imageOptimize";
 import uploadServiceApi from "../apis/UploadServiceApi";
-import { LANDING_CMS_DEFAULTS } from "./landingCmsStorage";
+import { LANDING_CMS_DEFAULTS, HERO_SLIDESHOW_MAX } from "./landingCmsStorage";
 import { mergeCmsItems } from "./landingCmsItems";
 import { resolvePublicMediaUrl } from "./mediaUrl";
 
@@ -27,7 +27,8 @@ function sanitizeBrokenRemoteImages(content) {
   if (Array.isArray(content?.hero?.slideshowImages)) {
     content.hero.slideshowImages = content.hero.slideshowImages
       .map((url) => (url && isTrustedMediaUrl(url) ? resolvePublicMediaUrl(url) : ""))
-      .filter(Boolean);
+      .filter(Boolean)
+      .slice(0, HERO_SLIDESHOW_MAX);
   }
   if (content?.auth) {
     ["loginImage", "signupImage", "verifyImage", "adminImage"].forEach((key) => {

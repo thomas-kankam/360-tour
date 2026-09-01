@@ -70,6 +70,28 @@ class UploadServiceApi {
       return { ok: false, url: "", reason: "No video selected." };
     }
 
+    const maxBytes = 25 * 1024 * 1024;
+    if (file.size > maxBytes) {
+      return {
+        ok: false,
+        url: "",
+        reason: `Video is too large (${Math.round(file.size / (1024 * 1024))} MB). Keep it under 25 MB.`,
+      };
+    }
+
+    const type = String(file.type || "").toLowerCase();
+    const name = String(file.name || "").toLowerCase();
+    const looksOk =
+      type.includes("mp4") ||
+      type.includes("webm") ||
+      type.includes("quicktime") ||
+      name.endsWith(".mp4") ||
+      name.endsWith(".webm") ||
+      name.endsWith(".mov");
+    if (!looksOk) {
+      return { ok: false, url: "", reason: "Upload an MP4 or WebM video." };
+    }
+
     const form = new FormData();
     form.append("video", file);
 
@@ -81,6 +103,8 @@ class UploadServiceApi {
           Accept: "application/json",
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
+        // Large files can take a while on mobile networks.
+        timeout: 120000,
       });
       const result = parseApiEnvelope(response);
       const url = resolvePublicMediaUrl(result.data?.url || "");

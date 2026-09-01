@@ -1,12 +1,13 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router";
 import { AnimatePresence, motion, useScroll, useTransform } from "motion/react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import Container from "../layout/Container";
 import GalleryPicture from "./GalleryPicture";
 import { images } from "../../config/images";
 import { heroContent } from "../../data/homeContent";
 import { resolvePublicMediaUrl } from "../../utils/mediaUrl";
+import { HERO_SLIDESHOW_MAX } from "../../utils/landingCmsStorage";
 
 const EASE = [0.16, 1, 0.3, 1];
 const LEGACY_HERO_IMAGES = new Set(["/images/hero_img.png", "/images/home/hero.jpg"]);
@@ -25,7 +26,8 @@ function resolveHeroSources(cmsOverride) {
 function resolveSlideshowUrls(cmsOverride) {
   const slides = (cmsOverride?.slideshowImages || [])
     .map((url) => resolvePublicMediaUrl(url))
-    .filter(Boolean);
+    .filter(Boolean)
+    .slice(0, HERO_SLIDESHOW_MAX);
   if (slides.length) return slides;
 
   const fallback = cmsOverride?.backgroundImage?.trim();
@@ -36,19 +38,87 @@ function resolveSlideshowUrls(cmsOverride) {
   return [resolvePublicMediaUrl(images.home.heroBanner.webp)];
 }
 
+function HeroSlideshow({ slides, activeSlide, onChange }) {
+  return (
+    <div className="absolute inset-0">
+      <AnimatePresence mode="sync">
+        <motion.img
+          key={slides[activeSlide]}
+          src={slides[activeSlide]}
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 1.2, ease: EASE }}
+          draggable={false}
+        />
+      </AnimatePresence>
+
+      {slides.length > 1 ? (
+        <>
+          <button
+            type="button"
+            onClick={() => onChange((activeSlide - 1 + slides.length) % slides.length)}
+            className="absolute left-3 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/25 bg-black/35 text-white shadow-lg backdrop-blur-sm transition-colors hover:bg-black/50 sm:left-5"
+            aria-label="Previous slide"
+          >
+            <ChevronLeft className="h-6 w-6" strokeWidth={2.25} aria-hidden />
+          </button>
+          <button
+            type="button"
+            onClick={() => onChange((activeSlide + 1) % slides.length)}
+            className="absolute right-3 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/25 bg-black/35 text-white shadow-lg backdrop-blur-sm transition-colors hover:bg-black/50 sm:right-5"
+            aria-label="Next slide"
+          >
+            <ChevronRight className="h-6 w-6" strokeWidth={2.25} aria-hidden />
+          </button>
+
+          <div className="absolute bottom-6 left-1/2 z-20 flex -translate-x-1/2 gap-2" aria-hidden>
+            {slides.map((slide, index) => (
+              <span
+                key={slide}
+                className={[
+                  "h-1.5 rounded-full transition-all duration-300",
+                  index === activeSlide ? "w-6 bg-white" : "w-1.5 bg-white/45",
+                ].join(" ")}
+              />
+            ))}
+          </div>
+        </>
+      ) : null}
+    </div>
+  );
+}
+
 function HeroBackgroundMedia({ cmsOverride, heroSources }) {
   const mediaType = cmsOverride?.mediaType || "image";
   const videoUrl = resolvePublicMediaUrl(cmsOverride?.backgroundVideo || "");
   const slides = useMemo(() => resolveSlideshowUrls(cmsOverride), [cmsOverride]);
   const [activeSlide, setActiveSlide] = useState(0);
+  const intervalRef = useRef(null);
 
-  useEffect(() => {
-    if (mediaType !== "slideshow" || slides.length <= 1) return undefined;
-    const timer = window.setInterval(() => {
+  const startAutoAdvance = useCallback(() => {
+    if (intervalRef.current) window.clearInterval(intervalRef.current);
+    if (mediaType !== "slideshow" || slides.length <= 1) return;
+
+    intervalRef.current = window.setInterval(() => {
       setActiveSlide((current) => (current + 1) % slides.length);
     }, SLIDE_INTERVAL_MS);
-    return () => window.clearInterval(timer);
   }, [mediaType, slides.length]);
+
+  useEffect(() => {
+    setActiveSlide(0);
+    startAutoAdvance();
+    return () => {
+      if (intervalRef.current) window.clearInterval(intervalRef.current);
+    };
+  }, [mediaType, slides, startAutoAdvance]);
+
+  function goToSlide(nextIndex) {
+    setActiveSlide(nextIndex);
+    startAutoAdvance();
+  }
 
   if (mediaType === "video" && videoUrl) {
     return (
@@ -61,27 +131,16 @@ function HeroBackgroundMedia({ cmsOverride, heroSources }) {
         loop
         playsInline
         preload="metadata"
+        controls={false}
+        disablePictureInPicture
+        controlsList="nodownload nofullscreen noremoteplayback"
+        aria-hidden
       />
     );
   }
 
   if (mediaType === "slideshow" && slides.length) {
-    return (
-      <div className="absolute inset-0">
-        <AnimatePresence mode="sync">
-          <motion.img
-            key={slides[activeSlide]}
-            src={slides[activeSlide]}
-            alt=""
-            className="absolute inset-0 h-full w-full object-cover"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1.2, ease: EASE }}
-          />
-        </AnimatePresence>
-      </div>
-    );
+    return <HeroSlideshow slides={slides} activeSlide={activeSlide} onChange={goToSlide} />;
   }
 
   return (
@@ -120,15 +179,15 @@ export default function HomeHero({ cmsOverride }) {
           <HeroBackgroundMedia cmsOverride={cmsOverride} heroSources={heroSources} />
         </motion.div>
 
-        <div className="absolute inset-0 bg-gradient-to-b from-brand-secondary/70 via-brand-secondary/35 to-brand-charcoal/85" />
-        <div className="absolute inset-0 bg-gradient-to-r from-brand-charcoal/50 via-transparent to-transparent" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-brand-secondary/70 via-brand-secondary/35 to-brand-charcoal/85" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-brand-charcoal/50 via-transparent to-transparent" />
 
-        <Container className="relative flex min-h-[72vh] flex-col justify-center py-20 sm:min-h-[78vh] lg:min-h-[82vh] lg:py-24">
+        <Container className="relative flex min-h-[72vh] flex-col justify-center py-20 pointer-events-none sm:min-h-[78vh] lg:min-h-[82vh] lg:py-24">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.75, ease: EASE }}
-            className="max-w-2xl"
+            className="pointer-events-auto max-w-2xl"
           >
             <span className="inline-flex items-center rounded-full bg-brand-accent px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.16em] text-brand-charcoal">
               {hero.badge}
