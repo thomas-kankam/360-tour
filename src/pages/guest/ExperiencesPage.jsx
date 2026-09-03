@@ -230,7 +230,7 @@ export default function ExperiencesPage() {
     <div className="min-h-screen bg-brand-cream">
       <section className="relative overflow-hidden border-b border-brand-border/40 bg-brand-secondary">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(242,183,5,0.2),transparent_40%),radial-gradient(circle_at_85%_10%,rgba(0,107,63,0.35),transparent_35%)]" />
-        <Container className="relative py-14 sm:py-18 lg:py-20">
+        <Container className="relative py-14 sm:py-16 lg:py-20">
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
@@ -238,7 +238,7 @@ export default function ExperiencesPage() {
             className="max-w-3xl"
           >
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand-accent">Ghana experiences</p>
-            <h1 className="mt-3 font-display text-4xl font-bold uppercase leading-tight text-white sm:text-5xl">
+            <h1 className="text-balance mt-3 font-display text-3xl font-bold uppercase leading-tight text-white sm:text-4xl md:text-5xl">
               Travel experiences across{" "}
               <span className="text-brand-accent">Ghana</span>
             </h1>

@@ -156,15 +156,15 @@ export default function StoriesPage() {
 
       <div className="py-10">
         <Container>
-          <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex flex-wrap items-center gap-2">
+          <div className="mb-8 flex flex-col gap-4">
+            <div className="-mx-4 flex items-center gap-2 overflow-x-auto px-4 pb-1 scrollbar-none sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
               {categories.map((c) => (
                 <button
                   key={c}
                   type="button"
                   onClick={() => setActiveCategory(c)}
                   className={[
-                    "rounded-full px-4 py-1.5 text-sm font-semibold transition-all duration-200",
+                    "shrink-0 rounded-full px-4 py-1.5 text-sm font-semibold transition-all duration-200",
                     activeCategory === c
                       ? "bg-brand-primary text-white shadow-sm"
                       : "border border-brand-border/70 bg-white text-brand-muted hover:border-brand-primary/30 hover:text-brand-primary",
@@ -180,13 +180,13 @@ export default function StoriesPage() {
                     setActiveCategory("All");
                     setSearch("");
                   }}
-                  className="flex items-center gap-1 text-xs font-semibold text-brand-muted hover:text-brand-ink"
+                  className="flex shrink-0 items-center gap-1 text-xs font-semibold text-brand-muted hover:text-brand-ink"
                 >
                   Clear
                 </button>
               )}
             </div>
-            <div className="relative w-full max-w-xs sm:w-64">
+            <div className="relative w-full sm:max-w-xs md:ml-auto md:w-64">
               <input
                 type="search"
                 value={search}

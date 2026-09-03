@@ -45,7 +45,7 @@ export default function TourListingCard({ tour, index = 0, eagerImage = false })
       <Link
         to={ROUTES.tourDetail(tour.slug)}
         aria-label={`View ${tour.name}`}
-        className="relative flex min-h-[380px] flex-col overflow-hidden rounded-2xl border border-brand-border/50 bg-white shadow-sm transition-all duration-300 hover:border-brand-primary/30 hover:shadow-[0_20px_48px_-24px_rgba(0,107,63,0.28)] focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2"
+        className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-brand-border/50 bg-white shadow-sm transition-all duration-300 hover:border-brand-primary/30 hover:shadow-[0_20px_48px_-24px_rgba(0,107,63,0.28)] focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2"
       >
         <div className="relative aspect-[4/3] shrink-0 overflow-hidden bg-brand-border/30">
           {!imgError && tour.image ? (
@@ -67,16 +67,6 @@ export default function TourListingCard({ tour, index = 0, eagerImage = false })
           )}
 
           <div className="absolute inset-0 bg-gradient-to-t from-brand-primary/90 via-brand-primary/20 to-transparent" />
-
-          {tour.isCustom ? (
-            <span className="absolute left-3 top-3 rounded-full bg-brand-accent px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-brand-charcoal shadow-md">
-              Tailor-made
-            </span>
-          ) : (
-            <span className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-brand-primary shadow-md">
-              Scheduled
-            </span>
-          )}
 
           <div className="absolute right-3 top-3">
             <StarRating value={tour.rating} reviews={tour.reviews} />

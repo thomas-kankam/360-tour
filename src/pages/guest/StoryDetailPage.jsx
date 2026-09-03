@@ -234,7 +234,7 @@ export default function StoryDetailPage() {
           </div>
 
           <aside className="hidden lg:block">
-            <div className="sticky top-24 space-y-6">
+            <div className="sticky-below-nav sticky space-y-6">
               <div className="rounded-2xl border border-brand-border/60 bg-white p-5 shadow-sm">
                 <div className="flex items-center gap-3">
                   <div className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-primary/10 text-sm font-bold text-brand-primary">

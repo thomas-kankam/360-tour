@@ -1,22 +1,19 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { Link, useSearchParams } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
-import { Loader2, ArrowRight, Compass, X } from "lucide-react";
+import { Loader2, ArrowRight, Compass } from "lucide-react";
 import Container from "../../components/layout/Container";
 import TourListingCard from "../../components/tours/TourListingCard";
 import { toursPageSection } from "../../data/homeContent";
 import { mapServerPagination } from "../../utils/adminPaginationHelpers";
-import {
-  LISTING_SORT_OPTIONS,
-  TOUR_TYPE_FILTER_OPTIONS,
-  resolveTourTypeFilterFromParams,
-} from "../../utils/publicListingsHelpers";
+import { LISTING_SORT_OPTIONS } from "../../utils/publicListingsHelpers";
 import { usePublicListings } from "../../hooks/usePublicListings";
 import { usePageSeo } from "../../components/seo/SeoContext";
 import { buildToursItemListJsonLd } from "../../config/seo";
 
 const EASE = [0.16, 1, 0.3, 1];
 const PER_PAGE = 10;
+const LEGACY_FILTER_PARAMS = ["region", "type", "country", "date"];
 
 function SortDropdown({ value, onChange }) {
   const [open, setOpen] = useState(false);
@@ -88,15 +85,11 @@ export default function ToursPage() {
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [page, setPage] = useState(1);
 
-  const tourType = resolveTourTypeFilterFromParams(searchParams.get("type"));
-  const country = searchParams.get("country") || "all";
-  const departureDate = searchParams.get("date") || "";
-
   useEffect(() => {
-    // Drop legacy region query params so old experience links don't keep filtering.
-    if (!searchParams.has("region")) return;
+    const hasLegacyFilters = LEGACY_FILTER_PARAMS.some((key) => searchParams.has(key));
+    if (!hasLegacyFilters) return;
     const next = new URLSearchParams(searchParams);
-    next.delete("region");
+    LEGACY_FILTER_PARAMS.forEach((key) => next.delete(key));
     setSearchParams(next, { replace: true });
   }, [searchParams, setSearchParams]);
 
@@ -108,18 +101,11 @@ export default function ToursPage() {
     return () => window.clearTimeout(timer);
   }, [search]);
 
-  useEffect(() => {
-    setPage(1);
-  }, [tourType, country, departureDate]);
-
   const { data, isLoading, isFetching, isError, error } = usePublicListings({
     page,
     perPage: PER_PAGE,
     sort,
     search: debouncedSearch,
-    tourType,
-    country,
-    departureDate,
   });
 
   const tours = data?.items ?? [];
@@ -132,24 +118,6 @@ export default function ToursPage() {
     setSort(value);
   }, []);
 
-  const setTourTypeFilter = useCallback(
-    (nextType) => {
-      const next = new URLSearchParams(searchParams);
-      next.delete("region");
-      if (!nextType || nextType === "all") next.delete("type");
-      else next.set("type", nextType);
-      setSearchParams(next);
-      setPage(1);
-    },
-    [searchParams, setSearchParams],
-  );
-
-  const clearFilters = useCallback(() => {
-    setSearchParams({});
-    setPage(1);
-  }, [setSearchParams]);
-
-  const hasUrlFilters = tourType !== "all" || (country && country !== "all") || Boolean(departureDate);
   const showLoading = isLoading && !data;
 
   return (
@@ -172,10 +140,10 @@ export default function ToursPage() {
         </Container>
       </section>
 
-      <div className="sticky top-[var(--nav-height,64px)] z-40 border-b border-brand-border/50 bg-white/95 backdrop-blur-xl">
-        <Container className="flex flex-wrap items-center gap-3 py-3">
+      <div className="sticky sticky-below-nav z-40 border-b border-brand-border/50 bg-white/95 backdrop-blur-xl">
+        <Container className="flex flex-col gap-3 py-3 md:flex-row md:items-center md:justify-between">
           <div className="flex shrink-0 items-center gap-2">
-            <h2 className="text-lg font-bold text-brand-primary">All tours</h2>
+            <h2 className="text-base font-bold text-brand-primary sm:text-lg">All tours</h2>
             <span className="rounded-md bg-brand-accent/35 px-1.5 py-0.5 text-[10px] font-bold tabular-nums text-brand-primary">
               {showLoading ? "…" : paginationMeta.totalItems || tours.length}
             </span>
@@ -184,7 +152,8 @@ export default function ToursPage() {
             ) : null}
           </div>
 
-          <div className="relative min-w-0 flex-1 sm:max-w-md">
+          <div className="flex min-w-0 flex-1 items-center gap-3 md:max-w-xl md:justify-end">
+            <div className="relative min-w-0 flex-1">
             <svg
               className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-brand-muted"
               fill="none"
@@ -217,29 +186,7 @@ export default function ToursPage() {
           </div>
 
           <SortDropdown value={sort} onChange={handleSortChange} />
-        </Container>
-
-        <Container className="flex flex-wrap items-center gap-2 pb-3">
-          {TOUR_TYPE_FILTER_OPTIONS.map((option) => (
-            <button
-              key={option.id}
-              type="button"
-              onClick={() => setTourTypeFilter(option.id)}
-              className={[
-                "rounded-full px-3 py-1.5 text-xs font-semibold transition-colors",
-                tourType === option.id
-                  ? "bg-brand-primary text-white"
-                  : "border border-brand-border/70 bg-white text-brand-muted hover:border-brand-primary/30 hover:text-brand-primary",
-              ].join(" ")}
-            >
-              {option.label}
-            </button>
-          ))}
-          {hasUrlFilters ? (
-            <button type="button" onClick={clearFilters} className="inline-flex items-center gap-1 text-xs font-semibold text-brand-muted hover:text-brand-ink">
-              <X className="h-3 w-3" aria-hidden /> Clear filters
-            </button>
-          ) : null}
+          </div>
         </Container>
       </div>
 
@@ -264,7 +211,7 @@ export default function ToursPage() {
               </motion.div>
             ) : tours.length > 0 ? (
               <motion.div
-                key={`grid-${page}-${sort}-${debouncedSearch}-${tourType}`}
+                key={`grid-${page}-${sort}-${debouncedSearch}`}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -285,20 +232,15 @@ export default function ToursPage() {
               >
                 <p className="text-lg font-semibold text-brand-ink">No tours found</p>
                 <p className="mt-1.5 text-sm text-brand-muted">
-                  {debouncedSearch || hasUrlFilters
-                    ? "Try a different search or clear the tour type filter."
-                    : "Check back soon for new departures."}
+                  {debouncedSearch ? "Try a different search term." : "Check back soon for new departures."}
                 </p>
-                {debouncedSearch || hasUrlFilters ? (
+                {debouncedSearch ? (
                   <button
                     type="button"
-                    onClick={() => {
-                      setSearch("");
-                      clearFilters();
-                    }}
+                    onClick={() => setSearch("")}
                     className="mt-5 rounded-xl border border-brand-border bg-white px-6 py-2.5 text-sm font-semibold text-brand-primary shadow-sm transition-all hover:bg-brand-accent/10"
                   >
-                    Clear filters
+                    Clear search
                   </button>
                 ) : null}
               </motion.div>

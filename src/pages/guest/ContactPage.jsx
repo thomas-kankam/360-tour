@@ -271,7 +271,7 @@ export default function ContactPage() {
       </section>
 
       {/* ── Main content ── */}
-      <section className="bg-brand-cream py-14 sm:py-18">
+      <section className="bg-brand-cream py-14 sm:py-16">
         <Container>
           <div className="grid min-w-0 gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-14">
 

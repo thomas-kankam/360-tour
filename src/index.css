@@ -13,6 +13,20 @@
     --kente-black: #111111;
     --kente-cream: #faf8f2;
     --kente-sand: #d8b98a;
+    /* Sticky offset below floating navbar (pt-3 + bar + kente stripe). */
+    --nav-height: 5.5rem;
+  }
+
+  @media (min-width: 640px) {
+    :root {
+      --nav-height: 5.75rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    :root {
+      --nav-height: 6rem;
+    }
   }
 
   body {
@@ -185,5 +199,17 @@
 
   .text-balance {
     text-wrap: balance;
+  }
+
+  .sticky-below-nav {
+    top: var(--nav-height);
+  }
+
+  .safe-area-bottom {
+    padding-bottom: max(0.75rem, env(safe-area-inset-bottom, 0px));
+  }
+
+  .page-bottom-bar-offset {
+    padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
   }
 }

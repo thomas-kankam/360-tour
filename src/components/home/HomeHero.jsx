@@ -193,7 +193,7 @@ export default function HomeHero({ cmsOverride }) {
               {hero.badge}
             </span>
 
-            <h1 className="mt-5 font-display text-4xl font-bold uppercase leading-[1.05] tracking-tight text-white sm:text-5xl lg:text-6xl">
+            <h1 className="text-balance mt-5 font-display text-3xl font-bold uppercase leading-[1.05] tracking-tight text-white sm:text-4xl md:text-5xl lg:text-6xl">
               {hero.title}
               {hero.titleHighlight ? (
                 <>

@@ -71,7 +71,7 @@ export default function HomeAdventureGallery({ cmsOverride }) {
           </ScrollReveal>
         </div>
 
-        <ScrollStagger className="mt-10 grid auto-rows-[150px] grid-cols-2 gap-2.5 sm:auto-rows-[170px] sm:grid-cols-4 sm:gap-3 lg:auto-rows-[190px]">
+        <ScrollStagger className="mt-10 grid auto-rows-[170px] grid-cols-2 gap-2.5 sm:auto-rows-[170px] sm:grid-cols-4 sm:gap-3 lg:auto-rows-[190px]">
           {tiles.map((item, index) => (
             <ScrollStaggerItem key={item.id} className={SPANS[index]}>
               <button

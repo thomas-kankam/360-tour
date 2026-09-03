@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useLocation } from "react-router";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { ArrowUp } from "lucide-react";
 import env, { getWhatsAppUrl } from "../../config/env";
@@ -72,7 +73,17 @@ function QuickActionButton({ href, onClick, label, icon: Icon, accent = false, d
 
 export default function LandingQuickActions() {
   const reduceMotion = useReducedMotion();
+  const { pathname } = useLocation();
   const [visible, setVisible] = useState(false);
+
+  const hasMobileBookingBar = useMemo(
+    () => /^\/tours\/[^/]+(\/book)?$/.test(pathname),
+    [pathname],
+  );
+
+  const positionClass = hasMobileBookingBar
+    ? "bottom-24 sm:bottom-7"
+    : "bottom-5 sm:bottom-7";
 
   useEffect(() => {
     function onScroll() {
@@ -89,7 +100,7 @@ export default function LandingQuickActions() {
 
   return (
     <div
-      className="pointer-events-none fixed bottom-5 right-4 z-[60] sm:bottom-7 sm:right-6"
+      className={`pointer-events-none fixed right-4 z-[60] sm:right-6 ${positionClass}`}
       aria-label="Quick actions"
     >
       <AnimatePresence>

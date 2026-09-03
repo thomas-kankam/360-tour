@@ -379,7 +379,6 @@ export default function TourListingForm({ initial, onSubmit, submitLabel = "Save
     const stepId = STEPS[index]?.id;
     if (stepId === "basics") {
       if (!form.name.trim()) return "Tour name is required before continuing.";
-      if (!(form.locations || []).length) return "Add at least one city to your tour route before continuing.";
     }
     if (stepId === "images") {
       return validateFeatureImagesCollection(form.featureImages) || "";

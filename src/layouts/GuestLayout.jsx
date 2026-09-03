@@ -14,14 +14,16 @@ function GuestSeo() {
 export default function GuestLayout() {
   return (
     <SeoProvider>
-      <GuestSeo />
-      <ScrollToTop />
-      <GuestNavbar />
-      <main className="flex-1">
-        <Outlet />
-      </main>
-      <Footer />
-      <LandingQuickActions />
+      <div className="flex min-h-screen flex-col">
+        <GuestSeo />
+        <ScrollToTop />
+        <GuestNavbar />
+        <main className="flex-1 overflow-x-clip">
+          <Outlet />
+        </main>
+        <Footer />
+        <LandingQuickActions />
+      </div>
     </SeoProvider>
   );
 }

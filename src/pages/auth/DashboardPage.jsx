@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import { Link } from "react-router";
 import { motion } from "motion/react";
+import { Loader2 } from "lucide-react";
 import Container from "../../components/layout/Container";
 import { ROUTES } from "../../constants/routes";
 import { useAuth } from "../../hooks/useAuth";
-import { getBookings, isUpcoming } from "../../utils/bookingStorage";
+import { useClientBookings } from "../../hooks/useClientBookings";
+import { isUpcoming } from "../../utils/bookingStorage";
 
 const EASE = [0.16, 1, 0.3, 1];
 
@@ -19,19 +21,11 @@ function statusLabel(status) {
 }
 
 export default function DashboardPage() {
-  const { user } = useAuth();
-  const [bookings, setBookings] = useState([]);
+  const { user, token } = useAuth();
+  const { data, isLoading } = useClientBookings(token, { page: 1, per_page: 15 });
 
-  useEffect(() => {
-    function refresh() {
-      setBookings(getBookings());
-    }
-    refresh();
-    window.addEventListener("360tours:bookings-updated", refresh);
-    return () => window.removeEventListener("360tours:bookings-updated", refresh);
-  }, []);
-
-  const upcoming = bookings.filter(isUpcoming);
+  const bookings = data?.items ?? [];
+  const upcoming = useMemo(() => bookings.filter(isUpcoming), [bookings]);
   const recent = bookings.slice(0, 3);
 
   return (
@@ -39,7 +33,7 @@ export default function DashboardPage() {
       <Container>
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, ease: EASE }}>
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-orange">Traveler hub</p>
-          <h1 className="mt-2 font-heading text-3xl text-brand-primary sm:text-4xl">
+          <h1 className="mt-2 font-heading text-2xl text-brand-primary sm:text-3xl md:text-4xl">
             Welcome{user?.name ? `, ${user.name.split(" ")[0]}` : ""}
           </h1>
           <p className="mt-3 max-w-2xl text-brand-muted">
@@ -73,7 +67,11 @@ export default function DashboardPage() {
               <h2 className="text-lg font-bold text-brand-ink">Recent bookings</h2>
               <Link to={ROUTES.myBookings} className="text-sm font-semibold text-brand-primary hover:underline">View all</Link>
             </div>
-            {recent.length === 0 ? (
+            {isLoading ? (
+              <div className="mt-8 flex justify-center py-10">
+                <Loader2 className="h-7 w-7 animate-spin text-brand-primary" strokeWidth={2} aria-hidden />
+              </div>
+            ) : recent.length === 0 ? (
               <div className="mt-8 rounded-xl border border-dashed border-brand-border bg-brand-cream/50 px-6 py-10 text-center">
                 <p className="font-semibold text-brand-ink">No bookings yet</p>
                 <p className="mt-2 text-sm text-brand-muted">Browse live Ghana tours and reserve your spot.</p>
@@ -83,11 +81,13 @@ export default function DashboardPage() {
               <ul className="mt-5 divide-y divide-brand-border/50">
                 {recent.map((b) => {
                   const status = statusLabel(b.status);
+                  const tourName = b.tour?.name || b.tourName || "Tour booking";
+                  const bookingRef = b.bookingRef || b.bookingCode || "—";
                   return (
-                    <li key={b.bookingRef} className="flex flex-wrap items-center justify-between gap-3 py-4 first:pt-0">
+                    <li key={bookingRef} className="flex flex-wrap items-center justify-between gap-3 py-4 first:pt-0">
                       <div>
-                        <p className="font-semibold text-brand-ink">{b.tourName}</p>
-                        <p className="text-xs text-brand-muted">{b.bookingRef} · {b.selectedDate || "Date TBC"}</p>
+                        <p className="font-semibold text-brand-ink">{tourName}</p>
+                        <p className="text-xs text-brand-muted">{bookingRef} · {b.selectedDate || "Date TBC"}</p>
                       </div>
                       <span className={`rounded-full px-2.5 py-1 text-[10px] font-bold uppercase ${status.className}`}>{status.text}</span>
                     </li>

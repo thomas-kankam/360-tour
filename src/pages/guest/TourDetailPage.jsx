@@ -8,7 +8,6 @@ import {
   Clock,
   Loader2,
   MapPin,
-  Sparkles,
   Star,
   Users,
   XCircle,
@@ -154,37 +153,13 @@ function TourDurationCard({ tour }) {
 }
 
 function TourAboutSection({ tour }) {
-  const features = useMemo(() => {
-    return (tour.highlights || []).filter(Boolean).map((text) => parseFeatureText(text));
-  }, [tour.highlights]);
-
-  if (!tour.description && !features.length) return null;
+  if (!tour.description) return null;
 
   return (
-    <Section title="About this trip" subtitle="What you’ll experience on this journey">
-      {tour.description ? (
-        <p className="max-w-3xl text-sm leading-relaxed text-brand-muted sm:text-[15px] sm:leading-7">
-          {tour.description}
-        </p>
-      ) : null}
-
-      {features.length > 0 ? (
-        <div className={tour.description ? "mt-8 grid gap-x-10 gap-y-5 sm:grid-cols-2" : "grid gap-x-10 gap-y-5 sm:grid-cols-2"}>
-          {features.map((feature, index) => (
-            <div key={`${feature.title}-${index}`} className="flex gap-3">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-primary/10">
-                <CheckCircle2 className="h-4 w-4 text-brand-primary" strokeWidth={2} aria-hidden />
-              </div>
-              <div className="min-w-0">
-                <p className="text-sm font-bold leading-snug text-brand-ink">{feature.title}</p>
-                {feature.description ? (
-                  <p className="mt-1.5 text-sm leading-relaxed text-brand-muted">{feature.description}</p>
-                ) : null}
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : null}
+    <Section title="About this trip">
+      <p className="max-w-3xl text-sm leading-relaxed text-brand-muted sm:text-[15px] sm:leading-7">
+        {tour.description}
+      </p>
     </Section>
   );
 }
@@ -206,9 +181,9 @@ function TourIncludedSection({ items }) {
           const hasDetail = Boolean(feature.description);
 
           return (
-            <div key={`${feature.title}-${index}`} className="flex gap-3">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-accent/25">
-                <CheckCircle2 className="h-4 w-4 text-brand-primary" strokeWidth={2} aria-hidden />
+            <div key={`${feature.title}-${index}`} className="flex gap-4">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-brand-accent/25">
+                <CheckCircle2 className="h-6 w-6 text-brand-primary" strokeWidth={2} aria-hidden />
               </div>
               <div className="min-w-0">
                 {hasDetail ? (
@@ -230,7 +205,7 @@ function TourIncludedSection({ items }) {
 
 function Section({ title, subtitle, children }) {
   return (
-    <section className="rounded-3xl border border-brand-border/50 bg-white p-6 shadow-sm sm:p-8">
+    <section className="rounded-3xl border border-brand-border/50 bg-white p-5 shadow-sm sm:p-6 md:p-8">
       <div className="mb-6">
         <h2 className="font-heading text-xl font-bold text-brand-ink">{title}</h2>
         {subtitle ? <p className="mt-1.5 text-sm text-brand-muted">{subtitle}</p> : null}
@@ -333,8 +308,8 @@ function BookingCard({ tour, paymentRegion }) {
   return (
     <div className="overflow-hidden rounded-3xl border border-brand-border/50 bg-white shadow-[0_16px_40px_-24px_rgba(0,107,63,0.2)]">
       <div className="border-b border-brand-border/40 bg-gradient-to-br from-brand-cream/60 to-white p-6">
-        <div className="flex items-end justify-between gap-4">
-          <div>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div className="min-w-0">
             <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brand-muted">From</p>
             <TourPriceDisplay tour={tour} variant="detail" amountOnly paymentRegion={paymentRegion} />
             <p className="text-xs text-brand-muted">per person</p>
@@ -486,8 +461,8 @@ export default function TourDetailPage() {
   if (notFound || !tour) return <Navigate to={ROUTES.tours} replace />;
 
   return (
-    <div className="bg-brand-cream/30 pb-24 lg:pb-16">
-      <div className="border-b border-brand-border/40 bg-white/90 px-4 py-3 backdrop-blur-sm sm:px-6 lg:px-8">
+    <div className="page-bottom-bar-offset bg-brand-cream/30 lg:pb-16">
+      <div className="border-b border-brand-border/40 bg-white/90 py-3 backdrop-blur-sm">
         <Container>
           <nav className="flex items-center gap-2 text-xs text-brand-muted">
             <Link to={ROUTES.home} className="transition-colors hover:text-brand-primary">Home</Link>
@@ -499,7 +474,7 @@ export default function TourDetailPage() {
         </Container>
       </div>
 
-      <section className="px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+      <section className="py-6 sm:py-8">
         <Container className="space-y-6">
           <motion.div
             initial={{ opacity: 0, y: 12 }}
@@ -508,7 +483,6 @@ export default function TourDetailPage() {
           >
             <TourGalleryCollage
               images={gallery}
-              badge={tour.isCustom ? "Tailor-made journey" : "Scheduled tour"}
               alt={tour.name}
               onImageClick={setLightboxIndex}
               departDay={tour.departDay}
@@ -520,25 +494,15 @@ export default function TourDetailPage() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45, ease: EASE, delay: 0.05 }}
-            className="rounded-3xl border border-brand-border/50 bg-white p-6 shadow-sm sm:p-8"
+            className="rounded-3xl border border-brand-border/50 bg-white p-5 shadow-sm sm:p-6 md:p-8"
           >
             <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
               <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="rounded-full bg-brand-primary/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-brand-primary">
+                {tour.country ? (
+                  <span className="inline-flex rounded-full bg-brand-primary/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-brand-primary">
                     {tour.country}
                   </span>
-                  {tour.isCustom ? (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-brand-accent px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-brand-charcoal">
-                      <Sparkles className="h-3 w-3" strokeWidth={2.5} aria-hidden />
-                      Tailor-made
-                    </span>
-                  ) : (
-                    <span className="rounded-full bg-brand-cream px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-brand-ink">
-                      Scheduled
-                    </span>
-                  )}
-                </div>
+                ) : null}
 
                 <h1 className="mt-4 font-heading text-3xl font-bold text-brand-ink sm:text-4xl lg:text-[2.5rem] lg:leading-tight">
                   {tour.name}
@@ -571,7 +535,7 @@ export default function TourDetailPage() {
                 </div>
               </div>
 
-              <div className="shrink-0 rounded-2xl border border-brand-primary/15 bg-gradient-to-br from-brand-cream/80 to-white px-5 py-4 text-right lg:min-w-[180px]">
+              <div className="shrink-0 rounded-2xl border border-brand-primary/15 bg-gradient-to-br from-brand-cream/80 to-white px-5 py-4 sm:text-right lg:min-w-[180px]">
                 <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brand-muted">From</p>
                 <TourPriceDisplay
                   tour={tour}
@@ -604,10 +568,6 @@ export default function TourDetailPage() {
 
               <TourIncludedSection items={tour.included} />
 
-              <TourItineraryTimeline itinerary={tour.itinerary} />
-
-              <TourReviewsSection tourSlug={tour.slug} tourTitle={tour.name} />
-
               {tour.notIncluded.length > 0 ? (
                 <Section title="Not included">
                   <ul className="space-y-2">
@@ -620,10 +580,14 @@ export default function TourDetailPage() {
                   </ul>
                 </Section>
               ) : null}
+
+              <TourItineraryTimeline itinerary={tour.itinerary} />
+
+              <TourReviewsSection tourSlug={tour.slug} tourTitle={tour.name} />
             </div>
 
             <div className="space-y-6">
-              <div className="lg:sticky lg:top-[88px]">
+              <div className="lg:sticky sticky-below-nav">
                 <BookingCard tour={tour} paymentRegion={paymentRegion} />
               </div>
             </div>
@@ -632,7 +596,7 @@ export default function TourDetailPage() {
       </section>
 
       {related.length > 0 ? (
-        <section className="border-t border-brand-border/40 bg-white px-4 py-14 sm:px-6 lg:px-8">
+        <section className="border-t border-brand-border/40 bg-white py-10 sm:py-14">
           <Container>
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div>
@@ -682,16 +646,16 @@ export default function TourDetailPage() {
         </section>
       ) : null}
 
-      <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-brand-border/60 bg-white/95 px-4 py-3 shadow-[0_-8px_24px_-8px_rgba(0,107,63,0.12)] backdrop-blur-xl lg:hidden">
-        <div className="flex items-center justify-between gap-4">
-          <div>
+      <div className="safe-area-bottom fixed bottom-0 left-0 right-0 z-40 border-t border-brand-border/60 bg-white/95 px-4 pt-3 shadow-[0_-8px_24px_-8px_rgba(0,107,63,0.12)] backdrop-blur-xl lg:hidden">
+        <div className="flex items-center justify-between gap-3 sm:gap-4">
+          <div className="min-w-0">
             <p className="text-xs text-brand-muted">From</p>
             <TourPriceDisplay tour={tour} variant="inline" amountOnly paymentRegion={paymentRegion} />
             <span className="text-xs font-normal text-brand-muted"> /person</span>
           </div>
           <Link
             to={ROUTES.tourBook(tour.slug)}
-            className="btn-primary flex max-w-[220px] flex-1 items-center justify-center gap-1.5 px-3 py-3 text-center text-xs font-semibold leading-snug sm:text-sm"
+            className="btn-primary flex shrink-0 items-center justify-center gap-1.5 px-4 py-3 text-center text-xs font-semibold leading-snug sm:min-w-[140px] sm:px-5 sm:text-sm"
           >
             Book now
             <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.5} aria-hidden />
