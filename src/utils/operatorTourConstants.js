@@ -31,7 +31,9 @@ export const TOUR_TYPE_IDS = TOUR_TYPE_OPTIONS.map((option) => option.id);
 
 export function normalizeTourType(type) {
   const value = String(type || "").trim().toLowerCase();
-  return TOUR_TYPE_IDS.includes(value) ? value : TOUR_TYPE.REGULAR;
+  if (value === "customized" || value === TOUR_TYPE.CUSTOM) return TOUR_TYPE.CUSTOM;
+  if (value === TOUR_TYPE.REGULAR) return TOUR_TYPE.REGULAR;
+  return TOUR_TYPE.REGULAR;
 }
 
 export function isCustomTourType(type) {

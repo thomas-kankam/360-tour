@@ -2,7 +2,7 @@ import { ROUTES } from "../../constants/routes";
 import { ADMIN_PERMISSIONS } from "../../constants/adminPermissions";
 import { USER_ROLES } from "../../constants/roles";
 
-/** Toggle guest-facing sections — flip to true when ready to launch */
+/** Header nav toggles — Experiences/Stories stay footer-only when false */
 export const NAV_FEATURES = {
   experiences: false,
   stories: false,
@@ -22,8 +22,8 @@ export const primaryNavLinks = [
 export const exploreFooterLinks = [
   { label: "Home", to: ROUTES.home },
   { label: "Tours", to: ROUTES.tours },
-  ...(NAV_FEATURES.experiences ? [{ label: "Experiences", to: ROUTES.experiences }] : []),
-  ...(NAV_FEATURES.stories ? [{ label: "Stories", to: ROUTES.stories }] : []),
+  { label: "Experiences", to: ROUTES.experiences },
+  { label: "Stories", to: ROUTES.stories },
   { label: "Contact", to: ROUTES.contact },
 ];
 

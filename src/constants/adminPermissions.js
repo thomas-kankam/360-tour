@@ -46,10 +46,11 @@ export function getRequiredPermissionForAdminPath(pathname) {
   if (pathname.startsWith("/admin/contacts")) return ADMIN_PERMISSIONS.CONTACT_MANAGEMENT;
   if (pathname.startsWith("/admin/listings")) return ADMIN_PERMISSIONS.LISTING_MANAGEMENT;
   if (pathname.startsWith("/admin/tours")) return ADMIN_PERMISSIONS.LISTING_MANAGEMENT;
-  if (pathname.startsWith("/admin/operators")) return ADMIN_PERMISSIONS.LISTING_MANAGEMENT;
   if (pathname.startsWith("/admin/ratings")) return ADMIN_PERMISSIONS.RATING_MANAGEMENT;
   if (pathname.startsWith("/admin/invoices")) return ADMIN_PERMISSIONS.INVOICE_MANAGEMENT;
   if (pathname.startsWith("/admin/landing-cms")) return ADMIN_PERMISSIONS.CMS_MANAGEMENT;
+  if (pathname.startsWith("/admin/stories")) return ADMIN_PERMISSIONS.CMS_MANAGEMENT;
+  if (pathname.startsWith("/admin/experiences")) return ADMIN_PERMISSIONS.CMS_MANAGEMENT;
   if (pathname.startsWith("/admin/roles")) return ADMIN_PERMISSIONS.ROLE_MANAGEMENT;
 
   return null;
@@ -63,7 +64,7 @@ export function canAccessAdminPath(pathname, user) {
 
 export const ADMIN_LISTING_NAV_ITEMS = [
   { to: ROUTES.admin.listings, label: "Listings" },
-  { to: ROUTES.admin.operators, label: "Operators" },
+  { to: ROUTES.admin.tours, label: "Tours" },
 ];
 
 export const ADMIN_BOOKING_NAV_ITEMS = [

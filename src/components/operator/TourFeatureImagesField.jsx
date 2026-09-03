@@ -3,7 +3,7 @@ import { ImagePlus, Upload, X, ZoomIn } from "lucide-react";
 import ImageLightbox from "../misc/ImageLightbox";
 import { useAuth } from "../../hooks/useAuth";
 import uploadServiceApi from "../../apis/UploadServiceApi";
-import { isAdminRole, isOperatorRole } from "../../constants/roles";
+import { isAdminRole } from "../../constants/roles";
 import {
   MAX_FEATURE_IMAGES,
   getImagePreviewSrc,
@@ -17,7 +17,7 @@ export default function TourFeatureImagesField({ value = [], coverImage, onChang
   const { token, role } = useAuth();
   const [uploading, setUploading] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(null);
-  const uploadRole = isAdminRole(role) || isOperatorRole(role) ? "admin" : "client";
+  const uploadRole = isAdminRole(role) ? "admin" : "client";
 
   const images = Array.isArray(value) ? value : [];
   const coverSrc = getImagePreviewSrc(coverImage);

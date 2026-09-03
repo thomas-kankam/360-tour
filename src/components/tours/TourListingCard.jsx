@@ -72,18 +72,18 @@ export default function TourListingCard({ tour, index = 0, eagerImage = false })
             <span className="absolute left-3 top-3 rounded-full bg-brand-accent px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-brand-charcoal shadow-md">
               Tailor-made
             </span>
-          ) : null}
+          ) : (
+            <span className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-brand-primary shadow-md">
+              Scheduled
+            </span>
+          )}
 
           <div className="absolute right-3 top-3">
             <StarRating value={tour.rating} reviews={tour.reviews} />
           </div>
 
           <div className="absolute bottom-3 left-3 right-3">
-            {tour.regionLabels?.[0] ? (
-              <span className="inline-flex rounded-full bg-brand-accent/90 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand-charcoal">
-                {tour.regionLabels[0]}
-              </span>
-            ) : tour.country ? (
+            {tour.country ? (
               <p className="text-[10px] font-semibold uppercase tracking-widest text-white/75">{tour.country}</p>
             ) : null}
             <h3 className="mt-1 line-clamp-2 text-lg font-bold leading-snug text-white">{tour.name}</h3>

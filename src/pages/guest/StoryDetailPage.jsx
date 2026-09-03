@@ -1,12 +1,13 @@
 import { Link, useParams } from "react-router";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "motion/react";
-import { BookOpen } from "lucide-react";
+import { BookOpen, Loader2 } from "lucide-react";
 import Container from "../../components/layout/Container";
 import { ROUTES } from "../../constants/routes";
-import { getStoryBySlug, stories } from "../../data/storiesContent";
+import { getStoryBySlug, stories as staticStories } from "../../data/storiesContent";
 import { usePageSeo } from "../../components/seo/SeoContext";
 import { buildStoryArticleJsonLd, resolveSeoForStory } from "../../config/seo";
+import publicContentServiceApi from "../../apis/PublicContentServiceApi";
 
 const EASE = [0.16, 1, 0.3, 1];
 
@@ -22,7 +23,7 @@ const catColors = {
 function ArticleBody({ blocks }) {
   return (
     <div className="space-y-6">
-      {blocks.map((block, i) => {
+      {(blocks || []).map((block, i) => {
         if (block.type === "lead") {
           return (
             <p key={i} className="text-lg font-medium leading-relaxed text-brand-ink sm:text-xl">
@@ -50,7 +51,7 @@ function ArticleBody({ blocks }) {
         if (block.type === "list") {
           return (
             <ul key={i} className="space-y-2 rounded-xl border border-brand-border/60 bg-brand-cream/50 p-5">
-              {block.items.map((item) => (
+              {(block.items || []).map((item) => (
                 <li key={item} className="flex items-start gap-2 text-sm leading-relaxed text-brand-ink sm:text-base">
                   <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-primary" aria-hidden />
                   {item}
@@ -69,19 +70,72 @@ function ArticleBody({ blocks }) {
   );
 }
 
+function authorInitials(author) {
+  return (author || "360")
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .slice(0, 2);
+}
+
 export default function StoryDetailPage() {
   const { slug } = useParams();
-  const story = getStoryBySlug(slug);
+  const [story, setStory] = useState(() => getStoryBySlug(slug));
+  const [related, setRelated] = useState(() =>
+    staticStories.filter((s) => s.slug !== slug && s.category === getStoryBySlug(slug)?.category).slice(0, 3),
+  );
+  const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      setLoading(true);
+      setNotFound(false);
+      const fallback = getStoryBySlug(slug);
+      if (fallback) {
+        setStory(fallback);
+        setRelated(
+          staticStories.filter((s) => s.slug !== fallback.slug && s.category === fallback.category).slice(0, 3),
+        );
+      }
+
+      const result = await publicContentServiceApi.getStory(slug);
+      if (cancelled) return;
+
+      if (result.ok && result.story) {
+        setStory(result.story);
+        setRelated(result.related?.length ? result.related : []);
+        setNotFound(false);
+      } else if (!fallback) {
+        setStory(null);
+        setRelated([]);
+        setNotFound(true);
+      }
+      setLoading(false);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [slug]);
 
   const storySeo = useMemo(() => (story ? resolveSeoForStory(story) : null), [story]);
   const storyJsonLd = useMemo(() => (story ? buildStoryArticleJsonLd(story) : null), [story]);
   usePageSeo(storySeo, storyJsonLd, "story-article-json-ld");
 
-  if (!story) {
+  if (loading && !story) {
+    return (
+      <div className="flex min-h-[40vh] items-center justify-center gap-2 bg-white text-sm text-brand-muted">
+        <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> Loading story…
+      </div>
+    );
+  }
+
+  if (!story || notFound) {
     return (
       <div className="min-h-[50vh] bg-white py-20 text-center">
         <Container>
-          <BookOpen className="h-12 w-12 text-brand-primary/40" aria-hidden />
+          <BookOpen className="mx-auto h-12 w-12 text-brand-primary/40" aria-hidden />
           <h1 className="mt-4 text-2xl font-bold text-brand-ink">Story not found</h1>
           <p className="mt-2 text-brand-muted">This story may have moved or no longer exists.</p>
           <Link
@@ -95,14 +149,14 @@ export default function StoryDetailPage() {
     );
   }
 
-  const related = stories.filter((s) => s.slug !== story.slug && s.category === story.category).slice(0, 3);
-
   return (
     <div className="min-h-screen bg-white">
-
-      {/* Hero image */}
       <div className="relative h-[40vh] min-h-[280px] max-h-[480px] overflow-hidden sm:h-[45vh]">
-        <img src={story.image} alt={story.title} fetchPriority="high" decoding="async" className="h-full w-full object-cover" />
+        {story.image ? (
+          <img src={story.image} alt={story.title} fetchPriority="high" decoding="async" className="h-full w-full object-cover" />
+        ) : (
+          <div className="h-full w-full bg-brand-secondary" />
+        )}
         <div className="absolute inset-0 bg-gradient-to-t from-brand-ink/80 via-brand-ink/30 to-brand-ink/20" />
         <Container className="absolute inset-x-0 bottom-0 pb-8 pt-16">
           <motion.div
@@ -134,13 +188,12 @@ export default function StoryDetailPage() {
         </Container>
       </div>
 
-      {/* Article */}
       <Container className="py-10 sm:py-14">
         <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_280px] lg:gap-12 xl:grid-cols-[minmax(0,1fr)_320px]">
           <div>
             <div className="mb-8 flex items-center gap-3 border-b border-brand-border/50 pb-6 lg:hidden">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-primary/10 text-sm font-bold text-brand-primary">
-                {story.author.split(" ").map((n) => n[0]).join("").slice(0, 2)}
+                {authorInitials(story.author)}
               </div>
               <div>
                 <p className="text-sm font-semibold text-brand-ink">{story.author}</p>
@@ -185,7 +238,7 @@ export default function StoryDetailPage() {
               <div className="rounded-2xl border border-brand-border/60 bg-white p-5 shadow-sm">
                 <div className="flex items-center gap-3">
                   <div className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-primary/10 text-sm font-bold text-brand-primary">
-                    {story.author.split(" ").map((n) => n[0]).join("").slice(0, 2)}
+                    {authorInitials(story.author)}
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-brand-ink">{story.author}</p>
@@ -225,7 +278,6 @@ export default function StoryDetailPage() {
           </aside>
         </div>
 
-        {/* Related */}
         {related.length > 0 && (
           <div className="mt-16 border-t border-brand-border/50 pt-12">
             <h2 className="text-lg font-bold text-brand-ink">More in {story.category}</h2>
@@ -236,8 +288,10 @@ export default function StoryDetailPage() {
                   to={ROUTES.storyDetail(s.slug)}
                   className="group overflow-hidden rounded-xl border border-brand-border/60 bg-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
                 >
-                  <div className="aspect-[16/10] overflow-hidden">
-                    <img src={s.image} alt={s.title} loading="lazy" decoding="async" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                  <div className="aspect-[16/10] overflow-hidden bg-brand-cream">
+                    {s.image ? (
+                      <img src={s.image} alt={s.title} loading="lazy" decoding="async" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                    ) : null}
                   </div>
                   <div className="p-4">
                     <p className="text-xs font-semibold text-brand-primary">{s.country}</p>

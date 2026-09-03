@@ -5,10 +5,9 @@ export const ROUTES = {
   tours: "/tours",
   toursWithCountry: (countryId) =>
     countryId && countryId !== "all" ? `/tours?country=${countryId}` : "/tours",
-  toursSearch: ({ country, date, region, tourType } = {}) => {
+  toursSearch: ({ country, date, tourType } = {}) => {
     const params = new URLSearchParams();
     if (country && country !== "all") params.set("country", country);
-    if (region && region !== "all") params.set("region", region);
     if (tourType && tourType !== "all") params.set("type", tourType);
     if (date) params.set("date", date);
     const query = params.toString();
@@ -65,8 +64,6 @@ export const ROUTES = {
     contactDetail: (id) => `/admin/contacts/${id}`,
     listings: "/admin/listings",
     listingDetail: (slug) => `/admin/listings/${slug}`,
-    operators: "/admin/operators",
-    operatorDetail: (operatorSlug) => `/admin/operators/${encodeURIComponent(operatorSlug)}`,
     tours: "/admin/tours",
     tourNew: "/admin/tours/new",
     tourDetail: (slug) => `/admin/tours/${slug}`,
@@ -77,6 +74,12 @@ export const ROUTES = {
     invoiceDetail: (id) => `/admin/invoices/${encodeURIComponent(id)}`,
     invoiceEdit: (id) => `/admin/invoices/${encodeURIComponent(id)}/edit`,
     landingCms: "/admin/landing-cms",
+    stories: "/admin/stories",
+    storyNew: "/admin/stories/new",
+    storyEdit: (id) => `/admin/stories/${id}/edit`,
+    experiences: "/admin/experiences",
+    experienceNew: "/admin/experiences/new",
+    experienceEdit: (id) => `/admin/experiences/${id}/edit`,
     notifications: "/admin/notifications",
     invoiceRequests: "/admin/invoice-requests",
     roles: "/admin/roles",

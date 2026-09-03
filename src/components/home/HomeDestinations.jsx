@@ -57,7 +57,7 @@ function DestinationCard({ destination, priority = false }) {
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-brand-charcoal/70 via-transparent to-transparent" />
           <span className="absolute bottom-3 left-3 rounded-md bg-brand-accent px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-brand-charcoal">
-            {destination.region}
+            Ghana
           </span>
         </div>
 

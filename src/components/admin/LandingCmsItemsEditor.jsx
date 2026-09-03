@@ -162,7 +162,7 @@ export default function LandingCmsItemsEditor({ sectionId, items = [], onChange 
             {sectionId === "gallery" ? (
               <>
                 <ItemField label="Caption" value={item.caption} onChange={(value) => updateItem(index, { caption: value })} />
-                <ItemField label="Region label" value={item.region} onChange={(value) => updateItem(index, { region: value })} />
+                <ItemField label="Country" value={item.region} onChange={(value) => updateItem(index, { region: value })} />
               </>
             ) : null}
 
@@ -187,7 +187,11 @@ export default function LandingCmsItemsEditor({ sectionId, items = [], onChange 
             {sectionId === "regions" || sectionId === "destinations" ? (
               <>
                 <ItemField label="Name" value={item.name} onChange={(value) => updateItem(index, { name: value })} />
-                <ItemField label="Region label" value={item.region} onChange={(value) => updateItem(index, { region: value })} />
+                <ItemField
+                  label={sectionId === "destinations" ? "Country" : "Label"}
+                  value={item.region}
+                  onChange={(value) => updateItem(index, { region: value })}
+                />
               </>
             ) : null}
 

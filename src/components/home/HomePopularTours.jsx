@@ -72,7 +72,7 @@ function PopularTourCard({ tour }) {
 
         <div className="flex flex-1 flex-col p-4">
           <p className="line-clamp-3 flex-1 text-sm leading-relaxed text-brand-muted">
-            {tour.description || tour.regionLabels?.join(", ") || tour.country}
+            {tour.description || tour.country || ""}
           </p>
           <div className="mt-4 flex items-center justify-between gap-2 border-t border-brand-border/60 pt-3">
             <div>

@@ -7,10 +7,10 @@ import {
 } from "./authSessionHelpers";
 
 describe("authSessionHelpers", () => {
-  test("resolveAuthContextFromPath maps admin and operator routes", () => {
+  test("resolveAuthContextFromPath maps admin and guest routes", () => {
     expect(resolveAuthContextFromPath("/admin/invoices")).toBe(USER_ROLES.ADMINISTRATOR);
     expect(resolveAuthContextFromPath("/admin/login")).toBe(USER_ROLES.ADMINISTRATOR);
-    expect(resolveAuthContextFromPath("/operator/dashboard")).toBe(USER_ROLES.SITE_OPERATOR);
+    expect(resolveAuthContextFromPath("/operator/dashboard")).toBe(USER_ROLES.TOURIST);
     expect(resolveAuthContextFromPath("/my-bookings")).toBe(USER_ROLES.TOURIST);
     expect(resolveAuthContextFromPath("/")).toBe(USER_ROLES.TOURIST);
   });

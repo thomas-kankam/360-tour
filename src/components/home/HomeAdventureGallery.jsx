@@ -14,7 +14,7 @@ const SECTION_DEFAULTS = {
   title: "Places we have already taken travellers",
   subtitle:
     "Real stops from real departures — castles on the coast, waterfalls in the Volta hills, palaces in Kumasi, and savanna at sunrise.",
-  ctaLabel: "Browse tours by region",
+  ctaLabel: "Browse tours",
 };
 
 const SPANS = [
@@ -95,7 +95,7 @@ export default function HomeAdventureGallery({ cmsOverride }) {
 
                 <span className="absolute inset-x-3 bottom-3 text-left">
                   <span className="block text-[10px] font-bold uppercase tracking-[0.14em] text-brand-accent">
-                    {item.region}
+                    Ghana
                   </span>
                   <span className="mt-0.5 block text-sm font-bold leading-snug text-white">{item.caption}</span>
                 </span>

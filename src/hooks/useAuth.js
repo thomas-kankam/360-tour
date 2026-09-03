@@ -11,14 +11,13 @@ import {
   setCredentials,
 } from "../features/auth/authSlice";
 import { ROUTES } from "../constants/routes";
-import { getHomeRouteForRole, isAdminRole, isOperatorRole, isTouristRole } from "../constants/roles";
+import { getHomeRouteForRole, isAdminRole, isTouristRole } from "../constants/roles";
 import { hasAdminPermission as checkAdminPermission } from "../constants/adminPermissions";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { persistor } from "../store";
 import { clearLegacyAuth } from "../store/legacyAuthMigration";
 import { normalizeAuthRole, resolveAuthContextFromPath } from "../utils/authSessionHelpers";
 import adminAuthServiceApi from "../apis/AdminAuthServiceApi";
-import operatorAuthServiceApi from "../apis/OperatorAuthServiceApi";
 
 export function useAuth(options = {}) {
   const dispatch = useAppDispatch();
@@ -47,20 +46,11 @@ export function useAuth(options = {}) {
   const logout = useCallback(async () => {
     const sessionRole = normalizeAuthRole(role);
     const wasAdmin = isAdminRole(sessionRole);
-    const wasOperator = isOperatorRole(sessionRole);
     const currentToken = token;
 
     if (wasAdmin && currentToken) {
       try {
         await adminAuthServiceApi.logout(currentToken);
-      } catch {
-        // Local session is still cleared if the API call fails.
-      }
-    }
-
-    if (wasOperator && currentToken) {
-      try {
-        await operatorAuthServiceApi.logout(currentToken);
       } catch {
         // Local session is still cleared if the API call fails.
       }
@@ -92,7 +82,6 @@ export function useAuth(options = {}) {
     isAuthenticated,
     isVerified,
     isTourist: isTouristRole(role),
-    isOperator: isOperatorRole(role),
     isAdmin: isAdminRole(role),
     hasAdminPermission: (permission) => checkAdminPermission(user, permission),
     homeRoute: getHomeRouteForRole(role),

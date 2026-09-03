@@ -8,6 +8,7 @@ import {
   resolveTourTypeFilterFromParams,
   tourMatchesRegion,
 } from "./publicListingsHelpers";
+import { TOUR_TYPE } from "./operatorTourConstants";
 
 describe("region filter options", () => {
   it("leads with an all-regions chip", () => {
@@ -37,6 +38,10 @@ describe("resolveTourTypeFilterFromParams", () => {
     expect(resolveTourTypeFilterFromParams("CUSTOM")).toBe("custom");
   });
 
+  it("maps customized as an alias for custom", () => {
+    expect(resolveTourTypeFilterFromParams("customized")).toBe(TOUR_TYPE.CUSTOM);
+  });
+
   it("falls back to all for anything else", () => {
     expect(resolveTourTypeFilterFromParams("featured")).toBe("all");
     expect(resolveTourTypeFilterFromParams(undefined)).toBe("all");
@@ -44,14 +49,14 @@ describe("resolveTourTypeFilterFromParams", () => {
 });
 
 describe("buildListingsPayload", () => {
-  it("sends region and tour_type when they are set", () => {
+  it("sends country and tour_type when they are set", () => {
     expect(
-      buildListingsPayload({ countryFilter: "ghana", regionFilter: "ashanti", tourTypeFilter: "custom" }),
-    ).toEqual({ country: "Ghana", region: "ashanti", tour_type: "custom" });
+      buildListingsPayload({ countryFilter: "ghana", tourTypeFilter: "custom" }),
+    ).toEqual({ country: "Ghana", tour_type: "custom" });
   });
 
-  it("omits region and tour_type when the filters are cleared", () => {
-    expect(buildListingsPayload({ regionFilter: "all", tourTypeFilter: "all" })).toEqual({});
+  it("omits tour_type when the filter is cleared", () => {
+    expect(buildListingsPayload({ tourTypeFilter: "all" })).toEqual({});
   });
 
   it("maps sort choices onto the API sort keys", () => {
@@ -61,12 +66,16 @@ describe("buildListingsPayload", () => {
 });
 
 describe("buildToursSearchPath", () => {
-  it("builds a region-scoped tours link", () => {
-    expect(buildToursSearchPath({ country: "ghana", region: "volta" })).toBe("/tours?country=ghana&region=volta");
+  it("builds a country-scoped tours link", () => {
+    expect(buildToursSearchPath({ country: "ghana" })).toBe("/tours?country=ghana");
   });
 
-  it("drops unknown regions and the all-trips type", () => {
-    expect(buildToursSearchPath({ region: "atlantis", tourType: "all" })).toBe("/tours");
+  it("builds a tour-type link and ignores legacy region args", () => {
+    expect(buildToursSearchPath({ region: "volta", tourType: "custom" })).toBe("/tours?type=custom");
+  });
+
+  it("drops the all-trips type", () => {
+    expect(buildToursSearchPath({ tourType: "all" })).toBe("/tours");
   });
 });
 
@@ -98,12 +107,13 @@ describe("mapPublicTourCard", () => {
     departureDates: [{ date: "2026-09-12", dateLabel: "Sep 12, 2026", spotsLeft: 4, spotsTotal: 12 }],
   };
 
-  it("derives region labels and a scheduled departure date", () => {
+  it("maps country, stops, and a scheduled departure date", () => {
     const card = mapPublicTourCard(baseTour);
 
     expect(card.tourType).toBe("regular");
     expect(card.isCustom).toBe(false);
-    expect(card.regionLabels).toEqual(["Central"]);
+    expect(card.country).toBe("Ghana");
+    expect(card.location).toContain("Cape Coast");
     expect(card.nextDate).toBe("Sep 12, 2026");
     expect(card.departDay).toBe("12");
   });

@@ -1,13 +1,16 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
-import { Link } from "react-router";
+import { Link, useSearchParams } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
-import { Loader2, ArrowRight, Compass } from "lucide-react";
+import { Loader2, ArrowRight, Compass, X } from "lucide-react";
 import Container from "../../components/layout/Container";
 import TourListingCard from "../../components/tours/TourListingCard";
 import { toursPageSection } from "../../data/homeContent";
-import { ROUTES } from "../../constants/routes";
 import { mapServerPagination } from "../../utils/adminPaginationHelpers";
-import { LISTING_SORT_OPTIONS } from "../../utils/publicListingsHelpers";
+import {
+  LISTING_SORT_OPTIONS,
+  TOUR_TYPE_FILTER_OPTIONS,
+  resolveTourTypeFilterFromParams,
+} from "../../utils/publicListingsHelpers";
 import { usePublicListings } from "../../hooks/usePublicListings";
 import { usePageSeo } from "../../components/seo/SeoContext";
 import { buildToursItemListJsonLd } from "../../config/seo";
@@ -79,10 +82,23 @@ function SortDropdown({ value, onChange }) {
 }
 
 export default function ToursPage() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [sort, setSort] = useState("default");
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [page, setPage] = useState(1);
+
+  const tourType = resolveTourTypeFilterFromParams(searchParams.get("type"));
+  const country = searchParams.get("country") || "all";
+  const departureDate = searchParams.get("date") || "";
+
+  useEffect(() => {
+    // Drop legacy region query params so old experience links don't keep filtering.
+    if (!searchParams.has("region")) return;
+    const next = new URLSearchParams(searchParams);
+    next.delete("region");
+    setSearchParams(next, { replace: true });
+  }, [searchParams, setSearchParams]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -92,11 +108,18 @@ export default function ToursPage() {
     return () => window.clearTimeout(timer);
   }, [search]);
 
+  useEffect(() => {
+    setPage(1);
+  }, [tourType, country, departureDate]);
+
   const { data, isLoading, isFetching, isError, error } = usePublicListings({
     page,
     perPage: PER_PAGE,
     sort,
     search: debouncedSearch,
+    tourType,
+    country,
+    departureDate,
   });
 
   const tours = data?.items ?? [];
@@ -109,6 +132,24 @@ export default function ToursPage() {
     setSort(value);
   }, []);
 
+  const setTourTypeFilter = useCallback(
+    (nextType) => {
+      const next = new URLSearchParams(searchParams);
+      next.delete("region");
+      if (!nextType || nextType === "all") next.delete("type");
+      else next.set("type", nextType);
+      setSearchParams(next);
+      setPage(1);
+    },
+    [searchParams, setSearchParams],
+  );
+
+  const clearFilters = useCallback(() => {
+    setSearchParams({});
+    setPage(1);
+  }, [setSearchParams]);
+
+  const hasUrlFilters = tourType !== "all" || (country && country !== "all") || Boolean(departureDate);
   const showLoading = isLoading && !data;
 
   return (
@@ -177,6 +218,29 @@ export default function ToursPage() {
 
           <SortDropdown value={sort} onChange={handleSortChange} />
         </Container>
+
+        <Container className="flex flex-wrap items-center gap-2 pb-3">
+          {TOUR_TYPE_FILTER_OPTIONS.map((option) => (
+            <button
+              key={option.id}
+              type="button"
+              onClick={() => setTourTypeFilter(option.id)}
+              className={[
+                "rounded-full px-3 py-1.5 text-xs font-semibold transition-colors",
+                tourType === option.id
+                  ? "bg-brand-primary text-white"
+                  : "border border-brand-border/70 bg-white text-brand-muted hover:border-brand-primary/30 hover:text-brand-primary",
+              ].join(" ")}
+            >
+              {option.label}
+            </button>
+          ))}
+          {hasUrlFilters ? (
+            <button type="button" onClick={clearFilters} className="inline-flex items-center gap-1 text-xs font-semibold text-brand-muted hover:text-brand-ink">
+              <X className="h-3 w-3" aria-hidden /> Clear filters
+            </button>
+          ) : null}
+        </Container>
       </div>
 
       <div className="pb-16 pt-6">
@@ -200,7 +264,7 @@ export default function ToursPage() {
               </motion.div>
             ) : tours.length > 0 ? (
               <motion.div
-                key={`grid-${page}-${sort}-${debouncedSearch}`}
+                key={`grid-${page}-${sort}-${debouncedSearch}-${tourType}`}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -221,15 +285,20 @@ export default function ToursPage() {
               >
                 <p className="text-lg font-semibold text-brand-ink">No tours found</p>
                 <p className="mt-1.5 text-sm text-brand-muted">
-                  {debouncedSearch ? "Try a different search term." : "Check back soon for new departures."}
+                  {debouncedSearch || hasUrlFilters
+                    ? "Try a different search or clear the tour type filter."
+                    : "Check back soon for new departures."}
                 </p>
-                {debouncedSearch ? (
+                {debouncedSearch || hasUrlFilters ? (
                   <button
                     type="button"
-                    onClick={() => setSearch("")}
+                    onClick={() => {
+                      setSearch("");
+                      clearFilters();
+                    }}
                     className="mt-5 rounded-xl border border-brand-border bg-white px-6 py-2.5 text-sm font-semibold text-brand-primary shadow-sm transition-all hover:bg-brand-accent/10"
                   >
-                    Clear search
+                    Clear filters
                   </button>
                 ) : null}
               </motion.div>

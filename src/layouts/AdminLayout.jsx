@@ -6,12 +6,14 @@ import {
   Bell,
   BookOpen,
   CalendarCheck,
+  Compass,
   CreditCard,
   FileText,
   LayoutTemplate,
   Map,
   Menu,
   MessageSquare,
+  Newspaper,
   Plus,
   ShieldCheck,
   Star,
@@ -65,6 +67,22 @@ function AdminSidebarContent({ user, collapsed, onNavigate }) {
         label: "Invoice requests",
         icon: MessageSquare,
       });
+    }
+    if (key === ADMIN_PERMISSIONS.CMS_MANAGEMENT) {
+      items.push(
+        {
+          key: `${key}-stories`,
+          to: ROUTES.admin.stories,
+          label: "Stories CMS",
+          icon: Newspaper,
+        },
+        {
+          key: `${key}-experiences`,
+          to: ROUTES.admin.experiences,
+          label: "Experiences CMS",
+          icon: Compass,
+        },
+      );
     }
     return items;
   });

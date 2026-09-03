@@ -118,7 +118,7 @@ function UpcomingTourCard({ tour, index }) {
 
         <div className="absolute bottom-3 left-3 right-3">
           <p className="text-[10px] font-semibold uppercase tracking-widest text-white/75">
-            {tour.regionLabels?.[0] || tour.country}
+            {tour.country || "Tour"}
           </p>
           <h3 className="mt-0.5 line-clamp-2 text-base font-bold leading-snug text-white">
             {tour.name}

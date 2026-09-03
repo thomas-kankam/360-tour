@@ -88,9 +88,6 @@ export default function SignupPage() {
         if (!isValidPhoneNumber(v)) return "Enter a valid phone number.";
         if (!phoneNumberHasCountryCode(v)) return "Enter a valid phone number with country code.";
         return "";
-      case "organization":
-        if (role === USER_ROLES.SITE_OPERATOR && !v) return "Organization or site name is required.";
-        return "";
       default:
         return "";
     }
@@ -134,7 +131,6 @@ export default function SignupPage() {
   async function handleSendOtp(e) {
     e.preventDefault();
     const allFields = ["firstName", "lastName", "email", "location", "phone"];
-    if (role === USER_ROLES.SITE_OPERATOR) allFields.push("organization");
     const allTouched = Object.fromEntries(allFields.map((f) => [f, true]));
     const allErrors = Object.fromEntries(allFields.map((f) => [f, validateField(f, fields[f])]));
     setTouched(allTouched);

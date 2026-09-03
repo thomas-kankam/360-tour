@@ -38,16 +38,12 @@ export const LISTING_SORT_OPTIONS = [
   { value: "price-desc", label: "Price: high to low", description: "sort_by_price: desc" },
 ];
 
-export function buildListingsPayload({ countryFilter, regionFilter, tourTypeFilter, sort, departureDate }) {
+export function buildListingsPayload({ countryFilter, tourTypeFilter, sort, departureDate }) {
   const payload = {};
 
   const countryOption = COUNTRY_FILTER_OPTIONS.find((option) => option.id === countryFilter);
   if (countryOption?.apiCountry) {
     payload.country = countryOption.apiCountry;
-  }
-
-  if (regionFilter && isGhanaRegionId(regionFilter)) {
-    payload.region = regionFilter;
   }
 
   if (tourTypeFilter && tourTypeFilter !== "all") {
@@ -66,10 +62,9 @@ export function buildListingsPayload({ countryFilter, regionFilter, tourTypeFilt
   return payload;
 }
 
-export function buildToursSearchPath({ country, date, region, tourType } = {}) {
+export function buildToursSearchPath({ country, date, tourType } = {}) {
   const params = new URLSearchParams();
   if (country && country !== "all") params.set("country", country);
-  if (region && isGhanaRegionId(region)) params.set("region", region);
   if (tourType && tourType !== "all") params.set("type", normalizeTourType(tourType));
   if (date) params.set("date", date);
   const query = params.toString();
@@ -82,7 +77,9 @@ export function resolveRegionFilterFromParams(regionParam) {
 
 export function resolveTourTypeFilterFromParams(typeParam) {
   const value = String(typeParam || "").toLowerCase();
-  return value === TOUR_TYPE.REGULAR || value === TOUR_TYPE.CUSTOM ? value : "all";
+  if (value === "customized" || value === TOUR_TYPE.CUSTOM) return TOUR_TYPE.CUSTOM;
+  if (value === TOUR_TYPE.REGULAR) return TOUR_TYPE.REGULAR;
+  return "all";
 }
 
 export function tourMatchesRegion(tour, regionId) {

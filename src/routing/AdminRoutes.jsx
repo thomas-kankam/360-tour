@@ -16,14 +16,16 @@ import {
   AdminInvoiceFormPage,
   AdminInvoiceRequestsPage,
   AdminInvoicesPage,
+  AdminExperienceFormPage,
+  AdminExperiencesPage,
   AdminLandingCmsPage,
   AdminLayout,
+  AdminStoriesPage,
+  AdminStoryFormPage,
   AdminListingDetailPage,
   AdminListingsPage,
   AdminLoginPage,
   AdminNotificationsPage,
-  AdminOperatorDetailPage,
-  AdminOperatorsPage,
   AdminPaymentDetailPage,
   AdminPaymentsPage,
   AdminProfilePage,
@@ -77,8 +79,6 @@ const adminRoutes = (
           <Route path="tours/:slug" element={<OperatorTourDetailPage />} />
           <Route path="listings" element={<AdminListingsPage />} />
           <Route path="listings/:slug" element={<AdminListingDetailPage />} />
-          <Route path="operators" element={<AdminOperatorsPage />} />
-          <Route path="operators/:operatorSlug" element={<AdminOperatorDetailPage />} />
         </Route>
 
         <Route element={<AdminPermissionRoute permission={ADMIN_PERMISSIONS.RATING_MANAGEMENT} />}>
@@ -97,6 +97,12 @@ const adminRoutes = (
 
         <Route element={<AdminPermissionRoute permission={ADMIN_PERMISSIONS.CMS_MANAGEMENT} />}>
           <Route path="landing-cms" element={<AdminLandingCmsPage />} />
+          <Route path="stories" element={<AdminStoriesPage />} />
+          <Route path="stories/new" element={<AdminStoryFormPage />} />
+          <Route path="stories/:id/edit" element={<AdminStoryFormPage />} />
+          <Route path="experiences" element={<AdminExperiencesPage />} />
+          <Route path="experiences/new" element={<AdminExperienceFormPage />} />
+          <Route path="experiences/:id/edit" element={<AdminExperienceFormPage />} />
         </Route>
 
         <Route element={<AdminPermissionRoute permission={ADMIN_PERMISSIONS.ROLE_MANAGEMENT} />}>

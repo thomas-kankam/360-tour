@@ -51,14 +51,24 @@ export const ROUTE_SEO = {
       "Eight reasons travellers choose 360 Tours Ghana — local guides, safe transport, flexible planning, and end-to-end trip coordination.",
   },
   "/experiences": {
-    title: `Ghana Travel Experiences | Group & Educational Tours`,
+    title: `Ghana Travel Experiences | Heritage, Adventure & Group Tours | ${company.shortName}`,
     description:
-      "Group travel, educational tours, corporate retreats, and volunteer experiences across Ghana with 360 Tours and Investment Limited.",
+      "Explore Ghana travel experiences with 360 Tours — Accra city tours, Cape Coast heritage, Volta waterfalls, Kakum canopy walks, cultural immersion, beach getaways, university programs, and custom group itineraries.",
+    keywords: [
+      "Ghana travel experiences",
+      "Ghana heritage tours",
+      "Cape Coast Castle tours",
+      "Accra city tour",
+      "Volta Region tours",
+      "university study abroad Ghana",
+      "360 Tours Ghana experiences",
+      "tours in Ghana",
+    ].join(", "),
   },
   "/stories": {
     title: `Ghana Travel Stories, Blog & Tour Tips | ${company.shortName}`,
     description:
-      "Read Ghana travel stories, safari reports, heritage reflections, and cultural guides from 360 Tours — tips for Cape Coast, Accra, Maasai Mara, and beyond.",
+      "Read Ghana travel stories, heritage reflections, Accra culture guides, and adventure tips from 360 Tours — pair insights with our experiences and tour packages.",
   },
   "/contact": {
     title: `Contact 360 Tours Ghana | Custom Quotes & WhatsApp`,
@@ -103,8 +113,7 @@ export function resolveSeoForTour(tour) {
   if (!tour) return resolveSeoForPath("/tours");
 
   const locations = Array.isArray(tour.locations) ? tour.locations.filter(Boolean).join(", ") : tour.location || "";
-  const regionText = (tour.regionLabels || []).slice(0, 2).join(", ");
-  const place = locations || regionText || tour.country || "Ghana";
+  const place = locations || tour.country || "Ghana";
   const duration = tour.duration || tour.durationLabel || "";
   const price = tour.priceLabel || "";
 
@@ -127,7 +136,6 @@ export function resolveSeoForTour(tour) {
       "Ghana tour",
       "360 Tours Ghana",
       place,
-      regionText,
       tour.country,
       "tours in Ghana",
     ]

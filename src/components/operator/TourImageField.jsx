@@ -3,7 +3,7 @@ import { ImagePlus, Loader2, Trash2, Upload, ZoomIn } from "lucide-react";
 import ImageLightbox from "../misc/ImageLightbox";
 import { useAuth } from "../../hooks/useAuth";
 import uploadServiceApi from "../../apis/UploadServiceApi";
-import { isAdminRole, isOperatorRole } from "../../constants/roles";
+import { isAdminRole } from "../../constants/roles";
 import { getImagePreviewSrc } from "../../utils/tourImageUtils";
 
 export default function TourImageField({
@@ -22,7 +22,7 @@ export default function TourImageField({
   const [uploading, setUploading] = useState(false);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const preview = getImagePreviewSrc(value);
-  const uploadRole = isAdminRole(role) || isOperatorRole(role) ? "admin" : "client";
+  const uploadRole = isAdminRole(role) ? "admin" : "client";
 
   async function handleFileChange(e) {
     const file = e.target.files?.[0];

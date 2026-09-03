@@ -2,7 +2,6 @@ import { ROUTES } from "./routes";
 
 export const USER_ROLES = {
   TOURIST: "tourist",
-  SITE_OPERATOR: "site_operator",
   ADMINISTRATOR: "administrator",
 };
 
@@ -12,12 +11,6 @@ export const ROLE_META = {
     shortLabel: "Traveler",
     description: "Browse tours, book trips, and manage your reservations.",
     icon: "luggage",
-  },
-  [USER_ROLES.SITE_OPERATOR]: {
-    label: "Site operator",
-    shortLabel: "Operator",
-    description: "Manage tourist site listings, departures, and bookings.",
-    icon: "landmark",
   },
   [USER_ROLES.ADMINISTRATOR]: {
     label: "Administrator",
@@ -36,10 +29,6 @@ export function getHomeRouteForRole(role) {
 export function getGuestLandingRoute(role) {
   if (role === USER_ROLES.ADMINISTRATOR) return ROUTES.admin.dashboard;
   return ROUTES.home;
-}
-
-export function isOperatorRole(role) {
-  return role === USER_ROLES.SITE_OPERATOR;
 }
 
 export function isTouristRole(role) {

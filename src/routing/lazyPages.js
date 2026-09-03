@@ -60,13 +60,15 @@ export const AdminContactsPage = lazyPage(() => import("../pages/admin/AdminCont
 export const AdminContactDetailPage = lazyPage(() => import("../pages/admin/AdminContactDetailPage"));
 export const AdminListingsPage = lazyPage(() => import("../pages/admin/AdminListingsPage"));
 export const AdminListingDetailPage = lazyPage(() => import("../pages/admin/AdminListingDetailPage"));
-export const AdminOperatorsPage = lazyPage(() => import("../pages/admin/AdminOperatorsPage"));
-export const AdminOperatorDetailPage = lazyPage(() => import("../pages/admin/AdminOperatorDetailPage"));
 export const AdminRatingsPage = lazyPage(() => import("../pages/admin/AdminRatingsPage"));
 export const AdminInvoicesPage = lazyPage(() => import("../pages/admin/AdminInvoicesPage"));
 export const AdminInvoiceFormPage = lazyPage(() => import("../pages/admin/AdminInvoiceFormPage"));
 export const AdminInvoiceDetailPage = lazyPage(() => import("../pages/admin/AdminInvoiceDetailPage"));
 export const AdminLandingCmsPage = lazyPage(() => import("../pages/admin/AdminLandingCmsPage"));
+export const AdminStoriesPage = lazyPage(() => import("../pages/admin/AdminStoriesPage"));
+export const AdminStoryFormPage = lazyPage(() => import("../pages/admin/AdminStoryFormPage"));
+export const AdminExperiencesPage = lazyPage(() => import("../pages/admin/AdminExperiencesPage"));
+export const AdminExperienceFormPage = lazyPage(() => import("../pages/admin/AdminExperienceFormPage"));
 export const AdminNotificationsPage = lazyPage(() => import("../pages/admin/AdminNotificationsPage"));
 export const AdminInvoiceRequestsPage = lazyPage(() => import("../pages/admin/AdminInvoiceRequestsPage"));
 export const AdminRolesPage = lazyPage(() => import("../pages/admin/AdminRolesPage"));

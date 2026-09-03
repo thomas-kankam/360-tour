@@ -330,14 +330,6 @@ export default function OperatorTourDetailPage() {
               <span className="inline-flex items-center gap-1 rounded-full bg-brand-accent px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-brand-charcoal">
                 {getTourTypeLabel(tour.tourType)}
               </span>
-              {(tour.regionLabels || []).map((label) => (
-                <span
-                  key={label}
-                  className="rounded-full bg-white/15 px-3 py-1 text-[11px] font-bold text-white backdrop-blur-sm"
-                >
-                  {label}
-                </span>
-              ))}
             </div>
 
             <div className="mt-4 flex flex-wrap items-center gap-2">
@@ -445,7 +437,7 @@ export default function OperatorTourDetailPage() {
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
-          <Section title="About this tour" subtitle="What travelers will experience">
+          <Section title="About this trip" subtitle="What travelers will experience">
             <p className="text-sm leading-relaxed text-brand-muted">{tour.description || "No description yet."}</p>
             {tour.highlights?.length ? (
               <ul className="mt-5 grid grid-cols-1 gap-2.5">

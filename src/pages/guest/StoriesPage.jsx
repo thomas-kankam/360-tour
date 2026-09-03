@@ -1,12 +1,13 @@
-import { useState, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
-import { BookOpen } from "lucide-react";
+import { BookOpen, Loader2 } from "lucide-react";
 import Container from "../../components/layout/Container";
 import { ROUTES } from "../../constants/routes";
-import { stories } from "../../data/storiesContent";
+import { stories as staticStories } from "../../data/storiesContent";
 import { usePageSeo } from "../../components/seo/SeoContext";
 import { buildStoriesBlogJsonLd, buildStoriesItemListJsonLd } from "../../config/seo";
+import publicContentServiceApi from "../../apis/PublicContentServiceApi";
 
 const EASE = [0.16, 1, 0.3, 1];
 const rise = (delay = 0) => ({
@@ -16,7 +17,7 @@ const rise = (delay = 0) => ({
   transition: { duration: 0.65, ease: EASE, delay },
 });
 
-const CATEGORIES = ["All", "Newsletter", "Heritage", "Safari", "Culture", "Adventure", "Corporate"];
+const DEFAULT_CATEGORIES = ["All", "Newsletter", "Heritage", "Safari", "Culture", "Adventure", "Corporate"];
 
 const catColors = {
   Heritage: "bg-brand-sand/40 text-brand-primary",
@@ -28,6 +29,12 @@ const catColors = {
 };
 
 function StoryCard({ story, index }) {
+  const initials = (story.author || "360")
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .slice(0, 2);
+
   return (
     <motion.article
       {...rise(Math.min(index * 0.07, 0.35))}
@@ -37,14 +44,16 @@ function StoryCard({ story, index }) {
         to={ROUTES.storyDetail(story.slug)}
         className="block rounded-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2"
       >
-        <div className="relative aspect-[16/10] overflow-hidden">
-          <img
-            src={story.image}
-            alt={story.title}
-            loading="lazy"
-            decoding="async"
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-          />
+        <div className="relative aspect-[16/10] overflow-hidden bg-brand-cream">
+          {story.image ? (
+            <img
+              src={story.image}
+              alt={story.title}
+              loading="lazy"
+              decoding="async"
+              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+          ) : null}
           <div className="absolute inset-0 bg-gradient-to-t from-brand-charcoal/40 to-transparent" />
           <span className={`absolute left-3 top-3 rounded-full px-2.5 py-0.5 text-[11px] font-bold ${catColors[story.category] ?? "bg-white/90 text-brand-ink"}`}>
             {story.category}
@@ -64,7 +73,7 @@ function StoryCard({ story, index }) {
           <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-brand-muted">{story.excerpt}</p>
           <div className="mt-4 flex items-center gap-2 border-t border-brand-border/40 pt-3">
             <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-primary/10 text-[11px] font-bold text-brand-primary">
-              {story.author.split(" ").map((n) => n[0]).join("").slice(0, 2)}
+              {initials}
             </div>
             <div>
               <p className="text-[11px] font-semibold text-brand-ink">{story.author}</p>
@@ -78,12 +87,36 @@ function StoryCard({ story, index }) {
 }
 
 export default function StoriesPage() {
+  const [stories, setStories] = useState(staticStories);
+  const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState("All");
   const [search, setSearch] = useState("");
 
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      setLoading(true);
+      const result = await publicContentServiceApi.getStories();
+      if (cancelled) return;
+      if (result.ok && result.items.length > 0) {
+        setStories(result.items);
+      }
+      setLoading(false);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const categories = useMemo(() => {
+    const fromData = [...new Set(stories.map((s) => s.category).filter(Boolean))];
+    const merged = ["All", ...DEFAULT_CATEGORIES.filter((c) => c !== "All"), ...fromData];
+    return [...new Set(merged)];
+  }, [stories]);
+
   const storiesJsonLd = useMemo(
     () => [buildStoriesBlogJsonLd(stories), buildStoriesItemListJsonLd(stories)],
-    [],
+    [stories],
   );
   usePageSeo(null, storiesJsonLd, "stories-index-json-ld");
 
@@ -95,12 +128,12 @@ export default function StoriesPage() {
       list = list.filter(
         (s) =>
           s.title.toLowerCase().includes(q) ||
-          s.country.toLowerCase().includes(q) ||
-          s.category.toLowerCase().includes(q),
+          (s.country || "").toLowerCase().includes(q) ||
+          (s.category || "").toLowerCase().includes(q),
       );
     }
     return list;
-  }, [activeCategory, search]);
+  }, [stories, activeCategory, search]);
 
   return (
     <div className="min-h-screen bg-brand-cream">
@@ -125,7 +158,7 @@ export default function StoriesPage() {
         <Container>
           <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex flex-wrap items-center gap-2">
-              {CATEGORIES.map((c) => (
+              {categories.map((c) => (
                 <button
                   key={c}
                   type="button"
@@ -164,39 +197,70 @@ export default function StoriesPage() {
             </div>
           </div>
 
-          <AnimatePresence mode="wait">
-            {filtered.length > 0 ? (
-              <motion.div
-                key={`${activeCategory}-${search}`}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.2 }}
-                className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-              >
-                {filtered.map((story, i) => (
-                  <StoryCard key={story.slug} story={story} index={i} />
-                ))}
-              </motion.div>
-            ) : (
-              <motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="py-16 text-center">
-                <BookOpen className="mx-auto h-12 w-12 text-brand-primary/40" aria-hidden />
-                <p className="mt-4 font-semibold text-brand-ink">No stories found</p>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setActiveCategory("All");
-                    setSearch("");
-                  }}
-                  className="mt-4 text-sm font-semibold text-brand-primary underline underline-offset-2"
+          {loading && stories.length === 0 ? (
+            <div className="flex items-center justify-center gap-2 py-16 text-sm text-brand-muted">
+              <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> Loading stories…
+            </div>
+          ) : (
+            <AnimatePresence mode="wait">
+              {filtered.length > 0 ? (
+                <motion.div
+                  key={`${activeCategory}-${search}`}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
                 >
-                  View all stories
-                </button>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                  {filtered.map((story, i) => (
+                    <StoryCard key={story.slug} story={story} index={i} />
+                  ))}
+                </motion.div>
+              ) : (
+                <motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="py-16 text-center">
+                  <BookOpen className="mx-auto h-12 w-12 text-brand-primary/40" aria-hidden />
+                  <p className="mt-4 font-semibold text-brand-ink">No stories found</p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setActiveCategory("All");
+                      setSearch("");
+                    }}
+                    className="mt-4 text-sm font-semibold text-brand-primary underline underline-offset-2"
+                  >
+                    View all stories
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          )}
         </Container>
       </div>
+
+      <section className="border-t border-brand-border/50 bg-white py-12">
+        <Container>
+          <div className="flex flex-col items-start justify-between gap-6 rounded-3xl border border-brand-border/60 bg-brand-cream/40 p-6 sm:flex-row sm:items-center sm:p-8">
+            <div className="max-w-xl">
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-brand-primary">Plan the trip</p>
+              <h2 className="mt-2 font-heading text-xl font-bold text-brand-ink sm:text-2xl">
+                Match these stories with Ghana experiences & tours
+              </h2>
+              <p className="mt-2 text-sm text-brand-muted">
+                Explore experience pillars, then book a package — internal links that help travelers and search engines
+                connect tips to real itineraries.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Link to={ROUTES.experiences} className="btn-primary inline-flex">
+                View experiences
+              </Link>
+              <Link to={ROUTES.tours} className="btn-secondary inline-flex">
+                Browse tours
+              </Link>
+            </div>
+          </div>
+        </Container>
+      </section>
     </div>
   );
 }

@@ -158,22 +158,18 @@ function TourAboutSection({ tour }) {
     return (tour.highlights || []).filter(Boolean).map((text) => parseFeatureText(text));
   }, [tour.highlights]);
 
-  return (
-    <section className="rounded-3xl border border-brand-border/50 bg-white p-6 shadow-sm sm:p-8">
-      {tour.highlight ? (
-        <p className="mb-5 max-w-3xl text-base font-medium leading-relaxed text-brand-ink sm:text-lg">
-          {tour.highlight}
-        </p>
-      ) : null}
+  if (!tour.description && !features.length) return null;
 
+  return (
+    <Section title="About this trip" subtitle="What you’ll experience on this journey">
       {tour.description ? (
-        <p className={`max-w-3xl text-sm leading-relaxed text-brand-muted ${tour.highlight ? "mt-4" : ""}`}>
+        <p className="max-w-3xl text-sm leading-relaxed text-brand-muted sm:text-[15px] sm:leading-7">
           {tour.description}
         </p>
       ) : null}
 
       {features.length > 0 ? (
-        <div className={tour.description || tour.highlight ? "mt-8 grid gap-x-10 gap-y-7 sm:grid-cols-2" : "grid gap-x-10 gap-y-7 sm:grid-cols-2"}>
+        <div className={tour.description ? "mt-8 grid gap-x-10 gap-y-5 sm:grid-cols-2" : "grid gap-x-10 gap-y-5 sm:grid-cols-2"}>
           {features.map((feature, index) => (
             <div key={`${feature.title}-${index}`} className="flex gap-3">
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-primary/10">
@@ -189,7 +185,7 @@ function TourAboutSection({ tour }) {
           ))}
         </div>
       ) : null}
-    </section>
+    </Section>
   );
 }
 
@@ -512,7 +508,7 @@ export default function TourDetailPage() {
           >
             <TourGalleryCollage
               images={gallery}
-              badge={tour.isCustom ? "Tailor-made journey" : tour.regionLabels?.[0] || ""}
+              badge={tour.isCustom ? "Tailor-made journey" : "Scheduled tour"}
               alt={tour.name}
               onImageClick={setLightboxIndex}
               departDay={tour.departDay}
@@ -537,15 +533,11 @@ export default function TourDetailPage() {
                       <Sparkles className="h-3 w-3" strokeWidth={2.5} aria-hidden />
                       Tailor-made
                     </span>
-                  ) : null}
-                  {(tour.regionLabels || []).slice(0, 3).map((label) => (
-                    <span
-                      key={label}
-                      className="rounded-full bg-brand-accent/25 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-brand-primary"
-                    >
-                      {label}
+                  ) : (
+                    <span className="rounded-full bg-brand-cream px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-brand-ink">
+                      Scheduled
                     </span>
-                  ))}
+                  )}
                 </div>
 
                 <h1 className="mt-4 font-heading text-3xl font-bold text-brand-ink sm:text-4xl lg:text-[2.5rem] lg:leading-tight">
@@ -555,7 +547,10 @@ export default function TourDetailPage() {
                 {tour.location ? (
                   <p className="mt-3 flex items-start gap-1.5 text-sm text-brand-muted">
                     <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-brand-primary" strokeWidth={2} aria-hidden />
-                    <span className="font-medium text-brand-ink">{tour.location}</span>
+                    <span>
+                      <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-brand-muted">Popular stops</span>
+                      <span className="mt-0.5 block font-medium text-brand-ink">{tour.location}</span>
+                    </span>
                   </p>
                 ) : null}
 
