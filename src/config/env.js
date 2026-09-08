@@ -28,7 +28,7 @@ const env = {
       ? "/api"
       : "https://api.360toursghana.com/api"),
   contactEmail: normalizeContactEmail(process.env.REACT_APP_CONTACT_EMAIL || PUBLIC_CONTACT_EMAIL).replace(/^\./, ""),
-  contactPhone: process.env.REACT_APP_CONTACT_PHONE || "+233 50 040 4105",
+  contactPhone: process.env.REACT_APP_CONTACT_PHONE || "+31684724905",
   whatsappNumber: normalizeWhatsAppNumber(
     process.env.REACT_APP_WHATSAPP_NUMBER || "233500404105",
   ),

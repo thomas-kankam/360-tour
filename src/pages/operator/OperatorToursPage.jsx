@@ -12,7 +12,6 @@ import {
   MapPin,
   Plus,
   Search,
-  Sparkles,
   Star,
   Trash2,
   Users,
@@ -262,12 +261,6 @@ function TourCard({ tour, index, onDeleteRequest }) {
         <span className={`absolute left-2 top-2 rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide ring-1 ${statusPill(tour.status)}`}>
           {tour.status}
         </span>
-        {isCustom ? (
-          <span className="absolute right-2 top-2 inline-flex items-center gap-0.5 rounded-full bg-brand-accent px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-brand-charcoal shadow-sm">
-            <Sparkles className="h-2.5 w-2.5" strokeWidth={2.5} aria-hidden />
-            Customized
-          </span>
-        ) : null}
         {tour.regionLabels?.length ? (
           <span className="absolute bottom-2 left-2 rounded-full bg-white/90 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-brand-primary">
             {tour.regionLabels[0]}

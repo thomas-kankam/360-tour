@@ -106,11 +106,7 @@ function UpcomingTourCard({ tour, index }) {
           </div>
         </div>
 
-        {tour.isCustom ? (
-          <span className="absolute right-3 top-3 rounded-full bg-brand-accent px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-brand-charcoal shadow-md">
-            Tailor-made
-          </span>
-        ) : urgent ? (
+        {urgent ? (
           <span className="absolute right-3 top-3 rounded-full bg-brand-red px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-md">
             Filling fast
           </span>

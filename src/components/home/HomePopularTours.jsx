@@ -57,11 +57,6 @@ function PopularTourCard({ tour }) {
               {tour.name}
             </div>
           )}
-          {tour.isCustom ? (
-            <span className="absolute left-3 top-3 rounded-md bg-brand-accent px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-brand-charcoal">
-              Tailor-made
-            </span>
-          ) : null}
         </div>
 
         <div className="bg-brand-accent px-4 py-3">
