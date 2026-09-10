@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { Bell } from "lucide-react";
 import { adminNotificationsServiceApi, clientNotificationsServiceApi } from "../../apis/NotificationsServiceApi";
@@ -13,6 +13,7 @@ export default function NotificationBell({ audience = "client", compact = false 
   const contextRole = audienceToAuthRole(audience);
   const { token, isAuthenticated } = useAuth({ context: contextRole });
   const navigate = useNavigate();
+  const rootRef = useRef(null);
   const api = useMemo(
     () => (audience === "admin" ? adminNotificationsServiceApi : clientNotificationsServiceApi),
     [audience],
@@ -65,6 +66,27 @@ export default function NotificationBell({ audience = "client", compact = false 
     };
   }, [open, api, token]);
 
+  useEffect(() => {
+    if (!open) return undefined;
+
+    function handleClickOutside(event) {
+      if (rootRef.current && !rootRef.current.contains(event.target)) {
+        setOpen(false);
+      }
+    }
+
+    function handleEscape(event) {
+      if (event.key === "Escape") setOpen(false);
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEscape);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [open]);
+
   async function handleOpenItem(item) {
     if (!token) return;
     if (!item.isRead) {
@@ -100,10 +122,12 @@ export default function NotificationBell({ audience = "client", compact = false 
   if (!isAuthenticated) return null;
 
   return (
-    <div className="relative">
+    <div ref={rootRef} className="relative">
       <button
         type="button"
         onClick={() => setOpen((current) => !current)}
+        aria-expanded={open}
+        aria-haspopup="menu"
         className={[
           "relative flex items-center justify-center rounded-xl border border-brand-border/60 text-brand-primary transition-colors hover:bg-brand-cream",
           compact ? "h-9 w-9" : "h-10 w-10",
@@ -119,54 +143,51 @@ export default function NotificationBell({ audience = "client", compact = false 
       </button>
 
       {open ? (
-        <>
-          <button type="button" className="fixed inset-0 z-40 cursor-default" aria-label="Close notifications" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 z-50 mt-2 w-[min(92vw,360px)] overflow-hidden rounded-2xl border border-brand-border/70 bg-white shadow-[0_20px_50px_-20px_rgba(17,17,17,0.35)]">
-            <div className="flex items-center justify-between border-b border-brand-border/60 px-4 py-3">
-              <p className="text-sm font-bold text-brand-ink">Notifications</p>
-              {count > 0 ? (
-                <button type="button" onClick={handleMarkAllRead} className="text-xs font-semibold text-brand-primary hover:underline">
-                  Mark all read
-                </button>
-              ) : null}
-            </div>
-
-            <div className="max-h-80 overflow-auto">
-              {loading ? (
-                <p className="px-4 py-6 text-center text-sm text-brand-muted">Loading…</p>
-              ) : items.length === 0 ? (
-                <p className="px-4 py-6 text-center text-sm text-brand-muted">No notifications yet.</p>
-              ) : (
-                items.map((item) => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => handleOpenItem(item)}
-                    className={[
-                      "block w-full border-b border-brand-border/40 px-4 py-3 text-left transition-colors hover:bg-brand-cream/70",
-                      item.isRead ? "bg-white" : "bg-brand-primary/[0.04]",
-                    ].join(" ")}
-                  >
-                    <div className="flex items-start gap-2">
-                      {!item.isRead ? <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-brand-red" aria-hidden /> : null}
-                      <div className="min-w-0 flex-1">
-                        <p className="text-sm font-semibold text-brand-ink">{item.title}</p>
-                        {item.body ? <p className="mt-0.5 line-clamp-2 text-xs text-brand-muted">{item.body}</p> : null}
-                        <p className="mt-1 text-[10px] text-brand-muted">{formatNotificationTime(item.createdAt)}</p>
-                      </div>
-                    </div>
-                  </button>
-                ))
-              )}
-            </div>
-
-            <div className="border-t border-brand-border/60 px-4 py-3">
-              <Link to={listPath} onClick={() => setOpen(false)} className="text-sm font-semibold text-brand-primary hover:underline">
-                View all notifications
-              </Link>
-            </div>
+        <div className="absolute right-0 z-50 mt-2 w-[min(92vw,360px)] overflow-hidden rounded-2xl border border-brand-border/70 bg-white shadow-[0_20px_50px_-20px_rgba(17,17,17,0.35)]">
+          <div className="flex items-center justify-between border-b border-brand-border/60 px-4 py-3">
+            <p className="text-sm font-bold text-brand-ink">Notifications</p>
+            {count > 0 ? (
+              <button type="button" onClick={handleMarkAllRead} className="text-xs font-semibold text-brand-primary hover:underline">
+                Mark all read
+              </button>
+            ) : null}
           </div>
-        </>
+
+          <div className="max-h-80 overflow-auto">
+            {loading ? (
+              <p className="px-4 py-6 text-center text-sm text-brand-muted">Loading…</p>
+            ) : items.length === 0 ? (
+              <p className="px-4 py-6 text-center text-sm text-brand-muted">No notifications yet.</p>
+            ) : (
+              items.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => handleOpenItem(item)}
+                  className={[
+                    "block w-full border-b border-brand-border/40 px-4 py-3 text-left transition-colors hover:bg-brand-cream/70",
+                    item.isRead ? "bg-white" : "bg-brand-primary/[0.04]",
+                  ].join(" ")}
+                >
+                  <div className="flex items-start gap-2">
+                    {!item.isRead ? <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-brand-red" aria-hidden /> : null}
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-semibold text-brand-ink">{item.title}</p>
+                      {item.body ? <p className="mt-0.5 line-clamp-2 text-xs text-brand-muted">{item.body}</p> : null}
+                      <p className="mt-1 text-[10px] text-brand-muted">{formatNotificationTime(item.createdAt)}</p>
+                    </div>
+                  </div>
+                </button>
+              ))
+            )}
+          </div>
+
+          <div className="border-t border-brand-border/60 px-4 py-3">
+            <Link to={listPath} onClick={() => setOpen(false)} className="text-sm font-semibold text-brand-primary hover:underline">
+              View all notifications
+            </Link>
+          </div>
+        </div>
       ) : null}
     </div>
   );

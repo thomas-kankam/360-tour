@@ -48,8 +48,10 @@ class ClientInvoicesServiceApi {
     }
   }
 
-  async listRequests(token, { page = 1, perPage = 20 } = {}) {
+  async listRequests(token, { page = 1, perPage = 20, type, status } = {}) {
     const query = new URLSearchParams({ page: String(page), per_page: String(perPage) });
+    if (type) query.set("type", type);
+    if (status) query.set("status", status);
     try {
       const response = await axios.get(`${this.baseUrl}/client/invoice-requests?${query}`, {
         headers: this.getHeaders(token),
@@ -64,6 +66,18 @@ class ClientInvoicesServiceApi {
       };
     } catch (error) {
       return { ...parseApiError(error), items: [], pagination: null };
+    }
+  }
+
+  async getRequest(token, id) {
+    try {
+      const response = await axios.get(`${this.baseUrl}/client/invoice-requests/${encodeURIComponent(id)}`, {
+        headers: this.getHeaders(token),
+      });
+      const result = parseApiEnvelope(response);
+      return { ...result, request: result.data || null };
+    } catch (error) {
+      return { ...parseApiError(error), request: null };
     }
   }
 

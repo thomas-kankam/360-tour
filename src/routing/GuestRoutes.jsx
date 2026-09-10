@@ -19,6 +19,7 @@ import {
   MyReviewsPage,
   MyInvoicesPage,
   ClientInvoiceDetailPage,
+  ClientInvoiceRequestDetailPage,
   NotificationsPage,
   PaymentFailurePage,
   PaymentSuccessPage,
@@ -59,6 +60,7 @@ const guestRoutes = (
           <Route path="my-payments" element={<MyPaymentsPage />} />
           <Route path="my-reviews" element={<MyReviewsPage />} />
           <Route path="my-invoices" element={<MyInvoicesPage />} />
+          <Route path="my-invoices/requests/:id" element={<ClientInvoiceRequestDetailPage />} />
           <Route path="my-invoices/:id" element={<ClientInvoiceDetailPage />} />
           <Route path="notifications" element={<NotificationsPage />} />
         </Route>

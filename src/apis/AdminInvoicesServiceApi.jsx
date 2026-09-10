@@ -130,14 +130,17 @@ class AdminInvoicesServiceApi {
   }
 
   async sendInvoice(token, id, payload) {
+    const body = {
+      email: payload.email,
+      attach_pdf: payload.attach_pdf ?? true,
+      message: payload.message || "",
+    };
+    if (payload.client_slug) {
+      body.client_slug = payload.client_slug;
+    }
     const result = await this.request("POST", `/admin/invoices/${encodeURIComponent(id)}/send`, {
       token,
-      body: {
-        email: payload.email,
-        client_slug: payload.client_slug || "",
-        attach_pdf: payload.attach_pdf ?? true,
-        message: payload.message || "",
-      },
+      body,
       dedupe: false,
     });
     return result;

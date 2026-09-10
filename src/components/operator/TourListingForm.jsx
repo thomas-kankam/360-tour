@@ -514,24 +514,6 @@ export default function TourListingForm({ initial, onSubmit, submitLabel = "Save
               error={formError && !(form.locations || []).length ? formError : ""}
             />
           </div>
-          <div className="sm:col-span-2">
-            <Field label="Duration (days)" hint={isCustomTour ? "Travellers pick any start date; this many days are reserved automatically." : "Used for the listing card and date-range end date."}>
-              <input
-                type="number"
-                min={1}
-                className={inputClass}
-                value={form.durationDays}
-                onChange={(e) => {
-                  const durationDays = Math.max(1, Number(e.target.value) || 1);
-                  if (!isCustomTour && isDateRangeSchedule) {
-                    handleDateRangeDurationChange(durationDays);
-                    return;
-                  }
-                  patch({ durationDays, durationLabel: `${durationDays} days` });
-                }}
-              />
-            </Field>
-          </div>
           <div className="sm:col-span-2 rounded-xl border border-brand-border/60 bg-brand-cream/40 px-4 py-3 text-sm text-brand-muted">
             New listings save as <span className="font-semibold text-brand-ink">draft</span>. Publish or archive from the listing detail page after you review it.
           </div>
@@ -902,18 +884,33 @@ export default function TourListingForm({ initial, onSubmit, submitLabel = "Save
             </Field>
           )}
 
-          {isCustomTour ? (
-            <div className="rounded-xl border border-brand-border/60 bg-brand-cream/40 p-4">
-              <p className="text-sm font-bold text-brand-ink">Trip length</p>
-              <p className="mt-1 text-[11px] text-brand-muted">
-                Set once here. On the booking page, travellers pick a start date and this many days are highlighted automatically.
-              </p>
-              <p className="mt-3 text-sm font-semibold text-brand-primary">
-                {Math.max(1, Number(form.durationDays) || 1)} {(Number(form.durationDays) || 1) === 1 ? "day" : "days"}
-                <span className="ml-2 text-xs font-medium text-brand-muted">(edit under Basics)</span>
-              </p>
-            </div>
-          ) : (
+          <Field
+            label="Duration (days)"
+            hint={
+              isCustomTour
+                ? "Travellers pick any start date; this many consecutive days are highlighted automatically."
+                : isDateRangeSchedule
+                  ? "Changing days updates the calendar end date for this date-range window."
+                  : "Shown on the listing card and used when you pick a date-range schedule."
+            }
+          >
+            <input
+              type="number"
+              min={1}
+              className={inputClass}
+              value={form.durationDays}
+              onChange={(e) => {
+                const durationDays = Math.max(1, Number(e.target.value) || 1);
+                if (!isCustomTour && isDateRangeSchedule) {
+                  handleDateRangeDurationChange(durationDays);
+                  return;
+                }
+                patch({ durationDays, durationLabel: `${durationDays} days` });
+              }}
+            />
+          </Field>
+
+          {isCustomTour ? null : (
           <div>
             <p className={labelClass}>Scheduled departures</p>
             <p className="mt-1 text-[11px] text-brand-muted">Choose how travelers can book this tour.</p>
@@ -946,7 +943,7 @@ export default function TourListingForm({ initial, onSubmit, submitLabel = "Save
               <div>
                 <p className="text-sm font-bold text-brand-ink">Date range window</p>
                 <p className="mt-1 text-[11px] text-brand-muted">
-                  Set duration under Basics, then pick the start date. The calendar highlights the full trip length and sets the end date.
+                  Set duration above, then pick the start date. The calendar highlights the full trip length and sets the end date.
                 </p>
               </div>
               <TourDurationCalendar

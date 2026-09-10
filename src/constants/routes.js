@@ -32,6 +32,7 @@ export const ROUTES = {
   myReviews: "/my-reviews",
   myInvoices: "/my-invoices",
   myInvoiceDetail: (id) => `/my-invoices/${encodeURIComponent(id)}`,
+  myInvoiceRequestDetail: (id) => `/my-invoices/requests/${encodeURIComponent(id)}`,
   notifications: "/notifications",
   bookingSuccess: "/booking/success",
   paymentSuccess: (bookingCode) => {

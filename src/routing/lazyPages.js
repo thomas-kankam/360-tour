@@ -36,6 +36,7 @@ export const MyReviewsPage = lazyPage(() => import("../pages/guest/MyReviewsPage
 export const NotificationsPage = lazyPage(() => import("../pages/guest/NotificationsPage"));
 export const MyInvoicesPage = lazyPage(() => import("../pages/guest/MyInvoicesPage"));
 export const ClientInvoiceDetailPage = lazyPage(() => import("../pages/guest/ClientInvoiceDetailPage"));
+export const ClientInvoiceRequestDetailPage = lazyPage(() => import("../pages/guest/ClientInvoiceRequestDetailPage"));
 
 // Auth (legacy dashboard routes)
 export const DashboardPage = lazyPage(() => import("../pages/auth/DashboardPage"));
