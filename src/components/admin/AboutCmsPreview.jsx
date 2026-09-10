@@ -2,15 +2,41 @@ import { Check, MapPin, Mail } from "lucide-react";
 import { GuestIcon } from "../../utils/guestIcons";
 import { ABOUT_CMS_DEFAULTS, mergeAboutCmsWithDefaults } from "../../utils/aboutCmsStorage";
 
-function SectionPreviewShell({ title, children }) {
+const SECTION_LABELS = {
+  hero: "Hero",
+  company: "Company strip",
+  story: "Our Story",
+  mission: "Mission & values",
+  tourServices: "Tour services",
+  supportServices: "Support services",
+  popularDestinations: "Destinations",
+  whyTravelWithUs: "Why travel with us",
+  faqs: "FAQs",
+  cta: "Call to action",
+};
+
+function PreviewFrame({ sectionId, children }) {
   return (
     <div className="overflow-hidden rounded-2xl border border-brand-border/60 bg-white shadow-sm">
-      <div className="border-b border-brand-border/50 bg-brand-cream/50 px-4 py-3">
-        <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-brand-primary">Live preview</p>
-        <p className="mt-0.5 text-xs text-brand-muted">{title}</p>
+      <div className="flex items-center justify-between gap-3 border-b border-brand-border/50 bg-gradient-to-r from-brand-cream to-white px-4 py-3">
+        <div>
+          <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-brand-primary">Live preview</p>
+          <p className="mt-0.5 text-xs text-brand-muted">
+            How <span className="font-semibold text-brand-ink">{SECTION_LABELS[sectionId] || "section"}</span> looks on /about
+          </p>
+        </div>
+        <span className="rounded-full bg-brand-primary/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-brand-primary">
+          Guest view
+        </span>
       </div>
-      <div className="p-4">{children}</div>
+      <div className="max-h-[min(72vh,720px)] overflow-y-auto bg-[#faf9f7]">{children}</div>
     </div>
+  );
+}
+
+function PreviewEyebrow({ children }) {
+  return (
+    <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-brand-accent-dark">{children}</p>
   );
 }
 
@@ -26,186 +52,267 @@ export default function AboutCmsPreview({ content, sectionId = "hero" }) {
 
   if (sectionId === "hero") {
     return (
-      <SectionPreviewShell title="Hero block on /about">
-        <div className="space-y-4">
-          <div className="overflow-hidden rounded-2xl border border-brand-border/50">
-            {hero.heroImage ? (
-              <img src={hero.heroImage} alt="" className="aspect-[16/9] w-full object-cover" />
-            ) : (
-              <div className="flex aspect-[16/9] items-center justify-center bg-brand-cream text-xs text-brand-muted">Hero image</div>
-            )}
-          </div>
-          <span className="inline-flex rounded-full bg-brand-accent/25 px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-brand-primary">
-            {hero.eyebrow || "About Us"}
-          </span>
-          <h3 className="font-heading text-2xl font-bold text-brand-primary">{hero.title || "Who We Are"}</h3>
-          <p className="text-sm font-semibold">
-            <span className="text-brand-primary">{hero.titleLine}</span>{" "}
-            <span className="text-brand-accent-dark">{hero.titleHighlight}</span>
-          </p>
-          <p className="text-sm leading-relaxed text-brand-muted">{hero.description}</p>
-          <div className="grid grid-cols-3 gap-2">
-            {(hero.services || []).slice(0, 3).map((service) => (
-              <div key={service.label} className="rounded-xl bg-brand-cream/70 p-2.5 text-center">
-                <GuestIcon name={service.icon || "compass"} className="mx-auto h-4 w-4 text-brand-primary" />
-                <p className="mt-1 text-[10px] font-bold text-brand-ink">{service.label}</p>
+      <PreviewFrame sectionId={sectionId}>
+        <div className="bg-white p-5 sm:p-6">
+          <div className="grid gap-5 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+            <div>
+              <span className="inline-flex rounded-full bg-brand-accent/25 px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-brand-primary">
+                {hero.eyebrow || "About Us"}
+              </span>
+              <h3 className="mt-3 font-heading text-2xl font-bold leading-tight text-brand-primary sm:text-3xl">
+                {hero.title || "Who We Are"}
+              </h3>
+              <p className="mt-2 text-base font-semibold leading-snug">
+                <span className="text-brand-primary">{hero.titleLine}</span>{" "}
+                <span className="text-brand-accent-dark">{hero.titleHighlight}</span>
+              </p>
+              <p className="mt-3 text-sm leading-relaxed text-brand-muted">{hero.description}</p>
+              <p className="mt-3 text-xs font-semibold text-brand-primary">{hero.tagline}</p>
+
+              <div className="mt-5 grid gap-2 sm:grid-cols-3">
+                {(hero.services || []).map((service) => (
+                  <div
+                    key={service.label}
+                    className="rounded-2xl border border-brand-border/60 bg-brand-cream/50 px-3 py-3"
+                  >
+                    <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-accent/35 text-brand-primary">
+                      <GuestIcon name={service.icon || "compass"} className="h-4 w-4" />
+                    </span>
+                    <p className="mt-2 text-[11px] font-bold text-brand-primary">{service.label}</p>
+                  </div>
+                ))}
               </div>
-            ))}
+
+              <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2 border-t border-brand-border/50 pt-4 text-xs text-brand-muted">
+                <span className="inline-flex items-center gap-1.5">
+                  <MapPin className="h-3.5 w-3.5 text-brand-primary" />
+                  {company.location}
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <Mail className="h-3.5 w-3.5 text-brand-primary" />
+                  Site contact email
+                </span>
+                <span className="font-medium text-brand-primary">{company.motto}</span>
+              </div>
+            </div>
+
+            <div className="relative">
+              <div className="overflow-hidden rounded-2xl border border-brand-border/50 shadow-sm">
+                {hero.heroImage ? (
+                  <img src={hero.heroImage} alt="" className="aspect-[4/5] w-full object-cover sm:aspect-[5/6]" />
+                ) : (
+                  <div className="flex aspect-[4/5] items-center justify-center bg-brand-cream text-xs text-brand-muted">
+                    Hero image
+                  </div>
+                )}
+              </div>
+              {hero.storyImage ? (
+                <div className="absolute -bottom-3 -left-3 w-[42%] overflow-hidden rounded-xl border-4 border-white shadow-md">
+                  <img src={hero.storyImage} alt="" className="aspect-square w-full object-cover" />
+                </div>
+              ) : null}
+            </div>
           </div>
         </div>
-      </SectionPreviewShell>
+      </PreviewFrame>
     );
   }
 
   if (sectionId === "company") {
     return (
-      <SectionPreviewShell title="Company identity strip">
-        <p className="text-lg font-bold text-brand-primary">{company.shortName || company.name}</p>
-        <p className="mt-1 text-sm text-brand-muted">{company.subtitle}</p>
-        <p className="mt-3 text-sm font-semibold text-brand-ink">{company.tagline}</p>
-        <div className="mt-4 space-y-2 text-sm text-brand-muted">
-          <p className="inline-flex items-center gap-2"><MapPin className="h-4 w-4 text-brand-primary" />{company.location}</p>
-          <p className="inline-flex items-center gap-2"><Mail className="h-4 w-4 text-brand-primary" />Contact email from site settings</p>
-          <p className="font-medium text-brand-primary">{company.motto}</p>
+      <PreviewFrame sectionId={sectionId}>
+        <div className="bg-white p-6">
+          <p className="text-xl font-bold text-brand-primary">{company.shortName || company.name}</p>
+          <p className="mt-1 text-sm text-brand-muted">{company.subtitle}</p>
+          <p className="mt-3 text-sm font-semibold text-brand-ink">{company.tagline}</p>
+          <div className="mt-5 space-y-2.5 rounded-2xl border border-brand-border/60 bg-brand-cream/40 p-4 text-sm text-brand-muted">
+            <p className="inline-flex items-center gap-2">
+              <MapPin className="h-4 w-4 text-brand-primary" />
+              {company.location || "—"}
+            </p>
+            <p className="font-medium text-brand-primary">{company.motto || "—"}</p>
+            <p className="text-xs text-brand-muted">Legal name: {company.name}</p>
+          </div>
         </div>
-      </SectionPreviewShell>
+      </PreviewFrame>
     );
   }
 
   if (sectionId === "story") {
     return (
-      <SectionPreviewShell title="Our Story section">
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div className="space-y-3 text-sm leading-relaxed text-brand-muted">
-            <p>{story.intro}</p>
-            <p>{story.story}</p>
-          </div>
-          <div className="overflow-hidden rounded-xl">
-            {hero.storyImage ? (
-              <img src={hero.storyImage} alt="" className="aspect-[4/3] w-full object-cover" />
-            ) : (
-              <div className="flex aspect-[4/3] items-center justify-center bg-brand-cream text-xs text-brand-muted">Story image</div>
-            )}
+      <PreviewFrame sectionId={sectionId}>
+        <div className="bg-brand-cream/40 p-5 sm:p-6">
+          <PreviewEyebrow>Our Story</PreviewEyebrow>
+          <h3 className="mt-2 text-xl font-bold text-brand-primary">Built for authentic African travel</h3>
+          <div className="mt-5 grid gap-5 sm:grid-cols-2 sm:items-start">
+            <div className="space-y-3 text-sm leading-relaxed text-brand-muted">
+              {story.intro ? <p>{story.intro}</p> : null}
+              {story.story ? <p>{story.story}</p> : null}
+              {story.journey ? <p>{story.journey}</p> : null}
+              {story.commitment ? <p>{story.commitment}</p> : null}
+            </div>
+            <div className="overflow-hidden rounded-2xl border border-brand-border/50 shadow-sm">
+              {hero.storyImage ? (
+                <img src={hero.storyImage} alt="" className="aspect-[4/3] w-full object-cover" />
+              ) : (
+                <div className="flex aspect-[4/3] items-center justify-center bg-white text-xs text-brand-muted">
+                  Story image
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      </SectionPreviewShell>
+      </PreviewFrame>
     );
   }
 
   if (sectionId === "mission") {
     return (
-      <SectionPreviewShell title="Mission, vision & values">
-        <div className="overflow-hidden rounded-2xl bg-brand-primary text-white">
+      <PreviewFrame sectionId={sectionId}>
+        <div className="overflow-hidden bg-brand-primary text-white">
           <div className="grid gap-px bg-white/10 sm:grid-cols-3">
-            <div className="bg-brand-primary p-4">
+            <div className="bg-brand-primary p-5">
               <p className="text-[10px] font-bold uppercase tracking-wide text-brand-accent">{mission.title}</p>
-              <p className="mt-2 text-xs leading-relaxed text-white/85">{mission.text}</p>
+              <p className="mt-3 text-sm leading-relaxed text-white/85">{mission.text}</p>
             </div>
-            <div className="bg-brand-primary p-4">
+            <div className="bg-brand-primary p-5">
               <p className="text-[10px] font-bold uppercase tracking-wide text-brand-accent">{vision.title}</p>
-              <p className="mt-2 text-xs leading-relaxed text-white/85">{vision.text}</p>
+              <p className="mt-3 text-sm leading-relaxed text-white/85">{vision.text}</p>
             </div>
-            <div className="bg-brand-primary p-4">
+            <div className="bg-brand-primary p-5">
               <p className="text-[10px] font-bold uppercase tracking-wide text-brand-accent">Our Values</p>
-              <div className="mt-2 flex flex-wrap gap-1.5">
-                {(cms.values || []).slice(0, 6).map((value) => (
-                  <span key={value} className="rounded-full bg-white/10 px-2 py-0.5 text-[10px]">{value}</span>
+              <div className="mt-3 flex flex-wrap gap-1.5">
+                {(cms.values || []).map((value) => (
+                  <span key={value} className="rounded-full bg-white/10 px-2.5 py-1 text-[11px]">
+                    {value}
+                  </span>
                 ))}
               </div>
             </div>
           </div>
         </div>
-      </SectionPreviewShell>
+      </PreviewFrame>
     );
   }
 
   if (sectionId === "tourServices" || sectionId === "supportServices") {
     const items = sectionId === "tourServices" ? cms.tourServices : cms.supportServices;
+    const isTour = sectionId === "tourServices";
     return (
-      <SectionPreviewShell title={sectionId === "tourServices" ? "Tour services cards" : "Support services cards"}>
-        <div className="grid gap-3 sm:grid-cols-2">
-          {(items || []).slice(0, 4).map((service) => (
-            <div key={service.label} className="rounded-xl border border-brand-border/60 p-3">
-              <div className="flex items-start gap-3">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-accent/30 text-brand-primary">
-                  <GuestIcon name={service.icon || "compass"} className="h-4 w-4" />
-                </span>
-                <div>
-                  <p className="text-sm font-bold text-brand-ink">{service.label || "Untitled"}</p>
-                  <p className="mt-1 text-xs leading-relaxed text-brand-muted">{service.description}</p>
+      <PreviewFrame sectionId={sectionId}>
+        <div className={isTour ? "bg-white p-5 sm:p-6" : "bg-brand-cream/50 p-5 sm:p-6"}>
+          <div className="mx-auto max-w-xl text-center">
+            <PreviewEyebrow>{isTour ? "Our Services" : "Support"}</PreviewEyebrow>
+            <h3 className="mt-2 text-lg font-bold text-brand-primary sm:text-xl">
+              {isTour ? "Guided Tours & Experiences" : "Accommodation, Transport & Planning"}
+            </h3>
+          </div>
+          <div className={`mt-5 grid gap-3 ${isTour ? "sm:grid-cols-2" : "lg:grid-cols-2"}`}>
+            {(items || []).map((service) => (
+              <div key={service.label} className="rounded-2xl border border-brand-border/60 bg-white p-4 shadow-sm">
+                <div className="flex items-start gap-3">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-accent/30 text-brand-primary">
+                    <GuestIcon name={service.icon || "compass"} className="h-4 w-4" />
+                  </span>
+                  <div className="min-w-0">
+                    <p className="text-sm font-bold text-brand-ink">{service.label || "Untitled"}</p>
+                    <p className="mt-1 text-xs leading-relaxed text-brand-muted">{service.description}</p>
+                  </div>
                 </div>
+                {Array.isArray(service.details) && service.details.length ? (
+                  <ul className="mt-3 space-y-1.5 border-t border-brand-border/40 pt-3">
+                    {service.details.map((detail) => (
+                      <li key={detail} className="flex items-start gap-1.5 text-[11px] text-brand-muted">
+                        <Check className="mt-0.5 h-3 w-3 shrink-0 text-brand-primary" />
+                        {detail}
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
               </div>
-              {Array.isArray(service.details) && service.details.length ? (
-                <ul className="mt-3 space-y-1">
-                  {service.details.slice(0, 3).map((detail) => (
-                    <li key={detail} className="flex items-center gap-1.5 text-[11px] text-brand-muted">
-                      <Check className="h-3 w-3 text-brand-primary" />
-                      {detail}
-                    </li>
-                  ))}
-                </ul>
-              ) : null}
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </SectionPreviewShell>
+      </PreviewFrame>
     );
   }
 
   if (sectionId === "popularDestinations") {
     return (
-      <SectionPreviewShell title="Popular destinations chips">
-        <div className="flex flex-wrap gap-2">
-          {(cms.popularDestinations || []).map((destination) => (
-            <span key={destination} className="rounded-full border border-brand-border/70 bg-brand-cream/60 px-3 py-1.5 text-xs font-medium text-brand-ink">
-              {destination}
-            </span>
-          ))}
+      <PreviewFrame sectionId={sectionId}>
+        <div className="bg-white p-5 sm:p-6">
+          <PreviewEyebrow>Destinations</PreviewEyebrow>
+          <h3 className="mt-2 text-lg font-bold text-brand-primary">Popular places guests love</h3>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {(cms.popularDestinations || []).map((destination) => (
+              <span
+                key={destination}
+                className="rounded-full border border-brand-border/70 bg-brand-cream/70 px-3 py-1.5 text-xs font-medium text-brand-ink"
+              >
+                {destination}
+              </span>
+            ))}
+          </div>
         </div>
-      </SectionPreviewShell>
+      </PreviewFrame>
     );
   }
 
   if (sectionId === "whyTravelWithUs") {
     return (
-      <SectionPreviewShell title="Why travel with us">
-        <ul className="grid gap-2 sm:grid-cols-2">
-          {(cms.whyTravelWithUs || []).map((item) => (
-            <li key={item} className="flex items-start gap-2 rounded-xl bg-brand-cream/70 px-3 py-2 text-xs text-brand-ink">
-              <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand-primary" />
-              {item}
-            </li>
-          ))}
-        </ul>
-      </SectionPreviewShell>
+      <PreviewFrame sectionId={sectionId}>
+        <div className="bg-brand-cream/40 p-5 sm:p-6">
+          <PreviewEyebrow>Why us</PreviewEyebrow>
+          <h3 className="mt-2 text-lg font-bold text-brand-primary">Why travel with 360 Tours</h3>
+          <ul className="mt-4 grid gap-2 sm:grid-cols-2">
+            {(cms.whyTravelWithUs || []).map((item) => (
+              <li
+                key={item}
+                className="flex items-start gap-2 rounded-xl border border-brand-border/50 bg-white px-3 py-2.5 text-xs text-brand-ink shadow-sm"
+              >
+                <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand-primary" />
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </PreviewFrame>
     );
   }
 
   if (sectionId === "faqs") {
     return (
-      <SectionPreviewShell title="FAQ accordion items">
-        <div className="space-y-2">
-          {(cms.faqs || []).slice(0, 4).map((faq) => (
-            <div key={faq.question} className="rounded-xl border border-brand-border/60 px-3 py-2">
-              <p className="text-sm font-semibold text-brand-ink">{faq.question || "Question"}</p>
-              <p className="mt-1 text-xs leading-relaxed text-brand-muted">{faq.answer || "Answer"}</p>
-            </div>
-          ))}
+      <PreviewFrame sectionId={sectionId}>
+        <div className="bg-white p-5 sm:p-6">
+          <PreviewEyebrow>FAQs</PreviewEyebrow>
+          <h3 className="mt-2 text-lg font-bold text-brand-primary">Common questions</h3>
+          <div className="mt-4 divide-y divide-brand-border/60 rounded-2xl border border-brand-border/60">
+            {(cms.faqs || []).map((faq) => (
+              <div key={faq.question} className="px-4 py-3">
+                <p className="text-sm font-semibold text-brand-ink">{faq.question || "Question"}</p>
+                <p className="mt-1.5 text-xs leading-relaxed text-brand-muted">{faq.answer || "Answer"}</p>
+              </div>
+            ))}
+          </div>
         </div>
-      </SectionPreviewShell>
+      </PreviewFrame>
     );
   }
 
   return (
-    <SectionPreviewShell title="Call to action banner">
-      <div className="rounded-2xl bg-brand-primary px-5 py-8 text-center text-white">
-        <h3 className="font-heading text-xl font-bold">{cta.title}</h3>
-        <p className="mx-auto mt-2 max-w-sm text-sm text-white/80">{cta.subtitle}</p>
-        <div className="mt-5 flex flex-wrap justify-center gap-2">
-          <span className="rounded-lg bg-brand-accent px-4 py-2 text-xs font-bold text-brand-primary">{cta.primaryLabel}</span>
-          <span className="rounded-lg border border-white/30 px-4 py-2 text-xs font-semibold">{cta.secondaryLabel}</span>
+    <PreviewFrame sectionId="cta">
+      <div className="bg-brand-primary px-5 py-10 text-center text-white sm:px-8">
+        <h3 className="font-heading text-2xl font-bold">{cta.title}</h3>
+        <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-white/80">{cta.subtitle}</p>
+        <div className="mt-6 flex flex-wrap justify-center gap-2">
+          <span className="rounded-xl bg-brand-accent px-4 py-2.5 text-xs font-bold text-brand-primary">
+            {cta.primaryLabel}
+          </span>
+          <span className="rounded-xl border border-white/30 px-4 py-2.5 text-xs font-semibold">
+            {cta.secondaryLabel}
+          </span>
         </div>
       </div>
-    </SectionPreviewShell>
+    </PreviewFrame>
   );
 }

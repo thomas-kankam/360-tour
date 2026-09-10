@@ -492,7 +492,7 @@ export default function AdminAboutCmsPage() {
         ))}
       </div>
 
-      <div className={["grid gap-6", preview ? "xl:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]" : ""].join(" ")}>
+      <div className={["grid gap-6 items-start", preview ? "xl:grid-cols-[minmax(0,1fr)_minmax(320px,0.95fr)]" : ""].join(" ")}>
         <div className="rounded-2xl border border-brand-border/60 bg-white p-5 shadow-sm sm:p-6">
           <div className="mb-5 border-b border-brand-border/50 pb-4">
             <h2 className="text-lg font-bold text-brand-ink">{activeSection?.label}</h2>
@@ -672,9 +672,9 @@ export default function AdminAboutCmsPage() {
         </div>
 
         {preview ? (
-          <div className="xl:sticky xl:top-24 xl:self-start">
+          <aside className="xl:sticky xl:top-24 xl:self-start">
             <AboutCmsPreview content={cms} sectionId={sectionId} />
-          </div>
+          </aside>
         ) : null}
       </div>
     </div>

@@ -74,30 +74,76 @@ export const ABOUT_CMS_SECTIONS = [
 ];
 
 function mergeArray(defaults, overrides) {
-  if (!Array.isArray(overrides)) return defaults;
+  // Empty arrays from the API mean "unset" — keep the live About page defaults
+  // so the admin editor and preview match what guests already see.
+  if (!Array.isArray(overrides) || overrides.length === 0) return defaults;
   return overrides;
+}
+
+function mergeText(defaults, overrides) {
+  if (overrides == null) return defaults;
+  if (typeof overrides === "string" && overrides.trim() === "") return defaults;
+  return overrides;
+}
+
+function mergeObjectFields(defaults = {}, overrides = {}, textKeys = []) {
+  const merged = { ...defaults, ...(overrides || {}) };
+  textKeys.forEach((key) => {
+    merged[key] = mergeText(defaults[key], overrides?.[key]);
+  });
+  return merged;
 }
 
 export function mergeAboutCmsWithDefaults(content = {}) {
   const defaults = ABOUT_CMS_DEFAULTS;
+  const heroOverrides = content.hero || {};
   return {
     hero: {
-      ...defaults.hero,
-      ...(content.hero || {}),
-      services: mergeArray(defaults.hero.services, content.hero?.services),
+      ...mergeObjectFields(defaults.hero, heroOverrides, [
+        "eyebrow",
+        "title",
+        "titleLine",
+        "titleHighlight",
+        "description",
+        "tagline",
+        "heroImage",
+        "storyImage",
+      ]),
+      services: mergeArray(defaults.hero.services, heroOverrides.services),
     },
-    company: { ...defaults.company, ...(content.company || {}) },
-    story: { ...defaults.story, ...(content.story || {}) },
-    mission: { ...defaults.mission, ...(content.mission || {}) },
-    vision: { ...defaults.vision, ...(content.vision || {}) },
+    company: mergeObjectFields(defaults.company, content.company, [
+      "name",
+      "shortName",
+      "tagline",
+      "subtitle",
+      "location",
+      "motto",
+    ]),
+    story: mergeObjectFields(defaults.story, content.story, ["intro", "story", "journey", "commitment"]),
+    mission: mergeObjectFields(defaults.mission, content.mission, ["title", "text"]),
+    vision: mergeObjectFields(defaults.vision, content.vision, ["title", "text"]),
     values: mergeArray(defaults.values, content.values),
     tourServices: mergeArray(defaults.tourServices, content.tourServices),
     supportServices: mergeArray(defaults.supportServices, content.supportServices),
     popularDestinations: mergeArray(defaults.popularDestinations, content.popularDestinations),
     whyTravelWithUs: mergeArray(defaults.whyTravelWithUs, content.whyTravelWithUs),
     faqs: mergeArray(defaults.faqs, content.faqs),
-    cta: { ...defaults.cta, ...(content.cta || {}) },
-    teaser: { ...defaults.teaser, ...(content.teaser || {}) },
+    cta: mergeObjectFields(defaults.cta, content.cta, [
+      "title",
+      "subtitle",
+      "primaryLabel",
+      "primaryTo",
+      "secondaryLabel",
+      "secondaryTo",
+    ]),
+    teaser: mergeObjectFields(defaults.teaser, content.teaser, [
+      "eyebrow",
+      "title",
+      "tagline",
+      "subtitle",
+      "summary",
+      "extended",
+    ]),
   };
 }
 
