@@ -74,6 +74,7 @@ export const ROUTES = {
     invoiceDetail: (id) => `/admin/invoices/${encodeURIComponent(id)}`,
     invoiceEdit: (id) => `/admin/invoices/${encodeURIComponent(id)}/edit`,
     landingCms: "/admin/landing-cms",
+    aboutCms: "/admin/about-cms",
     stories: "/admin/stories",
     storyNew: "/admin/stories/new",
     storyEdit: (id) => `/admin/stories/${id}/edit`,

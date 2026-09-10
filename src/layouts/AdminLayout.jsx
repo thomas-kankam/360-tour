@@ -71,6 +71,12 @@ function AdminSidebarContent({ user, collapsed, onNavigate }) {
     if (key === ADMIN_PERMISSIONS.CMS_MANAGEMENT) {
       items.push(
         {
+          key: `${key}-about`,
+          to: ROUTES.admin.aboutCms,
+          label: "About CMS",
+          icon: BookOpen,
+        },
+        {
           key: `${key}-stories`,
           to: ROUTES.admin.stories,
           label: "Stories CMS",

@@ -27,8 +27,15 @@ import {
 import { redirectToPaymentCheckout } from "../../utils/paymentHelpers";
 import {
   formatDepartureSpotsLeftLabel,
+  isCustomTourType,
   isDepartureLowAvailability,
 } from "../../utils/operatorTourConstants";
+import {
+  formatDepartureRangeLabel,
+  resolveTourDurationDays,
+  syncEndDateFromDuration,
+} from "../../utils/operatorTourMapper";
+import TourDurationCalendar from "../../components/tours/TourDurationCalendar";
 import {
   validateEmail,
   validatePhone,
@@ -109,9 +116,12 @@ function inputClass(error) {
   ].join(" ");
 }
 
-function TourSummary({ tour, travelers, subtotal, selectedDate, currency, unitPrice }) {
+function TourSummary({ tour, travelers, subtotal, selectedDate, selectedEndDate, currency, unitPrice }) {
   const departure = (tour.departureDates || []).find((dep) => dep.date === selectedDate);
-  const dateLabel = departure?.dateLabel || selectedDate;
+  const rangeLabel =
+    selectedDate && selectedEndDate
+      ? formatDepartureRangeLabel(selectedDate, selectedEndDate)
+      : departure?.dateLabel || selectedDate;
   const resolvedUnitPrice = unitPrice ?? resolveTourUnitPrice(tour);
   const resolvedCurrency = currency ?? tour.priceCurrency ?? "GHS";
 
@@ -131,9 +141,9 @@ function TourSummary({ tour, travelers, subtotal, selectedDate, currency, unitPr
           <span className="font-semibold text-brand-ink">{tour.duration}</span>
         </div>
         {selectedDate ? (
-          <div className="flex justify-between">
-            <span className="text-brand-muted">Departure</span>
-            <span className="font-semibold text-brand-ink">{dateLabel}</span>
+          <div className="flex justify-between gap-3">
+            <span className="text-brand-muted">{selectedEndDate ? "Dates" : "Departure"}</span>
+            <span className="text-right font-semibold text-brand-ink">{rangeLabel}</span>
           </div>
         ) : null}
         <div className="flex justify-between">
@@ -199,9 +209,13 @@ export default function TourBookingPage() {
       }
 
       setTour(result.tour);
+      const firstDeparture = result.tour.departureDates?.[0]?.date ?? "";
+      const custom = isCustomTourType(result.tour.tourType);
+      const durationDays = resolveTourDurationDays(result.tour);
       setForm((current) => ({
         ...current,
-        selectedDate: result.tour.departureDates?.[0]?.date ?? "",
+        selectedDate: custom ? "" : firstDeparture,
+        selectedEndDate: custom || !firstDeparture ? "" : (result.tour.departureDates?.[0]?.endDate || ""),
         travelers: Math.max(getGroupTravelerLimits(result.tour).min, current.travelers),
       }));
       setLoading(false);
@@ -222,6 +236,9 @@ export default function TourBookingPage() {
   }, [step]);
 
   const groupLimits = useMemo(() => getGroupTravelerLimits(tour), [tour]);
+  const isCustomTour = isCustomTourType(tour?.tourType);
+  const customDurationDays = useMemo(() => resolveTourDurationDays(tour), [tour]);
+  const todayIso = useMemo(() => new Date().toISOString().slice(0, 10), []);
   const travelerCount =
     form.bookingType === "group" ? clampGroupTravelers(form.travelers, tour) : 1;
   const bookingPricing = useMemo(
@@ -237,7 +254,7 @@ export default function TourBookingPage() {
     email: validateEmail(form.email),
     phone: validatePhone(form.phone),
     bookingType: !form.bookingType ? "Select individual or group booking" : "",
-    selectedDate: !form.selectedDate ? "Select a departure date" : "",
+    selectedDate: !form.selectedDate ? (isCustomTour ? "Select your trip start date" : "Select a departure date") : "",
     travelers:
       form.bookingType === "group" && form.travelers < groupLimits.min
         ? `Group bookings need at least ${groupLimits.min} travelers`
@@ -249,7 +266,7 @@ export default function TourBookingPage() {
     groupName: form.bookingType === "group" ? validateRequired(form.groupName, "Group name") : "",
     groupType: form.bookingType === "group" && !form.groupType ? "Select a group type" : "",
     paymentMode: !form.paymentMode ? "Choose how you would like to pay" : "",
-  }), [form, groupLimits]);
+  }), [form, groupLimits, isCustomTour]);
 
   const stepIndex = useMemo(() => {
     if (step === "info") return 0;
@@ -658,27 +675,59 @@ export default function TourBookingPage() {
                     )}
 
                     <div>
-                      <p className="text-xs font-semibold text-brand-ink">Preferred departure date <span className="text-brand-orange">*</span></p>
+                      <p className="text-xs font-semibold text-brand-ink">
+                        {isCustomTour ? "Select your travel dates" : "Preferred departure date"}{" "}
+                        <span className="text-brand-orange">*</span>
+                      </p>
                       <div className="mt-3 space-y-2">
-                        {(tour.departureDates || []).length > 0 ? tour.departureDates.map((dep) => (
+                        {isCustomTour ? (
+                          <TourDurationCalendar
+                            durationDays={customDurationDays}
+                            startDate={form.selectedDate}
+                            endDate={form.selectedEndDate}
+                            minDate={todayIso}
+                            label={`${customDurationDays}-day trip`}
+                            onChange={({ startDate, endDate }) => {
+                              setForm((current) => ({
+                                ...current,
+                                selectedDate: startDate,
+                                selectedEndDate: endDate,
+                              }));
+                              setTouched((current) => ({ ...current, selectedDate: true }));
+                            }}
+                          />
+                        ) : (tour.departureDates || []).length > 0 ? (
+                          tour.departureDates.map((dep) => (
                           <button
                             key={dep.date}
                             type="button"
-                            onClick={() => update("selectedDate", dep.date)}
+                            onClick={() => {
+                              update("selectedDate", dep.date);
+                              setForm((current) => ({
+                                ...current,
+                                selectedDate: dep.date,
+                                selectedEndDate: dep.endDate || syncEndDateFromDuration(dep.date, customDurationDays) || "",
+                              }));
+                            }}
                             className={[
                               "flex w-full items-center justify-between rounded-xl border px-4 py-3 text-left transition-all",
                               form.selectedDate === dep.date ? "border-brand-primary bg-brand-primary/5 ring-2 ring-brand-primary/20" : "border-brand-border/70 hover:border-brand-primary/30",
                             ].join(" ")}
                           >
                             <div>
-                              <p className="text-sm font-semibold text-brand-ink">{dep.dateLabel || dep.date}</p>
+                              <p className="text-sm font-semibold text-brand-ink">
+                                {dep.endDate
+                                  ? formatDepartureRangeLabel(dep.date, dep.endDate)
+                                  : (dep.dateLabel || dep.date)}
+                              </p>
                               <p className="text-xs text-brand-muted">{dep.label}</p>
                             </div>
                             <span className={`text-xs font-bold ${isDepartureLowAvailability(dep.spotsLeft, dep.spotsTotal) ? "text-red-500" : "text-brand-primary"}`}>
                               {formatDepartureSpotsLeftLabel(dep.spotsLeft, dep.spotsTotal)}
                             </span>
                           </button>
-                        )) : (
+                          ))
+                        ) : (
                           <p className="rounded-xl border border-brand-border/70 bg-brand-cream/50 px-4 py-3 text-sm text-brand-muted">
                             No scheduled departures yet. Contact us for availability.
                           </p>
@@ -917,6 +966,7 @@ export default function TourBookingPage() {
                 travelers={travelerCount}
                 subtotal={subtotal}
                 selectedDate={form.selectedDate}
+                selectedEndDate={form.selectedEndDate}
                 currency={chargeCurrency}
                 unitPrice={bookingPricing.unitPrice}
               />

@@ -3,41 +3,21 @@ import { Link } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
 import {
   ArrowRight,
-  Building2,
-  Car,
   Check,
   ChevronDown,
-  Compass,
-  Landmark,
   MapPinned,
   Mail,
   MapPin,
-  Mountain,
-  Plane,
-  Route,
-  User,
-  Users,
-  Waves,
 } from "lucide-react";
 import Container from "../../components/layout/Container";
 import { images } from "../../config/images";
-import { aboutPage, aboutPageHero, company } from "../../data/aboutContent";
-import { getWhatsAppUrl } from "../../config/env";
+import { aboutPage as aboutPageDefaults, aboutPageHero as aboutPageHeroDefaults, company as companyDefaults } from "../../data/aboutContent";
+import { useAboutCms } from "../../hooks/useAboutCms";
+import { ABOUT_CMS_DEFAULTS, mergeAboutCmsWithDefaults } from "../../utils/aboutCmsStorage";
+import { GuestIcon } from "../../utils/guestIcons";
+import env, { getWhatsAppUrl } from "../../config/env";
 
 const EASE = [0.16, 1, 0.3, 1];
-
-const serviceIcons = {
-  compass: Compass,
-  building: Building2,
-  plane: Plane,
-  car: Car,
-  users: Users,
-  user: User,
-  landmark: Landmark,
-  mountain: Mountain,
-  waves: Waves,
-  route: Route,
-};
 
 const rise = (delay = 0) => ({
   initial: { opacity: 0, y: 20 },
@@ -80,13 +60,52 @@ function FaqItem({ faq, index }) {
   );
 }
 
-const heroServiceIcons = {
-  compass: Compass,
-  building: Building2,
-  car: Car,
-};
-
 export default function AboutPage() {
+  const { cms } = useAboutCms();
+  const content = mergeAboutCmsWithDefaults(cms || ABOUT_CMS_DEFAULTS);
+
+  const aboutPageHero = {
+    ...aboutPageHeroDefaults,
+    ...content.hero,
+    services: content.hero?.services?.length ? content.hero.services : aboutPageHeroDefaults.services,
+  };
+  const company = {
+    ...companyDefaults,
+    ...content.company,
+    email: env.contactEmail || companyDefaults.email,
+  };
+  const aboutPage = {
+    ...aboutPageDefaults,
+    intro: content.story?.intro || aboutPageDefaults.intro,
+    story: content.story?.story || aboutPageDefaults.story,
+    journey: content.story?.journey || aboutPageDefaults.journey,
+    commitment: content.story?.commitment || aboutPageDefaults.commitment,
+    mission: content.mission?.title ? content.mission : aboutPageDefaults.mission,
+    vision: content.vision?.title ? content.vision : aboutPageDefaults.vision,
+    values: content.values?.length ? content.values : aboutPageDefaults.values,
+    tourServices: content.tourServices?.length ? content.tourServices : aboutPageDefaults.tourServices,
+    supportServices: content.supportServices?.length ? content.supportServices : aboutPageDefaults.supportServices,
+    popularDestinations: content.popularDestinations?.length
+      ? content.popularDestinations
+      : aboutPageDefaults.popularDestinations,
+    whyTravelWithUs: content.whyTravelWithUs?.length ? content.whyTravelWithUs : aboutPageDefaults.whyTravelWithUs,
+    faqs: content.faqs?.length ? content.faqs : aboutPageDefaults.faqs,
+    cta: {
+      title: content.cta?.title || aboutPageDefaults.cta.title,
+      subtitle: content.cta?.subtitle || aboutPageDefaults.cta.subtitle,
+      primary: {
+        label: content.cta?.primaryLabel || aboutPageDefaults.cta.primary.label,
+        to: content.cta?.primaryTo || aboutPageDefaults.cta.primary.to,
+      },
+      secondary: {
+        label: content.cta?.secondaryLabel || aboutPageDefaults.cta.secondary.label,
+        to: content.cta?.secondaryTo || aboutPageDefaults.cta.secondary.to,
+      },
+    },
+  };
+  const heroImage = content.hero?.heroImage || images.home.hero_img;
+  const storyImage = content.hero?.storyImage || images.tour_sites.manhyia_palace;
+
   return (
     <div className="overflow-x-hidden">
       {/* Hero, editorial split layout */}
@@ -122,20 +141,17 @@ export default function AboutPage() {
               <p className="mt-4 text-sm font-semibold text-brand-primary">{aboutPageHero.tagline}</p>
 
               <div className="mt-8 grid gap-3 sm:grid-cols-3">
-                {aboutPageHero.services.map((service) => {
-                  const Icon = heroServiceIcons[service.icon] ?? Compass;
-                  return (
+                {aboutPageHero.services.map((service) => (
                     <div
                       key={service.label}
                       className="rounded-2xl border border-brand-border/60 bg-brand-cream/50 px-4 py-3.5"
                     >
                       <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-accent/35 text-brand-primary">
-                        <Icon className="h-4 w-4" strokeWidth={2} aria-hidden />
+                        <GuestIcon name={service.icon || 'compass'} className="h-4 w-4" />
                       </span>
                       <p className="mt-2.5 text-xs font-bold text-brand-primary sm:text-sm">{service.label}</p>
                     </div>
-                  );
-                })}
+                  ))}
               </div>
 
               <div className="mt-8 flex flex-wrap gap-x-6 gap-y-3 border-t border-brand-border/50 pt-6 text-sm">
@@ -172,7 +188,7 @@ export default function AboutPage() {
 
               <div className="relative z-10 overflow-hidden rounded-3xl border-4 border-brand-accent/40 shadow-[0_24px_64px_-28px_rgba(0,107,63,0.3)]">
                 <img
-                  src={images.home.hero_img}
+                  src={heroImage}
                   alt="Travel experiences with 360 Tours"
                   className="aspect-[5/4] w-full object-cover"
                 />
@@ -180,7 +196,7 @@ export default function AboutPage() {
 
               <div className="absolute -bottom-5 -left-4 z-20 w-[42%] overflow-hidden rounded-2xl border-4 border-white shadow-xl sm:-left-8 sm:w-[38%]">
                 <img
-                  src={images.tour_sites.manhyia_palace}
+                  src={storyImage}
                   alt="Ghana cultural heritage"
                   className="aspect-square w-full object-cover"
                 />
@@ -216,7 +232,7 @@ export default function AboutPage() {
 
             <motion.div {...rise(0.1)} className="relative">
               <img
-                src={images.tour_sites.manhyia_palace}
+                src={storyImage}
                 alt="Cultural heritage in Ghana"
                 className="aspect-[4/3] w-full rounded-3xl object-cover shadow-[0_20px_60px_-24px_rgba(0,107,63,0.3)]"
               />
@@ -273,7 +289,6 @@ export default function AboutPage() {
 
           <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {aboutPage.tourServices.map((service, i) => {
-              const Icon = serviceIcons[service.icon] ?? Compass;
               return (
                 <motion.div
                   key={service.label}
@@ -281,7 +296,7 @@ export default function AboutPage() {
                   className="rounded-2xl border border-brand-border/60 p-5"
                 >
                   <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-accent/30 text-brand-primary">
-                    <Icon className="h-5 w-5" strokeWidth={1.75} aria-hidden />
+                    <GuestIcon name={service.icon || "compass"} className="h-5 w-5" />
                   </span>
                   <h3 className="mt-4 text-sm font-bold text-brand-ink">{service.label}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-brand-muted">{service.description}</p>
@@ -301,7 +316,6 @@ export default function AboutPage() {
 
           <div className="grid gap-6 lg:grid-cols-2">
             {aboutPage.supportServices.map((service, i) => {
-              const Icon = serviceIcons[service.icon] ?? Compass;
               return (
                 <motion.div
                   key={service.label}
@@ -310,7 +324,7 @@ export default function AboutPage() {
                 >
                   <div className="flex gap-4">
                     <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-primary/10 text-brand-primary">
-                      <Icon className="h-5 w-5" strokeWidth={1.75} aria-hidden />
+                      <GuestIcon name={service.icon || "compass"} className="h-5 w-5" />
                     </span>
                     <div>
                       <h3 className="text-base font-bold text-brand-ink">{service.label}</h3>

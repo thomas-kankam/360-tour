@@ -19,6 +19,7 @@ import {
   AdminExperienceFormPage,
   AdminExperiencesPage,
   AdminLandingCmsPage,
+  AdminAboutCmsPage,
   AdminLayout,
   AdminStoriesPage,
   AdminStoryFormPage,
@@ -97,6 +98,7 @@ const adminRoutes = (
 
         <Route element={<AdminPermissionRoute permission={ADMIN_PERMISSIONS.CMS_MANAGEMENT} />}>
           <Route path="landing-cms" element={<AdminLandingCmsPage />} />
+          <Route path="about-cms" element={<AdminAboutCmsPage />} />
           <Route path="stories" element={<AdminStoriesPage />} />
           <Route path="stories/new" element={<AdminStoryFormPage />} />
           <Route path="stories/:id/edit" element={<AdminStoryFormPage />} />

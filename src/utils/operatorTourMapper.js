@@ -67,7 +67,8 @@ export function diffDaysBetween(startDate, endDate) {
   if (end < start) return 0;
   const diffMs = end.getTime() - start.getTime();
   const spanDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-  return Math.max(1, spanDays || 0);
+  // Inclusive day count: Jan 1 → Jan 7 = 7 days.
+  return Math.max(1, spanDays + 1);
 }
 
 export function formatTourDurationLabel(days) {
@@ -90,13 +91,18 @@ export function resolveTourDurationDays(source) {
   return match ? Number(match[1]) : 1;
 }
 
-export function syncEndDateFromDuration(startDate, durationDays) {
-  const start = parseIsoDate(startDate);
-  const days = Math.max(1, Number(durationDays) || 1);
+export function addDaysToIsoDate(dateStr, days) {
+  const start = parseIsoDate(dateStr);
   if (!start) return "";
-  const end = new Date(start);
-  end.setDate(end.getDate() + days);
-  return end.toISOString().slice(0, 10);
+  const next = new Date(start);
+  next.setDate(next.getDate() + Number(days || 0));
+  return next.toISOString().slice(0, 10);
+}
+
+export function syncEndDateFromDuration(startDate, durationDays) {
+  const days = Math.max(1, Number(durationDays) || 1);
+  // Inclusive trip length: a 7-day trip starting Mon ends the following Sunday.
+  return addDaysToIsoDate(startDate, days - 1);
 }
 
 export function inferDepartureScheduleType(raw, departureDates = []) {

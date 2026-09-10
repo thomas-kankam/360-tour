@@ -49,6 +49,7 @@ export function getRequiredPermissionForAdminPath(pathname) {
   if (pathname.startsWith("/admin/ratings")) return ADMIN_PERMISSIONS.RATING_MANAGEMENT;
   if (pathname.startsWith("/admin/invoices")) return ADMIN_PERMISSIONS.INVOICE_MANAGEMENT;
   if (pathname.startsWith("/admin/landing-cms")) return ADMIN_PERMISSIONS.CMS_MANAGEMENT;
+  if (pathname.startsWith("/admin/about-cms")) return ADMIN_PERMISSIONS.CMS_MANAGEMENT;
   if (pathname.startsWith("/admin/stories")) return ADMIN_PERMISSIONS.CMS_MANAGEMENT;
   if (pathname.startsWith("/admin/experiences")) return ADMIN_PERMISSIONS.CMS_MANAGEMENT;
   if (pathname.startsWith("/admin/roles")) return ADMIN_PERMISSIONS.ROLE_MANAGEMENT;

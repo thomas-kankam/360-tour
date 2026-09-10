@@ -8,6 +8,7 @@ import ItineraryDayImageField from "./ItineraryDayImageField";
 import ItineraryDayExtrasFields from "./ItineraryDayExtrasFields";
 import TourFeatureImagesField from "./TourFeatureImagesField";
 import TourLocationRoutePicker from "./TourLocationRoutePicker";
+import TourDurationCalendar from "../tours/TourDurationCalendar";
 import CountrySearchSelect from "../forms/CountrySearchSelect";
 import { GuestIcon } from "../../utils/guestIcons";
 import { findCountryOption } from "../../utils/operatorTourStorage";
@@ -514,8 +515,21 @@ export default function TourListingForm({ initial, onSubmit, submitLabel = "Save
             />
           </div>
           <div className="sm:col-span-2">
-            <Field label="Duration (days)">
-              <input type="number" min={1} className={inputClass} value={form.durationDays} onChange={(e) => patch({ durationDays: Number(e.target.value) })} />
+            <Field label="Duration (days)" hint={isCustomTour ? "Travellers pick any start date; this many days are reserved automatically." : "Used for the listing card and date-range end date."}>
+              <input
+                type="number"
+                min={1}
+                className={inputClass}
+                value={form.durationDays}
+                onChange={(e) => {
+                  const durationDays = Math.max(1, Number(e.target.value) || 1);
+                  if (!isCustomTour && isDateRangeSchedule) {
+                    handleDateRangeDurationChange(durationDays);
+                    return;
+                  }
+                  patch({ durationDays, durationLabel: `${durationDays} days` });
+                }}
+              />
             </Field>
           </div>
           <div className="sm:col-span-2 rounded-xl border border-brand-border/60 bg-brand-cream/40 px-4 py-3 text-sm text-brand-muted">
@@ -784,8 +798,8 @@ export default function TourListingForm({ initial, onSubmit, submitLabel = "Save
             {isCustomTour ? (
               <p className="text-xs leading-relaxed text-brand-muted">
                 <span className="font-semibold text-brand-ink">How this works:</span> customized tours publish without
-                departure dates. Travellers see your from-price and send an enquiry, then your team agrees dates,
-                group size, and the final quote.
+                fixed departure lists. Travellers pick any start date on the booking calendar, and the trip length you set
+                here auto-selects their end date.
               </p>
             ) : (
               <p className="text-xs leading-relaxed text-brand-muted">
@@ -890,24 +904,14 @@ export default function TourListingForm({ initial, onSubmit, submitLabel = "Save
 
           {isCustomTour ? (
             <div className="rounded-xl border border-brand-border/60 bg-brand-cream/40 p-4">
-              <p className="text-sm font-bold text-brand-ink">Typical trip length</p>
+              <p className="text-sm font-bold text-brand-ink">Trip length</p>
               <p className="mt-1 text-[11px] text-brand-muted">
-                Shown on the listing as a guide. Travellers can request a shorter or longer version.
+                Set once here. On the booking page, travellers pick a start date and this many days are highlighted automatically.
               </p>
-              <div className="mt-4 max-w-xs">
-                <Field label="Duration (days)" hint="Used for the listing card and itinerary outline.">
-                  <input
-                    type="number"
-                    min={1}
-                    className={inputClass}
-                    value={form.durationDays}
-                    onChange={(e) => patch({
-                      durationDays: Math.max(1, Number(e.target.value) || 1),
-                      durationLabel: `${Math.max(1, Number(e.target.value) || 1)} days`,
-                    })}
-                  />
-                </Field>
-              </div>
+              <p className="mt-3 text-sm font-semibold text-brand-primary">
+                {Math.max(1, Number(form.durationDays) || 1)} {(Number(form.durationDays) || 1) === 1 ? "day" : "days"}
+                <span className="ml-2 text-xs font-medium text-brand-muted">(edit under Basics)</span>
+              </p>
             </div>
           ) : (
           <div>
@@ -938,38 +942,29 @@ export default function TourListingForm({ initial, onSubmit, submitLabel = "Save
           )}
 
           {isCustomTour ? null : isDateRangeSchedule ? (
-            <div className="rounded-xl border border-brand-border/60 bg-brand-cream/40 p-4">
-              <p className="text-sm font-bold text-brand-ink">Date range window</p>
-              <p className="mt-1 text-[11px] text-brand-muted">
-                Set duration, start and end dates, and how many slots are available for this window.
-              </p>
-              <div className="mt-4 grid gap-4 sm:grid-cols-2">
-                <Field label="Duration (days)" hint="Updates the end date when a start date is set.">
-                  <input
-                    type="number"
-                    min={1}
-                    className={inputClass}
-                    value={form.durationDays}
-                    onChange={(e) => handleDateRangeDurationChange(e.target.value)}
-                  />
-                </Field>
-                <Field label="Start date" hint="When this tour window opens.">
-                  <input
-                    type="date"
-                    className={inputClass}
-                    value={dateRangeDeparture.date}
-                    onChange={(e) => handleDateRangeStartChange(e.target.value)}
-                  />
-                </Field>
-                <Field label="End date" hint="When this tour window closes.">
-                  <input
-                    type="date"
-                    className={inputClass}
-                    value={dateRangeDeparture.endDate || ""}
-                    min={dateRangeDeparture.date || undefined}
-                    onChange={(e) => handleDateRangeEndChange(e.target.value)}
-                  />
-                </Field>
+            <div className="rounded-xl border border-brand-border/60 bg-brand-cream/40 p-4 space-y-4">
+              <div>
+                <p className="text-sm font-bold text-brand-ink">Date range window</p>
+                <p className="mt-1 text-[11px] text-brand-muted">
+                  Set duration under Basics, then pick the start date. The calendar highlights the full trip length and sets the end date.
+                </p>
+              </div>
+              <TourDurationCalendar
+                durationDays={form.durationDays}
+                startDate={dateRangeDeparture.date || ""}
+                endDate={dateRangeDeparture.endDate || ""}
+                label="Trip start date"
+                onChange={({ startDate, endDate }) => {
+                  updateDateRangeDeparture({
+                    date: startDate,
+                    dateLabel: formatDepartureDateLabel(startDate),
+                    endDate,
+                    endDateLabel: formatDepartureDateLabel(endDate),
+                    label: formatDepartureRangeLabel(startDate, endDate),
+                  });
+                }}
+              />
+              <div className="grid gap-4 sm:grid-cols-2">
                 <Field
                   label="Slots available"
                   hint={
@@ -989,7 +984,7 @@ export default function TourListingForm({ initial, onSubmit, submitLabel = "Save
                   />
                 </Field>
               </div>
-              <label className="mt-4 inline-flex cursor-pointer items-center gap-2.5 rounded-xl border border-brand-border/60 bg-white px-4 py-3 text-sm text-brand-ink">
+              <label className="inline-flex cursor-pointer items-center gap-2.5 rounded-xl border border-brand-border/60 bg-white px-4 py-3 text-sm text-brand-ink">
                 <input
                   type="checkbox"
                   checked={isDateRangeUnlimited}
@@ -1002,7 +997,7 @@ export default function TourListingForm({ initial, onSubmit, submitLabel = "Save
                 </span>
               </label>
               {dateRangeDeparture.date && dateRangeDeparture.endDate ? (
-                <p className="mt-4 text-[11px] text-brand-muted">
+                <p className="text-[11px] text-brand-muted">
                   Preview:{" "}
                   <span className="font-semibold text-brand-ink">
                     {formatDepartureRangeLabel(dateRangeDeparture.date, dateRangeDeparture.endDate)}

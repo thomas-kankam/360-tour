@@ -1,6 +1,7 @@
 import {
   Building2,
   CalendarDays,
+  Car,
   Crown,
   Globe,
   GraduationCap,
@@ -21,6 +22,12 @@ import {
   Compass,
   Luggage,
   Route,
+  User,
+  Users,
+  Shield,
+  Heart,
+  Headphones,
+  BadgeCheck,
 } from "lucide-react";
 
 export const GUEST_ICON_MAP = {
@@ -46,7 +53,22 @@ export const GUEST_ICON_MAP = {
   luggage: Luggage,
   calendar: CalendarDays,
   route: Route,
+  car: Car,
+  user: User,
+  users: Users,
+  shield: Shield,
+  heart: Heart,
+  headphones: Headphones,
+  badge: BadgeCheck,
 };
+
+export const GUEST_ICON_OPTIONS = Object.keys(GUEST_ICON_MAP).map((id) => ({
+  id,
+  label: id
+    .replace(/([A-Z])/g, " $1")
+    .replace(/^./, (c) => c.toUpperCase())
+    .replace(/-/g, " "),
+}));
 
 export function GuestIcon({ name, className = "h-4 w-4", ...props }) {
   const Icon = GUEST_ICON_MAP[name] ?? Compass;
