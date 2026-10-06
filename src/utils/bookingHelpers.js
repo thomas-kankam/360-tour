@@ -1,8 +1,13 @@
 import { buildWebsiteUrl } from "../config/env";
 import { PAYMENT_REGION } from "../constants/paymentRegions";
 import { getBookingStatus } from "./bookingStorage";
+import { findCountryOption } from "./countryOptions";
 import { resolvePublicMediaUrl } from "./mediaUrl";
 import { computeChargeSubtotal, resolveTourDisplayPricing } from "./tourPricing";
+
+function findCountryForBooking(countryId) {
+  return findCountryOption(countryId);
+}
 
 export const DEFAULT_MIN_GROUP_TRAVELERS = 2;
 export const DEFAULT_MAX_GROUP_TRAVELERS = 200;
@@ -154,7 +159,11 @@ export function createInitialBookingForm(user, overrides = {}) {
     lastName: "",
     email: "",
     phone: "",
+    whatsapp: "",
     nationality: "",
+    countryId: "ghana",
+    adults: 1,
+    children: 0,
     bookingType: null,
     selectedDate: "",
     selectedEndDate: "",
@@ -196,15 +205,19 @@ function applyUserRegionToPayload(payload, region) {
 }
 
 export function buildCreateBookingPayload(form, tour, region = null) {
+  const adults = Math.max(0, Number(form.adults) || 0);
+  const children = Math.max(0, Number(form.children) || 0);
+  const partySize = Math.max(1, (adults || 1) + children);
   const travelers =
     form.bookingType === "group"
       ? clampGroupTravelers(form.travelers, tour)
-      : 1;
+      : partySize;
 
   const pricing = resolveBookingPricing(tour, travelers, region);
+  const country = findCountryForBooking(form.countryId);
 
   const payload = {
-    bookingType: form.bookingType,
+    bookingType: form.bookingType || "individual",
     tourSlug: tour.slug,
     selectedDate: form.selectedDate,
     ...(form.selectedEndDate ? { selectedEndDate: form.selectedEndDate } : {}),
@@ -215,11 +228,22 @@ export function buildCreateBookingPayload(form, tour, region = null) {
       lastName: form.lastName.trim(),
       email: form.email.trim(),
       phone: form.phone.trim(),
-      ...(form.nationality?.trim() ? { nationality: form.nationality.trim() } : {}),
+      ...(form.whatsapp?.trim() ? { whatsapp: form.whatsapp.trim() } : {}),
+      ...(country
+        ? {
+            country: country.label,
+            countryCode: country.isoCode,
+            dialCode: country.dialCode ? `+${country.dialCode}` : "",
+            nationality: country.label,
+          }
+        : form.nationality?.trim()
+          ? { nationality: form.nationality.trim() }
+          : {}),
+      adults,
+      children,
     },
     specialRequests: form.specialRequests?.trim() || "",
     dietaryNeeds: form.dietaryNeeds?.trim() || "",
-    additionalTravelers: [],
     amount: pricing.subtotal,
     currency: pricing.currency,
   };
@@ -230,8 +254,7 @@ export function buildCreateBookingPayload(form, tour, region = null) {
       groupType: form.groupType,
       ...(form.organization?.trim() ? { organization: form.organization.trim() } : {}),
     };
-  } else {
-    payload.groupDetails = [];
+    payload.additionalTravelers = [];
   }
 
   payload.frontend_url = buildWebsiteUrl();

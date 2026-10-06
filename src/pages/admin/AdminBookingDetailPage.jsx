@@ -6,7 +6,6 @@ import {
   Building2,
   CalendarDays,
   CheckCircle2,
-  CreditCard,
   ExternalLink,
   Globe2,
   Loader2,
@@ -129,6 +128,7 @@ export default function AdminBookingDetailPage() {
   const { token } = useAuth();
   const [booking, setBooking] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [completing, setCompleting] = useState(false);
 
   useEffect(() => {
     if (!token || !bookingCode) {
@@ -161,6 +161,19 @@ export default function AdminBookingDetailPage() {
       cancelled = true;
     };
   }, [token, bookingCode, navigate]);
+
+  async function handleMarkCompleted() {
+    if (!booking) return;
+    setCompleting(true);
+    const result = await adminBookingsServiceApi.completeBooking(token, booking.bookingCode || bookingCode);
+    setCompleting(false);
+    if (!result.ok || !result.booking) {
+      toast.error(result.reason || "Could not mark this booking as completed.");
+      return;
+    }
+    setBooking(result.booking);
+    toast.success("Booking marked as paid and completed.");
+  }
 
   if (loading) {
     return (
@@ -332,8 +345,23 @@ export default function AdminBookingDetailPage() {
                 <dd className="mt-1 text-sm font-semibold text-brand-ink">{traveler.phone || "—"}</dd>
               </div>
               <div>
-                <dt className="text-xs font-bold uppercase tracking-[0.12em] text-brand-muted">Nationality</dt>
-                <dd className="mt-1 text-sm font-semibold text-brand-ink">{traveler.nationality || "—"}</dd>
+                <dt className="text-xs font-bold uppercase tracking-[0.12em] text-brand-muted">WhatsApp</dt>
+                <dd className="mt-1 text-sm font-semibold text-brand-ink">{traveler.whatsapp || "—"}</dd>
+              </div>
+              <div>
+                <dt className="text-xs font-bold uppercase tracking-[0.12em] text-brand-muted">Country</dt>
+                <dd className="mt-1 text-sm font-semibold text-brand-ink">
+                  {traveler.country || traveler.nationality || "—"}
+                  {traveler.dialCode ? ` · ${traveler.dialCode}` : ""}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-xs font-bold uppercase tracking-[0.12em] text-brand-muted">Adults</dt>
+                <dd className="mt-1 text-sm font-semibold text-brand-ink">{traveler.adults ?? "—"}</dd>
+              </div>
+              <div>
+                <dt className="text-xs font-bold uppercase tracking-[0.12em] text-brand-muted">Children</dt>
+                <dd className="mt-1 text-sm font-semibold text-brand-ink">{traveler.children ?? 0}</dd>
               </div>
             </dl>
           </Section>
@@ -419,18 +447,18 @@ export default function AdminBookingDetailPage() {
                 <dt className="text-brand-muted">Booking status</dt>
                 <dd><Badge config={bookingStatus} /></dd>
               </div>
-              {booking.paymentUrl && paymentStatus?.label === "Pending" ? (
-                <div className="pt-2">
-                  <a
-                    href={booking.paymentUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-sm font-semibold text-brand-primary hover:underline"
-                  >
-                    <CreditCard className="h-4 w-4" strokeWidth={2} aria-hidden />
-                    Open checkout link
-                  </a>
-                </div>
+              {/* Online checkout link is hidden while payment is collected offline.
+                  Restore the paymentUrl anchor (CreditCard) when gateway checkout returns. */}
+              {(booking.apiStatus || booking.status) !== "completed" ? (
+                <button
+                  type="button"
+                  onClick={handleMarkCompleted}
+                  disabled={completing}
+                  className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-brand-primary px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-primary/90 disabled:opacity-60"
+                >
+                  {completing ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : <CheckCircle2 className="h-4 w-4" aria-hidden />}
+                  Mark as paid & completed
+                </button>
               ) : null}
             </dl>
           </Section>

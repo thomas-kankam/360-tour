@@ -58,6 +58,16 @@ class AdminBookingsServiceApi {
       booking: mapAdminBooking(result.data),
     };
   }
+
+  async completeBooking(token, bookingCode) {
+    const result = await this.request("POST", `/admin/bookings/${encodeURIComponent(bookingCode)}/complete`, {
+      token,
+      body: {},
+      dedupe: false,
+    });
+    if (!result.ok) return { ...result, booking: null };
+    return { ...result, booking: mapAdminBooking(result.data) };
+  }
 }
 
 const adminBookingsServiceApi = new AdminBookingsServiceApi();
