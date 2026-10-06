@@ -10,6 +10,7 @@ import { useAuth } from "../../hooks/useAuth";
 const STATUS_STYLES = {
   pending: "bg-amber-100 text-amber-800",
   responded: "bg-emerald-100 text-emerald-800",
+  completed: "bg-brand-primary/10 text-brand-primary",
   closed: "bg-brand-cream text-brand-muted",
 };
 
@@ -70,9 +71,11 @@ export default function ClientInvoiceRequestDetailPage() {
         <div className="mt-4 flex flex-wrap items-start justify-between gap-3">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brand-orange">
-              {request.type} request
+              {request.type === "booking" ? "Booking request" : `${request.type} request`}
             </p>
-            <h1 className="mt-1 text-2xl font-bold capitalize text-brand-ink">{request.type} details</h1>
+            <h1 className="mt-1 text-2xl font-bold text-brand-ink">
+              {request.type === "booking" ? "Booking request" : `${request.type} details`}
+            </h1>
             <p className="mt-1 text-sm text-brand-muted">Submitted {formatDate(request.created_at)}</p>
           </div>
           <span
@@ -97,12 +100,18 @@ export default function ClientInvoiceRequestDetailPage() {
               <>
                 <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-brand-ink">{request.admin_response}</p>
                 <p className="mt-3 text-xs text-brand-muted">
-                  A copy of this response was also sent to your email
-                  {hasAttachment ? " with the attachment available here for download" : ""}.
+                  {request.status === "completed"
+                    ? "Admin marked this request as completed."
+                    : "A copy of this response was also sent to your email"}
+                  {hasAttachment ? " The attached file is ready to download." : ""}
                 </p>
               </>
             ) : (
-              <p className="mt-2 text-sm text-brand-muted">No response yet. You’ll get an email and notification when admin replies.</p>
+              <p className="mt-2 text-sm text-brand-muted">
+                {request.type === "booking"
+                  ? "Waiting for payment. This stays pending until admin marks the booking completed."
+                  : "No response yet. You’ll get an email and notification when admin replies."}
+              </p>
             )}
           </article>
 

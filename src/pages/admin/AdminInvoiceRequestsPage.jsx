@@ -52,6 +52,7 @@ async function respondRequest(token, id, { admin_response, attachment }) {
 const STATUS_STYLES = {
   pending: "bg-amber-100 text-amber-800",
   responded: "bg-emerald-100 text-emerald-800",
+  completed: "bg-brand-primary/10 text-brand-primary",
   closed: "bg-brand-cream text-brand-muted",
 };
 
@@ -112,14 +113,15 @@ export default function AdminInvoiceRequestsPage() {
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-brand-primary">Billing</p>
-          <h1 className="mt-1 text-2xl font-bold text-brand-ink">Invoice & quote requests</h1>
+          <h1 className="mt-1 text-2xl font-bold text-brand-ink">Requests</h1>
           <p className="mt-2 text-sm text-brand-muted">
-            Reply with a message and optionally attach a quote PDF. Clients see status, email, and can download the file.
+            Quotes, invoices, and tour booking requests. A reply or a completed booking shows up in the client’s request history.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
           {[
             { id: "", label: "All types" },
+            { id: "booking", label: "Bookings" },
             { id: "quote", label: "Quotes" },
             { id: "invoice", label: "Invoices" },
           ].map((filter) => (
@@ -142,6 +144,7 @@ export default function AdminInvoiceRequestsPage() {
             { id: "", label: "All status" },
             { id: "pending", label: "Pending" },
             { id: "responded", label: "Responded" },
+            { id: "completed", label: "Completed" },
           ].map((filter) => (
             <button
               key={`status-${filter.id || "all"}`}
@@ -175,7 +178,9 @@ export default function AdminInvoiceRequestsPage() {
             <article key={item.id} className="rounded-2xl border border-brand-border/60 bg-white p-5 shadow-sm">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <p className="text-sm font-bold capitalize text-brand-ink">{item.type} request</p>
+                  <p className="text-sm font-bold text-brand-ink">
+                    {item.type === "booking" ? "Booking request" : `${item.type} request`}
+                  </p>
                   <p className="mt-1 text-sm text-brand-muted">
                     {item.client_name || "Client"} · {item.client_email || "—"}
                   </p>

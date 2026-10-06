@@ -11,8 +11,15 @@ import { useAuth } from "../../hooks/useAuth";
 const STATUS_STYLES = {
   pending: "bg-amber-100 text-amber-800",
   responded: "bg-emerald-100 text-emerald-800",
+  completed: "bg-brand-primary/10 text-brand-primary",
   closed: "bg-brand-cream text-brand-muted",
 };
+
+function requestLabel(type) {
+  if (type === "booking") return "Booking request";
+  if (type === "quote") return "Quote request";
+  return "Invoice request";
+}
 
 function formatDate(value) {
   if (!value) return "";
@@ -90,9 +97,9 @@ export default function MyInvoicesPage() {
     <section className="py-10 sm:py-14">
       <Container>
         <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-orange">Billing</p>
-        <h1 className="mt-2 font-heading text-3xl font-bold text-brand-primary">Quotes & invoices</h1>
+        <h1 className="mt-2 font-heading text-3xl font-bold text-brand-primary">Requests & invoices</h1>
         <p className="mt-2 max-w-2xl text-sm text-brand-muted">
-          Request a quote, track responses with attachments, and open invoices sent to your account.
+          Tour booking requests, quotes, and invoices stay here. Open any request to see its status and the admin response once it is completed.
         </p>
 
         <div className="mt-10 grid gap-6 lg:grid-cols-2">
@@ -137,6 +144,7 @@ export default function MyInvoicesPage() {
               <div className="flex gap-1.5">
                 {[
                   { id: "all", label: "All" },
+                  { id: "booking", label: "Bookings" },
                   { id: "quote", label: "Quotes" },
                   { id: "invoice", label: "Invoices" },
                 ].map((filter) => (
@@ -173,7 +181,7 @@ export default function MyInvoicesPage() {
                       className="block rounded-xl border border-brand-border/50 px-4 py-3 transition hover:border-brand-primary/30 hover:bg-brand-cream/40"
                     >
                       <div className="flex items-center justify-between gap-2">
-                        <p className="text-sm font-semibold capitalize text-brand-ink">{request.type} request</p>
+                        <p className="text-sm font-semibold text-brand-ink">{requestLabel(request.type)}</p>
                         <span
                           className={[
                             "rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase",
@@ -191,7 +199,9 @@ export default function MyInvoicesPage() {
                             <Download className="h-3 w-3" aria-hidden /> File attached
                           </span>
                         ) : null}
-                        {request.status === "responded" ? (
+                        {request.status === "completed" ? (
+                          <span className="font-semibold text-brand-primary">Completed by admin</span>
+                        ) : request.status === "responded" ? (
                           <span className="font-semibold text-emerald-700">Response emailed</span>
                         ) : null}
                         <span className="inline-flex items-center gap-1 font-semibold text-brand-primary">

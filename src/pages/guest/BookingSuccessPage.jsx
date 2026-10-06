@@ -45,7 +45,7 @@ function getSuccessCopy({ isPaidOnline, isOnsiteReservation, isOnlinePending }) 
   return {
     eyebrow: "Reservation confirmed",
     title: "Your spots are held",
-    description: "We've sent a confirmation to your email. You can view the full booking in My bookings.",
+    description: "Your booking request was sent. Track it under Requests & invoices — it stays pending until admin marks the payment completed.",
     accent: "text-brand-primary",
     iconWrap: "bg-brand-primary/10 text-brand-primary",
   };
@@ -167,6 +167,15 @@ export default function BookingSuccessPage() {
                 className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-accent py-3 text-sm font-semibold text-brand-primary shadow-sm transition-all hover:bg-brand-accent-dark"
               >
                 Complete payment in My bookings
+              </Link>
+            ) : null}
+
+            {isOnsiteReservation && !isOnline ? (
+              <Link
+                to={ROUTES.myInvoices}
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-primary py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-brand-primary-dark"
+              >
+                View request history
               </Link>
             ) : null}
 
