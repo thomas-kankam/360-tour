@@ -20,12 +20,13 @@ function createNotificationsApi(audience) {
       };
     }
 
-    async list(token, { page = 1, perPage = 20, unread = false } = {}) {
+    async list(token, { page = 1, perPage = 20, unread = false, type = "" } = {}) {
       const query = new URLSearchParams({
         page: String(page),
         per_page: String(perPage),
       });
       if (unread) query.set("unread", "1");
+      if (type) query.set("type", type);
 
       try {
         const response = await axios.get(`${this.baseUrl}${prefix}/notifications?${query}`, {

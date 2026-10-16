@@ -38,13 +38,18 @@ class ConsumerBookingsServiceApi {
     }
   }
 
-  async listBookings(token, { page = 1, per_page = 15 } = {}) {
+  async listBookings(token, { page = 1, per_page = 15, payment = "", search = "" } = {}) {
     const url = `${this.baseUrl}/client/bookings`;
 
     try {
       const response = await axios.get(url, {
         headers: this.getHeaders(token),
-        params: { page, per_page },
+        params: {
+          page,
+          per_page,
+          ...(payment && payment !== "all" ? { payment } : {}),
+          ...(search ? { search } : {}),
+        },
       });
       const result = parseApiEnvelope(response);
       if (!result.ok) return { ...result, items: [], pagination: null };

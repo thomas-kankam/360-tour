@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import consumerBookingsServiceApi from "../apis/ConsumerBookingsServiceApi";
 
-export function useClientBookings(token, { page = 1, per_page = 15 } = {}) {
+export function useClientBookings(token, { page = 1, per_page = 15, payment = "", search = "" } = {}) {
   return useQuery({
-    queryKey: ["client-bookings", token, page, per_page],
+    queryKey: ["client-bookings", token, page, per_page, payment, search],
     queryFn: async () => {
-      const result = await consumerBookingsServiceApi.listBookings(token, { page, per_page });
+      const result = await consumerBookingsServiceApi.listBookings(token, { page, per_page, payment, search });
       if (!result.ok) {
         throw new Error(result.reason || result.message || "Could not load your bookings.");
       }

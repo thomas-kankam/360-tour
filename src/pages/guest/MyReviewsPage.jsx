@@ -3,11 +3,14 @@ import { Link } from "react-router";
 import { motion } from "motion/react";
 import { ArrowRight, Loader2, MapPin, Star } from "lucide-react";
 import { toast } from "react-toastify";
+import AdminPagination from "../../components/admin/AdminPagination";
 import Container from "../../components/layout/Container";
 import consumerRatingsServiceApi from "../../apis/ConsumerRatingsServiceApi";
 import { ROUTES } from "../../constants/routes";
 import { useAuth } from "../../hooks/useAuth";
 import { formatReviewDate } from "../../utils/tourReviewsHelpers";
+
+const PAGE_SIZE = 6;
 
 const EASE = [0.16, 1, 0.3, 1];
 
@@ -115,7 +118,10 @@ function ReviewCard({ review, index }) {
 export default function MyReviewsPage() {
   const { token } = useAuth();
   const [reviews, setReviews] = useState([]);
+  const [pagination, setPagination] = useState(null);
+  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
+  const paginationMeta = pagination ?? { page, totalPages: 1, totalItems: 0, rangeStart: 0, rangeEnd: 0 };
 
   useEffect(() => {
     if (!token) {
@@ -127,24 +133,26 @@ export default function MyReviewsPage() {
 
     async function load() {
       setLoading(true);
-      const result = await consumerRatingsServiceApi.listAllMyRatings(token);
+      const result = await consumerRatingsServiceApi.listMyRatings(token, { page, perPage: PAGE_SIZE });
       if (cancelled) return;
       setLoading(false);
 
       if (!result.ok) {
         toast.error(result.reason || result.message || "Could not load your reviews.");
         setReviews([]);
+        setPagination(null);
         return;
       }
 
       setReviews(result.items ?? []);
+      setPagination(result.pagination);
     }
 
     load();
     return () => {
       cancelled = true;
     };
-  }, [token]);
+  }, [page, token]);
 
   return (
     <section className="py-10 sm:py-14">
@@ -177,11 +185,22 @@ export default function MyReviewsPage() {
             </Link>
           </div>
         ) : (
-          <div className="mt-10 space-y-5">
-            {reviews.map((review, index) => (
-              <ReviewCard key={review.id} review={review} index={index} />
-            ))}
-          </div>
+          <>
+            <div className="mt-10 space-y-5">
+              {reviews.map((review, index) => (
+                <ReviewCard key={review.id} review={review} index={index} />
+              ))}
+            </div>
+            <AdminPagination
+              className="mt-6"
+              page={page}
+              totalPages={paginationMeta.totalPages}
+              totalItems={paginationMeta.totalItems}
+              rangeStart={paginationMeta.rangeStart}
+              rangeEnd={paginationMeta.rangeEnd}
+              onPageChange={setPage}
+            />
+          </>
         )}
       </Container>
     </section>

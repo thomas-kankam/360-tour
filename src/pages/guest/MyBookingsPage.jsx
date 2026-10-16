@@ -3,6 +3,7 @@ import { Link, useSearchParams } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
 import { Loader2, Pencil } from "lucide-react";
 import { toast } from "react-toastify";
+import AdminPagination from "../../components/admin/AdminPagination";
 import Container from "../../components/layout/Container";
 import { ROUTES } from "../../constants/routes";
 import { getWhatsAppUrl } from "../../config/env";
@@ -13,6 +14,7 @@ import { downloadBookingReceipt } from "../../utils/bookingReceipt";
 import { formatBookingCurrency, canViewBookingReceipt, canEditBooking, resolveBookingCurrency } from "../../utils/bookingHelpers";
 import { isUpcoming } from "../../utils/bookingStorage";
 import { mapServerPagination } from "../../utils/adminPaginationHelpers";
+import { useDebouncedValue } from "../../hooks/useAdminPagination";
 
 const EASE = [0.16, 1, 0.3, 1];
 const EMPTY_BOOKINGS = [];
@@ -177,13 +179,23 @@ export default function MyBookingsPage() {
   const [search, setSearch] = useState("");
   const [showWelcome, setShowWelcome] = useState(Boolean(welcomeRef));
   const [downloadingRef, setDownloadingRef] = useState(null);
+  const debouncedSearch = useDebouncedValue(search.trim(), 350);
+
+  useEffect(() => {
+    setPage(1);
+  }, [filter, debouncedSearch]);
 
   const {
     data,
     isFetching,
     error: bookingsError,
     refetch,
-  } = useClientBookings(token, { page, per_page: 15 });
+  } = useClientBookings(token, {
+    page,
+    per_page: 15,
+    payment: filter,
+    search: debouncedSearch,
+  });
 
   const bookings = data?.items ?? EMPTY_BOOKINGS;
   const pagination = data?.pagination ?? null;
@@ -225,23 +237,8 @@ export default function MyBookingsPage() {
     unpaid: bookings.filter((booking) => !isBookingPaid(booking)).length,
   }), [bookings, paginationMeta.totalItems]);
 
-  const filtered = useMemo(() => {
-    let list = bookings;
-    if (filter === "paid") list = list.filter(isBookingPaid);
-    if (filter === "unpaid") list = list.filter((booking) => !isBookingPaid(booking));
-    if (search.trim()) {
-      const q = search.toLowerCase();
-      list = list.filter(
-        (b) =>
-          b.bookingRef.toLowerCase().includes(q) ||
-          (b.bookingCode || "").toLowerCase().includes(q) ||
-          b.tour.name.toLowerCase().includes(q) ||
-          b.tour.country.toLowerCase().includes(q) ||
-          b.selectedDate.toLowerCase().includes(q),
-      );
-    }
-    return list;
-  }, [bookings, filter, search]);
+  const filtered = bookings;
+  const hasQuery = filter !== "all" || Boolean(debouncedSearch);
 
   return (
     <div className="min-h-screen bg-brand-cream">
@@ -425,12 +422,12 @@ export default function MyBookingsPage() {
                   <GuestIcon name="luggage" className="h-8 w-8 text-brand-primary" />
                 </div>
                 <h2 className="mt-5 text-xl font-bold text-brand-ink">
-                  {bookings.length === 0 ? "No bookings yet" : "No matching bookings"}
+                  {hasQuery ? "No matching bookings" : "No bookings yet"}
                 </h2>
                 <p className="mt-2 max-w-sm text-sm leading-relaxed text-brand-muted">
-                  {bookings.length === 0
-                    ? "When you book a tour, it will appear here with your receipt and departure details."
-                    : "No bookings match your current filter. Try adjusting your search or filter."}
+                  {hasQuery
+                    ? "No bookings match your current filter. Try adjusting your search or filter."
+                    : "When you book a tour, it will appear here with your receipt and departure details."}
                 </p>
                 <Link
                   to={ROUTES.tours}
@@ -443,28 +440,16 @@ export default function MyBookingsPage() {
             ) : null}
           </AnimatePresence>
 
-          {!loading && paginationMeta.totalPages > 1 ? (
-            <nav aria-label="Bookings pagination" className="mt-10 flex items-center justify-center gap-3">
-              <button
-                type="button"
-                disabled={page <= 1}
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                className="rounded-xl border border-brand-border bg-white px-4 py-2 text-sm font-semibold text-brand-ink transition-all enabled:hover:border-brand-primary/30 enabled:hover:text-brand-primary disabled:cursor-not-allowed disabled:opacity-40"
-              >
-                Previous
-              </button>
-              <span className="text-sm text-brand-muted">
-                Page <span className="font-semibold text-brand-ink">{page}</span> of {paginationMeta.totalPages}
-              </span>
-              <button
-                type="button"
-                disabled={page >= paginationMeta.totalPages}
-                onClick={() => setPage((p) => p + 1)}
-                className="rounded-xl border border-brand-border bg-white px-4 py-2 text-sm font-semibold text-brand-ink transition-all enabled:hover:border-brand-primary/30 enabled:hover:text-brand-primary disabled:cursor-not-allowed disabled:opacity-40"
-              >
-                Next
-              </button>
-            </nav>
+          {!loading ? (
+            <AdminPagination
+              className="mt-8"
+              page={page}
+              totalPages={paginationMeta.totalPages}
+              totalItems={paginationMeta.totalItems}
+              rangeStart={paginationMeta.rangeStart}
+              rangeEnd={paginationMeta.rangeEnd}
+              onPageChange={setPage}
+            />
           ) : null}
         </Container>
       </section>

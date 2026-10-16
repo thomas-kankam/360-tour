@@ -1,25 +1,63 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router";
-import { ArrowRight, FileText, Loader2 } from "lucide-react";
+import { ArrowRight, Download, FileText, Loader2 } from "lucide-react";
+import { toast } from "react-toastify";
+import AdminPagination from "../../components/admin/AdminPagination";
 import Container from "../../components/layout/Container";
 import clientInvoicesServiceApi from "../../apis/ClientInvoicesServiceApi";
 import { ROUTES } from "../../constants/routes";
 import { useAuth } from "../../hooks/useAuth";
+import { loadCompanySettings } from "../../utils/adminCompanySettings";
+import { downloadInvoicePdf } from "../../utils/invoicePdf";
+
+const PAGE_SIZE = 6;
+
+function invoiceStatusLabel(status) {
+  if (status === "paid") return "Paid";
+  if (status === "sent") return "Emailed";
+  return status || "Emailed";
+}
 
 export default function MyInvoicesPage() {
   const { token } = useAuth();
+  const company = useMemo(() => loadCompanySettings(), []);
   const [invoices, setInvoices] = useState([]);
+  const [pagination, setPagination] = useState(null);
+  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [downloadingId, setDownloadingId] = useState(null);
+
+  const paginationMeta = pagination ?? { page, totalPages: 1, totalItems: 0, rangeStart: 0, rangeEnd: 0 };
 
   useEffect(() => {
+    let cancelled = false;
+
     async function loadInvoices() {
       setLoading(true);
-      const invoiceResult = await clientInvoicesServiceApi.listInvoices(token);
+      const invoiceResult = await clientInvoicesServiceApi.listInvoices(token, { page, perPage: PAGE_SIZE });
+      if (cancelled) return;
       setInvoices(invoiceResult.items ?? []);
+      setPagination(invoiceResult.pagination);
       setLoading(false);
     }
+
     if (token) loadInvoices();
-  }, [token]);
+    return () => {
+      cancelled = true;
+    };
+  }, [page, token]);
+
+  async function handleDownload(invoice) {
+    setDownloadingId(invoice.id);
+    try {
+      await downloadInvoicePdf(invoice, company);
+      toast.success("Invoice downloaded.");
+    } catch {
+      toast.error("Could not download this invoice.");
+    } finally {
+      setDownloadingId(null);
+    }
+  }
 
   return (
     <section className="py-10 sm:py-14">
@@ -27,42 +65,67 @@ export default function MyInvoicesPage() {
         <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-orange">Billing</p>
         <h1 className="mt-2 font-heading text-3xl font-bold text-brand-primary">Invoices</h1>
         <p className="mt-2 max-w-2xl text-sm text-brand-muted">
-          Invoices sent to you by 360 Tours appear here after they are emailed.
+          These are invoices 360 Tours emailed to you. Emailed means it was sent to your inbox. Paid means it has been settled. Download the PDF here or open the invoice.
         </p>
 
         {loading ? (
           <div className="flex justify-center py-16 text-brand-muted">
             <Loader2 className="h-6 w-6 animate-spin" aria-hidden />
           </div>
+        ) : invoices.length === 0 ? (
+          <div className="mt-8 rounded-2xl border border-dashed border-brand-border/70 bg-white px-6 py-12 text-center text-sm text-brand-muted">
+            No invoices yet. When admin sends one to your email, it will appear here.
+          </div>
         ) : (
           <>
-            <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-8 space-y-3">
               {invoices.map((invoice) => (
-                <Link
+                <article
                   key={invoice.id}
-                  to={ROUTES.myInvoiceDetail(invoice.id)}
-                  className="rounded-2xl border border-brand-border/60 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                  className="flex flex-col gap-4 rounded-2xl border border-brand-border/60 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:p-5"
                 >
-                  <div className="flex items-start justify-between gap-2">
-                    <FileText className="h-8 w-8 text-brand-primary" aria-hidden />
-                    <span className="rounded-full bg-brand-accent/25 px-2.5 py-0.5 text-[10px] font-bold uppercase text-brand-primary">
-                      {invoice.status}
-                    </span>
+                  <div className="flex min-w-0 items-start gap-3">
+                    <FileText className="mt-0.5 h-8 w-8 shrink-0 text-brand-primary" aria-hidden />
+                    <div className="min-w-0">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <p className="font-mono text-sm font-bold text-brand-ink">{invoice.invoiceNumber}</p>
+                        <span className="rounded-full bg-brand-accent/25 px-2.5 py-0.5 text-[10px] font-bold uppercase text-brand-primary">
+                          {invoiceStatusLabel(invoice.status)}
+                        </span>
+                      </div>
+                      <p className="mt-1 truncate text-sm text-brand-muted">{invoice.project || invoice.billedTo?.name}</p>
+                    </div>
                   </div>
-                  <p className="mt-4 font-mono text-sm font-bold text-brand-ink">{invoice.invoiceNumber}</p>
-                  <p className="mt-1 text-sm text-brand-muted">{invoice.project || invoice.billedTo?.name}</p>
-                  <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-brand-primary">
-                    View invoice <ArrowRight className="h-4 w-4" aria-hidden />
-                  </span>
-                </Link>
+                  <div className="flex flex-wrap items-center gap-2 sm:shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => handleDownload(invoice)}
+                      disabled={downloadingId === invoice.id}
+                      className="inline-flex items-center gap-1.5 rounded-xl border border-brand-border bg-white px-3 py-2 text-sm font-semibold text-brand-ink transition hover:border-brand-primary/30 hover:text-brand-primary disabled:opacity-60"
+                    >
+                      <Download className="h-4 w-4" aria-hidden />
+                      {downloadingId === invoice.id ? "Preparing…" : "Download PDF"}
+                    </button>
+                    <Link
+                      to={ROUTES.myInvoiceDetail(invoice.id)}
+                      className="inline-flex items-center gap-1 rounded-xl bg-brand-primary px-3 py-2 text-sm font-semibold text-white hover:bg-brand-primary-dark"
+                    >
+                      View invoice <ArrowRight className="h-4 w-4" aria-hidden />
+                    </Link>
+                  </div>
+                </article>
               ))}
             </div>
 
-            {invoices.length === 0 ? (
-              <div className="mt-8 rounded-2xl border border-dashed border-brand-border/70 bg-white px-6 py-12 text-center text-sm text-brand-muted">
-                No invoices yet. When admin sends one to your email, it will appear here.
-              </div>
-            ) : null}
+            <AdminPagination
+              className="mt-6"
+              page={page}
+              totalPages={paginationMeta.totalPages}
+              totalItems={paginationMeta.totalItems}
+              rangeStart={paginationMeta.rangeStart}
+              rangeEnd={paginationMeta.rangeEnd}
+              onPageChange={setPage}
+            />
           </>
         )}
       </Container>

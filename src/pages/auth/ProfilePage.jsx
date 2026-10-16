@@ -1,21 +1,16 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Link } from "react-router";
 import { motion } from "motion/react";
 import {
   BadgeCheck,
   Camera,
   Loader2,
-  Lock,
-  Mail,
   MapPin,
-  Phone,
   Save,
   Trash2,
 } from "lucide-react";
 import { toast } from "react-toastify";
 import consumerAuthServiceApi from "../../apis/ConsumerAuthServiceApi";
 import Container from "../../components/layout/Container";
-import { ROUTES } from "../../constants/routes";
 import { useAuth } from "../../hooks/useAuth";
 import { normalizePhoneForApi } from "../../utils/phoneUtils";
 import { resolveProfileImageSrc, uploadProfilePhoto } from "../../utils/profileImage";
@@ -25,6 +20,8 @@ function getInitialForm(user) {
   return {
     first_name: user?.firstName || "",
     last_name: user?.lastName || "",
+    email: user?.email || "",
+    phone_number: user?.phone || "",
     location: user?.location || "",
   };
 }
@@ -33,6 +30,8 @@ function validateProfileForm(form) {
   const errors = {};
   const firstName = form.first_name.trim();
   const lastName = form.last_name.trim();
+  const email = form.email.trim();
+  const phone = normalizePhoneForApi(form.phone_number);
   const location = form.location.trim();
 
   if (!firstName) errors.first_name = "First name is required.";
@@ -40,6 +39,12 @@ function validateProfileForm(form) {
 
   if (!lastName) errors.last_name = "Last name is required.";
   else if (lastName.length < 2) errors.last_name = "Must be at least 2 characters.";
+
+  if (!email) errors.email = "Email is required.";
+  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.email = "Enter a valid email address.";
+
+  if (!phone) errors.phone_number = "Phone number is required.";
+  else if (phone.length < 10) errors.phone_number = "Enter a valid phone number with country code.";
 
   if (!location) errors.location = "Location is required.";
 
@@ -70,23 +75,6 @@ function inputClass(hasError, readOnly = false) {
   ].join(" ");
 }
 
-function ReadOnlyContactField({ icon: Icon, label, value }) {
-  return (
-    <div className="rounded-xl border border-brand-border/60 bg-brand-cream/40 px-4 py-3.5">
-      <div className="flex items-start gap-3">
-        <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white text-brand-primary shadow-sm">
-          <Icon className="h-4 w-4" strokeWidth={1.75} aria-hidden />
-        </span>
-        <div className="min-w-0 flex-1">
-          <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-brand-muted">{label}</p>
-          <p className="mt-0.5 break-words text-sm font-semibold text-brand-ink">{value || "—"}</p>
-        </div>
-        <Lock className="mt-1 h-3.5 w-3.5 shrink-0 text-brand-muted/50" strokeWidth={2} aria-hidden />
-      </div>
-    </div>
-  );
-}
-
 export default function ProfilePage() {
   const { user, token, login } = useAuth();
   const profileInputRef = useRef(null);
@@ -107,7 +95,7 @@ export default function ProfilePage() {
     setImageRemoved(false);
     setErrors({});
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.id, user?.firstName, user?.lastName, user?.location, user?.profileImage]);
+  }, [user?.id, user?.firstName, user?.lastName, user?.email, user?.phone, user?.location, user?.profileImage]);
 
   const handleFieldChange = useCallback((field, value) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -153,17 +141,12 @@ export default function ProfilePage() {
     if (profileError) return;
     if (Object.keys(nextErrors).length > 0) return;
 
-    if (!user?.email || !user?.phone) {
-      toast.error("Your account is missing email or phone. Please contact support.");
-      return;
-    }
-
     const payload = {
       first_name: form.first_name.trim(),
       last_name: form.last_name.trim(),
       location: form.location.trim(),
-      email: user.email,
-      phone_number: normalizePhoneForApi(user.phone),
+      email: form.email.trim(),
+      phone_number: normalizePhoneForApi(form.phone_number),
     };
 
     if (profileImage) {
@@ -202,7 +185,7 @@ export default function ProfilePage() {
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-orange">Your account</p>
           <h1 className="mt-2 font-heading text-3xl text-brand-primary sm:text-4xl">Profile settings</h1>
           <p className="mt-3 max-w-2xl text-brand-muted">
-            Update your personal details and photo. Email and phone changes require our support team.
+            Update your name, email, phone, location, and photo. Use the new email and phone the next time you sign in.
           </p>
         </motion.div>
 
@@ -283,6 +266,28 @@ export default function ProfilePage() {
                   />
                 </FormField>
 
+                <FormField field="email" label="Email" error={errors.email}>
+                  <input
+                    id="email"
+                    type="email"
+                    value={form.email}
+                    onChange={(e) => handleFieldChange("email", e.target.value)}
+                    className={inputClass(Boolean(errors.email))}
+                    autoComplete="email"
+                  />
+                </FormField>
+
+                <FormField field="phone_number" label="Phone" hint="Include the country code, for example 233…" error={errors.phone_number}>
+                  <input
+                    id="phone_number"
+                    type="tel"
+                    value={form.phone_number}
+                    onChange={(e) => handleFieldChange("phone_number", e.target.value)}
+                    className={inputClass(Boolean(errors.phone_number))}
+                    autoComplete="tel"
+                  />
+                </FormField>
+
                 <div className="sm:col-span-2">
                   <FormField field="location" label="Location" error={errors.location}>
                     <input
@@ -296,19 +301,6 @@ export default function ProfilePage() {
                     />
                   </FormField>
                 </div>
-              </div>
-
-              <div className="mt-6 space-y-3 border-t border-brand-border/60 pt-6">
-                <p className="text-xs font-semibold uppercase tracking-[0.12em] text-brand-muted">Locked details</p>
-                <ReadOnlyContactField icon={Mail} label="Email" value={user?.email} />
-                <ReadOnlyContactField icon={Phone} label="Phone" value={user?.phone} />
-                <p className="text-xs leading-relaxed text-brand-muted">
-                  To update your email or phone,{" "}
-                  <Link to={ROUTES.contact} className="font-semibold text-brand-primary hover:underline">
-                    contact our support team
-                  </Link>
-                  .
-                </p>
               </div>
 
               <button
@@ -374,16 +366,10 @@ export default function ProfilePage() {
                   <MapPin className="h-4 w-4" strokeWidth={1.75} aria-hidden />
                 </span>
                 <div>
-                  <p className="text-sm font-bold text-brand-ink">Need to change contact info?</p>
+                  <p className="text-sm font-bold text-brand-ink">Location</p>
                   <p className="mt-1 text-xs leading-relaxed text-brand-muted">
-                    For security, email and phone updates are handled manually by our team.
+                    {user?.location || "Add your city so the team knows where you are based."}
                   </p>
-                  <Link
-                    to={ROUTES.contact}
-                    className="mt-3 inline-flex text-sm font-semibold text-brand-primary hover:underline"
-                  >
-                    Go to contact page
-                  </Link>
                 </div>
               </div>
             </div>

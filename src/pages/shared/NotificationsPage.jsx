@@ -3,10 +3,28 @@ import { useNavigate } from "react-router";
 import { Loader2 } from "lucide-react";
 import { toast } from "react-toastify";
 import Container from "../../components/layout/Container";
+import AdminPagination from "../../components/admin/AdminPagination";
 import { adminNotificationsServiceApi, clientNotificationsServiceApi } from "../../apis/NotificationsServiceApi";
 import { useAuth } from "../../hooks/useAuth";
 import { audienceToAuthRole } from "../../utils/authSessionHelpers";
 import { formatNotificationTime, resolveNotificationLink } from "../../utils/notificationHelpers";
+
+const PAGE_SIZE = 10;
+
+const CLIENT_TYPE_FILTERS = [
+  { id: "all", label: "All", types: "" },
+  { id: "bookings", label: "Bookings", types: "booking_created,booking_updated,payment_success,payment_failed" },
+  { id: "invoices", label: "Invoices", types: "invoice_sent" },
+  { id: "reviews", label: "Reviews", types: "rating_approved,rating_rejected" },
+];
+
+const ADMIN_TYPE_FILTERS = [
+  { id: "all", label: "All", types: "" },
+  { id: "bookings", label: "Bookings", types: "booking_created,booking_updated,payment_success,payment_failed" },
+  { id: "invoices", label: "Invoices", types: "invoice_sent,invoice_request,quote_request,invoice_request_response,quote_request_response" },
+  { id: "reviews", label: "Reviews", types: "rating_pending,rating_approved,rating_rejected" },
+  { id: "accounts", label: "Accounts", types: "client_registered" },
+];
 
 export default function NotificationsPage({ audience = "client" }) {
   const contextRole = audienceToAuthRole(audience);
@@ -17,39 +35,42 @@ export default function NotificationsPage({ audience = "client" }) {
     [audience],
   );
 
+  const typeFilters = audience === "admin" ? ADMIN_TYPE_FILTERS : CLIENT_TYPE_FILTERS;
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(false);
-  const [loadingMore, setLoadingMore] = useState(false);
+  const [typeFilter, setTypeFilter] = useState("all");
+  const [pagination, setPagination] = useState(null);
 
-  const load = useCallback(
-    async (nextPage = 1, append = false) => {
-      if (!token) return;
-      if (append) setLoadingMore(true);
-      else setLoading(true);
+  const selectedTypes = typeFilters.find((filter) => filter.id === typeFilter)?.types ?? "";
+  const paginationMeta = pagination ?? { page, totalPages: 1, totalItems: 0, rangeStart: 0, rangeEnd: 0 };
 
-      const result = await api.list(token, { page: nextPage, perPage: 20 });
-      if (append) setLoadingMore(false);
-      else setLoading(false);
+  const load = useCallback(async () => {
+    if (!token) return;
+    setLoading(true);
 
-      if (!result.ok) {
-        toast.error(result.reason || "Could not load notifications.");
-        return;
-      }
+    const result = await api.list(token, { page, perPage: PAGE_SIZE, type: selectedTypes });
+    setLoading(false);
 
-      const nextItems = result.items ?? [];
-      setItems((prev) => (append ? [...prev, ...nextItems.filter((item) => !prev.some((p) => p.id === item.id))] : nextItems));
-      const totalPages = result.pagination?.totalPages ?? 1;
-      setPage(nextPage);
-      setHasMore(nextPage < totalPages);
-    },
-    [api, token],
-  );
+    if (!result.ok) {
+      toast.error(result.reason || "Could not load notifications.");
+      setItems([]);
+      setPagination(null);
+      return;
+    }
+
+    setItems(result.items ?? []);
+    setPagination(result.pagination);
+  }, [api, page, selectedTypes, token]);
 
   useEffect(() => {
-    load(1, false);
+    load();
   }, [load]);
+
+  function changeType(nextType) {
+    setTypeFilter(nextType);
+    setPage(1);
+  }
 
   async function openItem(item) {
     if (!token) return;
@@ -93,6 +114,24 @@ export default function NotificationsPage({ audience = "client" }) {
           ) : null}
         </div>
 
+        <div className="mt-6 flex flex-wrap gap-2">
+          {typeFilters.map((filter) => (
+            <button
+              key={filter.id}
+              type="button"
+              onClick={() => changeType(filter.id)}
+              className={[
+                "rounded-full px-4 py-1.5 text-sm font-semibold transition-all",
+                typeFilter === filter.id
+                  ? "bg-brand-primary text-white shadow-sm"
+                  : "border border-brand-border/70 bg-white text-brand-muted hover:border-brand-primary/30 hover:text-brand-primary",
+              ].join(" ")}
+            >
+              {filter.label}
+            </button>
+          ))}
+        </div>
+
         {loading ? (
           <div className="flex justify-center py-20 text-brand-muted">
             <Loader2 className="h-6 w-6 animate-spin" aria-hidden />
@@ -124,18 +163,15 @@ export default function NotificationsPage({ audience = "client" }) {
               </button>
             ))}
 
-            {hasMore ? (
-              <div className="flex justify-center pt-2">
-                <button
-                  type="button"
-                  disabled={loadingMore}
-                  onClick={() => load(page + 1, true)}
-                  className="btn-secondary px-5 py-2 text-sm disabled:opacity-60"
-                >
-                  {loadingMore ? "Loading…" : "Load more"}
-                </button>
-              </div>
-            ) : null}
+            <AdminPagination
+              className="mt-4"
+              page={page}
+              totalPages={paginationMeta.totalPages}
+              totalItems={paginationMeta.totalItems}
+              rangeStart={paginationMeta.rangeStart}
+              rangeEnd={paginationMeta.rangeEnd}
+              onPageChange={setPage}
+            />
           </div>
         )}
       </Container>
