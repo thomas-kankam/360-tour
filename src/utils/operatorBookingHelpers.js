@@ -2,14 +2,15 @@ import { mapApiBookingToListRecord, formatBookingCurrency } from "./bookingHelpe
 import { parsePaginatedList } from "./adminPaginationHelpers";
 
 export const OPERATOR_BOOKING_STATUS = {
-  confirmed: { label: "Confirmed", className: "bg-brand-primary/10 text-brand-primary ring-brand-primary/20" },
-  pending: { label: "Pending", className: "bg-brand-accent/20 text-brand-primary ring-brand-accent/30" },
+  pending: { label: "Pending", className: "bg-amber-100 text-amber-700 ring-amber-200" },
+  completed: { label: "Completed", className: "bg-emerald-100 text-emerald-700 ring-emerald-200" },
+  confirmed: { label: "Completed", className: "bg-emerald-100 text-emerald-700 ring-emerald-200" },
   cancelled: { label: "Cancelled", className: "bg-red-50 text-red-600 ring-red-200" },
 };
 
 export const OPERATOR_PAYMENT_STATUS = {
-  paid: { label: "Paid", className: "bg-brand-primary/10 text-brand-primary ring-brand-primary/20" },
-  pending: { label: "Pending", className: "bg-brand-accent/20 text-brand-primary ring-brand-accent/30" },
+  paid: { label: "Paid", className: "bg-emerald-100 text-emerald-700 ring-emerald-200" },
+  pending: { label: "Unpaid", className: "bg-amber-100 text-amber-700 ring-amber-200" },
   failed: { label: "Failed", className: "bg-red-50 text-red-600 ring-red-200" },
 };
 

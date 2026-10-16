@@ -3,7 +3,6 @@ import { Link, useNavigate, useParams } from "react-router";
 import { motion } from "motion/react";
 import {
   ArrowLeft,
-  Building2,
   CalendarDays,
   CreditCard,
   Globe2,
@@ -11,7 +10,6 @@ import {
   Mail,
   MapPin,
   Phone,
-  User,
   Users,
 } from "lucide-react";
 import { toast } from "react-toastify";
@@ -264,30 +262,6 @@ export default function AdminPaymentDetailPage() {
               <div className="mt-4">
                 <RelatedLink to={ROUTES.admin.clientDetail(clientSlug)} label="View client profile →" />
               </div>
-            ) : null}
-          </DetailSection>
-        ) : null}
-
-        {booking?.operator ? (
-          <DetailSection title="Operator">
-            <p className="text-sm font-bold text-brand-ink">{booking.operator.organization || booking.operator.name || "—"}</p>
-            {booking.operator.name ? (
-              <p className="mt-1 flex items-center gap-2 text-sm text-brand-muted">
-                <User className="h-3.5 w-3.5 shrink-0" strokeWidth={2} aria-hidden />
-                {booking.operator.name}
-              </p>
-            ) : null}
-            {booking.operator.email ? (
-              <p className="mt-2 flex items-center gap-2 text-sm text-brand-muted">
-                <Mail className="h-3.5 w-3.5 shrink-0" strokeWidth={2} aria-hidden />
-                {booking.operator.email}
-              </p>
-            ) : null}
-            {booking.operator.location ? (
-              <p className="mt-2 flex items-center gap-2 text-sm text-brand-muted">
-                <Building2 className="h-3.5 w-3.5 shrink-0" strokeWidth={2} aria-hidden />
-                {booking.operator.location}
-              </p>
             ) : null}
           </DetailSection>
         ) : null}

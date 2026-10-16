@@ -3,7 +3,6 @@ import { Link, useNavigate, useParams } from "react-router";
 import { motion } from "motion/react";
 import {
   ArrowLeft,
-  Building2,
   CalendarDays,
   CheckCircle2,
   ExternalLink,
@@ -21,6 +20,7 @@ import { ROUTES } from "../../constants/routes";
 import { useAuth } from "../../hooks/useAuth";
 import {
   formatAdminBookingDate,
+  getAdminBookedByLabel,
   getAdminBookingStatusConfig,
   getAdminPaymentModeConfig,
   getAdminPaymentStatusConfig,
@@ -49,17 +49,15 @@ function Badge({ config }) {
   );
 }
 
-function PartyCard({ title, party, type = "client" }) {
+function PartyCard({ title, party }) {
   if (!party) {
     return (
       <section className="rounded-2xl border border-black/8 bg-white p-6 shadow-sm">
         <h2 className="font-heading text-lg font-bold text-brand-ink">{title}</h2>
-        <p className="mt-4 text-sm text-brand-muted">No {type} profile linked.</p>
+        <p className="mt-4 text-sm text-brand-muted">No client profile linked.</p>
       </section>
     );
   }
-
-  const Icon = type === "operator" ? Building2 : User;
 
   return (
     <section className="rounded-2xl border border-black/8 bg-white p-6 shadow-sm">
@@ -70,14 +68,11 @@ function PartyCard({ title, party, type = "client" }) {
           {party.profileImage ? (
             <img src={party.profileImage} alt="" className="h-full w-full object-cover" />
           ) : (
-            <Icon className="h-6 w-6 text-brand-muted" strokeWidth={1.75} aria-hidden />
+            <User className="h-6 w-6 text-brand-muted" strokeWidth={1.75} aria-hidden />
           )}
         </div>
         <div className="min-w-0">
           <p className="font-semibold text-brand-ink">{party.name}</p>
-          {type === "operator" && party.organization ? (
-            <p className="mt-0.5 text-sm text-brand-muted">{party.organization}</p>
-          ) : null}
           {party.isVerified ? (
             <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-emerald-700">
               <CheckCircle2 className="h-3 w-3" strokeWidth={2.5} aria-hidden />
@@ -112,11 +107,8 @@ function PartyCard({ title, party, type = "client" }) {
         ) : null}
       </dl>
 
-      {type === "client" && party.clientSlug ? (
+      {party.clientSlug ? (
         <p className="mt-4 font-mono text-[10px] text-brand-muted">{party.clientSlug}</p>
-      ) : null}
-      {type === "operator" && party.operatorSlug ? (
-        <p className="mt-4 font-mono text-[10px] text-brand-muted">{party.operatorSlug}</p>
       ) : null}
     </section>
   );
@@ -477,13 +469,17 @@ export default function AdminBookingDetailPage() {
               ) : null}
               <div>
                 <dt className="text-xs font-bold uppercase tracking-[0.12em] text-brand-muted">Booked by</dt>
-                <dd className="mt-1 font-semibold capitalize text-brand-ink">{booking.bookedByType || "—"}</dd>
+                <dd className="mt-1 font-semibold text-brand-ink">{getAdminBookedByLabel(booking)}</dd>
+                <p className="mt-0.5 text-xs text-brand-muted">
+                  {String(booking.bookedByType || "").toLowerCase() === "admin"
+                    ? "Created from the admin console"
+                    : "Requested from the client account"}
+                </p>
               </div>
             </dl>
           </Section>
 
-          <PartyCard title="Client account" party={booking.client} type="client" />
-          <PartyCard title="Tour operator" party={booking.operator} type="operator" />
+          <PartyCard title="Client account" party={booking.client} />
         </aside>
       </div>
     </div>

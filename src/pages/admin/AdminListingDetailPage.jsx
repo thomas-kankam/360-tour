@@ -3,15 +3,12 @@ import { Link, useNavigate, useParams } from "react-router";
 import { motion } from "motion/react";
 import {
   ArrowLeft,
-  Building2,
   CalendarDays,
   CheckCircle2,
   Clock,
   ExternalLink,
   Loader2,
-  Mail,
   MapPin,
-  Phone,
   Users,
 } from "lucide-react";
 import { toast } from "react-toastify";
@@ -90,8 +87,6 @@ export default function AdminListingDetailPage() {
   }
 
   if (!listing) return null;
-
-  const operator = listing.operator;
 
   return (
     <div className="space-y-6">
@@ -250,53 +245,6 @@ export default function AdminListingDetailPage() {
         </div>
 
         <aside className="space-y-6">
-          {operator ? (
-            <section className="rounded-2xl border border-black/8 bg-white p-5 shadow-sm">
-              <p className="text-xs font-bold uppercase tracking-[0.14em] text-brand-muted">Operator</p>
-              <div className="mt-4 flex items-start gap-3">
-                <div className="h-12 w-12 shrink-0 overflow-hidden rounded-xl bg-brand-cream ring-1 ring-black/8">
-                  {operator.profileImage ? (
-                    <img src={operator.profileImage} alt="" className="h-full w-full object-cover" />
-                  ) : (
-                    <div className="flex h-full w-full items-center justify-center text-brand-muted">
-                      <Building2 className="h-5 w-5" strokeWidth={1.75} aria-hidden />
-                    </div>
-                  )}
-                </div>
-                <div className="min-w-0">
-                  <p className="font-bold text-brand-ink">{operator.name}</p>
-                  <p className="text-sm text-brand-muted">{operator.organization}</p>
-                  {operator.isVerified ? (
-                    <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-700">
-                      <CheckCircle2 className="h-3 w-3" strokeWidth={2.5} aria-hidden />
-                      Verified
-                    </span>
-                  ) : null}
-                </div>
-              </div>
-              <div className="mt-4 space-y-2 text-sm text-brand-muted">
-                {operator.email ? (
-                  <p className="flex items-center gap-2">
-                    <Mail className="h-3.5 w-3.5 shrink-0" strokeWidth={2} aria-hidden />
-                    {operator.email}
-                  </p>
-                ) : null}
-                {operator.phoneNumber ? (
-                  <p className="flex items-center gap-2">
-                    <Phone className="h-3.5 w-3.5 shrink-0" strokeWidth={2} aria-hidden />
-                    {operator.phoneNumber}
-                  </p>
-                ) : null}
-                {operator.location ? (
-                  <p className="flex items-start gap-2">
-                    <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0" strokeWidth={2} aria-hidden />
-                    <span>{operator.location}</span>
-                  </p>
-                ) : null}
-              </div>
-            </section>
-          ) : null}
-
           <Section title="Metadata">
             <dl className="space-y-3 text-sm">
               <div className="flex justify-between gap-4">

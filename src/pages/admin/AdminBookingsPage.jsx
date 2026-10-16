@@ -39,9 +39,9 @@ import { formatBookingCurrency } from "../../utils/bookingHelpers";
 const EASE = [0.22, 1, 0.36, 1];
 
 const STATUS_FILTERS = [
-  { id: "all", label: "All statuses" },
-  { id: "confirmed", label: "Confirmed" },
+  { id: "all", label: "All requests" },
   { id: "pending", label: "Pending" },
+  { id: "completed", label: "Completed" },
   { id: "cancelled", label: "Cancelled" },
 ];
 
@@ -168,7 +168,7 @@ export default function AdminBookingsPage() {
         <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-primary">Reservation oversight</p>
         <h1 className="mt-1 font-heading text-3xl font-bold text-brand-ink">Bookings</h1>
         <p className="mt-2 text-sm text-brand-muted">
-          Platform booking audit — reservations, payment status, and operator fulfillment.
+          Tour requests, who booked them, and whether payment has been received.
         </p>
       </div>
 
@@ -179,14 +179,14 @@ export default function AdminBookingsPage() {
           <p className="mt-1 text-xs text-brand-muted">Across platform</p>
         </div>
         <div className="rounded-2xl border border-black/8 bg-white px-4 py-4 shadow-sm">
-          <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-brand-muted">Confirmed (page)</p>
+          <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-brand-muted">Completed (page)</p>
           <p className="mt-1 text-2xl font-bold text-emerald-700">{pageSummary.confirmed}</p>
           <p className="mt-1 text-xs text-brand-muted">On this page</p>
         </div>
         <div className="rounded-2xl border border-black/8 bg-white px-4 py-4 shadow-sm">
           <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-brand-muted">Pending (page)</p>
           <p className="mt-1 text-2xl font-bold text-amber-700">{pageSummary.pending}</p>
-          <p className="mt-1 text-xs text-brand-muted">Awaiting confirmation</p>
+          <p className="mt-1 text-xs text-brand-muted">Waiting for payment</p>
         </div>
         <div className="rounded-2xl border border-black/8 bg-white px-4 py-4 shadow-sm">
           <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-brand-muted">Paid revenue GHS (page)</p>
@@ -213,11 +213,12 @@ export default function AdminBookingsPage() {
                 type="search"
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
-                placeholder="Search booking code, tour, client, operator…"
+                placeholder="Search booking code, tour, or client…"
                 className="w-full rounded-xl border border-brand-border/70 bg-brand-cream/30 py-2.5 pl-10 pr-3 text-sm outline-none transition-shadow focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
               />
             </div>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-brand-muted">Request</span>
               {STATUS_FILTERS.map((filter) => (
                 <button
                   key={filter.id}
@@ -237,6 +238,7 @@ export default function AdminBookingsPage() {
                 </button>
               ))}
               <span className="mx-1 hidden h-6 w-px bg-black/10 sm:block" aria-hidden />
+              <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-brand-muted">Payment</span>
               {PAYMENT_FILTERS.map((filter) => (
                 <button
                   key={filter.id}
@@ -252,10 +254,13 @@ export default function AdminBookingsPage() {
                       : "bg-brand-cream text-brand-muted hover:text-brand-ink",
                   ].join(" ")}
                 >
-                  {filter.label}
-                </button>
+                {filter.label}
+              </button>
               ))}
             </div>
+            <p className="text-[11px] leading-relaxed text-brand-muted">
+              Request status is the booking itself. A new request stays pending until you mark it paid and completed. Payment shows whether the money has been received.
+            </p>
           </div>
         </div>
 
@@ -311,10 +316,6 @@ export default function AdminBookingsPage() {
                           }
                         />
                         <AdminMobileCardRow
-                          label="Operator"
-                          value={booking.operatorOrganization || booking.operatorName || "—"}
-                        />
-                        <AdminMobileCardRow
                           label="Departure"
                           value={booking.selectedDate || "—"}
                         />
@@ -352,7 +353,6 @@ export default function AdminBookingsPage() {
                       "Booking code",
                       "Tour",
                       "Client / traveler",
-                      "Operator",
                       "Departure",
                       "Travelers",
                       "Amount",
@@ -407,12 +407,6 @@ export default function AdminBookingsPage() {
                           <p className="line-clamp-1 text-xs text-brand-muted">
                             {booking.leadTraveler?.email || booking.client?.email || "—"}
                           </p>
-                        </td>
-                        <td className="px-5 py-3.5">
-                          <p className="line-clamp-1 text-sm font-semibold text-brand-ink">
-                            {booking.operatorOrganization || "—"}
-                          </p>
-                          <p className="line-clamp-1 text-xs text-brand-muted">{booking.operatorName || "—"}</p>
                         </td>
                         <td className="max-w-[10rem] whitespace-nowrap px-5 py-3.5">
                           <p className="truncate text-sm text-brand-ink" title={booking.selectedDate || undefined}>

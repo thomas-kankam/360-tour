@@ -175,7 +175,7 @@ export default function AdminLoginPage() {
               Secure control for 360 Tours operations.
             </h1>
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-white/65">
-              Admin routes are isolated from traveler and operator accounts. Only verified administrator sessions can enter.
+              Admin routes are isolated from traveler accounts. Only verified administrator sessions can enter.
             </p>
           </div>
         </div>

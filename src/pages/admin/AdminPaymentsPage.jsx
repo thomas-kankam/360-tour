@@ -222,7 +222,7 @@ export default function AdminPaymentsPage() {
                 type="search"
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
-                placeholder="Search booking code, reference, tour, client, operator…"
+                placeholder="Search booking code, reference, tour, or client…"
                 className="w-full rounded-xl border border-brand-border/70 bg-brand-cream/30 py-2.5 pl-10 pr-3 text-sm outline-none transition-shadow focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
               />
             </div>
@@ -322,7 +322,6 @@ export default function AdminPaymentsPage() {
                         )}
                       />
                       <AdminMobileCardRow label="Amount" value={payment.amountLabel} />
-                      <AdminMobileCardRow label="Operator" value={payment.operatorName || "—"} />
                       <AdminMobileCardRow
                         label="Date"
                         value={formatPaymentDate(payment.paidAt || payment.createdAt)}
@@ -349,7 +348,7 @@ export default function AdminPaymentsPage() {
                     {[
                       "Reference / booking",
                       "Tour / traveler",
-                      "Client / operator",
+                      "Client",
                       "Amount",
                       "Status",
                       "Method / date",
@@ -391,7 +390,6 @@ export default function AdminPaymentsPage() {
                       </td>
                       <td className="px-5 py-3.5">
                         <p className="line-clamp-1 text-sm font-semibold text-brand-ink">{payment.clientName || "—"}</p>
-                        <p className="line-clamp-1 text-xs text-brand-muted">{payment.operatorName || "—"}</p>
                       </td>
                       <td className="px-5 py-3.5 text-sm font-semibold text-brand-ink">{payment.amountLabel}</td>
                       <td className="px-5 py-3.5">

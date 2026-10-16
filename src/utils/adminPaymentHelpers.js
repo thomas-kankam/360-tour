@@ -25,7 +25,6 @@ export function mapAdminPayment(raw) {
     tourImage: resolvePublicMediaUrl(booking?.tourImage || booking?.tour?.image || raw.booking?.tour?.coverImageUrl || ""),
     travelerName: booking?.travelerName || `${traveler.firstName || ""} ${traveler.lastName || ""}`.trim(),
     clientName: booking?.clientName || booking?.client?.name || "",
-    operatorName: booking?.operatorOrganization || booking?.operatorName || "",
     booking,
   };
 }

@@ -129,7 +129,7 @@ export default function AdminListingsPage() {
         <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-primary">Listing management</p>
         <h1 className="mt-1 font-heading text-3xl font-bold text-brand-ink">Tour listings</h1>
         <p className="mt-2 text-sm text-brand-muted">
-          Review operator listings, capacity, and booking activity across the platform.
+          Review tour listings, capacity, and booking activity across the platform.
         </p>
       </div>
 
@@ -160,7 +160,7 @@ export default function AdminListingsPage() {
                 type="search"
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
-                placeholder="Search tour, operator, location…"
+                placeholder="Search tour or location…"
                 className="w-full rounded-xl border border-brand-border/70 bg-brand-cream/30 py-2.5 pl-10 pr-3 text-sm outline-none transition-shadow focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
               />
             </div>
@@ -197,7 +197,7 @@ export default function AdminListingsPage() {
             <p className="max-w-sm text-sm text-brand-muted">
               {debouncedSearch || statusFilter !== "all"
                 ? "Try adjusting your search or status filter."
-                : "Operator tour listings will appear here once published."}
+                : "Tour listings will appear here once published."}
             </p>
           </div>
         ) : (
@@ -213,7 +213,7 @@ export default function AdminListingsPage() {
                   <AdminMobileCard>
                     <AdminMobileCardHeader
                       title={listing.name}
-                      subtitle={listing.operatorOrganization || listing.operatorName}
+                      subtitle={listing.locationsLabel}
                       avatar={<ListingThumb listing={listing} />}
                       trailing={
                         <div className="flex flex-wrap items-center gap-1.5">
@@ -252,7 +252,7 @@ export default function AdminListingsPage() {
               <table className="w-full text-left">
                 <thead className="border-b border-black/8 bg-brand-cream/50">
                   <tr>
-                    {["Tour", "Operator", "Route", "Price", "Slots", "Bookings", "Status", "Actions"].map((heading) => (
+                    {["Tour", "Route", "Price", "Slots", "Bookings", "Status", "Actions"].map((heading) => (
                       <th
                         key={heading}
                         className="px-5 py-3 text-[11px] font-bold uppercase tracking-[0.12em] text-brand-muted"
@@ -278,12 +278,6 @@ export default function AdminListingsPage() {
                             </div>
                           </div>
                         </div>
-                      </td>
-                      <td className="px-5 py-3.5">
-                        <p className="line-clamp-1 text-sm font-semibold text-brand-ink">
-                          {listing.operatorOrganization || listing.operatorName || "—"}
-                        </p>
-                        <p className="line-clamp-1 text-xs text-brand-muted">{listing.operatorName}</p>
                       </td>
                       <td className="px-5 py-3.5 text-sm text-brand-muted">{listing.locationsLabel}</td>
                       <td className="px-5 py-3.5 text-sm font-semibold text-brand-ink">{listing.priceLabel}</td>

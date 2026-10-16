@@ -1,7 +1,6 @@
 import { parsePaginatedList } from "./adminPaginationHelpers";
 import { formatBookingCurrency } from "./bookingHelpers";
 import { mapAdminClient } from "./adminClientHelpers";
-import { mapAdminOperator } from "./adminListingHelpers";
 import { resolvePublicMediaUrl } from "./mediaUrl";
 import {
   formatOperatorBookingDate,
@@ -19,21 +18,45 @@ export const ADMIN_BOOKING_STATUS_STYLES = {
   completed: "bg-brand-primary/10 text-brand-primary",
 };
 
+function mapAdminAccount(raw) {
+  if (!raw) return null;
+
+  const firstName = raw.firstName || raw.first_name || "";
+  const lastName = raw.lastName || raw.last_name || "";
+
+  return {
+    name: `${firstName} ${lastName}`.trim(),
+    email: raw.email || "",
+    adminSlug: raw.adminSlug || raw.admin_slug || "",
+  };
+}
+
+export function getAdminBookedByLabel(booking) {
+  const clientName = booking?.client?.name || booking?.clientName || booking?.travelerName || "";
+  const adminName = booking?.admin?.name || "";
+
+  if (String(booking?.bookedByType || "").toLowerCase() === "admin") {
+    return adminName || "Admin";
+  }
+
+  return clientName || "Client";
+}
+
 export function mapAdminBooking(raw) {
   const booking = mapOperatorBooking(raw);
   if (!booking) return null;
 
   const traveler = booking.leadTraveler || {};
   const client = mapAdminClient(raw.client);
-  const operator = mapAdminOperator(raw.operator);
+  const admin = mapAdminAccount(raw.admin);
 
   return {
     ...booking,
     client,
-    operator,
+    admin,
+    bookedByType: raw.bookedByType || booking.bookedByType || "",
+    bookedBySlug: raw.bookedBySlug || booking.bookedBySlug || "",
     clientName: client?.name || "",
-    operatorName: operator?.name || "",
-    operatorOrganization: operator?.organization || "",
     travelerName: `${traveler.firstName || ""} ${traveler.lastName || ""}`.trim(),
     tourTitle: booking.tour?.name || raw.tour?.name || "",
     tourImage: resolvePublicMediaUrl(booking.tour?.image || raw.tour?.coverImageUrl || ""),
@@ -76,8 +99,9 @@ export function summarizeAdminBookings(bookings = []) {
   const revenueCounts = { GHS: 0, USD: 0 };
 
   bookings.forEach((booking) => {
-    if (booking.apiStatus === "confirmed" || booking.status === "confirmed") confirmed += 1;
-    if (booking.apiStatus === "pending" || booking.status === "pending") pending += 1;
+    const status = booking.apiStatus || booking.status;
+    if (status === "completed" || status === "confirmed") confirmed += 1;
+    if (status === "pending") pending += 1;
 
     if (normalizePaymentStatusKey(booking) === "paid") {
       const currency = normalizeBookingCurrency(booking.currency);
