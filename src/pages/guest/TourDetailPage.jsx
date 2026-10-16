@@ -153,13 +153,32 @@ function TourDurationCard({ tour }) {
 }
 
 function TourAboutSection({ tour }) {
-  if (!tour.description) return null;
+  const highlights = (tour.highlights || []).map((item) => String(item || "").trim()).filter(Boolean);
+  if (!tour.description && !highlights.length) return null;
 
   return (
     <Section title="About this trip">
-      <p className="max-w-3xl text-sm leading-relaxed text-brand-muted sm:text-[15px] sm:leading-7">
-        {tour.description}
-      </p>
+      {tour.description ? (
+        <p className="max-w-3xl text-sm leading-relaxed text-brand-muted sm:text-[15px] sm:leading-7">
+          {tour.description}
+        </p>
+      ) : null}
+      {highlights.length ? (
+        <div className={tour.description ? "mt-6" : ""}>
+          <p className="text-xs font-bold uppercase tracking-[0.14em] text-brand-primary">Highlights</p>
+          <ul className="mt-3 grid gap-2.5 sm:grid-cols-2">
+            {highlights.map((item) => (
+              <li
+                key={item}
+                className="flex items-start gap-2.5 rounded-xl border border-brand-border/50 bg-brand-cream/40 px-4 py-3 text-sm text-brand-ink"
+              >
+                <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-brand-primary" strokeWidth={2} aria-hidden />
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
     </Section>
   );
 }
