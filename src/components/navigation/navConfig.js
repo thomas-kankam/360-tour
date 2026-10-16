@@ -51,7 +51,6 @@ export function getFooterAccountLinks({ isAuthenticated, role, hasAdminPermissio
     { label: "Dashboard", to: ROUTES.dashboard },
     { label: "Notifications", to: ROUTES.notifications },
     { label: "My bookings", to: ROUTES.myBookings },
-    { label: "My payments", to: ROUTES.myPayments },
     { label: "My invoices", to: ROUTES.myInvoices },
     { label: "My reviews", to: ROUTES.myReviews },
     { label: "Profile", to: ROUTES.profile },

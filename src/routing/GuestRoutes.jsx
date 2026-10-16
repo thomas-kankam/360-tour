@@ -1,4 +1,5 @@
-import { Route } from "react-router";
+import { Navigate, Route } from "react-router";
+import { ROUTES } from "../constants/routes";
 import { USER_ROLES } from "../constants/roles";
 import ProtectedRoute from "./ProtectedRoute";
 import PublicOnlyRoute from "./PublicOnlyRoute";
@@ -15,11 +16,9 @@ import {
   MyBookingDetailPage,
   MyBookingEditPage,
   MyBookingsPage,
-  MyPaymentsPage,
   MyReviewsPage,
   MyInvoicesPage,
   ClientInvoiceDetailPage,
-  ClientInvoiceRequestDetailPage,
   NotificationsPage,
   PaymentFailurePage,
   PaymentSuccessPage,
@@ -57,10 +56,10 @@ const guestRoutes = (
           <Route path="my-bookings" element={<MyBookingsPage />} />
           <Route path="my-bookings/:bookingCode/edit" element={<MyBookingEditPage />} />
           <Route path="my-bookings/:bookingCode" element={<MyBookingDetailPage />} />
-          <Route path="my-payments" element={<MyPaymentsPage />} />
+          <Route path="my-payments" element={<Navigate to={ROUTES.myBookings} replace />} />
           <Route path="my-reviews" element={<MyReviewsPage />} />
           <Route path="my-invoices" element={<MyInvoicesPage />} />
-          <Route path="my-invoices/requests/:id" element={<ClientInvoiceRequestDetailPage />} />
+          <Route path="my-invoices/requests/:id" element={<Navigate to={ROUTES.myInvoices} replace />} />
           <Route path="my-invoices/:id" element={<ClientInvoiceDetailPage />} />
           <Route path="notifications" element={<NotificationsPage />} />
         </Route>

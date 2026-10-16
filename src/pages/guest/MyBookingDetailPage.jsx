@@ -7,19 +7,20 @@ import Container from "../../components/layout/Container";
 import { ROUTES } from "../../constants/routes";
 import { getWhatsAppUrl } from "../../config/env";
 import consumerBookingsServiceApi from "../../apis/ConsumerBookingsServiceApi";
-import consumerPaymentsServiceApi from "../../apis/ConsumerPaymentsServiceApi";
 import { useAuth } from "../../hooks/useAuth";
 import { formatBookingCurrency, canViewBookingReceipt, canEditBooking, resolveBookingCurrency } from "../../utils/bookingHelpers";
-import { extractPaymentRedirectUrl } from "../../utils/paymentHelpers";
 import { downloadBookingReceipt } from "../../utils/bookingReceipt";
 
 const EASE = [0.16, 1, 0.3, 1];
 
-const STATUS_CONFIG = {
-  paid: { label: "Paid in full", className: "bg-brand-primary/10 text-brand-primary" },
-  pay_onsite: { label: "Pay on site", className: "bg-brand-gold/15 text-brand-orange" },
-  reserved: { label: "Pending payment", className: "bg-brand-orange/10 text-brand-orange" },
-};
+const PAID_BADGE = { label: "Paid", className: "bg-emerald-100 text-emerald-700" };
+const UNPAID_BADGE = { label: "Unpaid", className: "bg-amber-100 text-amber-800" };
+
+function isBookingPaid(booking) {
+  const payment = String(booking?.apiPaymentStatus || booking?.paymentStatus || "").toLowerCase();
+  const status = String(booking?.apiStatus || booking?.status || "").toLowerCase();
+  return payment === "paid" || payment === "completed" || status === "paid" || status === "deposit_paid" || status === "completed" || status === "confirmed";
+}
 
 const GROUP_TYPE_LABELS = {
   university: "University / School",
@@ -38,7 +39,6 @@ export default function MyBookingDetailPage() {
   const { token } = useAuth();
   const [booking, setBooking] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [paying, setPaying] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [error, setError] = useState("");
 
@@ -63,24 +63,6 @@ export default function MyBookingDetailPage() {
   useEffect(() => {
     loadBooking();
   }, [loadBooking]);
-
-  async function handleCompletePayment() {
-    if (!booking || !token) return;
-
-    const bookingCode = booking.bookingCode || booking.bookingRef;
-    setPaying(true);
-
-    const result = await consumerPaymentsServiceApi.retryPaymentForBooking(token, bookingCode, { booking });
-    setPaying(false);
-
-    const paymentUrl = extractPaymentRedirectUrl(result);
-    if (paymentUrl) {
-      window.location.assign(paymentUrl);
-      return;
-    }
-
-    toast.error(result.reason || result.message || "Could not start payment.");
-  }
 
   async function handleDownloadReceipt() {
     if (!booking) return;
@@ -120,12 +102,11 @@ export default function MyBookingDetailPage() {
     );
   }
 
-  const status = STATUS_CONFIG[booking.status] ?? STATUS_CONFIG.reserved;
+  const status = isBookingPaid(booking) ? PAID_BADGE : UNPAID_BADGE;
   const amountLabel = formatBookingCurrency(
     booking.amount ?? booking.subtotal,
     resolveBookingCurrency(booking),
   );
-  const canPayOnline = booking.paymentMode === "online" && booking.status === "reserved";
   const canViewReceipt = canViewBookingReceipt(booking);
   const canEdit = canEditBooking(booking);
   const tourImage = booking.tour?.image;
@@ -206,12 +187,6 @@ export default function MyBookingDetailPage() {
                     {travelerCount} {travelerCount === 1 ? "person" : "people"}
                   </dd>
                 </div>
-              </div>
-              <div>
-                <dt className="text-xs text-brand-muted">Payment</dt>
-                <dd className="font-semibold text-brand-ink">
-                  {booking.paymentMode === "online" ? "Pay online" : "Pay on site"}
-                </dd>
               </div>
               <div>
                 <dt className="text-xs text-brand-muted">Total</dt>
@@ -323,16 +298,6 @@ export default function MyBookingDetailPage() {
                   Edit booking
                 </Link>
               ) : null}
-              {canPayOnline ? (
-                <button
-                  type="button"
-                  onClick={handleCompletePayment}
-                  disabled={paying}
-                  className="inline-flex items-center gap-2 rounded-xl bg-brand-accent px-5 py-2.5 text-sm font-semibold text-brand-primary hover:bg-brand-accent-dark disabled:opacity-60"
-                >
-                  {paying ? "Starting checkout…" : "Complete payment"}
-                </button>
-              ) : null}
               {canViewReceipt ? (
                 <button
                   type="button"
@@ -343,12 +308,6 @@ export default function MyBookingDetailPage() {
                   {downloading ? "Preparing PDF…" : "Download receipt"}
                 </button>
               ) : null}
-              <Link
-                to={ROUTES.myPayments}
-                className="inline-flex items-center gap-2 rounded-xl border border-brand-border px-5 py-2.5 text-sm font-semibold text-brand-ink hover:border-brand-primary/30"
-              >
-                View payments
-              </Link>
               <a
                 href={getWhatsAppUrl(`Hi 360 Tours, I need help with booking ${booking.bookingCode || booking.bookingRef}.`)}
                 target="_blank"

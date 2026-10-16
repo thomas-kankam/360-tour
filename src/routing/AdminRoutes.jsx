@@ -14,7 +14,6 @@ import {
   AdminDashboardPage,
   AdminInvoiceDetailPage,
   AdminInvoiceFormPage,
-  AdminInvoiceRequestsPage,
   AdminInvoicesPage,
   AdminExperienceFormPage,
   AdminExperiencesPage,
@@ -91,7 +90,7 @@ const adminRoutes = (
           <Route path="invoices/new" element={<AdminInvoiceFormPage />} />
           <Route path="invoices/:id/edit" element={<AdminInvoiceFormPage />} />
           <Route path="invoices/:id" element={<AdminInvoiceDetailPage />} />
-          <Route path="invoice-requests" element={<AdminInvoiceRequestsPage />} />
+          <Route path="invoice-requests" element={<Navigate to={ROUTES.admin.invoices} replace />} />
         </Route>
 
         <Route path="notifications" element={<AdminNotificationsPage />} />

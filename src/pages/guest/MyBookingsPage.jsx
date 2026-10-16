@@ -6,13 +6,11 @@ import { toast } from "react-toastify";
 import Container from "../../components/layout/Container";
 import { ROUTES } from "../../constants/routes";
 import { getWhatsAppUrl } from "../../config/env";
-import consumerPaymentsServiceApi from "../../apis/ConsumerPaymentsServiceApi";
 import { useAuth } from "../../hooks/useAuth";
 import { GuestIcon } from "../../utils/guestIcons";
 import { useClientBookings } from "../../hooks/useClientBookings";
 import { downloadBookingReceipt } from "../../utils/bookingReceipt";
 import { formatBookingCurrency, canViewBookingReceipt, canEditBooking, resolveBookingCurrency } from "../../utils/bookingHelpers";
-import { extractPaymentRedirectUrl } from "../../utils/paymentHelpers";
 import { isUpcoming } from "../../utils/bookingStorage";
 import { mapServerPagination } from "../../utils/adminPaginationHelpers";
 
@@ -21,24 +19,25 @@ const EMPTY_BOOKINGS = [];
 
 const FILTERS = [
   { id: "all", label: "All bookings" },
-  { id: "upcoming", label: "Upcoming" },
   { id: "paid", label: "Paid" },
-  { id: "reserved", label: "Pending payment" },
+  { id: "unpaid", label: "Unpaid" },
 ];
 
-const STATUS_CONFIG = {
-  paid: { label: "Paid in full", className: "bg-brand-primary/10 text-brand-primary ring-brand-primary/20" },
-  deposit_paid: { label: "Deposit paid", className: "bg-emerald-100 text-emerald-700 ring-emerald-200" },
-  pay_onsite: { label: "Pay on site", className: "bg-brand-gold/15 text-brand-orange ring-brand-gold/30" },
-  reserved: { label: "Pending payment", className: "bg-brand-orange/10 text-brand-orange ring-brand-orange/20" },
-};
+const PAID_BADGE = { label: "Paid", className: "bg-emerald-100 text-emerald-700 ring-emerald-200" };
+const UNPAID_BADGE = { label: "Unpaid", className: "bg-amber-100 text-amber-800 ring-amber-200" };
+
+function isBookingPaid(booking) {
+  const payment = String(booking?.apiPaymentStatus || booking?.paymentStatus || "").toLowerCase();
+  const status = String(booking?.apiStatus || booking?.status || "").toLowerCase();
+  return payment === "paid" || payment === "completed" || status === "paid" || status === "deposit_paid" || status === "completed" || status === "confirmed";
+}
 
 function formatSavedDate(iso) {
   return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric" }).format(new Date(iso));
 }
 
-function BookingCard({ booking, index, onCompletePayment, onDownloadReceipt, payingRef, downloadingRef }) {
-  const status = STATUS_CONFIG[booking.status] ?? STATUS_CONFIG.reserved;
+function BookingCard({ booking, index, onDownloadReceipt, downloadingRef }) {
+  const status = isBookingPaid(booking) ? PAID_BADGE : UNPAID_BADGE;
   const upcoming = isUpcoming(booking);
   const image = booking.tour?.image;
   const slug = booking.tour?.slug;
@@ -47,14 +46,6 @@ function BookingCard({ booking, index, onCompletePayment, onDownloadReceipt, pay
     booking.amount ?? booking.subtotal,
     resolveBookingCurrency(booking),
   );
-  const paymentNote =
-    booking.paymentMode === "online"
-      ? booking.status === "paid"
-        ? " paid online"
-        : " due online"
-      : " due on site";
-  const canPayOnline = booking.paymentMode === "online" && booking.status === "reserved";
-  const isPaying = payingRef === detailCode;
   const isDownloading = downloadingRef === detailCode;
   const canViewReceipt = canViewBookingReceipt(booking);
   const canEdit = canEditBooking(booking);
@@ -115,10 +106,7 @@ function BookingCard({ booking, index, onCompletePayment, onDownloadReceipt, pay
           </div>
 
           <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-brand-border/40 pt-4">
-            <span className="text-sm font-bold text-brand-ink">
-              {amountLabel}
-              <span className="ml-1 text-xs font-normal text-brand-muted">{paymentNote}</span>
-            </span>
+            <span className="text-sm font-bold text-brand-ink">{amountLabel}</span>
             {booking.bookingType === "group" ? (
               <span className="rounded-full bg-brand-cream px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand-muted">
                 Group
@@ -126,29 +114,7 @@ function BookingCard({ booking, index, onCompletePayment, onDownloadReceipt, pay
             ) : null}
           </div>
 
-          {booking.paymentMode === "onsite" && canViewReceipt ? (
-            <div className="mt-3 flex items-start gap-2 rounded-lg bg-brand-gold/10 px-3 py-2.5">
-              <svg className="mt-0.5 h-4 w-4 shrink-0 text-brand-orange" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} aria-hidden>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <p className="text-[11px] leading-relaxed text-brand-muted">
-                Present your receipt at the premises upon arrival.
-              </p>
-            </div>
-          ) : null}
-
-          {/* Actions */}
           <div className="mt-4 flex flex-wrap gap-2">
-            {canPayOnline ? (
-              <button
-                type="button"
-                onClick={() => onCompletePayment(booking)}
-                disabled={isPaying}
-                className="inline-flex items-center gap-1.5 rounded-xl bg-brand-accent px-4 py-2 text-xs font-semibold text-brand-primary shadow-sm transition-all hover:bg-brand-accent-dark disabled:opacity-60"
-              >
-                {isPaying ? "Starting checkout…" : "Complete payment"}
-              </button>
-            ) : null}
             {canEdit && detailCode ? (
               <Link
                 to={ROUTES.myBookingEdit(detailCode)}
@@ -210,7 +176,6 @@ export default function MyBookingsPage() {
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
   const [showWelcome, setShowWelcome] = useState(Boolean(welcomeRef));
-  const [payingRef, setPayingRef] = useState(null);
   const [downloadingRef, setDownloadingRef] = useState(null);
 
   const {
@@ -245,24 +210,6 @@ export default function MyBookingsPage() {
     toast.success("Receipt downloaded.");
   }, [token]);
 
-  const handleCompletePayment = useCallback(async (booking) => {
-    if (!token) return;
-
-    const bookingCode = booking.bookingCode || booking.bookingRef;
-    setPayingRef(bookingCode);
-
-    const result = await consumerPaymentsServiceApi.retryPaymentForBooking(token, bookingCode, { booking });
-    setPayingRef(null);
-
-    const paymentUrl = extractPaymentRedirectUrl(result);
-    if (paymentUrl) {
-      window.location.assign(paymentUrl);
-      return;
-    }
-
-    toast.error(result.reason || result.message || "Could not start payment.");
-  }, [token]);
-
   useEffect(() => {
     if (!welcomeRef) return undefined;
     const timer = window.setTimeout(() => {
@@ -274,16 +221,14 @@ export default function MyBookingsPage() {
 
   const stats = useMemo(() => ({
     total: paginationMeta.totalItems || bookings.length,
-    upcoming: bookings.filter(isUpcoming).length,
-    paid: bookings.filter((b) => b.status === "paid" || b.status === "deposit_paid").length,
-    pending: bookings.filter((b) => b.status === "reserved" || b.status === "pay_onsite").length,
+    paid: bookings.filter(isBookingPaid).length,
+    unpaid: bookings.filter((booking) => !isBookingPaid(booking)).length,
   }), [bookings, paginationMeta.totalItems]);
 
   const filtered = useMemo(() => {
     let list = bookings;
-    if (filter === "upcoming") list = list.filter(isUpcoming);
-    if (filter === "paid") list = list.filter((b) => b.status === "paid" || b.status === "deposit_paid");
-    if (filter === "reserved") list = list.filter((b) => b.status === "reserved" || b.status === "pay_onsite");
+    if (filter === "paid") list = list.filter(isBookingPaid);
+    if (filter === "unpaid") list = list.filter((booking) => !isBookingPaid(booking));
     if (search.trim()) {
       const q = search.toLowerCase();
       list = list.filter(
@@ -313,13 +258,6 @@ export default function MyBookingsPage() {
               <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-brand-gold">Your trips</p>
               <h1 className="mt-0.5 text-xl font-bold text-white sm:text-2xl">My bookings</h1>
             </motion.div>
-
-            <Link
-              to={ROUTES.myPayments}
-              className="inline-flex shrink-0 items-center gap-1.5 self-start rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-xs font-semibold text-white backdrop-blur-sm transition-all hover:bg-white/20 sm:self-auto"
-            >
-              Payment history →
-            </Link>
           </div>
 
           <motion.div
@@ -330,9 +268,8 @@ export default function MyBookingsPage() {
           >
             {[
               { v: stats.total, l: "Total" },
-              { v: stats.upcoming, l: "Upcoming" },
-              { v: stats.paid, l: "Confirmed" },
-              { v: stats.pending, l: "Pending" },
+              { v: stats.paid, l: "Paid" },
+              { v: stats.unpaid, l: "Unpaid" },
             ].map((s) => (
               <div
                 key={s.l}
@@ -375,8 +312,8 @@ export default function MyBookingsPage() {
                     <p className="mt-0.5 text-sm text-brand-muted">
                       Reference <span className="font-mono font-semibold text-brand-primary">{welcomeRef}</span>
                       {welcomeHasReceipt
-                        ? ", your receipt is ready. Present it on arrival."
-                        : ", complete payment to download your receipt."}
+                        ? ". Your receipt is ready to download."
+                        : ". It stays unpaid until the team marks the payment received."}
                     </p>
                   </div>
                 </div>
@@ -471,9 +408,7 @@ export default function MyBookingsPage() {
                     key={booking.bookingCode || booking.bookingRef}
                     booking={booking}
                     index={i}
-                    onCompletePayment={handleCompletePayment}
                     onDownloadReceipt={handleDownloadReceipt}
-                    payingRef={payingRef}
                     downloadingRef={downloadingRef}
                   />
                 ))}

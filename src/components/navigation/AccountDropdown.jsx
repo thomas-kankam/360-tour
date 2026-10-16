@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { NavLink } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
-import { Bell, ChevronDown, CreditCard, FileText, LayoutDashboard, LogOut, Luggage, Map, Star, User } from "lucide-react";
+import { Bell, ChevronDown, FileText, LayoutDashboard, LogOut, Luggage, Map, Star, User } from "lucide-react";
 import { ADMIN_PERMISSIONS } from "../../constants/adminPermissions";
 import { ROUTES } from "../../constants/routes";
 import { USER_ROLES } from "../../constants/roles";
@@ -32,7 +32,6 @@ function getMenuItems(role, user, hasAdminPermission) {
     { to: ROUTES.dashboard, label: "Dashboard", icon: LayoutDashboard },
     { to: ROUTES.notifications, label: "Notifications", icon: Bell },
     { to: ROUTES.myBookings, label: "My bookings", icon: Luggage },
-    { to: ROUTES.myPayments, label: "My payments", icon: CreditCard },
     { to: ROUTES.myInvoices, label: "My invoices", icon: FileText },
     { to: ROUTES.myReviews, label: "My reviews", icon: Star },
     { to: ROUTES.profile, label: "Profile", icon: User },

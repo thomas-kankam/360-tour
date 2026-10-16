@@ -60,14 +60,6 @@ function AdminSidebarContent({ user, collapsed, onNavigate }) {
         items.push({ key: `${key}-${extra.to}`, ...extra });
       });
     }
-    if (key === ADMIN_PERMISSIONS.INVOICE_MANAGEMENT) {
-      items.push({
-        key: `${key}-requests`,
-        to: ROUTES.admin.invoiceRequests,
-        label: "Invoice requests",
-        icon: MessageSquare,
-      });
-    }
     if (key === ADMIN_PERMISSIONS.CMS_MANAGEMENT) {
       items.push(
         {
