@@ -1,7 +1,7 @@
 import { buildWebsiteUrl } from "../config/env";
 import { PAYMENT_REGION } from "../constants/paymentRegions";
 import { getBookingStatus } from "./bookingStorage";
-import { findCountryOption } from "./countryOptions";
+import { COUNTRY_OPTIONS, findCountryOption } from "./countryOptions";
 import { resolvePublicMediaUrl } from "./mediaUrl";
 import { computeChargeSubtotal, resolveTourDisplayPricing } from "./tourPricing";
 
@@ -467,16 +467,31 @@ export function mapApiBookingToLocalRecord(apiBooking, form, tour) {
   };
 }
 
+export function countryIdFromLead(lead = {}) {
+  const iso = String(lead.countryCode || "").trim().toUpperCase();
+  const byIso = COUNTRY_OPTIONS.find((country) => country.isoCode === iso);
+  if (byIso) return byIso.id;
+
+  const name = String(lead.country || lead.nationality || "").trim().toLowerCase();
+  const byName = COUNTRY_OPTIONS.find(
+    (country) => country.label.toLowerCase() === name || country.country.toLowerCase() === name,
+  );
+  return byName?.id || "";
+}
+
 export function buildUpdateBookingPayload(form, tour, region = null) {
+  const adults = Math.max(0, Number(form.adults) || 0);
+  const children = Math.max(0, Number(form.children) || 0);
   const travelers =
     form.bookingType === "group"
       ? clampGroupTravelers(form.travelers, tour)
-      : 1;
+      : Math.max(1, (adults || 1) + children);
 
   const pricing = resolveBookingPricing(tour, travelers, region);
+  const country = findCountryForBooking(form.countryId);
 
   const payload = {
-    bookingType: form.bookingType,
+    bookingType: form.bookingType || "individual",
     tourSlug: tour.slug,
     selectedDate: form.selectedDate,
     ...(form.selectedEndDate ? { selectedEndDate: form.selectedEndDate } : {}),
@@ -487,11 +502,22 @@ export function buildUpdateBookingPayload(form, tour, region = null) {
       lastName: form.lastName.trim(),
       email: form.email.trim(),
       phone: form.phone.trim(),
-      ...(form.nationality?.trim() ? { nationality: form.nationality.trim() } : {}),
+      ...(form.whatsapp?.trim() ? { whatsapp: form.whatsapp.trim() } : {}),
+      ...(country
+        ? {
+            country: country.label,
+            countryCode: country.isoCode,
+            dialCode: country.dialCode ? `+${country.dialCode}` : "",
+            nationality: country.label,
+          }
+        : form.nationality?.trim()
+          ? { nationality: form.nationality.trim() }
+          : {}),
+      ...(adults >= 1 ? { adults } : {}),
+      children,
     },
     specialRequests: form.specialRequests?.trim() || "",
     dietaryNeeds: form.dietaryNeeds?.trim() || "",
-    additionalTravelers: form.additionalTravelers || [],
     amount: pricing.subtotal,
     currency: pricing.currency,
   };
@@ -502,8 +528,7 @@ export function buildUpdateBookingPayload(form, tour, region = null) {
       groupType: form.groupType,
       ...(form.organization?.trim() ? { organization: form.organization.trim() } : {}),
     };
-  } else {
-    payload.groupDetails = [];
+    payload.additionalTravelers = form.additionalTravelers || [];
   }
 
   return applyUserRegionToPayload(payload, region);
@@ -511,18 +536,27 @@ export function buildUpdateBookingPayload(form, tour, region = null) {
 
 export function mapBookingToEditForm(apiBooking) {
   const lead = apiBooking?.leadTraveler || {};
-  const group = apiBooking?.groupDetails || {};
+  const group = apiBooking?.groupDetails && !Array.isArray(apiBooking.groupDetails) ? apiBooking.groupDetails : {};
+  const travelers = Number(apiBooking?.travelers) || 1;
+  const storedChildren = Number(lead.children);
+  const children = Number.isFinite(storedChildren) && storedChildren >= 0 && lead.children != null ? storedChildren : 0;
+  const storedAdults = Number(lead.adults);
+  const adults = storedAdults >= 1 ? storedAdults : Math.max(1, travelers - children);
 
   return {
     firstName: lead.firstName || "",
     lastName: lead.lastName || "",
     email: lead.email || "",
     phone: lead.phone || "",
+    whatsapp: lead.whatsapp || "",
     nationality: lead.nationality || "",
+    countryId: countryIdFromLead(lead),
+    adults,
+    children,
     bookingType: apiBooking?.bookingType || "individual",
     selectedDate: apiBooking?.selectedDate || "",
     selectedEndDate: apiBooking?.selectedEndDate || "",
-    travelers: Number(apiBooking?.travelers) || 1,
+    travelers,
     groupName: group.groupName || "",
     groupType: group.groupType || "",
     organization: group.organization || "",

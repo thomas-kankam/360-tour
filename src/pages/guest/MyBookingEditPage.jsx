@@ -16,12 +16,17 @@ import {
   Users,
 } from "lucide-react";
 import { toast } from "react-toastify";
+import { isValidPhoneNumber } from "react-phone-number-input";
 import consumerBookingsServiceApi from "../../apis/ConsumerBookingsServiceApi";
 import Container from "../../components/layout/Container";
+import CountrySearchSelect from "../../components/forms/CountrySearchSelect";
+import InternationalPhoneInput from "../../components/forms/InternationalPhoneInput";
+import TourDurationCalendar from "../../components/tours/TourDurationCalendar";
 import PaymentRegionNotice from "../../components/payments/PaymentRegionNotice";
 import { ROUTES } from "../../constants/routes";
 import { useAuth } from "../../hooks/useAuth";
 import { usePaymentRegion } from "../../hooks/usePaymentRegion";
+import { findCountryOption } from "../../utils/countryOptions";
 import {
   buildUpdateBookingPayload,
   canEditBooking,
@@ -33,6 +38,7 @@ import {
   resolveBookingPricing,
   resolveTourUnitPrice,
 } from "../../utils/bookingHelpers";
+import { formatDepartureRangeLabel, resolveTourDurationDays, syncEndDateFromDuration } from "../../utils/operatorTourMapper";
 import { redirectToPaymentCheckout } from "../../utils/paymentHelpers";
 import {
   validateEmail,
@@ -41,6 +47,9 @@ import {
 } from "../../utils/bookingValidation";
 
 const EASE = [0.16, 1, 0.3, 1];
+
+/** Online checkout is paused. The edit form matches the booking request until this is turned on. */
+const ONLINE_PAYMENT_ENABLED = false;
 
 const STEPS = [
   { id: "trip", label: "Trip" },
@@ -219,6 +228,10 @@ export default function MyBookingEditPage() {
 
     const apiBooking = result.apiBooking || {};
     const editForm = mapBookingToEditForm(apiBooking);
+    const durationDays = resolveTourDurationDays(result.tourDetail);
+    if (editForm.selectedDate && !editForm.selectedEndDate) {
+      editForm.selectedEndDate = syncEndDateFromDuration(editForm.selectedDate, durationDays) || "";
+    }
     setTour(result.tourDetail);
     setBookingRef(result.booking.bookingCode || result.booking.bookingRef);
     setInitialPaymentMode(apiBooking.paymentMode === "online" ? "online" : "onsite");
@@ -240,7 +253,13 @@ export default function MyBookingEditPage() {
   }, [step, loading]);
 
   const groupLimits = useMemo(() => getGroupTravelerLimits(tour), [tour]);
-  const travelerCount = form?.bookingType === "group" ? clampGroupTravelers(form.travelers, tour) : 1;
+  const durationDays = useMemo(() => resolveTourDurationDays(tour), [tour]);
+  const todayIso = useMemo(() => new Date().toISOString().slice(0, 10), []);
+  const travelerCount = !ONLINE_PAYMENT_ENABLED && form
+    ? Math.max(1, Number(form.adults) || 1) + Math.max(0, Number(form.children) || 0)
+    : form?.bookingType === "group"
+      ? clampGroupTravelers(form.travelers, tour)
+      : 1;
   const bookingPricing = useMemo(
     () => (tour && form ? resolveBookingPricing(tour, travelerCount, paymentRegion) : { subtotal: 0, unitPrice: 0, currency: "GHS" }),
     [tour, form, travelerCount, paymentRegion],
@@ -258,8 +277,14 @@ export default function MyBookingEditPage() {
       firstName: validateRequired(form.firstName, "First name"),
       lastName: validateRequired(form.lastName, "Last name"),
       email: validateEmail(form.email),
-      phone: validatePhone(form.phone),
-      selectedDate: !form.selectedDate ? "Select a departure date" : "",
+      phone: !ONLINE_PAYMENT_ENABLED
+        ? (!form.phone ? "Phone number is required" : isValidPhoneNumber(form.phone) ? "" : "Enter a valid phone number")
+        : validatePhone(form.phone),
+      whatsapp: !ONLINE_PAYMENT_ENABLED
+        ? (!form.whatsapp ? "WhatsApp number is required" : isValidPhoneNumber(form.whatsapp) ? "" : "Enter a valid WhatsApp number")
+        : "",
+      countryId: !ONLINE_PAYMENT_ENABLED ? validateRequired(form.countryId, "Country") : "",
+      selectedDate: !form.selectedDate ? (ONLINE_PAYMENT_ENABLED ? "Select a departure date" : "Select your preferred date") : "",
       travelers:
         form.bookingType === "group" && form.travelers < groupLimits.min
           ? `Minimum ${groupLimits.min} travelers`
@@ -400,6 +425,253 @@ export default function MyBookingEditPage() {
           Back to my bookings
         </Link>
       </Container>
+    );
+  }
+
+  if (!ONLINE_PAYMENT_ENABLED) {
+    const adults = Math.max(1, Number(form.adults) || 1);
+    const children = Math.max(0, Number(form.children) || 0);
+    const requestParty = adults + children;
+    const phoneCountry = findCountryOption(form.countryId)?.isoCode || undefined;
+    const rangeLabel = form.selectedDate && form.selectedEndDate
+      ? formatDepartureRangeLabel(form.selectedDate, form.selectedEndDate)
+      : form.selectedDate;
+
+    async function handleSaveRequest(event) {
+      event.preventDefault();
+      if (!token || processing) return;
+
+      touchFields(["firstName", "lastName", "email", "phone", "whatsapp", "countryId", "selectedDate", "adults"]);
+      const requestErrors = {
+        firstName: validateRequired(form.firstName, "First name"),
+        lastName: validateRequired(form.lastName, "Last name"),
+        email: validateEmail(form.email),
+        countryId: validateRequired(form.countryId, "Country"),
+        phone: !form.phone ? "Phone number is required" : isValidPhoneNumber(form.phone) ? "" : "Enter a valid phone number",
+        whatsapp: !form.whatsapp ? "WhatsApp number is required" : isValidPhoneNumber(form.whatsapp) ? "" : "Enter a valid WhatsApp number",
+        selectedDate: !form.selectedDate ? "Select your preferred date" : "",
+      };
+      const firstInvalid = [
+        ["firstName", "firstName"],
+        ["lastName", "lastName"],
+        ["email", "email"],
+        ["countryId", "booking-country"],
+        ["phone", "phone"],
+        ["whatsapp", "whatsapp"],
+        ["selectedDate", "preferred-date"],
+      ].find(([key]) => requestErrors[key]);
+
+      if (firstInvalid) {
+        const target = document.getElementById(firstInvalid[1]);
+        target?.scrollIntoView({ behavior: "smooth", block: "center" });
+        const focusable = target?.matches?.("input, textarea, select, button")
+          ? target
+          : target?.querySelector?.("input, textarea, select, button");
+        window.setTimeout(() => focusable?.focus?.(), 250);
+        toast.error(requestErrors[firstInvalid[0]]);
+        return;
+      }
+
+      const nextForm = {
+        ...form,
+        bookingType: "individual",
+        paymentMode: "onsite",
+        adults,
+        children,
+        travelers: requestParty,
+        selectedEndDate: form.selectedEndDate || syncEndDateFromDuration(form.selectedDate, durationDays),
+      };
+
+      setProcessing(true);
+      const region = await resolveRegionForSubmit();
+      const payload = buildUpdateBookingPayload(nextForm, tour, region);
+      const result = await consumerBookingsServiceApi.updateBooking(token, bookingCode, payload);
+      setProcessing(false);
+
+      if (!result.ok || !result.booking) {
+        toast.error(result.reason || result.message || "Could not update booking.");
+        return;
+      }
+
+      toast.success("Booking request updated.");
+      navigate(ROUTES.myBookingDetail(bookingCode), { replace: true });
+    }
+
+    return (
+      <div className="min-h-screen bg-brand-cream pb-16">
+        <div className="border-b border-brand-border/50 bg-white px-4 py-4 sm:px-6 lg:px-8">
+          <Container>
+            <Link
+              to={ROUTES.myBookingDetail(bookingCode)}
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-muted hover:text-brand-primary"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />
+              Back to booking
+            </Link>
+          </Container>
+        </div>
+
+        <Container className="mt-8">
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brand-orange">Update request</p>
+          <h1 className="mt-1.5 text-2xl font-bold text-brand-ink sm:text-3xl">Update this tour request</h1>
+          <p className="mt-1 max-w-2xl text-sm text-brand-muted">
+            Change the details you sent. Payment stays offline. Once it is received, the team marks this request as completed.
+          </p>
+
+          <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_320px] lg:gap-10">
+            <form onSubmit={handleSaveRequest} autoComplete="off" className="space-y-5 rounded-[1.75rem] border border-brand-border/60 bg-white p-6 shadow-sm sm:p-8">
+              <div>
+                <p className="text-xs font-semibold text-brand-ink">Tour</p>
+                <p className="mt-1.5 rounded-xl border border-brand-border/70 bg-brand-cream/70 px-4 py-3 text-sm font-semibold text-brand-ink">
+                  {tour.name}
+                </p>
+                <p className="mt-1 text-[11px] text-brand-muted">This tour is fixed for this request and cannot be edited.</p>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <Field label="First name" id="firstName" required error={showError("firstName")}>
+                  <input id="firstName" name="booking-first-name" autoComplete="off" value={form.firstName} onChange={(e) => update("firstName", e.target.value)} onBlur={() => touch("firstName")} className={inputClass(showError("firstName"))} placeholder="Type your first name" />
+                </Field>
+                <Field label="Last name" id="lastName" required error={showError("lastName")}>
+                  <input id="lastName" name="booking-last-name" autoComplete="off" value={form.lastName} onChange={(e) => update("lastName", e.target.value)} onBlur={() => touch("lastName")} className={inputClass(showError("lastName"))} placeholder="Type your last name" />
+                </Field>
+              </div>
+
+              <Field label="Email" id="email" required error={showError("email")}>
+                <input id="email" name="booking-email" type="email" autoComplete="off" value={form.email} onChange={(e) => update("email", e.target.value)} onBlur={() => touch("email")} className={inputClass(showError("email"))} placeholder="Type your email" />
+              </Field>
+
+              <div id="booking-country">
+                <Field label="Country" id="country" required error={showError("countryId")}>
+                  <CountrySearchSelect
+                    value={form.countryId}
+                    onChange={(countryId) => update("countryId", countryId)}
+                    placeholder="Select your country"
+                  />
+                </Field>
+                <p className="mt-1 text-[11px] text-brand-muted">Search by country name. Each option shows its flag and dial code.</p>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <Field label="Phone number" id="phone" required error={showError("phone")}>
+                  <InternationalPhoneInput
+                    id="phone"
+                    value={form.phone}
+                    defaultCountry={phoneCountry}
+                    onChange={(value) => update("phone", value || "")}
+                    onBlur={() => touch("phone")}
+                    hasError={Boolean(showError("phone"))}
+                    placeholder="Phone number"
+                  />
+                </Field>
+                <Field label="WhatsApp number" id="whatsapp" required error={showError("whatsapp")}>
+                  <InternationalPhoneInput
+                    id="whatsapp"
+                    value={form.whatsapp}
+                    defaultCountry={phoneCountry}
+                    onChange={(value) => update("whatsapp", value || "")}
+                    onBlur={() => touch("whatsapp")}
+                    hasError={Boolean(showError("whatsapp"))}
+                    placeholder="WhatsApp number"
+                  />
+                </Field>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <Field label="Adults" id="adults" required>
+                  <div className="flex items-center gap-3">
+                    <button type="button" className="flex h-10 w-10 items-center justify-center rounded-full border border-brand-border text-lg font-bold disabled:opacity-40" disabled={adults <= 1} onClick={() => update("adults", adults - 1)} aria-label="Fewer adults">−</button>
+                    <span className="w-8 text-center text-lg font-bold text-brand-ink">{adults}</span>
+                    <button type="button" className="flex h-10 w-10 items-center justify-center rounded-full border border-brand-border text-lg font-bold" onClick={() => update("adults", adults + 1)} aria-label="More adults">+</button>
+                  </div>
+                </Field>
+                <Field label="Children" id="children">
+                  <div className="flex items-center gap-3">
+                    <button type="button" className="flex h-10 w-10 items-center justify-center rounded-full border border-brand-border text-lg font-bold disabled:opacity-40" disabled={children <= 0} onClick={() => update("children", children - 1)} aria-label="Fewer children">−</button>
+                    <span className="w-8 text-center text-lg font-bold text-brand-ink">{children}</span>
+                    <button type="button" className="flex h-10 w-10 items-center justify-center rounded-full border border-brand-border text-lg font-bold" onClick={() => update("children", children + 1)} aria-label="More children">+</button>
+                  </div>
+                  <p className="text-[11px] text-brand-muted">Under 12</p>
+                </Field>
+              </div>
+
+              <div id="preferred-date">
+                <p className="text-xs font-semibold text-brand-ink">Preferred date <span className="text-brand-orange">*</span></p>
+                <div className="mt-3">
+                  <TourDurationCalendar
+                    durationDays={durationDays}
+                    startDate={form.selectedDate}
+                    endDate={form.selectedEndDate}
+                    minDate={todayIso}
+                    label="Preferred start date"
+                    onChange={({ startDate, endDate }) => {
+                      setForm((current) => (current ? { ...current, selectedDate: startDate, selectedEndDate: endDate } : current));
+                      setTouched((current) => ({ ...current, selectedDate: true }));
+                    }}
+                  />
+                </div>
+                {showError("selectedDate") ? <p className="mt-2 text-[11px] font-medium text-red-500">{errors.selectedDate}</p> : null}
+              </div>
+
+              <Field label="Notes" id="specialRequests">
+                <textarea
+                  id="specialRequests"
+                  rows={3}
+                  value={form.specialRequests}
+                  onChange={(e) => update("specialRequests", e.target.value)}
+                  className={`${inputClass("")} min-h-[88px] resize-none py-3`}
+                  placeholder="Anything else for the team…"
+                />
+                <p className="text-[11px] text-brand-muted">Optional — arrival time, hotel, or anything we should know.</p>
+              </Field>
+
+              <button type="submit" disabled={processing} className="inline-flex items-center gap-2 rounded-xl bg-brand-primary px-8 py-3 text-sm font-semibold text-white shadow-md hover:bg-brand-primary-dark disabled:opacity-70">
+                {processing ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : null}
+                {processing ? "Saving changes…" : "Save changes"}
+              </button>
+            </form>
+
+            <aside className="lg:sticky lg:top-[88px] lg:self-start">
+              <div className="overflow-hidden rounded-[1.5rem] border border-brand-border/60 bg-white shadow-[0_12px_40px_-24px_rgba(23,19,14,0.28)]">
+                <div className="relative aspect-[16/10] overflow-hidden">
+                  <img src={tour.image} alt={tour.name} className="h-full w-full object-cover" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-brand-ink/60 to-transparent" />
+                  <div className="absolute bottom-3 left-4 right-4">
+                    <p className="text-xs font-semibold uppercase tracking-wider text-white/80">{tour.country}</p>
+                    <p className="text-lg font-bold text-white">{tour.name}</p>
+                  </div>
+                </div>
+                <div className="space-y-3 p-5 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-brand-muted">Duration</span>
+                    <span className="font-semibold text-brand-ink">{durationDays} days</span>
+                  </div>
+                  {rangeLabel ? (
+                    <div className="flex justify-between gap-3">
+                      <span className="text-brand-muted">Dates</span>
+                      <span className="text-right font-semibold text-brand-ink">{rangeLabel}</span>
+                    </div>
+                  ) : null}
+                  <div className="flex justify-between">
+                    <span className="text-brand-muted">Travelers</span>
+                    <span className="font-semibold text-brand-ink">{requestParty}</span>
+                  </div>
+                  <div className="flex justify-between border-t border-brand-border/50 pt-3">
+                    <span className="font-semibold text-brand-ink">Estimated total</span>
+                    <span className="text-lg font-bold text-brand-primary">{formatBookingCurrency(subtotal, chargeCurrency)}</span>
+                  </div>
+                  <p className="text-[11px] text-brand-muted">{formatBookingCurrency(bookingPricing.unitPrice, chargeCurrency)} per person</p>
+                </div>
+              </div>
+              <p className="mt-3 text-center text-xs text-brand-muted">
+                {adults} adult{adults === 1 ? "" : "s"}
+                {children ? ` · ${children} child${children === 1 ? "" : "ren"}` : ""}
+              </p>
+              <p className="mt-1 text-center font-mono text-[10px] text-brand-muted">{bookingRef}</p>
+            </aside>
+          </div>
+        </Container>
+      </div>
     );
   }
 
