@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 import { Download, Edit3, Loader2, Mail, Trash2, UserPlus, Users } from "lucide-react";
 import { toast } from "react-toastify";
+import adminCompanySettingsApi from "../../apis/AdminCompanySettingsApi";
 import adminInvoicesServiceApi from "../../apis/AdminInvoicesServiceApi";
 import adminClientsServiceApi from "../../apis/AdminClientsServiceApi";
 import InvoicePreview from "../../components/invoices/InvoicePreview";
@@ -16,7 +17,7 @@ export default function AdminInvoiceDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { token, user } = useAuth();
-  const company = useMemo(() => mergeCompanySettingsFromProfile(user, loadCompanySettings()), [user]);
+  const [company, setCompany] = useState(() => mergeCompanySettingsFromProfile(user, loadCompanySettings()));
 
   const [invoice, setInvoice] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -29,6 +30,17 @@ export default function AdminInvoiceDetailPage() {
   const [selectedClientName, setSelectedClientName] = useState("");
   const [isExternalRecipient, setIsExternalRecipient] = useState(false);
   const [sendMessage, setSendMessage] = useState("");
+
+  useEffect(() => {
+    if (!token) return undefined;
+    let cancelled = false;
+    adminCompanySettingsApi.getSettings(token).then((result) => {
+      if (!cancelled && result.settings) setCompany(mergeCompanySettingsFromProfile(user, result.settings));
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [token, user]);
 
   useEffect(() => {
     async function load() {

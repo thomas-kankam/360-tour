@@ -132,12 +132,20 @@ export default function InvoicePreview({ invoice, company = loadCompanySettings(
         <div className="mt-6 grid gap-4 sm:grid-cols-2">
           <div className="rounded-xl border border-brand-border/40 p-4">
             <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-brand-muted">Payment details</p>
-            <div className="mt-2 space-y-1 text-xs text-brand-ink">
-              {invoice.paymentDetails ? <p>{invoice.paymentDetails}</p> : null}
-              {company.bankName ? <p>Bank: {company.bankName}</p> : null}
-              {company.bankAccount ? <p>Account: {company.bankAccount}</p> : null}
-              {company.bankRouting ? <p>Routing / SWIFT: {company.bankRouting}</p> : null}
-              {company.paypalOrMobileMoney ? <p>{company.paypalOrMobileMoney}</p> : null}
+            <div className="mt-2 space-y-1 whitespace-pre-line text-xs text-brand-ink">
+              {invoice.paymentDetails ? <p>{invoice.paymentDetails}</p> : (
+                <>
+                  {company.bankName ? <p>Bank: {company.bankName}</p> : null}
+                  {company.accountName ? <p>Account name: {company.accountName}</p> : null}
+                  {company.bankAccount ? <p>Account: {company.bankAccount}</p> : null}
+                  {company.bankRouting ? <p>Routing / SWIFT: {company.bankRouting}</p> : null}
+                  {company.mobileMoneyNetwork || company.mobileMoneyNumber ? (
+                    <p>Mobile money: {[company.mobileMoneyNetwork, company.mobileMoneyNumber].filter(Boolean).join(" ")}</p>
+                  ) : null}
+                  {company.paypalEmail ? <p>PayPal: {company.paypalEmail}</p> : null}
+                  {company.paypalOrMobileMoney ? <p>{company.paypalOrMobileMoney}</p> : null}
+                </>
+              )}
             </div>
           </div>
           <div className="rounded-xl border border-brand-border/40 p-4">

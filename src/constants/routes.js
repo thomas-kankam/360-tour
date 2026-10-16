@@ -71,6 +71,7 @@ export const ROUTES = {
     tourEdit: (slug) => `/admin/tours/${slug}/edit`,
     ratings: "/admin/ratings",
     invoices: "/admin/invoices",
+    invoiceSettings: "/admin/invoice-settings",
     invoiceNew: "/admin/invoices/new",
     invoiceDetail: (id) => `/admin/invoices/${encodeURIComponent(id)}`,
     invoiceEdit: (id) => `/admin/invoices/${encodeURIComponent(id)}/edit`,

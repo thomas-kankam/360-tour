@@ -1,13 +1,14 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 import { Download, Loader2 } from "lucide-react";
 import { toast } from "react-toastify";
 import Container from "../../components/layout/Container";
 import InvoicePreview from "../../components/invoices/InvoicePreview";
+import adminCompanySettingsApi from "../../apis/AdminCompanySettingsApi";
 import clientInvoicesServiceApi from "../../apis/ClientInvoicesServiceApi";
 import { ROUTES } from "../../constants/routes";
 import { useAuth } from "../../hooks/useAuth";
-import { loadCompanySettings } from "../../utils/adminCompanySettings";
+import { loadCompanySettings, mergeCompanySettingsFromProfile } from "../../utils/adminCompanySettings";
 import { downloadInvoicePdf } from "../../utils/invoicePdf";
 
 function invoiceStatusLabel(status) {
@@ -20,7 +21,7 @@ export default function ClientInvoiceDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { token } = useAuth();
-  const company = useMemo(() => loadCompanySettings(), []);
+  const [company, setCompany] = useState(() => loadCompanySettings());
   const [invoice, setInvoice] = useState(null);
   const [loading, setLoading] = useState(true);
   const [downloading, setDownloading] = useState(false);
@@ -37,6 +38,16 @@ export default function ClientInvoiceDetailPage() {
       setDownloading(false);
     }
   }
+
+  useEffect(() => {
+    let cancelled = false;
+    adminCompanySettingsApi.getPublicSettings().then((result) => {
+      if (!cancelled && result.settings) setCompany(mergeCompanySettingsFromProfile(null, result.settings));
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     async function load() {

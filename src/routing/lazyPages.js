@@ -64,6 +64,7 @@ export const AdminListingDetailPage = lazyPage(() => import("../pages/admin/Admi
 export const AdminRatingsPage = lazyPage(() => import("../pages/admin/AdminRatingsPage"));
 export const AdminInvoicesPage = lazyPage(() => import("../pages/admin/AdminInvoicesPage"));
 export const AdminInvoiceFormPage = lazyPage(() => import("../pages/admin/AdminInvoiceFormPage"));
+export const AdminInvoiceSettingsPage = lazyPage(() => import("../pages/admin/AdminInvoiceSettingsPage"));
 export const AdminInvoiceDetailPage = lazyPage(() => import("../pages/admin/AdminInvoiceDetailPage"));
 export const AdminLandingCmsPage = lazyPage(() => import("../pages/admin/AdminLandingCmsPage"));
 export const AdminAboutCmsPage = lazyPage(() => import("../pages/admin/AdminAboutCmsPage"));

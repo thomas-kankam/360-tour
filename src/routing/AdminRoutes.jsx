@@ -14,6 +14,7 @@ import {
   AdminDashboardPage,
   AdminInvoiceDetailPage,
   AdminInvoiceFormPage,
+  AdminInvoiceSettingsPage,
   AdminInvoicesPage,
   AdminExperienceFormPage,
   AdminExperiencesPage,
@@ -87,6 +88,7 @@ const adminRoutes = (
 
         <Route element={<AdminPermissionRoute permission={ADMIN_PERMISSIONS.INVOICE_MANAGEMENT} />}>
           <Route path="invoices" element={<AdminInvoicesPage />} />
+          <Route path="invoice-settings" element={<AdminInvoiceSettingsPage />} />
           <Route path="invoices/new" element={<AdminInvoiceFormPage />} />
           <Route path="invoices/:id/edit" element={<AdminInvoiceFormPage />} />
           <Route path="invoices/:id" element={<AdminInvoiceDetailPage />} />

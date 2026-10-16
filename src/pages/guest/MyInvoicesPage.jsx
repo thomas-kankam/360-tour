@@ -1,13 +1,14 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { ArrowRight, Download, FileText, Loader2 } from "lucide-react";
 import { toast } from "react-toastify";
 import AdminPagination from "../../components/admin/AdminPagination";
 import Container from "../../components/layout/Container";
+import adminCompanySettingsApi from "../../apis/AdminCompanySettingsApi";
 import clientInvoicesServiceApi from "../../apis/ClientInvoicesServiceApi";
 import { ROUTES } from "../../constants/routes";
 import { useAuth } from "../../hooks/useAuth";
-import { loadCompanySettings } from "../../utils/adminCompanySettings";
+import { loadCompanySettings, mergeCompanySettingsFromProfile } from "../../utils/adminCompanySettings";
 import { downloadInvoicePdf } from "../../utils/invoicePdf";
 
 const PAGE_SIZE = 6;
@@ -20,7 +21,7 @@ function invoiceStatusLabel(status) {
 
 export default function MyInvoicesPage() {
   const { token } = useAuth();
-  const company = useMemo(() => loadCompanySettings(), []);
+  const [company, setCompany] = useState(() => loadCompanySettings());
   const [invoices, setInvoices] = useState([]);
   const [pagination, setPagination] = useState(null);
   const [page, setPage] = useState(1);
@@ -28,6 +29,16 @@ export default function MyInvoicesPage() {
   const [downloadingId, setDownloadingId] = useState(null);
 
   const paginationMeta = pagination ?? { page, totalPages: 1, totalItems: 0, rangeStart: 0, rangeEnd: 0 };
+
+  useEffect(() => {
+    let cancelled = false;
+    adminCompanySettingsApi.getPublicSettings().then((result) => {
+      if (!cancelled && result.settings) setCompany(mergeCompanySettingsFromProfile(null, result.settings));
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     let cancelled = false;

@@ -9,6 +9,7 @@ import {
   Compass,
   CreditCard,
   FileText,
+  Landmark,
   LayoutTemplate,
   Map,
   Menu,
@@ -55,6 +56,14 @@ function AdminSidebarContent({ user, collapsed, onNavigate }) {
     if (!permissionNames.includes(key)) return [];
 
     const items = [{ key, ...item }];
+    if (key === ADMIN_PERMISSIONS.INVOICE_MANAGEMENT) {
+      items.push({
+        key: `${key}-settings`,
+        to: ROUTES.admin.invoiceSettings,
+        label: "Invoice settings",
+        icon: Landmark,
+      });
+    }
     if (key === ADMIN_PERMISSIONS.BOOKING_MANAGEMENT) {
       BOOKING_EXTRA_NAV.forEach((extra) => {
         items.push({ key: `${key}-${extra.to}`, ...extra });

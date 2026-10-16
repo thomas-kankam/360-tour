@@ -25,14 +25,48 @@ export const DEFAULT_COMPANY_SETTINGS = {
   taxId: "",
   invoiceLogo: "",
   bankName: "",
+  accountName: "",
   bankAccount: "",
   bankRouting: "",
   paymentNotes: "Payment due within 14 days of invoice date.",
   paypalOrMobileMoney: "",
+  mobileMoneyNetwork: "",
+  mobileMoneyNumber: "",
+  paypalEmail: "",
   invoiceTerms: "Thank you for your business.",
   defaultCurrency: "USD",
   defaultTaxPercent: 0,
 };
+
+function isBlank(value) {
+  return value == null || String(value).trim() === "";
+}
+
+export function buildPaymentDetailsFromSettings(settings = {}) {
+  const lines = [];
+  if (settings.bankName) lines.push(`Bank: ${settings.bankName}`);
+  if (settings.accountName) lines.push(`Account name: ${settings.accountName}`);
+  if (settings.bankAccount) lines.push(`Account number: ${settings.bankAccount}`);
+  if (settings.bankRouting) lines.push(`SWIFT / routing: ${settings.bankRouting}`);
+  const mobileMoney = [settings.mobileMoneyNetwork, settings.mobileMoneyNumber].filter((part) => !isBlank(part)).join(" ");
+  if (mobileMoney) lines.push(`Mobile money: ${mobileMoney}`);
+  if (!isBlank(settings.paypalEmail)) lines.push(`PayPal: ${settings.paypalEmail}`);
+  if (!isBlank(settings.paypalOrMobileMoney) && isBlank(mobileMoney) && isBlank(settings.paypalEmail)) {
+    lines.push(settings.paypalOrMobileMoney);
+  }
+  if (!isBlank(settings.paymentNotes)) lines.push(settings.paymentNotes);
+  return lines.join("\n");
+}
+
+export function applyCompanySettingsToInvoice(invoice, settings = {}) {
+  return {
+    ...invoice,
+    currency: settings.defaultCurrency || invoice.currency || "USD",
+    taxPercent: Number(settings.defaultTaxPercent ?? invoice.taxPercent ?? 0),
+    terms: settings.invoiceTerms || invoice.terms || "",
+    paymentDetails: buildPaymentDetailsFromSettings(settings),
+  };
+}
 
 export function loadCompanySettings() {
   if (typeof window === "undefined") return { ...DEFAULT_COMPANY_SETTINGS };
@@ -53,10 +87,13 @@ export function saveCompanySettings(settings) {
 }
 
 export function mergeCompanySettingsFromProfile(user, settings = loadCompanySettings()) {
-  return {
-    ...settings,
-    email: user?.email || settings.email,
-    phone: user?.phone || settings.phone,
-    invoiceLogo: user?.profileImage || settings.invoiceLogo,
-  };
+  const merged = { ...DEFAULT_COMPANY_SETTINGS, ...settings };
+  if (isBlank(merged.email)) merged.email = user?.email || DEFAULT_COMPANY_SETTINGS.email;
+  if (isBlank(merged.phone)) merged.phone = user?.phone || DEFAULT_COMPANY_SETTINGS.phone;
+  if (isBlank(merged.invoiceLogo) && user?.profileImage) merged.invoiceLogo = user.profileImage;
+  if (isBlank(merged.accountName)) merged.accountName = merged.legalName || "";
+  if (isBlank(merged.mobileMoneyNumber) && !isBlank(merged.paypalOrMobileMoney) && isBlank(merged.paypalEmail)) {
+    merged.mobileMoneyNumber = merged.paypalOrMobileMoney;
+  }
+  return merged;
 }

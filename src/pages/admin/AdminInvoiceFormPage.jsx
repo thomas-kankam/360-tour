@@ -1,12 +1,18 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 import { Loader2, Plus, Save, Trash2 } from "lucide-react";
 import { toast } from "react-toastify";
+import adminCompanySettingsApi from "../../apis/AdminCompanySettingsApi";
 import adminInvoicesServiceApi from "../../apis/AdminInvoicesServiceApi";
 import InvoicePreview from "../../components/invoices/InvoicePreview";
 import { ROUTES } from "../../constants/routes";
+import { INVOICE_CURRENCIES } from "../../data/ghanaBanks";
 import { useAuth } from "../../hooks/useAuth";
-import { loadCompanySettings, mergeCompanySettingsFromProfile } from "../../utils/adminCompanySettings";
+import {
+  applyCompanySettingsToInvoice,
+  loadCompanySettings,
+  mergeCompanySettingsFromProfile,
+} from "../../utils/adminCompanySettings";
 import { createEmptyInvoice, createEmptyLineItem } from "../../utils/invoiceHelpers";
 
 function Field({ label, children, className = "" }) {
@@ -26,25 +32,34 @@ export default function AdminInvoiceFormPage() {
   const isEdit = Boolean(id);
   const navigate = useNavigate();
   const { token, user } = useAuth();
-  const company = useMemo(() => mergeCompanySettingsFromProfile(user, loadCompanySettings()), [user]);
+  const [company, setCompany] = useState(() => mergeCompanySettingsFromProfile(user, loadCompanySettings()));
 
   const [invoice, setInvoice] = useState(() => createEmptyInvoice());
   const [loading, setLoading] = useState(isEdit);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    if (!isEdit) {
-      adminInvoicesServiceApi.generateInvoiceNumber(token).then((result) => {
-        if (result.invoiceNumber) {
-          setInvoice((prev) => ({ ...prev, invoiceNumber: result.invoiceNumber }));
-        }
-      });
-      return;
-    }
+    let cancelled = false;
 
-    async function load() {
+    async function prepare() {
+      const settingsResult = await adminCompanySettingsApi.getSettings(token);
+      if (cancelled) return;
+      const settings = mergeCompanySettingsFromProfile(user, settingsResult.settings || loadCompanySettings());
+      setCompany(settings);
+
+      if (!isEdit) {
+        const numberResult = await adminInvoicesServiceApi.generateInvoiceNumber(token);
+        if (cancelled) return;
+        setInvoice((prev) => applyCompanySettingsToInvoice({
+          ...prev,
+          invoiceNumber: numberResult.invoiceNumber || prev.invoiceNumber,
+        }, settings));
+        return;
+      }
+
       setLoading(true);
       const result = await adminInvoicesServiceApi.getInvoice(token, id);
+      if (cancelled) return;
       setLoading(false);
       if (!result.invoice) {
         toast.error("Invoice not found.");
@@ -54,8 +69,11 @@ export default function AdminInvoiceFormPage() {
       setInvoice(result.invoice);
     }
 
-    load();
-  }, [id, isEdit, navigate, token]);
+    prepare();
+    return () => {
+      cancelled = true;
+    };
+  }, [id, isEdit, navigate, token, user]);
 
   function patch(values) {
     setInvoice((prev) => ({ ...prev, ...values }));
@@ -146,7 +164,7 @@ export default function AdminInvoiceFormPage() {
             </Field>
             <Field label="Currency">
               <select className={inputClass} value={invoice.currency} onChange={(e) => patch({ currency: e.target.value })}>
-                {["USD", "EUR", "GBP", "GHS"].map((code) => (
+                {INVOICE_CURRENCIES.map((code) => (
                   <option key={code} value={code}>{code}</option>
                 ))}
               </select>

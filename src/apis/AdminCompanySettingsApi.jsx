@@ -18,7 +18,7 @@ class AdminCompanySettingsApi {
     return {
       "Content-Type": "application/json",
       Accept: "application/json",
-      Authorization: `Bearer ${token}`,
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
     };
   }
 
@@ -36,6 +36,16 @@ class AdminCompanySettingsApi {
     };
 
     return dedupe ? dedupeRequest(key, exec) : exec();
+  }
+
+  async getPublicSettings() {
+    const local = loadCompanySettings();
+    const result = await this.request("GET", "/company-settings", { dedupe: false });
+    if (!result.ok) return { ok: true, settings: local, source: "local" };
+
+    const mapped = mapApiCompanySettings(result.data?.settings ?? result.data);
+    const merged = { ...DEFAULT_COMPANY_SETTINGS, ...mapped };
+    return { ok: true, settings: merged, source: "api" };
   }
 
   async getSettings(token) {
@@ -63,11 +73,14 @@ class AdminCompanySettingsApi {
 
     if (!result.ok) {
       const unavailable = [404, 405, 501, 503].includes(result.httpStatus);
+      if (!unavailable) {
+        return { ok: false, settings, reason: result.reason || result.message || "Could not save invoice settings." };
+      }
       return {
         ok: true,
         settings,
-        source: unavailable ? "local" : "local",
-        reason: unavailable ? "Saved locally. Company settings API is not available yet." : result.reason || result.message,
+        source: "local",
+        reason: "Saved locally. Company settings API is not available yet.",
       };
     }
 
