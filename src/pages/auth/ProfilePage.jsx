@@ -12,7 +12,8 @@ import { toast } from "react-toastify";
 import consumerAuthServiceApi from "../../apis/ConsumerAuthServiceApi";
 import Container from "../../components/layout/Container";
 import { useAuth } from "../../hooks/useAuth";
-import { normalizePhoneForApi } from "../../utils/phoneUtils";
+import PhoneCountryInput from "../../components/forms/PhoneCountryInput";
+import { normalizePhoneForApi, phoneNumberHasCountryCode } from "../../utils/phoneUtils";
 import { resolveProfileImageSrc, uploadProfilePhoto } from "../../utils/profileImage";
 
 const EASE = [0.16, 1, 0.3, 1];
@@ -44,7 +45,7 @@ function validateProfileForm(form) {
   else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.email = "Enter a valid email address.";
 
   if (!phone) errors.phone_number = "Phone number is required.";
-  else if (phone.length < 10) errors.phone_number = "Enter a valid phone number with country code.";
+  else if (!phoneNumberHasCountryCode(phone)) errors.phone_number = "Enter a valid phone number for the selected country.";
 
   if (!location) errors.location = "Location is required.";
 
@@ -277,14 +278,17 @@ export default function ProfilePage() {
                   />
                 </FormField>
 
-                <FormField field="phone_number" label="Phone" hint="Include the country code, for example 233…" error={errors.phone_number}>
-                  <input
+                <FormField
+                  field="phone_number"
+                  label="Phone"
+                  hint="Search for your country. The code fills in, then type the rest of the number."
+                  error={errors.phone_number}
+                >
+                  <PhoneCountryInput
                     id="phone_number"
-                    type="tel"
                     value={form.phone_number}
-                    onChange={(e) => handleFieldChange("phone_number", e.target.value)}
-                    className={inputClass(Boolean(errors.phone_number))}
-                    autoComplete="tel"
+                    onChange={(next) => handleFieldChange("phone_number", next)}
+                    hasError={Boolean(errors.phone_number)}
                   />
                 </FormField>
 
