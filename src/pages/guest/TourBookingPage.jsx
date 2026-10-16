@@ -189,10 +189,12 @@ export default function TourBookingPage() {
   const formTopRef = useRef(null);
   const isInitialStep = useRef(true);
 
-  const [form, setForm] = useState(() => createInitialBookingForm(user));
+  const [form, setForm] = useState(() =>
+    createInitialBookingForm(ONLINE_PAYMENT_ENABLED ? user : null, ONLINE_PAYMENT_ENABLED ? {} : { countryId: "" }),
+  );
 
   useEffect(() => {
-    if (!user) return;
+    if (!ONLINE_PAYMENT_ENABLED || !user) return;
     setForm((current) => mergeUserIntoBookingLeadFields(current, user));
   }, [user]);
 
@@ -469,7 +471,7 @@ export default function TourBookingPage() {
   const adults = Math.max(1, Number(form.adults) || 1);
   const children = Math.max(0, Number(form.children) || 0);
   const requestParty = adults + children;
-  const phoneCountry = findCountryOption(form.countryId)?.isoCode || "GH";
+  const phoneCountry = findCountryOption(form.countryId)?.isoCode || undefined;
 
   async function handleRequestSubmit(event) {
     event.preventDefault();
@@ -478,14 +480,30 @@ export default function TourBookingPage() {
       firstName: validateRequired(form.firstName, "First name"),
       lastName: validateRequired(form.lastName, "Last name"),
       email: validateEmail(form.email),
+      countryId: validateRequired(form.countryId, "Country"),
       phone: !form.phone ? "Phone number is required" : isValidPhoneNumber(form.phone) ? "" : "Enter a valid phone number",
       whatsapp: !form.whatsapp ? "WhatsApp number is required" : isValidPhoneNumber(form.whatsapp) ? "" : "Enter a valid WhatsApp number",
-      countryId: validateRequired(form.countryId, "Country"),
       selectedDate: !form.selectedDate ? "Select your preferred date" : "",
       adults: adults < 1 ? "At least 1 adult is required" : "",
     };
-    if (Object.values(requestErrors).some(Boolean)) {
-      toast.error("Please complete the required booking details.");
+    const firstInvalid = [
+      ["firstName", "firstName"],
+      ["lastName", "lastName"],
+      ["email", "email"],
+      ["countryId", "booking-country"],
+      ["phone", "phone"],
+      ["whatsapp", "whatsapp"],
+      ["selectedDate", "preferred-date"],
+    ].find(([key]) => requestErrors[key]);
+
+    if (firstInvalid) {
+      const target = document.getElementById(firstInvalid[1]);
+      target?.scrollIntoView({ behavior: "smooth", block: "center" });
+      const focusable = target?.matches?.("input, textarea, select, button")
+        ? target
+        : target?.querySelector?.("input, textarea, select, button");
+      window.setTimeout(() => focusable?.focus?.(), 250);
+      toast.error(requestErrors[firstInvalid[0]]);
       return;
     }
     if (!ensureAuthenticated()) return;
@@ -546,27 +564,37 @@ export default function TourBookingPage() {
           </p>
 
           <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_320px] lg:gap-10">
-            <form onSubmit={handleRequestSubmit} className="space-y-5 rounded-[1.75rem] border border-brand-border/60 bg-white p-6 shadow-sm sm:p-8">
-              <FormField label="Tour" id="tourName">
-                <input id="tourName" readOnly value={tour.name} className={`${inputClass("")} bg-brand-cream/60 font-semibold`} />
-              </FormField>
+            <form onSubmit={handleRequestSubmit} autoComplete="off" className="space-y-5 rounded-[1.75rem] border border-brand-border/60 bg-white p-6 shadow-sm sm:p-8">
+              <div>
+                <p className="text-xs font-semibold text-brand-ink">Tour</p>
+                <p className="mt-1.5 rounded-xl border border-brand-border/70 bg-brand-cream/70 px-4 py-3 text-sm font-semibold text-brand-ink">
+                  {tour.name}
+                </p>
+                <p className="mt-1 text-[11px] text-brand-muted">This tour is fixed for this request and cannot be edited.</p>
+              </div>
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <FormField label="First name" id="firstName" required error={showError("firstName")}>
-                  <input id="firstName" value={form.firstName} onChange={(e) => update("firstName", e.target.value)} onBlur={() => touch("firstName")} className={inputClass(showError("firstName"))} placeholder="Jane" />
+                  <input id="firstName" name="booking-first-name" autoComplete="off" value={form.firstName} onChange={(e) => update("firstName", e.target.value)} onBlur={() => touch("firstName")} className={inputClass(showError("firstName"))} placeholder="Type your first name" />
                 </FormField>
                 <FormField label="Last name" id="lastName" required error={showError("lastName")}>
-                  <input id="lastName" value={form.lastName} onChange={(e) => update("lastName", e.target.value)} onBlur={() => touch("lastName")} className={inputClass(showError("lastName"))} placeholder="Mensah" />
+                  <input id="lastName" name="booking-last-name" autoComplete="off" value={form.lastName} onChange={(e) => update("lastName", e.target.value)} onBlur={() => touch("lastName")} className={inputClass(showError("lastName"))} placeholder="Type your last name" />
                 </FormField>
               </div>
 
               <FormField label="Email" id="email" required error={showError("email")}>
-                <input id="email" type="email" value={form.email} onChange={(e) => update("email", e.target.value)} onBlur={() => touch("email")} className={inputClass(showError("email"))} placeholder="jane@example.com" autoComplete="email" />
+                <input id="email" name="booking-email" type="email" autoComplete="off" value={form.email} onChange={(e) => update("email", e.target.value)} onBlur={() => touch("email")} className={inputClass(showError("email"))} placeholder="Type your email" />
               </FormField>
 
-              <FormField label="Country" id="country" required hint="Search by country name. Each option shows its flag and dial code.">
-                <CountrySearchSelect value={form.countryId} onChange={(countryId) => update("countryId", countryId)} />
-              </FormField>
+              <div id="booking-country">
+                <FormField label="Country" id="country" required error={showError("countryId")} hint="Search by country name. Each option shows its flag and dial code.">
+                  <CountrySearchSelect
+                    value={form.countryId}
+                    onChange={(countryId) => update("countryId", countryId)}
+                    placeholder="Select your country"
+                  />
+                </FormField>
+              </div>
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <FormField label="Phone number" id="phone" required error={showError("phone")}>
@@ -610,7 +638,7 @@ export default function TourBookingPage() {
                 </FormField>
               </div>
 
-              <div>
+              <div id="preferred-date">
                 <p className="text-xs font-semibold text-brand-ink">Preferred date <span className="text-brand-orange">*</span></p>
                 <p className="mt-1 text-[11px] text-brand-muted">
                   Pick a start date. This {customDurationDays}-day trip is highlighted on the calendar.
